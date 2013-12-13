@@ -28,7 +28,7 @@ namespace Jkphl\Micrometa\Parser;
 if (!@class_exists('Mf2::Parser')) {
 	$include	= dirname(dirname(dirname(dirname(__DIR__)))).DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'php-mf2'.DIRECTORY_SEPARATOR.'Mf2'.DIRECTORY_SEPARATOR.'Parser.php';
 	if (!@is_file($include) || !@is_readable($include)) {
-		die('Please see https://github.com/jkphl/micrometa/lib/README.md for instructions on installing the "IndieWeb microformats-2 parser for PHP"');
+		die('Please see https://github.com/jkphl/micrometa/blob/master/lib/README.md for instructions on installing the "IndieWeb microformats-2 parser for PHP"');
 	}
 	require_once $include;
 	unset($include);
@@ -37,7 +37,7 @@ if (!@class_exists('Mf2::Parser')) {
 /**
  * Extended Microformats2 parser
  * 
- * @author joschi
+ * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @package jkphl_micrometa
  * @license http://opensource.org/licenses/MIT	The MIT License (MIT)
  */
@@ -49,11 +49,15 @@ class Microformats2 extends \Mf2\Parser {
 	 */
 	protected $_url = null;
 	
+	/************************************************************************************************
+	 * PUBLIC METHODS
+	 ***********************************************************************************************/
+	
 	/**
 	 * Constructor
 	 *
-	 * @param \DOMDocument|string $input The data to parse. A string of HTML or a DOMDocument
-	 * @param \Jkphl\Utility\Url|\string $url The URL of the parsed document, for relative URL resolution
+	 * @param \DOMDocument|string $input			The data to parse. A string of HTML or a DOMDocument
+	 * @param \Jkphl\Utility\Url|\string $url		Optional: The URL of the parsed document, for relative URL resolution
 	 */
 	public function __construct($input, $url = null) {
 		$this->_url							= ($url instanceof \Jkphl\Utility\Url) ? $url : new \Jkphl\Utility\Url($url);
@@ -64,15 +68,15 @@ class Microformats2 extends \Mf2\Parser {
 	/**
 	 * Kicks off the parsing routine
 	 * 
-	 * If `$htmlSafe` is set, any angle brackets in the results from non e-* properties
+	 * If `$convertClassic` is set, any angle brackets in the results from non e-* properties
 	 * will be HTML-encoded, bringing all output to the same level of encoding.
 	 * 
 	 * If a DOMElement is set as the $context, only descendants of that element will
 	 * be parsed for microformats.
 	 * 
-	 * @param bool $htmlSafe whether or not to html-encode non e-* properties. Defaults to false
-	 * @param DOMElement $context optionally an element from which to parse microformats
-	 * @return array An array containing all the µfs found in the current document
+	 * @param bool $convertClassic					Whether or not to html-encode non e-* properties. Defaults to false
+	 * @param DOMElement $context					Optionall: An element from which to parse microformats
+	 * @return array								An array containing all the µfs found in the current document
 	 */
 	public function parse($convertClassic = true, \DOMElement $context = null) {
 		$results				= parent::parse($convertClassic, $context);
@@ -85,10 +89,10 @@ class Microformats2 extends \Mf2\Parser {
 	 ***********************************************************************************************/
 	
 	/**
-	 * Refine parsing results
+	 * Refine micro information items
 	 * 
-	 * @param \array $results			Parsing results
-	 * @return \array					Refined parsing results
+	 * @param \array $results						Micro information items
+	 * @return \array								Refined micro information items
 	 */
 	protected function _refineResults(array $results) {
 		$refined				= array();

@@ -26,41 +26,48 @@ namespace Jkphl\Micrometa;
  ***********************************************************************************/
 
 /**
- * Microcontent parser result
+ * Micro information item
  * 
- * @author joschi
+ * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @package jkphl_micrometa
+ * @license http://opensource.org/licenses/MIT	The MIT License (MIT)
  */
 class Item {
 	/**
-	 * Base URL
+	 * Item base URL
 	 * 
 	 * @var \Jkphl\Utility\Url
 	 */
 	protected $_url = null;
 	/**
-	 * Type list
+	 * Item type list
 	 * 
 	 * @var \array
 	 */
 	protected $_types = array();
 	/**
-	 * Property list
+	 * Nested property list
 	 * 
 	 * @var \array
 	 */
 	protected $_properties = null;
 	/**
-	 * Item value
+	 * Explicit item value
 	 * 
 	 * @var \string
 	 */
 	protected $_value = null;
 	
+	/************************************************************************************************
+	 * PUBLIC METHODS
+	 ***********************************************************************************************/
+	
 	/**
 	 * Constructor
 	 * 
-	 * @param array $data
-	 * @return void
+	 * @param \array $data					Item data
+	 * @param \Jkphl\Utility\Url $url		Item base URL
+	 * @return \Jkphl\Micrometa\Item		Micro information item
 	 */
 	public function __construct(array $data, \Jkphl\Utility\Url $url) {
 		$this->_url					= $url;
@@ -91,7 +98,7 @@ class Item {
 	}
 	
 	/**
-	 * Return if this item is of a specific type
+	 * Check if this item is of a specific type
 	 * 
 	 * @param \string $type			List of type names (arbitrary length)
 	 * @return \boolean				If this item is of a specific type
@@ -101,34 +108,7 @@ class Item {
 	}
 	
 	/**
-	 * Return a list of properties or a single property
-	 * 
-	 * @param \string $key			Property (list) name
-	 * @return \mixed				Property (list) value(s)
-	 */
-	public function __get($key) {
-		
-		// Special case: Value property
-		if ($key == 'value') {
-			return $this->_value;
-			
-		// Else: If this is a known property
-		} elseif (isset($this->_properties->$key)) {
-			$property				=& $this->_properties->$key;
-			return $property[0];
-			
-		// Else: If this is a known properties list
-		} elseif ((substr($key, -1) == 's') && isset($this->_properties->{substr($key, 0, -1)})) {
-			return $this->_properties->{substr($key, 0, -1)};
-			
-		// Else: Empty return value
-		} else {
-			return null;
-		}
-	}
-	
-	/**
-	 * Return the first available property of a property list
+	 * Return the first available property in a list of properties
 	 * 
 	 * @param \string $property1	First property
 	 * @param \string $property2	Second property
@@ -148,7 +128,7 @@ class Item {
 	/**
 	 * Return a vanilla object representation of this item 
 	 * 
-	 * @return \stdClass			Vanilla item representation
+	 * @return \stdClass			Vanilla object item representation
 	 */
 	public function toObject() {
 		$result						= (object)array(
@@ -168,6 +148,42 @@ class Item {
 		}
 		
 		return $result;
+	}
+	
+	/************************************************************************************************
+	 * MAGIC METHODS
+	 ***********************************************************************************************/
+
+	/**
+	 * Return a list of properties or a single property
+	 *
+	 * @param \string $key			Property (list) name
+	 * @return \mixed				Property (list) value(s)
+	 */
+	public function __get($key) {
+		$key						= strtolower(preg_replace("%([A-Z])%", "-$1", $key));
+	
+		// Special case: Value property
+		if ($key == 'value') {
+			return $this->_value;
+				
+			// Special case: Item types
+		} elseif ($key == 'types') {
+			return $this->_types;
+				
+			// Else: If this is a known property
+		} elseif (isset($this->_properties->$key)) {
+			$property				=& $this->_properties->$key;
+			return $property[0];
+				
+			// Else: If this is a known property list
+		} elseif ((substr($key, -1) == 's') && isset($this->_properties->{substr($key, 0, -1)})) {
+			return $this->_properties->{substr($key, 0, -1)};
+				
+			// Else: Unknown property
+		} else {
+			return null;
+		}
 	}
 	
 	/************************************************************************************************

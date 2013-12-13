@@ -28,7 +28,7 @@ namespace Jkphl\Micrometa\Parser;
 if (!@class_exists('MicrodataPhp')) {
 	$include	= dirname(dirname(dirname(dirname(__DIR__)))).DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'MicrodataPHP'.DIRECTORY_SEPARATOR.'MicrodataPhp.php';
 	if (!@is_file($include) || !@is_readable($include)) {
-		die('Please see https://github.com/jkphl/micrometa/lib/README.md for instructions on installing the "MicrodataPHP parser by Lin Clark"');
+		die('Please see https://github.com/jkphl/micrometa/blob/master/lib/README.md for instructions on installing the "MicrodataPHP parser by Lin Clark"');
 	}
 	require_once $include;
 	unset($include);
@@ -37,7 +37,7 @@ if (!@class_exists('MicrodataPhp')) {
 /**
  * Extended MicrodataPHP parser
  * 
- * @author joschi
+ * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @package jkphl_micrometa
  * @license http://opensource.org/licenses/MIT	The MIT License (MIT)
  */
@@ -49,11 +49,15 @@ class Microdata extends \MicrodataPhp {
 	 */
 	protected $_url = null;
 	
+	/************************************************************************************************
+	 * PUBLIC METHODS
+	 ***********************************************************************************************/
+	
 	/**
 	 * Constructor
 	 *
-	 * @param \Jkphl\Utility\Url|\string $url				Document URL
-	 * @param \string $source										Document source code
+	 * @param \Jkphl\Utility\Url|\string $url		Document URL
+	 * @param \string $source						Optional: Document source code
 	 * @return void
 	 */
 	public function __construct($url, $source = null) {
@@ -76,9 +80,9 @@ class Microdata extends \MicrodataPhp {
 	}
 	
 	/**
-	 * Retrieve and refine the contained microdata items
+	 * Retrieve and refine the contained micro information items
 	 * 
-	 * @return \array					Refined items
+	 * @return \array								Refined items
 	 */
 	public function items() {
 		$items								= array();

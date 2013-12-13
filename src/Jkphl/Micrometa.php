@@ -33,7 +33,7 @@ require_once __DIR__.DIRECTORY_SEPARATOR.'Micrometa'.DIRECTORY_SEPARATOR.'Parser
 /**
  * Micrometa parser
  * 
- * @author joschi
+ * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @package jkphl_micrometa
  * @license http://opensource.org/licenses/MIT	The MIT License (MIT)
  */
@@ -51,7 +51,7 @@ class Micrometa {
 	 */
 	protected $_source = null;
 	/**
-	 * DOM
+	 * Document DOM
 	 * 
 	 * @var \DOMDocument
 	 */
@@ -81,7 +81,7 @@ class Micrometa {
 	 */
 	protected $_parsed = false;
 	/**
-	 * Contained microdata
+	 * Extracted micro information
 	 * 
 	 * @var \stdClass
 	 */
@@ -135,7 +135,7 @@ class Micrometa {
 	}
 	
 	/**
-	 * Parse the document for contained microdata
+	 * Parse the document for embedded micro information
 	 * 
 	 * @return \Jkphl\JkphlBlog\Utility\Microcontent		Self reference
 	 */
@@ -162,10 +162,10 @@ class Micrometa {
 	}
 
 	/**
-	 * Return a list of items
+	 * Return a list of top level micro information items
 	 * 
 	 * @param \string $type ...			Optional: Arbitrary number of item types
-	 * @return \array					Item list
+	 * @return \array					Micro information item list
 	 */
 	public function items() {
 		if (!$this->_parsed) {
@@ -208,12 +208,12 @@ class Micrometa {
 	}
 	
 	/**
-	 * Return the first item (of a specific type)
+	 * Return the first micro information item (of a specific type)
 	 * 
 	 * @param \string $type1				Optional: Arbitrary number of item types
 	 * @param \string $type2
 	 * ...
-	 * @return \Jkphl\Micrometa\Item		First item
+	 * @return \Jkphl\Micrometa\Item		First micro information item
 	 */
 	public function item() {
 		$items							= call_user_func_array(array($this, 'items'), func_get_args());
@@ -221,9 +221,9 @@ class Micrometa {
 	}
 	
 	/**
-	 * Return all rel-values
+	 * Return all related resources
 	 * 
-	 * @return \array						Rel-values			
+	 * @return \array						Related resources
 	 */
 	public function rels() {
 		if (!$this->_parsed) {
@@ -234,9 +234,9 @@ class Micrometa {
 	}
 	
 	/**
-	 * Return all alternate-values
+	 * Return all alternative resources
 	 *
-	 * @return \array						Alternate-values
+	 * @return \array						Alternative resources
 	 */
 	public function alternates() {
 		if (!$this->_parsed) {
@@ -257,7 +257,7 @@ class Micrometa {
 		if (!empty($rels['author']) && is_array($rels['author'])) {
 			foreach ($rels['author'] as $authorProfileUrl) {
 				$authorProfile			= new self($authorProfileUrl);
-				$authorItem				= $authorProfile->item('http://schema.org/Person', 'h-card');
+				$authorItem				= $authorProfile->item('http://schema.org/Person', 'http://data-vocabulary.org/Person', 'h-card');
 				if ($authorItem instanceof \Jkphl\Micrometa\Item) {
 					$author				= $authorItem;
 					break;

@@ -28,7 +28,7 @@ namespace Jkphl\Utility;
 /**
  * URL manipulation class
  *
- * @author joschi
+ * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @package jkphl_utility
  * @license http://opensource.org/licenses/MIT	The MIT License (MIT)
  */
@@ -60,6 +60,10 @@ class Url {
 		PHP_URL_QUERY		=> 'query',
 		PHP_URL_FRAGMENT	=> 'fragment'
 	);
+	
+	/************************************************************************************************
+	 * PUBLIC METHODS
+	 ***********************************************************************************************/
 	
 	/**
 	 * Constructor
@@ -159,22 +163,6 @@ class Url {
 	}
 	
 	/**
-	 * String serialization
-	 * 
-	 * @return \string							URL
-	 */
-	public function __toString() {
-		$url							= (empty($this->_parts['scheme']) ? 'http' : $this->_parts['scheme']).'://';
-		$url							.= empty($this->_parts['user']) ? '' : rawurlencode($this->_parts['user']).(empty($this->_parts['pass']) ? '' : ':'.rawurlencode($this->_parts['pass'])).'@';
-		$url							.= $this->_parts['host'];
-		$url							.= empty($this->_parts['port']) ? '' : ':'.$this->_parts['port'];
-		$url							.= empty($this->_parts['path']) ? '' : $this->_parts['path'];
-		$url							.= count($this->_parts['query']) ? '?'.http_build_query($this->_parts['query']) : '';
-		$url							.= empty($this->_parts['fragment']) ? '' : '#'.$this->_parts['fragment'];
-		return $url;
-	}
-	
-	/**
 	 * Resolve this URL against a reference URL (in case this one's relative)
 	 * 
 	 * @param \Jkphl\Utility\Url $reference		Reference URL
@@ -203,5 +191,25 @@ class Url {
 		}
 		
 		return $this;
+	}
+	
+	/************************************************************************************************
+	 * MAGIC METHODS
+	 ***********************************************************************************************/
+	
+	/**
+	 * String serialization
+	 *
+	 * @return \string							URL
+	 */
+	public function __toString() {
+		$url							= (empty($this->_parts['scheme']) ? 'http' : $this->_parts['scheme']).'://';
+		$url							.= empty($this->_parts['user']) ? '' : rawurlencode($this->_parts['user']).(empty($this->_parts['pass']) ? '' : ':'.rawurlencode($this->_parts['pass'])).'@';
+		$url							.= $this->_parts['host'];
+		$url							.= empty($this->_parts['port']) ? '' : ':'.$this->_parts['port'];
+		$url							.= empty($this->_parts['path']) ? '' : $this->_parts['path'];
+		$url							.= count($this->_parts['query']) ? '?'.http_build_query($this->_parts['query']) : '';
+		$url							.= empty($this->_parts['fragment']) ? '' : '#'.$this->_parts['fragment'];
+		return $url;
 	}
 }
