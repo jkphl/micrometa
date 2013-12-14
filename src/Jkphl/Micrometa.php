@@ -355,6 +355,7 @@ class Micrometa {
 				CURLOPT_TIMEOUT			=> 120,
 				CURLOPT_MAXREDIRS		=> 10,
 				CURLOPT_SSL_VERIFYPEER	=> false,
+				CURLOPT_FOLLOWLOCATION	=> true,
 				CURLOPT_HTTP_VERSION	=> CURL_HTTP_VERSION_1_1,
 			));
 			$response					= curl_exec($curl);
