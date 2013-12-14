@@ -56,19 +56,31 @@ class Item {
 	 * 
 	 * @var \array
 	 */
-	protected $_types = array();
+	public $types = array();
 	/**
-	 * List of nested properties
-	 * 
-	 * @var \array
+	 * Explicit item ID
+	 *
+	 * @var \string
 	 */
-	protected $_properties = null;
+	public $id = null;
 	/**
 	 * Explicit item value
 	 * 
 	 * @var \string
 	 */
-	protected $_value = null;
+	public $value = null;
+	/**
+	 * List of nested properties
+	 *
+	 * @var \array
+	 */
+	protected $_properties = null;
+	/**
+	 * Properties holding URL strings (and that need to get expanded / sanitized)
+	 * 
+	 * @var array
+	 */
+	protected static $_urlProperties = array('image', 'photo', 'logo', 'url');
 	
 	/************************************************************************************************
 	 * PUBLIC METHODS
@@ -83,12 +95,13 @@ class Item {
 	 */
 	public function __construct(array $data, \Jkphl\Utility\Url $url) {
 		$this->_url					= $url;
-		$this->_types				= empty($data['type']) ? array() : (array)$data['type'];
+		$this->types				= empty($data['type']) ? array() : (array)$data['type'];
 		$this->_properties			= new \stdClass();
 		
 		if (!empty($data['properties']) && is_array($data['properties'])) {
 			foreach ($data['properties'] as $property => $values) {
 				if (is_array($values)) {
+					$property							= lcfirst(implode('', array_map('ucfirst', explode('-', $property))));
 					$this->_properties->$property		= array();
 					$propertyValues						=& $this->_properties->$property;
 					$hasSubItems						= false;
@@ -99,13 +112,16 @@ class Item {
 						}
 					}
 					foreach ($values as $value) {
-						$propertyValues[]				= $hasSubItems ? new self($value, $this->_url) : $this->_resolveUrlValue($property, $value);
+						$propertyValues[]				= $hasSubItems ? new self((array)$value, $this->_url) : $this->_resolveUrlValue($property, $value);
 					}
 				}
 			}
 		}
 		if (!empty($data['value'])) {
-			$this->_value			= $data['value'];
+			$this->value			= $data['value'];
+		}
+		if (!empty($data['id'])) {
+			$this->id				= $data['id'];
 		}
 	}
 	
@@ -116,7 +132,7 @@ class Item {
 	 * @return \boolean				If this item is of a specific type
 	 */
 	public function isOfType() {
-		return func_num_args() ? (count(array_intersect($this->_types, is_array(func_get_arg(0)) ? func_get_arg(0) : array_map('trim', func_get_args()))) > 0) : false;
+		return func_num_args() ? (count(array_intersect($this->types, is_array(func_get_arg(0)) ? func_get_arg(0) : array_map('trim', func_get_args()))) > 0) : false;
 	}
 	
 	/**
@@ -144,9 +160,10 @@ class Item {
 	 */
 	public function toObject() {
 		$result						= (object)array(
-			'types'					=> $this->_types,
+			'id'					=> $this->id,
+			'types'					=> $this->types,
+			'value'					=> $this->value,
 			'properties'			=> array(),
-			'value'					=> $this->_value,
 		);
 		
 		// Run through all properties and recursively refine them
@@ -175,24 +192,16 @@ class Item {
 	public function __get($key) {
 		$key						= strtolower(preg_replace("%([A-Z])%", "-$1", $key));
 	
-		// Special case: Value property
-		if ($key == 'value') {
-			return $this->_value;
-				
-			// Special case: Item types
-		} elseif ($key == 'types') {
-			return $this->_types;
-				
-			// Else: If this is a known property
-		} elseif (isset($this->_properties->$key)) {
+		// If a single property value was requested
+		if (isset($this->_properties->$key)) {
 			$property				=& $this->_properties->$key;
 			return $property[0];
-				
-			// Else: If this is a known property list
+		
+		// Else: If a property value list was requested 
 		} elseif ((substr($key, -1) == 's') && isset($this->_properties->{substr($key, 0, -1)})) {
 			return $this->_properties->{substr($key, 0, -1)};
 				
-			// Else: Unknown property
+		// Else: Unknown property
 		} else {
 			return null;
 		}
@@ -209,7 +218,13 @@ class Item {
 	 * @return \boolean				Is an item
 	 */
 	protected function _isItem($item) {
-		return is_array($item) && array_key_exists('type', $item) && is_array($item['type']) && array_key_exists('properties', $item) && is_array($item['properties']);
+		if (is_array($item)) {
+			return array_key_exists('type', $item) && is_array($item['type']) && array_key_exists('properties', $item) && is_array($item['properties']);
+		} elseif (is_object($item)) {
+			return isset($item->type) && is_array($item->type) && isset($item->properties) && is_array($item->properties);
+		} else {
+			return false;
+		}
 	}
 	
 	/**
@@ -220,7 +235,7 @@ class Item {
 	 * @return void
 	 */
 	protected function _resolveUrlValue($property, $value) {
-		if (in_array($property, array('image', 'photo', 'logo', 'url'))) {
+		if (in_array($property, self::$_urlProperties)) {
 			$value					= new \Jkphl\Utility\Url($value);
 			$value					= strval($value->resolve($this->_url));
 		}

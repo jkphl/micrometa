@@ -56,25 +56,25 @@ class Item {
 	 * 
 	 * @var \array
 	 */
-	protected $_types = array();
-	/**
-	 * List of nested properties
-	 * 
-	 * @var \array
-	 */
-	protected $_properties = null;
-	/**
-	 * Explicit item value
-	 * 
-	 * @var \string
-	 */
-	protected $_value = null;
+	public $types = array();
 	/**
 	 * Explicit item ID
 	 *
 	 * @var \string
 	 */
-	protected $_id = null;
+	public $id = null;
+	/**
+	 * Explicit item value
+	 * 
+	 * @var \string
+	 */
+	public $value = null;
+	/**
+	 * List of nested properties
+	 *
+	 * @var \array
+	 */
+	protected $_properties = null;
 	/**
 	 * Properties holding URL strings (and that need to get expanded / sanitized)
 	 * 
@@ -95,7 +95,7 @@ class Item {
 	 */
 	public function __construct(array $data, \Jkphl\Utility\Url $url) {
 		$this->_url					= $url;
-		$this->_types				= empty($data['type']) ? array() : (array)$data['type'];
+		$this->types				= empty($data['type']) ? array() : (array)$data['type'];
 		$this->_properties			= new \stdClass();
 		
 		if (!empty($data['properties']) && is_array($data['properties'])) {
@@ -118,10 +118,10 @@ class Item {
 			}
 		}
 		if (!empty($data['value'])) {
-			$this->_value			= $data['value'];
+			$this->value			= $data['value'];
 		}
 		if (!empty($data['id'])) {
-			$this->_id				= $data['id'];
+			$this->id				= $data['id'];
 		}
 	}
 	
@@ -132,7 +132,7 @@ class Item {
 	 * @return \boolean				If this item is of a specific type
 	 */
 	public function isOfType() {
-		return func_num_args() ? (count(array_intersect($this->_types, is_array(func_get_arg(0)) ? func_get_arg(0) : array_map('trim', func_get_args()))) > 0) : false;
+		return func_num_args() ? (count(array_intersect($this->types, is_array(func_get_arg(0)) ? func_get_arg(0) : array_map('trim', func_get_args()))) > 0) : false;
 	}
 	
 	/**
@@ -160,9 +160,10 @@ class Item {
 	 */
 	public function toObject() {
 		$result						= (object)array(
-			'types'					=> $this->_types,
+			'id'					=> $this->id,
+			'types'					=> $this->types,
+			'value'					=> $this->value,
 			'properties'			=> array(),
-			'value'					=> $this->_value,
 		);
 		
 		// Run through all properties and recursively refine them
@@ -191,20 +192,16 @@ class Item {
 	public function __get($key) {
 		$key						= strtolower(preg_replace("%([A-Z])%", "-$1", $key));
 	
-		// Special cases: Item types, item ID and item value property
-		if (in_array($key, array('types', 'id', 'value'))) {
-			return $this->{"_$key"};
-				
-			// Else: If this is a known property
-		} elseif (isset($this->_properties->$key)) {
+		// If a single property value was requested
+		if (isset($this->_properties->$key)) {
 			$property				=& $this->_properties->$key;
 			return $property[0];
-				
-			// Else: If this is a known property list
+		
+		// Else: If a property value list was requested 
 		} elseif ((substr($key, -1) == 's') && isset($this->_properties->{substr($key, 0, -1)})) {
 			return $this->_properties->{substr($key, 0, -1)};
 				
-			// Else: Unknown property
+		// Else: Unknown property
 		} else {
 			return null;
 		}

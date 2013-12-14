@@ -35,6 +35,18 @@ namespace Jkphl;
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
+// Include the Composer autoloader
+if (@is_file(dirname(dirname(__DIR__)).DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'autoload.php')) {
+	require_once dirname(dirname(__DIR__)).DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'autoload.php';
+	
+// Exit on failure
+} else {
+	die ((PHP_SAPI == 'cli') ?
+		"\nPlease follow the instructions at https://github.com/jkphl/micrometa#dependencies to install the additional libraries that micrometa is depending on.\n\n" :
+		'<p style="font-weight:bold;color:red">Please follow the <a href="https://github.com/jkphl/micrometa#dependencies" target="_blank">instructions</a> to install the additional libraries that micrometa is depending on</p>'
+	);
+}
+
 require_once __DIR__.DIRECTORY_SEPARATOR.'Utility'.DIRECTORY_SEPARATOR.'Url.php';
 require_once __DIR__.DIRECTORY_SEPARATOR.'Micrometa'.DIRECTORY_SEPARATOR.'Item.php';
 require_once __DIR__.DIRECTORY_SEPARATOR.'Micrometa'.DIRECTORY_SEPARATOR.'Parser'.DIRECTORY_SEPARATOR.'Microformats2.php';
