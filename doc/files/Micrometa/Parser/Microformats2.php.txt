@@ -35,30 +35,30 @@ namespace Jkphl\Micrometa\Parser;
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-// Include the MicrodataPHP parser library
-if (!@class_exists('MicrodataPhp')) {
-	$include	= dirname(dirname(dirname(dirname(__DIR__)))).DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'MicrodataPHP'.DIRECTORY_SEPARATOR.'MicrodataPhp.php';
+// Include the Microformats2 parser library
+if (!@class_exists('Mf2::Parser')) {
+	$include	= dirname(dirname(dirname(dirname(__DIR__)))).DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'php-mf2'.DIRECTORY_SEPARATOR.'Mf2'.DIRECTORY_SEPARATOR.'Parser.php';
 	if (!@is_file($include) || !@is_readable($include)) {
-		die('Please see https://github.com/jkphl/micrometa/blob/master/lib/README.md for instructions on installing the "MicrodataPHP parser by Lin Clark"');
+		die('Please see https://github.com/jkphl/micrometa/blob/master/lib/README.md for instructions on installing the "IndieWeb microformats-2 parser for PHP"');
 	}
 	require_once $include;
 	unset($include);
 }
 
 /**
- * Extended MicrodataPHP parser
+ * Extended Microformats2 parser
  * 
  * @category	Jkphl
  * @package		Jkphl_Micrometa
  * @author		Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @copyright	Copyright © 2013 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license		http://opensource.org/licenses/MIT	The MIT License (MIT)
- * @link		https://github.com/linclark/MicrodataPHP
+ * @link		https://github.com/indieweb/php-mf2
  */
-class Microdata extends \MicrodataPhp {
+class Microformats2 extends \Mf2\Parser {
 	/**
 	 * Original resource URL
-	 * 
+	 *
 	 * @var \Jkphl\Utility\Url
 	 */
 	protected $_url = null;
@@ -70,42 +70,52 @@ class Microdata extends \MicrodataPhp {
 	/**
 	 * Constructor
 	 *
-	 * @param \Jkphl\Utility\Url|\string $url		Document URL
-	 * @param \string $source						Optional: Document source code
-	 * @return void
+	 * @param \DOMDocument|string $input			The data to parse. A string of HTML or a DOMDocument
+	 * @param \Jkphl\Utility\Url|\string $url		Optional: The URL of the parsed document, for relative URL resolution
 	 */
-	public function __construct($url, $source = null) {
+	public function __construct($input, $url = null) {
 		$this->_url							= ($url instanceof \Jkphl\Utility\Url) ? $url : new \Jkphl\Utility\Url($url);
 		$url								= strval($url);
-		
-		// If the source document has to be loaded by URL: Use the parent constructor
-		if ($source === null) {
-			parent::__construct($url);
-			
-		// Else: Load it from a HTML string
-		} else {
-			$dom							= new \MicrodataPhpDOMDocument($url);
-			$dom->registerNodeClass('DOMDocument', 'MicrodataPhpDOMDocument');
-			$dom->registerNodeClass('DOMElement', 'MicrodataPhpDOMElement');
-			$dom->preserveWhiteSpace		= false;
-			@$dom->loadHTML($source);
-			$this->dom						= $dom;
-		}
+		parent::__construct($input, $url);
 	}
 	
 	/**
-	 * Retrieve and refine the contained micro information items
+	 * Kicks off the parsing routine
 	 * 
-	 * @return \array								Refined items
+	 * If `$convertClassic` is set, any angle brackets in the results from non e-* properties
+	 * will be HTML-encoded, bringing all output to the same level of encoding.
+	 * 
+	 * If a DOMElement is set as the $context, only descendants of that element will
+	 * be parsed for microformats.
+	 * 
+	 * @param bool $convertClassic					Whether or not to html-encode non e-* properties. Defaults to false
+	 * @param DOMElement $context					Optionall: An element from which to parse microformats
+	 * @return array								An array containing all the µfs found in the current document
 	 */
-	public function items() {
-		$items								= array();
-		$microdata							= $this->obj();
-		if (!empty($microdata->items) && is_array($microdata->items)) {
-			foreach ($microdata->items as $data) {
-				$items[]					= new \Jkphl\Micrometa\Item((array)$data, $this->_url);
-			}
+	public function parse($convertClassic = true, \DOMElement $context = null) {
+		$results				= parent::parse($convertClassic, $context);
+		$results['items']		= $this->_refineResults($results['items']);
+		return $results;
+	}
+	
+	/************************************************************************************************
+	 * PRIVATE METHODS
+	 ***********************************************************************************************/
+	
+	/**
+	 * Refine micro information items
+	 * 
+	 * @param \array $results						Micro information items
+	 * @return \array								Refined micro information items
+	 */
+	protected function _refineResults(array $results) {
+		$refined				= array();
+		
+		// Run through all original parsing results
+		foreach ($results as $data) {
+			$refined[]			= new \Jkphl\Micrometa\Item($data, $this->_url);
 		}
-		return $items;
+		
+		return $refined;
 	}
 }

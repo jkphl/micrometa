@@ -1,5 +1,15 @@
 <?php
 
+/**
+ * micrometa – Micro information meta parser
+ *
+ * @category	Jkphl
+ * @package		Jkphl_Micrometa
+ * @author		Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright	Copyright © 2013 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @license		http://opensource.org/licenses/MIT	The MIT License (MIT)
+ */
+
 namespace Jkphl\Micrometa\Parser;
 
 /***********************************************************************************
@@ -25,6 +35,7 @@ namespace Jkphl\Micrometa\Parser;
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
+// Include the Microformats2 parser library
 if (!@class_exists('Mf2::Parser')) {
 	$include	= dirname(dirname(dirname(dirname(__DIR__)))).DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'php-mf2'.DIRECTORY_SEPARATOR.'Mf2'.DIRECTORY_SEPARATOR.'Parser.php';
 	if (!@is_file($include) || !@is_readable($include)) {
@@ -37,13 +48,16 @@ if (!@class_exists('Mf2::Parser')) {
 /**
  * Extended Microformats2 parser
  * 
- * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @package jkphl_micrometa
- * @license http://opensource.org/licenses/MIT	The MIT License (MIT)
+ * @category	Jkphl
+ * @package		Jkphl_Micrometa
+ * @author		Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright	Copyright © 2013 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @license		http://opensource.org/licenses/MIT	The MIT License (MIT)
+ * @link		https://github.com/indieweb/php-mf2
  */
 class Microformats2 extends \Mf2\Parser {
 	/**
-	 * Original URL
+	 * Original resource URL
 	 *
 	 * @var \Jkphl\Utility\Url
 	 */
