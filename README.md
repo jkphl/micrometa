@@ -10,7 +10,7 @@ Embedding micro information into HTML documents is a pretty darn cool way of enr
 3.	the [W3C Microdata](http://www.w3.org/TR/microdata/) specification,
 4.	[RDFa](http://en.wikipedia.org/wiki/RDFa) and others ...
 
-As a meta parser *micrometa* recognizes multiple formats and combines them to one common [PHP object](#object-data) respectively [JSON](#json-data) result set. Currently both **Microformat** generations and the **Microdata** specification are supported. 
+As a meta parser *micrometa* recognizes multiple formats and combines them to one common [PHP object](#object-data) respectively [JSON](#json-data) result set.
 
 Installation
 ------------
@@ -38,7 +38,7 @@ Dependencies
 cd /path/to/project/basedir/micrometa
 php /path/to/composer.phar install
 
-# respetively ...
+# or (depending on your setup ...):
 
 composer install
 ``` 
@@ -51,6 +51,7 @@ Usage
 ```php
 require_once '/path/to/micrometa/src/Jkphl/Micrometa.php'
 	
+$url					= 'https://github.com/jkphl/micrometa';
 $micrometaParser		= new \Jkphl\Micrometa($url);
 $micrometaObjectData	= $micrometaParser->toObject();
 ```
@@ -61,7 +62,9 @@ or simply
 $micrometaObjectData	= \Jkphl\Micrometa::instance($url)->toObject();
 ```
 
-*micrometa* tries to fetch remote documents via `cURL` and fallback to a stream wrapper approach (`file_get_contents`) in case `cURL` is not available. Instead of fetching a remote URL you can also directly pipe some HTML source code into the parser. However, you will still have to provide a base URL used for resolving relative URLs:
+*micrometa* tries to fetch remote documents via `cURL` and falls back to a stream wrapper approach (`file_get_contents`) in case `cURL` is not available.
+
+Instead of fetching a remote URL you can also directly pipe some HTML source code into the parser. However, you will still have to provide a base URL used for resolving relative URLs:
 
 ```php
 $micrometaObjectData	= \Jkphl\Micrometa::instance($url, $htmlSourceCode)->toObject();
@@ -69,11 +72,11 @@ $micrometaObjectData	= \Jkphl\Micrometa::instance($url, $htmlSourceCode)->toObje
 
 ### Parsing results
 
-*micrometa* provides several methods for accessing the micro information extracted out of an HTML document. You may retrieve the embedded metadata as a whole (in [PHP object](#object-data) or [JSON format](#json-data)) or access single facets through dedicated methods. Only the most important methods are described here – for full details please have a look at the source code.
+*micrometa* provides several methods for accessing the micro information extracted out of an HTML document. You may retrieve the embedded metadata as a whole (in [PHP object](#object-data) or [JSON format](#json-data)) or access single facets through dedicated methods. Only the most important methods are described here – for full details please have a look at the source code or the included, automatically generated [PHPDocumentor API documentation](doc/index.html).
 
 #### Object data
 
-The parser object's `toObject()` method returns a copy of the whole extracted micro information as a vanilla PHP object (`\stdClass`) with three properties:
+The parser object's `toObject()` method returns a copy of the complete set of micro information as a vanilla PHP object (`\stdClass`) with three properties and a couple of subproperties:
 
 <table>
 	<tr>
@@ -87,21 +90,21 @@ The parser object's `toObject()` method returns a copy of the whole extracted mi
 		<td><i>items</i></td>
 		<td> </td>
 		<td> </td>
-		<td>A list of all top level micro information items.</td>
+		<td>A list of all top level <a href="#top-level-micro-information-items">micro information items</a>.</td>
 		<td><code>\array</code></td>
 	</tr>
 	<tr>
 		<td> </td>
 		<td><code>0, 1, 2 ...</code></td>
 		<td> </td>
-		<td>Top level micro information item (see below).</td>
+		<td>Top level <a href="#top-level-micro-information-items">micro information item</a> (see below).</td>
 		<td><code>\Jkphl\Micrometa\Item</code></td>
 	</tr>
 	<tr>
 		<td><i>rels</i></td>
 		<td> </td>
 		<td> </td>
-		<td>A collection representing all related resources (i.e. <code>rel</code> attribute nodes; except the ones with an <i>alternate</i> value, see below).</td>
+		<td>A collection representing all related resources (i.e. <code>rel</code> attribute nodes; except the ones with an "alternate" value, see below).</td>
 		<td><code>\stdClass</code></td>
 	</tr>
 	<tr>
@@ -115,7 +118,7 @@ The parser object's `toObject()` method returns a copy of the whole extracted mi
 		<td><i>alternates</i></td>
 		<td> </td>
 		<td> </td>
-		<td>A list of all alternative resources (i.e. <code>rel</code> attribute nodes having the value <i>alternate</i>).</td>
+		<td>A list of all alternative resources (i.e. <code>rel</code> attribute nodes having the value "alternate").</td>
 		<td><code>\array</code></td>
 	</tr>
 	<tr>
@@ -129,7 +132,7 @@ The parser object's `toObject()` method returns a copy of the whole extracted mi
 		<td> </td>
 		<td> </td>
 		<td><i>url</i></td>
-		<td>Value of the corresponding `href` attribute.</td>
+		<td>Value of the corresponding <code>href</code> attribute.</td>
 		<td><code>\string</code></td>
 	</tr>
 	<tr>
@@ -158,14 +161,14 @@ $micrometaParser		= new \Jkphl\Micrometa($url);
 $topLevelItems			= $micrometaParser->items();
 ```
 
-You may restrict the list of returned items by passing an arbitrary number of item types as arguments to the `items()` method. The matching items will be ordered according to the argument order:
+You may restrict the list of returned items by passing an arbitrary number of item types as arguments to the `items()` method. The matching items will be ordered according to the order or the arguments:
 
 ```php
 $micrometaParser		= new \Jkphl\Micrometa($url);
 $personItems			= $micrometaParser->items('http://schema.org/Person', 'h-card');
 ```
 
-Finally, the parser object's `item()` method provides a shortcut for returning the **first item** of an item list. The return value (if any) is a [micro information item](#micro-information-items):
+Finally, the parser object's `item()` method provides a shortcut for returning **only the first item** of an item list. The return value (if any) is a [micro information item](#micro-information-items) (`NULL` otherwise):
 
 ```php
 $micrometaParser		= new \Jkphl\Micrometa($url);
@@ -193,7 +196,7 @@ $alternateResources		= $micrometaParser->alternates();
 
 #### Loading external author metadata
 
-The parser object's `externalAuthor()` method is a convenient way to load external author metadata. The method scans all resources linked with a <code>rel="<i>author</i>"</code> attribute until it encounters a top level [micro information item](#micro-information-items) of type "*http://schema.org/Person*", "*http://data-vocabulary.org/Person*" or "*h-card*" (in the given order). The first matching item (if any) is returned as external author. You might use this the `externalAuthor()` method like this:
+The parser object's `externalAuthor()` method is a convenient way to load external author metadata. The method scans all resources linked with a <code>rel="<i>author</i>"</code> attribute until it encounters a top level [micro information item](#micro-information-items) of type "[http://schema.org/Person](http://schema.org/Person)", "[http://data-vocabulary.org/Person]()" or "[h-card](http://microformats.org/wiki/microformats2#h-card)" (in the given order). The first matching item (if any) is returned as external author.
 
 ```php
 $micrometaParser		= new \Jkphl\Micrometa($url);
@@ -208,7 +211,7 @@ if ($author instanceof \Jkphl\Micrometa\Item) {
 
 ### Micro information items
 
-Item objects are carrying the true metadata. Internally they consist of three object properties:
+These are the objects carrying the metadata. Internally they consist of three main object properties:
 
 <table>
 	<tr>
@@ -217,27 +220,35 @@ Item objects are carrying the true metadata. Internally they consist of three ob
 		<td>Data type</td>
 	</tr>
 	<tr>
+		<td><i>id</i></td>
+		<td>Some items carry an explicit item ID (but most don't).</td>
+		<td><code>\string</code></td>
+	</tr>
+	<tr>
 		<td><i>types</i></td>
-		<td>List of the item's types (e.g. "<i>h-card</i>", "<i>http://schema.org/Person</i>" etc.; may be multiple).</td>
+		<td>List of the item's types (e.g. <a href="http://microformats.org/wiki/microformats2#h-card">h-card</a>, <a href="http://schema.org/Person">http://schema.org/Person</a> etc.; may be multiple).</td>
 		<td><code>\array</code></td>
 	</tr>
 	<tr>
-		<td><i>properties</i></td>
-		<td>Collection of item properties. Each property may be multi-valued and thus is a list of values. Values are consistently either strings or nested micro information items. The property names are normalized, so e.g. the <a href="http://microformats.org/wiki/microformats2#Summary">microformats-2 class name prefixes</a> are stripped out (resulting in a property named "<i>author</i>" instead of "<i>p-author</i>"). Properties named "<i>image</i>", "<i>photo</i>", "<i>logo</i>" or "<i>url</i>" are expected to carry URL values and are automatically sanitized and expanded to absolute URLs.</td>
-		<td><code>\stdClass</code></td>
+		<td><i>value</i></td>
+		<td>Some micro information types might populate this property with an explicit value representing the whole item (but most don't).</td>
+		<td><code>\string</code></td>
 	</tr>
 	<tr>
-		<td><i>value</i></td>
-		<td>Some micro information types might populate this property with a value representing the whole item (but most don't).</td>
-		<td><code>\string</code></td>
+		<td><i>properties</i></td>
+		<td>
+			<p>Collection of nested item properties. Each property may be multi-valued and thus is always a list of values. The values are consistently either strings or nested micro information items.</p>
+			<p>The property names are normalized, so e.g. the <a href="http://microformats.org/wiki/microformats2#Summary">microformats-2 class name prefixes</a> are stripped out (resulting e.g. in th property name "<i>author</i>" instead of "<i>p-author</i>"). Certain property names (e.g. "<i>image</i>", "<i>photo</i>", "<i>logo</i>" or "<i>url</i>") are expected to carry URL values and are automatically sanitized and expanded to absolute URLs.</p>
+		</td>
+		<td><code>\stdClass</code></td>
 	</tr>
 </table>
 
-However, all of the main item properties are access restricted and have to be utilized with the help of the following methods.
+Especially the collection of nested properties is access restricted. Use the following methods for working with an item object.
 
 #### Item type check
 
-You can use the `isOfType()` method to check if an item is of a specific item type. The method accepts an arbitrary number of item types and returns `TRUE` if any of these types matches:
+You can use the `isOfType()` method to check if an item is of a specific type. The method accepts an arbitrary number of item types and returns `TRUE` if any of these matches:
 
 ```php
 if ($item->isOfType('http://schema.org/Person', 'h-card')) {
@@ -247,28 +258,26 @@ if ($item->isOfType('http://schema.org/Person', 'h-card')) {
 
 #### Accessing item properties
 
-You can access all nested item properties by simply using their names as object properties:
+You can access nested item properties by simply using their names as object properties:
 
 ```php
 $photo				= $item->photo;
 $givenName			= $item->givenName;
 ```
 
-Notice that all property names are converted to [lowerCamelCase](http://en.wikipedia.org/wiki/CamelCase) writing (e.g. `givenName` for the "<i>given-name</i>" property in the original `h-card` markup).
+Notice that all property names have been converted to [lowerCamelCase](http://en.wikipedia.org/wiki/CamelCase) writing (e.g. `givenName` for the "<i>given-name</i>" property in the original `h-card` markup).
 
-Remember that all item properties are value lists themselves. The only exception to this is the <i>value</i> property (see above), which is of type `\string`. Both the <i>types</i> and the <i>value</i> property can be accessed by their names.
-
-When you use the bare property name with any of the nested item properties, **only the first element of the property's value list** will be returned. If you want to retrieve the **complete property value list, simply append an "s" to the property name**:
+Also, remember that all nested item properties are value lists themselves. When you use the bare property name with any of these nested item properties, **only the first element of the property's value list** will be returned. If you want to retrieve the **complete property list, simply append an "s" to the property name**:
 
 ```php
 $allPhotos			= $item->photos;
 ```
 
-If a property doesn't exist at all, `NULL` is returned in any case. 
+If a requested property doesn't exist at all, `NULL` is returned. 
 
 #### Finding the first defined property
 
-You can use the `firstOf()` method to find and return the first in a list of properties that is defined for an item. The method accepts an arbitrary number of property names (also with appended "s" for retrieving the whole property value lists) and returns the first non-`NULL` match for the item:
+You can use the `firstOf()` method to find and return the first property in a list of properties that is defined for that very item. The method accepts an arbitrary number of property names (also with appended "s" for retrieving the whole property value lists) and returns the first non-`NULL` match for the item:
 
 ```php
 $avatar				= $item->firstOf('photo', 'logo', 'image');
@@ -276,7 +285,7 @@ $avatar				= $item->firstOf('photo', 'logo', 'image');
 
 #### Object data
 
-The method `toObject()` returns a simplified PHP object representation of the item and all it's nested subitems.
+The method `toObject()` returns a simplified PHP object representation (i.e. `\stdClass` object) of the item and all it's nested subitems.
 
 Example
 -------
@@ -297,9 +306,9 @@ The included [example page](demo/example.html) features a mixture of [Microforma
             <img class="u-photo" itemprop="photo" src="http://www.gravatar.com/avatar/60a1d50aa04c5742644fb9f1a21d74ba.jpg?s=100" alt="Joschi Kuphal" />
             <figcaption>
                 <address>
-                	<span class="p-name" itemprop="name"><span class="p-given-name">Joschi</span> <span class="p-family-name">Kuphal</span></span>
+                	<span class="p-name" itemprop="name"><span class="p-given-name" itemprop="givenName">Joschi</span> <span class="p-family-name" itemprop="familyName">Kuphal</span></span>
                 	<span class="p-role" itemprop="role">Web architect</span>
-                	<span class="p-adr" itemprop="address" itemscope="itemscope" itemtype="http://schema.org/Address">from <span class="p-locality" itemprop="locality">Nuremberg</span>, <span class="p-country-name" itemprop="country">Germany</span></span>
+                	<span class="p-adr h-adr" itemprop="address" itemscope="itemscope" itemtype="http://schema.org/Address">from <span class="p-locality" itemprop="locality">Nuremberg</span>, <span class="p-country-name" itemprop="country">Germany</span></span>
                 </address>
             </figcaption>
         </figure>
@@ -309,16 +318,38 @@ The included [example page](demo/example.html) features a mixture of [Microforma
 
 #### JSON representation
 
-This is the JSON output extracted by *micrometa*:
+This is the JSON output extracted by *micrometa* looks like this:
 
 ```JSON
 {
 	"items": [
 		{
+			"id": null,
 			"types": [
 				"h-card"
 			],
+			"value": null,
 			"properties": {
+				"adr": [
+					{
+						"id": null,
+						"types": [
+							"h-adr"
+						],
+						"value": "from Nuremberg, Germany",
+						"properties": {
+							"locality": [
+								"Nuremberg"
+							],
+							"countryName": [
+								"Germany"
+							],
+							"name": [
+								"from Nuremberg, Germany"
+							]
+						}
+					}
+				],
 				"name": [
 					"Joschi Kuphal"
 				],
@@ -331,25 +362,17 @@ This is the JSON output extracted by *micrometa*:
 				"role": [
 					"Web architect"
 				],
-				"adr": [
-					"from Nuremberg, Germany"
-				],
-				"locality": [
-					"Nuremberg"
-				],
-				"countryName": [
-					"Germany"
-				],
 				"photo": [
 					"http:\/\/www.gravatar.com\/avatar\/60a1d50aa04c5742644fb9f1a21d74ba.jpg?s=100"
 				]
-			},
-			"value": null
+			}
 		},
 		{
+			"id": null,
 			"types": [
 				"http:\/\/schema.org\/Person"
 			],
+			"value": null,
 			"properties": {
 				"photo": [
 					"http:\/\/www.gravatar.com\/avatar\/60a1d50aa04c5742644fb9f1a21d74ba.jpg?s=100"
@@ -357,14 +380,22 @@ This is the JSON output extracted by *micrometa*:
 				"name": [
 					"Joschi Kuphal"
 				],
+				"givenName": [
+					"Joschi"
+				],
+				"familyName": [
+					"Kuphal"
+				],
 				"role": [
 					"Web architect"
 				],
 				"address": [
 					{
+						"id": null,
 						"types": [
 							"http:\/\/schema.org\/Address"
 						],
+						"value": null,
 						"properties": {
 							"locality": [
 								"Nuremberg"
@@ -372,12 +403,10 @@ This is the JSON output extracted by *micrometa*:
 							"country": [
 								"Germany"
 							]
-						},
-						"value": null
+						}
 					}
 				]
-			},
-			"value": null
+			}
 		}
 	],
 	"rels": {
@@ -391,9 +420,7 @@ This is the JSON output extracted by *micrometa*:
 
 Demo
 ----
-There's a [demo page](demo/micrometa.php) included in this package, which you can use for checking arbitrary URLs for embedded micro information. Please be aware that the demo page has to be hosted on a PHP enabled server (preferably PHP 5.4+ for getting a pretty-printed JSON result).
-
-A live version of the demo page can be found [here](http://micrometa.jkphl.is).
+There's a [demo page](demo/micrometa.php) included in this package, which you can use for checking arbitrary URLs for embedded micro information. Please be aware that the demo page has to be hosted on a PHP enabled server (preferably PHP 5.4+ for getting a pretty-printed JSON result). A live version of the demo page can be found [here](http://micrometa.jkphl.is).
 
 Legal
 -----
