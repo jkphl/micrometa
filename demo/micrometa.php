@@ -93,6 +93,14 @@ if (!empty($_POST['microdata']) && !empty($_POST['url'])):
 	endif;
                     ?><pre><?php 
                     
+	// Include the Composer autoloader
+	if (@is_file(dirname(__DIR__).DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'autoload.php')) {
+		require_once dirname(__DIR__).DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'autoload.php';
+	
+	// Exit on failure
+	} else {
+		die ('<p style="font-weight:bold;color:red">Please follow the <a href="https://github.com/jkphl/micrometa#dependencies" target="_blank">instructions</a> to install the additional libraries that micrometa is depending on</p>');
+	}
 	require_once dirname(__DIR__).DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.'Jkphl'.DIRECTORY_SEPARATOR.'Micrometa.php';
 	echo htmlspecialchars(\Jkphl\Micrometa::instance(trim($_POST['url']))->toJSON(true));
                     

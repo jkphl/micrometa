@@ -35,14 +35,17 @@ namespace Jkphl\Micrometa\Parser;
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-// Include the Microformats2 parser library
-if (!@class_exists('Mf2::Parser')) {
-	$include	= dirname(dirname(dirname(dirname(__DIR__)))).DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'php-mf2'.DIRECTORY_SEPARATOR.'Mf2'.DIRECTORY_SEPARATOR.'Parser.php';
-	if (!@is_file($include) || !@is_readable($include)) {
-		die('Please see https://github.com/jkphl/micrometa/blob/master/lib/README.md for instructions on installing the "IndieWeb microformats-2 parser for PHP"');
-	}
-	require_once $include;
-	unset($include);
+// Include the Composer autoloader
+if (@is_file(dirname(dirname(dirname(dirname(__DIR__)))).DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'autoload.php')) {
+	require_once dirname(dirname(dirname(dirname(__DIR__)))).DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'autoload.php';
+}
+
+// Exit on failure
+if (!@class_exists('\Mf2\Parser')) {
+	die ((PHP_SAPI == 'cli') ?
+		"\nPlease follow the instructions at https://github.com/jkphl/micrometa#dependencies to install the library containing the PHP class \"\Mf2\Parser\".\n\n" :
+		'<p style="font-weight:bold;color:red">Please follow the <a href="https://github.com/jkphl/micrometa#dependencies" target="_blank">instructions</a> to install the library containing the PHP class "\Mf2\Parser"</p>'
+	);
 }
 
 /**

@@ -35,27 +35,30 @@ namespace Jkphl\Micrometa\Parser;
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-// Include the MicrodataPHP parser library
-if (!@class_exists('MicrodataPhp')) {
-	$include	= dirname(dirname(dirname(dirname(__DIR__)))).DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'MicrodataPHP'.DIRECTORY_SEPARATOR.'MicrodataPhp.php';
-	if (!@is_file($include) || !@is_readable($include)) {
-		die('Please see https://github.com/jkphl/micrometa/blob/master/lib/README.md for instructions on installing the "MicrodataPHP parser by Lin Clark"');
-	}
-	require_once $include;
-	unset($include);
+// Include the Composer autoloader
+if (@is_file(dirname(dirname(dirname(dirname(__DIR__)))).DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'autoload.php')) {
+	require_once dirname(dirname(dirname(dirname(__DIR__)))).DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'autoload.php';
+}
+
+// Exit on failure
+if (!@class_exists('\Microdata\Reader')) {
+	die ((PHP_SAPI == 'cli') ?
+		"\nPlease follow the instructions at https://github.com/jkphl/micrometa#dependencies to install the library containing the PHP class \"\Microdata\Reader\".\n\n" :
+		'<p style="font-weight:bold;color:red">Please follow the <a href="https://github.com/jkphl/micrometa#dependencies" target="_blank">instructions</a> to install the library containing the PHP class "MicrodataPhp"</p>'
+	);
 }
 
 /**
- * Extended MicrodataPHP parser
+ * Extended Microdata parser
  * 
  * @category	Jkphl
  * @package		Jkphl_Micrometa
  * @author		Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @copyright	Copyright © 2013 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license		http://opensource.org/licenses/MIT	The MIT License (MIT)
- * @link		https://github.com/linclark/MicrodataPHP
+ * @link		https://github.com/euskadi31/Microdata
  */
-class Microdata extends \MicrodataPhp {
+class Microdata extends \Microdata\Reader {
 	/**
 	 * Original resource URL
 	 * 
@@ -84,9 +87,9 @@ class Microdata extends \MicrodataPhp {
 			
 		// Else: Load it from a HTML string
 		} else {
-			$dom							= new \MicrodataPhpDOMDocument($url);
-			$dom->registerNodeClass('DOMDocument', 'MicrodataPhpDOMDocument');
-			$dom->registerNodeClass('DOMElement', 'MicrodataPhpDOMElement');
+			$dom							= new \Microdata\Reader\Document($url);
+			$dom->registerNodeClass('DOMDocument', '\Microdata\Reader\Document');
+			$dom->registerNodeClass('DOMElement', '\Microdata\Reader\Element');
 			$dom->preserveWhiteSpace		= false;
 			@$dom->loadHTML($source);
 			$this->dom						= $dom;
@@ -100,7 +103,7 @@ class Microdata extends \MicrodataPhp {
 	 */
 	public function items() {
 		$items								= array();
-		$microdata							= $this->obj();
+		$microdata							= $this->read();
 		if (!empty($microdata->items) && is_array($microdata->items)) {
 			foreach ($microdata->items as $data) {
 				$items[]					= new \Jkphl\Micrometa\Item((array)$data, $this->_url);

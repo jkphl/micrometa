@@ -1,16 +1,28 @@
 micrometa
 =========
 
-is a simple **meta parser** for extracting micro information in several different formats out of HTML documents, written in PHP.
+is a simple **meta parser** for extracting micro information out of HTML documents, currently supporting Microformats (1 + 2) and W3C Microdata. It's written in PHP.
 
-Embedding micro information into HTML documents is a pretty darn cool way of enriching your content with machine readable metadata. Unfortunately there are several different (de facto) standards for doing so, e.g.
+Embedding micro information into HTML documents is a pretty darn cool way of enriching your content with machine readable metadata. Unfortunately there are several different (at least de facto) standards for doing so, e.g.
 
 1.	The "original" [Microformats (μF)](http://microformats.org/wiki),
 2.	the updated [Microformats 2](http://microformats.org/wiki/microformats2) syntax,
 3.	the [W3C Microdata](http://www.w3.org/TR/microdata/) specification,
 4.	[RDFa](http://en.wikipedia.org/wiki/RDFa) and others ...
 
-As a meta parser *micrometa* recognizes multiple formats and combines them to one common [JSON](http://en.wikipedia.org/wiki/JSON) result set. Currently both **Microformat** variants and the **Microdata** specification are supported. 
+As a meta parser *micrometa* recognizes multiple formats and combines them to one common [PHP object](#object-data) respectively [JSON](#json-data) result set. Currently both **Microformat** generations and the **Microdata** specification are supported. 
+
+Installation
+------------
+
+You can install *micrometa* by cloning it's GitHub repository (or manually downloading and extracting the package from GitHub):
+
+```bash
+cd /path/to/project/basedir
+git clone https://github.com/jkphl/micrometa.git
+```
+
+This will create a subdirectory called `micrometa` containing all the package files.
 
 Dependencies
 ------------
@@ -18,9 +30,18 @@ Dependencies
 *micrometa* relies on the following external parser packages:
 
 1.	The [IndieWeb](https://github.com/indieweb) [microformats-2 parser for PHP](https://github.com/indieweb/php-mf2) (which also supports the original set of microformats),
-2.	and the [MicrodataPHP parser](https://github.com/linclark/MicrodataPHP) by [Lin Clark](https://github.com/linclark).
+2.	and the ~~[MicrodataPHP parser](https://github.com/linclark/MicrodataPHP) by [Lin Clark](https://github.com/linclark)~~ [Microdata parser](https://github.com/euskadi31/Microdata) by [Axel Etcheverry](https://github.com/euskadi31).
 
-Both packages are available on GitHub as well. To install them, simply follow the [installation instructions](lib/README.md) in the `lib` directory. I might add support for further formats at some point in the future.
+*micrometa* comes with **Composer** support, so go and [get Composer](http://getcomposer.org/doc/00-intro.md#installation-nix) and install the two libraries like this:
+
+```bash
+cd /path/to/project/basedir/micrometa
+php /path/to/composer.phar install
+
+# respetively ...
+
+composer install
+``` 
 
 Usage
 -----
@@ -233,7 +254,7 @@ $photo				= $item->photo;
 $givenName			= $item->givenName;
 ```
 
-When a property name contains a dash, use [lowerCamelCase](http://en.wikipedia.org/wiki/CamelCase) writing instead (e.g. `givenName` for "<i>given-name</i>" in the example).
+Notice that all property names are converted to [lowerCamelCase](http://en.wikipedia.org/wiki/CamelCase) writing (e.g. `givenName` for the "<i>given-name</i>" property in the original `h-card` markup).
 
 Remember that all item properties are value lists themselves. The only exception to this is the <i>value</i> property (see above), which is of type `\string`. Both the <i>types</i> and the <i>value</i> property can be accessed by their names.
 
@@ -292,78 +313,79 @@ This is the JSON output extracted by *micrometa*:
 
 ```JSON
 {
-    "items": [
-        {
-            "types": [
-                "h-card"
-            ],
-            "properties": {
-                "name": [
-                    "Joschi Kuphal"
-                ],
-                "given-name": [
-                    "Joschi"
-                ],
-                "family-name": [
-                    "Kuphal"
-                ],
-                "role": [
-                    "Web architect"
-                ],
-                "adr": [
-                    "from Nuremberg, Germany"
-                ],
-                "locality": [
-                    "Nuremberg"
-                ],
-                "country-name": [
-                    "Germany"
-                ],
-                "photo": [
-                    "http:\/\/www.gravatar.com\/avatar\/60a1d50aa04c5742644fb9f1a21d74ba.jpg?s=100"
-                ]
-            },
-            "value": null
-        },
-        {
-            "types": [
-                "http:\/\/schema.org\/Person"
-            ],
-            "properties": {
-                "photo": [
-                    "http:\/\/www.gravatar.com\/avatar\/60a1d50aa04c5742644fb9f1a21d74ba.jpg?s=100"
-                ],
-                "name": [
-                    "Joschi Kuphal"
-                ],
-                "role": [
-                    "Web architect"
-                ],
-                "address": [
-                    {
-                        "properties": {
-                            "locality": [
-                                "Nuremberg"
-                            ],
-                            "country": [
-                                "Germany"
-                            ]
-                        },
-                        "type": [
-                            "http:\/\/schema.org\/Address"
-                        ]
-                    }
-                ]
-            },
-            "value": null
-        }
-    ],
-    "rels": {
+	"items": [
+		{
+			"types": [
+				"h-card"
+			],
+			"properties": {
+				"name": [
+					"Joschi Kuphal"
+				],
+				"givenName": [
+					"Joschi"
+				],
+				"familyName": [
+					"Kuphal"
+				],
+				"role": [
+					"Web architect"
+				],
+				"adr": [
+					"from Nuremberg, Germany"
+				],
+				"locality": [
+					"Nuremberg"
+				],
+				"countryName": [
+					"Germany"
+				],
+				"photo": [
+					"http:\/\/www.gravatar.com\/avatar\/60a1d50aa04c5742644fb9f1a21d74ba.jpg?s=100"
+				]
+			},
+			"value": null
+		},
+		{
+			"types": [
+				"http:\/\/schema.org\/Person"
+			],
+			"properties": {
+				"photo": [
+					"http:\/\/www.gravatar.com\/avatar\/60a1d50aa04c5742644fb9f1a21d74ba.jpg?s=100"
+				],
+				"name": [
+					"Joschi Kuphal"
+				],
+				"role": [
+					"Web architect"
+				],
+				"address": [
+					{
+						"types": [
+							"http:\/\/schema.org\/Address"
+						],
+						"properties": {
+							"locality": [
+								"Nuremberg"
+							],
+							"country": [
+								"Germany"
+							]
+						},
+						"value": null
+					}
+				]
+			},
+			"value": null
+		}
+	],
+	"rels": {
 
-    },
-    "alternates": [
+	},
+	"alternates": [
 
-    ]
+	]
 }
 ```
 
