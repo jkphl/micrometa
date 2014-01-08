@@ -6,7 +6,7 @@
  * @category	Jkphl
  * @package		Jkphl_Micrometa
  * @author		Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright	Copyright © 2013 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright	Copyright © 2014 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license		http://opensource.org/licenses/MIT	The MIT License (MIT)
  */
 
@@ -15,7 +15,7 @@ namespace Jkphl;
 /***********************************************************************************
  *  The MIT License (MIT)
  *  
- *  Copyright © 2013 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ *  Copyright © 2014 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -58,7 +58,7 @@ require_once __DIR__.DIRECTORY_SEPARATOR.'Micrometa'.DIRECTORY_SEPARATOR.'Parser
  * @category	Jkphl
  * @package		Jkphl_Micrometa
  * @author		Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright	Copyright © 2013 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright	Copyright © 2014 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license		http://opensource.org/licenses/MIT	The MIT License (MIT)
  */
 class Micrometa {

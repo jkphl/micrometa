@@ -424,6 +424,6 @@ There's a [demo page](demo/micrometa.php) included in this package, which you ca
 
 Legal
 -----
-Copyright © 2013 Joschi Kuphal <joschi@kuphal.net> / [@jkphl](https://twitter.com/jkphl)
+Copyright © 2014 Joschi Kuphal <joschi@kuphal.net> / [@jkphl](https://twitter.com/jkphl)
 
 *micrometa* is licensed under the terms of the [MIT license](LICENSE.txt).

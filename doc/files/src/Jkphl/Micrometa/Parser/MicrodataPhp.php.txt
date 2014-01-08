@@ -6,7 +6,7 @@
  * @category	Jkphl
  * @package		Jkphl_Micrometa
  * @author		Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright	Copyright © 2013 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright	Copyright © 2014 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license		http://opensource.org/licenses/MIT	The MIT License (MIT)
  */
 
@@ -15,7 +15,7 @@ namespace Jkphl\Micrometa\Parser;
 /***********************************************************************************
  *  The MIT License (MIT)
  *  
- *  Copyright © 2013 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ *  Copyright © 2014 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -54,7 +54,7 @@ if (!@class_exists('\MicrodataPhp')) {
  * @category	Jkphl
  * @package		Jkphl_Micrometa
  * @author		Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright	Copyright © 2013 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright	Copyright © 2014 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license		http://opensource.org/licenses/MIT	The MIT License (MIT)
  * @link		https://github.com/linclark/MicrodataPHP
  * @deprecated	Replaced with the euskadi31/microdata package
