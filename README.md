@@ -24,6 +24,12 @@ git clone https://github.com/jkphl/micrometa.git
 
 This will create a subdirectory called `micrometa` containing all the package files.
 
+*micrometa* also comes with [Bower](http://bower.io) support, so you can install it as well running
+
+```bash
+bower install micrometa
+```
+
 Dependencies
 ------------
 
