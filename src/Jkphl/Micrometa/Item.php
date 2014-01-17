@@ -80,7 +80,7 @@ class Item {
 	 * 
 	 * @var array
 	 */
-	protected static $_urlProperties = array('image', 'photo', 'logo', 'url', 'uid');
+	public static $urlProperties = array('image', 'photo', 'logo', 'url', 'uid');
 	
 	/************************************************************************************************
 	 * PUBLIC METHODS
@@ -259,6 +259,6 @@ class Item {
 	 * @return void
 	 */
 	protected function _resolveUrlValue($property, $value) {
-		return in_array($property, self::$_urlProperties) ? strval(\Jkphl\Utility\Url::instance($value, true, $this->_url)) : $value;
+		return in_array($property, self::$urlProperties) ? strval(\Jkphl\Utility\Url::instance($value, true, $this->_url)) : $value;
 	}
 }
