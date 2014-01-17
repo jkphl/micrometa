@@ -80,7 +80,7 @@ class Item {
 	 * 
 	 * @var array
 	 */
-	protected static $_urlProperties = array('image', 'photo', 'logo', 'url');
+	protected static $_urlProperties = array('image', 'photo', 'logo', 'url', 'uid');
 	
 	/************************************************************************************************
 	 * PUBLIC METHODS
@@ -97,6 +97,7 @@ class Item {
 		$this->_url					= $url;
 		$this->types				= empty($data['type']) ? array() : (array)$data['type'];
 		$this->_properties			= new \stdClass();
+		$classname					= get_class($this);
 		
 		if (!empty($data['properties']) && is_array($data['properties'])) {
 			foreach ($data['properties'] as $property => $values) {
@@ -112,7 +113,7 @@ class Item {
 						}
 					}
 					foreach ($values as $value) {
-						$propertyValues[]				= $hasSubItems ? new self((array)$value, $this->_url) : $this->_resolveUrlValue($property, $value);
+						$propertyValues[]				= $hasSubItems ? new $classname((array)$value, $this->_url) : $this->_resolveUrlValue($property, $value);
 					}
 				}
 			}
@@ -179,10 +180,24 @@ class Item {
 		return $result;
 	}
 	
+	/**
+	 * Return a JSON representation of the embedded micro information
+	 *
+	 * @param \boolean $beautify		Beautify the JSON output (available since PHP 5.4)
+	 * @return \string					JSON representation
+	 */
+	public function toJSON($beautify = false) {
+		$options						= 0;
+		if ($beautify && version_compare(PHP_VERSION, '5.4', '>=')) {
+			$options					|= JSON_PRETTY_PRINT;
+		}
+		return json_encode($this->toObject(), $options);
+	}
+	
 	/************************************************************************************************
 	 * MAGIC METHODS
 	 ***********************************************************************************************/
-
+	
 	/**
 	 * Return a list of properties or a single property
 	 *
@@ -205,6 +220,15 @@ class Item {
 		} else {
 			return null;
 		}
+	}
+	
+	/**
+	 * String serialization as JSON object
+	 * 
+	 * @return \string				String serialization as JSON object
+	 */
+	public function __toString() {
+		return strval($this->toJSON(false));
 	}
 	
 	/************************************************************************************************
@@ -235,10 +259,6 @@ class Item {
 	 * @return void
 	 */
 	protected function _resolveUrlValue($property, $value) {
-		if (in_array($property, self::$_urlProperties)) {
-			$value					= new \Jkphl\Utility\Url($value);
-			$value					= strval($value->resolve($this->_url));
-		}
-		return $value;
+		return in_array($property, self::$_urlProperties) ? strval(\Jkphl\Utility\Url::instance($value, true, $this->_url)) : $value;
 	}
 }
