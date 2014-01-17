@@ -182,7 +182,7 @@ $firstItem				= $micrometaParser->item();
 $firstPersonItem		= $micrometaParser->item('http://schema.org/Person', 'h-card');
 ```
 
-If you don't need the flexiblity of multiple item types and can limit the item selector to exactly **one Microformats 2 item type or property**, you may benefit from using the [Microformats 2 special features](#accessing-nested-items---properties).
+If you don't need the flexiblity of multiple item types and can limit the item selector to exactly **one Microformats 2 item type or property**, you may benefit from using the [Microformats 2 special features](#accessing-nested-items--properties).
 
 
 #### Related resources
@@ -242,7 +242,7 @@ if ($author instanceof \Jkphl\Micrometa\Item) {
 }
 ```
 
-**NOTE**: You should prefer [determining authorship](#determine-authorship) according to the [IndieWebCamp authorship algorithm](http://indiewebcamp.com/authorship). The `externalAuthor()` convenience method is deprecated and may be dropped in a future release.
+**NOTE**: You should prefer [determining authorship](#determining-authorship) according to the [IndieWebCamp authorship algorithm](http://indiewebcamp.com/authorship). The `externalAuthor()` convenience method is deprecated and may be dropped in a future release.
 
 ### Micro information items
 
@@ -303,13 +303,13 @@ $givenName			= $item->givenName;
 
 Notice that all property names have been converted to [lowerCamelCase](http://en.wikipedia.org/wiki/CamelCase) writing (e.g. `givenName` for the "<i>given-name</i>" property in the original `h-card` markup).
 
-Also, remember that all nested item properties are value lists themselves. When you use the bare property name with any of these nested item properties, **only the first element of the property's value list** will be returned. If you want to retrieve the **complete property list, simply append an "s" to the property name**:
+Also, remember that all nested item properties are value lists themselves. When you use the bare property name with any of these nested item properties, **only the first element of the property's value list** will be returned. If you want to retrieve the **complete property list**, simply **append an "s" to the property name**:
 
 ```php
 $allPhotos			= $item->photos;
 ```
 
-For Microformat 2 items (exclusively) there exist some [additional convenience methods](#accessing-nested-items---properties) for accessing properties and nested items. If a requested property doesn't exist at all, `NULL` is returned. 
+For Microformat 2 items (exclusively) there exist some [additional convenience methods](#accessing-nested-items--properties) for accessing properties and nested items. If a requested property doesn't exist at all, `NULL` is returned. 
 
 #### Finding the first defined property
 
