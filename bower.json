@@ -16,6 +16,9 @@
     "test",
     "tests",
     "demo",
-    "doc"
+    "doc",
+    "Gruntfile.js",
+    "composer.json",
+    "package.json"
   ]
 }
