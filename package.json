@@ -1,0 +1,9 @@
+{
+  "name": "micrometa",
+  "version": "0.1.0",
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-phpunit": "~0.3.2",
+    "grunt-contrib-watch": "~0.5.3"
+  }
+}

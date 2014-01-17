@@ -2,9 +2,10 @@
   "name" : "jkphl/micrometa",
   "description" : "A PHP meta parser for extracting embedded micro information out of HTML documents, currently supporting Microformats (1 + 2) and W3C Microdata",
   "require" : {
-  	"php": ">=5.3.0",
+    "php" : ">=5.3.0",
     "mf2/mf2" : ">=v0.2.4",
-    "euskadi31/microdata" : "dev-master"
+    "euskadi31/microdata" : "dev-master",
+    "phpunit/phpunit" : ">=3.7.29"
   },
   "repositories" : [ {
     "type" : "composer",
@@ -19,13 +20,13 @@
     "homepage" : "http://joschi.kuphal.net",
     "role" : "Developer"
   } ],
-  "keywords" : [ "html", "micro", "parser", "meta", "microformats", "microdata" ],
   "support" : {
     "email" : "joschi@kuphal.net",
     "issues" : "https://github.com/jkphl/micrometa/issues",
     "source" : "https://github.com/jkphl/micrometa"
   },
-  "type" : "library",
+  "keywords" : [ "html", "micro", "parser", "meta", "microformats", "microdata" ],
   "license" : "MIT",
+  "type" : "library",
   "homepage" : "http://micrometa.jkphl.is"
 }
