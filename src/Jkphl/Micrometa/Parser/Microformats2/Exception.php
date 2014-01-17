@@ -45,7 +45,7 @@ namespace Jkphl\Micrometa\Parser\Microformats2;
  * @license		http://opensource.org/licenses/MIT	The MIT License (MIT)
  * @link		https://github.com/indieweb/php-mf2
  */
-class Exception extends \Exception {
+class Exception extends \OutOfBoundsException {
 	/**
 	 * Invalid microformat vocable
 	 * 
