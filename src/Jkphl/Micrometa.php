@@ -522,7 +522,7 @@ class Micrometa {
 		if ($mf2ItemIndex === null) {
 			return $mf2Items;
 			
-		// Else: If the requested item indes is out of range: Error
+		// Else: If the requested item index is out of range: Error
 		} elseif (($mf2ItemIndex < 0) || ($mf2ItemIndex > count($mf2Items) - 1)) {
 			throw new \Jkphl\Micrometa\Parser\Microformats2\Exception(sprintf(\Jkphl\Micrometa\Parser\Microformats2\Exception::INDEX_OUT_OF_RANGE_STR, $mf2ItemIndex), \Jkphl\Micrometa\Parser\Microformats2\Exception::INDEX_OUT_OF_RANGE);
 			
