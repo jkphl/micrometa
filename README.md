@@ -3,14 +3,14 @@ micrometa
 
 is a simple **meta parser** for extracting micro information out of HTML documents, currently supporting Microformats (1 + 2) and W3C Microdata. It's written in PHP.
 
-Embedding micro information into HTML documents is a pretty darn cool way of enriching your content with machine readable metadata. Unfortunately there are several different (at least de facto) standards for doing so, e.g.
+Embedding micro information into HTML documents is a pretty darn cool way of enriching your content with machine readable metadata. Unfortunately, there are several different (at least de facto) standards for doing so, e.g.
 
 1.	The "original" [Microformats (μF)](http://microformats.org/wiki),
 2.	the updated [Microformats 2](http://microformats.org/wiki/microformats2) syntax,
 3.	the [W3C Microdata](http://www.w3.org/TR/microdata/) specification,
 4.	[RDFa](http://en.wikipedia.org/wiki/RDFa) and others ...
 
-As a meta parser *micrometa* recognizes multiple formats and combines them to one common [PHP object](#object-data) respectively [JSON](#json-data) result set.
+As a meta parser, *micrometa* recognizes multiple formats and combines them to one common [PHP object](#object-data) respectively [JSON](#json-data) result set.
 
 Installation
 ------------
@@ -52,7 +52,7 @@ composer install
 Usage
 -----
 
-*micrometa* essentially consists of one [main parser class](src/Jkphl/Micrometa.php) and several auxiliary classes. You can incorporate *micrometa* into your project simply by including and instanciating the main parser class. Fetching and parsing a remote HTML document is a easy as this:
+*micrometa* essentially consists of one [main parser class](src/Jkphl/Micrometa.php) and several auxiliary classes. You can incorporate *micrometa* into your project by including and instanciating the main parser class. Fetching and parsing a remote HTML document is a easy as this:
 
 ```php
 require_once '/path/to/micrometa/src/Jkphl/Micrometa.php'
@@ -78,11 +78,11 @@ $micrometaObjectData	= \Jkphl\Micrometa::instance($url, $htmlSourceCode)->toObje
 
 ### Parsing results
 
-*micrometa* provides several methods for accessing the micro information extracted out of an HTML document. You may retrieve the embedded metadata as a whole (in [PHP object](#object-data) or [JSON format](#json-data)) or access single facets through dedicated methods. Only the most important methods are described here – for full details please have a look at the source code or the included, automatically generated [PHPDocumentor API documentation](doc/index.html).
+*micrometa* provides several methods for accessing the micro information extracted out of an HTML document. You may retrieve the embedded metadata as a whole (in [PHP object](#object-data) or [JSON](#json-data) format) or access single facets through dedicated methods. Only the most important methods are described here – for full details please have a look at the source code or the included, automatically generated [PHPDocumentor API documentation](doc/index.html).
 
 #### Object data
 
-The parser object's `toObject()` method returns a copy of the complete set of micro information as a vanilla PHP object (`\stdClass`) with three properties and a couple of subproperties:
+The parser object's `toObject()` method returns a copy of the complete set of micro information as a vanilla PHP object (`\stdClass`) with three properties (and their nested subproperties):
 
 <table>
 	<tr>
@@ -174,7 +174,7 @@ $micrometaParser		= new \Jkphl\Micrometa($url);
 $personItems			= $micrometaParser->items('http://schema.org/Person', 'h-card');
 ```
 
-Finally, the parser object's `item()` method provides a shortcut for returning **only the first item** of an item list. The return value (if any) is a [micro information item](#micro-information-items) (`NULL` otherwise):
+The parser object's `item()` method provides a shortcut for returning **only the first item** of an item list as returned by `items()`. The return value (if any) is a [micro information item](#micro-information-items) (`NULL` otherwise):
 
 ```php
 $micrometaParser		= new \Jkphl\Micrometa($url);
@@ -182,13 +182,40 @@ $firstItem				= $micrometaParser->item();
 $firstPersonItem		= $micrometaParser->item('http://schema.org/Person', 'h-card');
 ```
 
+If you don't need the flexiblity of multiple item types and can limit the item selector to exactly **one Microformats 2 item type or property**, you may benefit from using the [Microformats 2 special features](#accessing-nested-items---properties).
+
+
 #### Related resources
 
-You may directly access the list of related resources using the parser object's `rels()` method (see the *rels* property of the [object data result](#object-data)):
+You may access the full list of resources related to a document (as defined by the presence of a `rel` attribute) by using the parser object's `rels()` method (see the *rels* property of the [object data result](#object-data)):
 
 ```php
 $micrometaParser		= new \Jkphl\Micrometa($url);
 $relatedResources		= $micrometaParser->rels();
+```
+
+Each related resource is of a particular type (the value of the `rel` attribute), and there may always be more than one resource of that type. So for each type present in the document, there is a list of related resources, each containing at least one element. If you want to retrieve the resources of a particular type (or even just one element out of this list), you may use the parser object's `rel()` method:
+
+```php
+$micrometaParser		= new \Jkphl\Micrometa($url);
+
+// Retrieve all related me-profiles
+$allRelatedMeProfiles	= $micrometaParser->rel('me');
+// or
+$allRelatedMeProfiles	= $micrometaParser->rel('me', null);
+
+// Retrieve a single related me-profile
+$firstMeProfileInDoc	= $micrometaParser->rel('me', 0);
+$secondMeProfileInDoc	= $micrometaParser->rel('me', 1);
+
+// Returns NULL
+$invalidMeProfileIndex	= $micrometaParser->rel('me', -1);
+$invalidRelType			= $micrometaParser->rel('non-existent-in-document');
+
+// Iterate through all related me-resources
+foreach((array)$micrometaParser->rel('me') as $me) {
+	// ...
+}
 ```
 
 #### Alternative resources
@@ -215,9 +242,11 @@ if ($author instanceof \Jkphl\Micrometa\Item) {
 }
 ```
 
+**NOTE**: You should prefer [determining authorship](#determine-authorship) according to the [IndieWebCamp authorship algorithm](http://indiewebcamp.com/authorship). The `externalAuthor()` convenience method is deprecated and may be dropped in a future release.
+
 ### Micro information items
 
-These are the objects carrying the metadata. Internally they consist of three main object properties:
+These are the objects carrying the actual micro information. Internally, they consist of three main object properties:
 
 <table>
 	<tr>
@@ -227,7 +256,7 @@ These are the objects carrying the metadata. Internally they consist of three ma
 	</tr>
 	<tr>
 		<td><i>id</i></td>
-		<td>Some items carry an explicit item ID (but most don't).</td>
+		<td>Some items carry an explicit item ID (but most don't, however).</td>
 		<td><code>\string</code></td>
 	</tr>
 	<tr>
@@ -237,24 +266,25 @@ These are the objects carrying the metadata. Internally they consist of three ma
 	</tr>
 	<tr>
 		<td><i>value</i></td>
-		<td>Some micro information types might populate this property with an explicit value representing the whole item (but most don't).</td>
+		<td>Some micro information types might populate this property with an explicit value representing the whole item (but most don't, however).</td>
 		<td><code>\string</code></td>
 	</tr>
 	<tr>
 		<td><i>properties</i></td>
 		<td>
-			<p>Collection of nested item properties. Each property may be multi-valued and thus is always a list of values. The values are consistently either strings or nested micro information items.</p>
-			<p>The property names are normalized, so e.g. the <a href="http://microformats.org/wiki/microformats2#Summary">microformats-2 class name prefixes</a> are stripped out (resulting e.g. in th property name "<i>author</i>" instead of "<i>p-author</i>"). Certain property names (e.g. "<i>image</i>", "<i>photo</i>", "<i>logo</i>" or "<i>url</i>") are expected to carry URL values and are automatically sanitized and expanded to absolute URLs.</p>
+			<p>Collection of nested item properties. Each property is potentially multi-valued and thus always a list with at least one element (otherwise the property wouldn't exist on the item). The values are consistently either strings or nested micro information items.</p>
+			<p>The property names are normalized at parsing time, so e.g. the <a href="http://microformats.org/wiki/microformats2#Summary">microformats-2 class name prefixes</a> are stripped out (resulting e.g. in th property name "<i>author</i>" instead of "<i>p-author</i>").</p>
+			<p>Certain property names (e.g. "<i>image</i>", "<i>photo</i>", "<i>logo</i>" or "<i>url</i>") are expected to carry URL. They are automatically sanitized and expanded to absolute URLs.</p>
 		</td>
 		<td><code>\stdClass</code></td>
 	</tr>
 </table>
 
-Especially the collection of nested properties is access restricted. Use the following methods for working with an item object.
+In particular the collection of nested properties is access restricted. You have to use the following methods for working with an item object.
 
 #### Item type check
 
-You can use the `isOfType()` method to check if an item is of a specific type. The method accepts an arbitrary number of item types and returns `TRUE` if any of these matches:
+You can use the `isOfType()` method to check if an item is of a specific type. The method accepts an arbitrary number of item types as arguments and returns `TRUE` if any of these matches:
 
 ```php
 if ($item->isOfType('http://schema.org/Person', 'h-card')) {
@@ -264,7 +294,7 @@ if ($item->isOfType('http://schema.org/Person', 'h-card')) {
 
 #### Accessing item properties
 
-You can access nested item properties by simply using their names as object properties:
+You can access nested item properties by simply using their names as object properties (item objects have a generic getter for this):
 
 ```php
 $photo				= $item->photo;
@@ -279,19 +309,108 @@ Also, remember that all nested item properties are value lists themselves. When 
 $allPhotos			= $item->photos;
 ```
 
-If a requested property doesn't exist at all, `NULL` is returned. 
+For Microformat 2 items (exclusively) there exist some [additional convenience methods](#accessing-nested-items---properties) for accessing properties and nested items. If a requested property doesn't exist at all, `NULL` is returned. 
 
 #### Finding the first defined property
 
-You can use the `firstOf()` method to find and return the first property in a list of properties that is defined for that very item. The method accepts an arbitrary number of property names (also with appended "s" for retrieving the whole property value lists) and returns the first non-`NULL` match for the item:
+You can use the `firstOf()` method to find and return the first match in a list of properties that is defined for that very item. The method accepts an arbitrary number of property names (also with appended "s" for retrieving the whole property value lists) and returns the first non-`NULL` match for the item:
 
 ```php
 $avatar				= $item->firstOf('photo', 'logo', 'image');
 ```
 
-#### Object data
+#### Item data retrieval
 
-The method `toObject()` returns a simplified PHP object representation (i.e. `\stdClass` object) of the item and all it's nested subitems.
+A micro information item's `toObject()` method returns a simplified PHP object representation (i.e. `\stdClass` object) of the item and all it's properties and nested subitems. The `toJSON()` method returns a serialized version of this object in JSON format, as does the magic `__toString()` method.
+
+
+Microformats 2 special features
+-------------------------------
+
+#### Accessing nested items & properties
+
+There are some additional convenience methods that only apply to working with Microformat 2 items.
+
+The **main parser object** has a generic caller that can be used to access embedded items by using their lowerCamelCased item type as method name:
+
+```php
+$micrometaParser		= new \Jkphl\Micrometa($url);
+
+// Retrieve the list of all embedded h-card items
+$nestedHCards			= $micrometaParser->hCard();
+// or
+$nestedHCards			= $micrometaParser->hCard(null);
+
+// Get the first embedded h-card
+$firstHCard				= $micrometaParser->hCard(0);
+
+// Throws an out-of-bounds exception due to the invalid item index
+$invalidHCardIndex		= $micrometaParser->hCard(-1);
+
+// Iterate through all embedded h-cards
+foreach($micrometaParser->hCard() as $hCard) {
+	// ...
+}
+```
+
+There's also a generic getter that can be used as a shortcut to retrieve the first item of a particular type:
+
+```php
+// Get the first embedded h-card
+$firstHCard				= $micrometaParser->hCard;
+
+// These calls are all equivalent
+$firstHEntry			= $micrometaParser->item('h-entry');	// Universal
+$firstHEntry			= $micrometaParser->hEntry(0);			// MF2 specific
+$firstHEntry			= $micrometaParser->hEntry;				// MF2 specific
+```
+
+Similarly, each **Microformat 2 information item** has a generic caller to deal with the nested property lists (in addition to the universal way of [accessing item properties](#accessing-item-properties)):
+
+```php
+$micrometaParser		= new \Jkphl\Micrometa($url);
+$firstHEntry			= $micrometaParser->hEntry;
+
+// Retrieve the list of entry authors
+// $nestedAuthors		= $firstEntry->authors;					// Universal
+$nestedAuthors			= $firstEntry->author();				// MF2 specific
+// or
+$nestedAuthors			= $firstEntry->author(null);			// MF2 specific
+
+// Get the first embedded h-card
+// $firstAuthor			= $firstEntry->author;					// Universal
+$firstAuthor			= $firstEntry->author(0);				// MF2 specific
+
+// Throws an out-of-bounds exception due to the invalid item index
+$invalidAuthorIndex		= $firstEntry->author(-1);
+
+// Returns NULL as the property is unknown
+$unknownProperty		= $firstEntry->thisPropertyDoesNotExist(0);
+
+// Iterate through all embedded h-cards
+// foreach((array)$firstEntry->authors as $author) {			// Universal
+foreach((array)$firstEntry->author() as $author) {				// MF2 specific
+	// ...
+}
+```
+
+In general, you should better explicitly cast the caller result as array before iterating over it, as the caller might return `NULL` in case of an unknown property.
+
+#### Determining authorship
+
+Starting with version v0.2.0, *micrometa* supports the extraction of authorship data according to the [IndieWebCamp authorship algorithm](http://indiewebcamp.com/authorship). While this is the preferred method of determining authorship, please be aware that this is Microformat 2 specific. [W3C Microdata](http://www.w3.org/TR/microdata/) information won't be taken into account. Extracting authorship is easy:
+
+```php
+$micrometaParser		= new \Jkphl\Micrometa($url);
+
+// Will return the author's h-card for the first h-entry in the document (if any)
+$firstEntryAuthor		= $micrometaParser->author();
+// or
+$firstEntryAuthor		= $micrometaParser->author(0);
+
+// Return the second entry's author
+$secondEntryAuthor		= $micrometaParser->author(1);
+```
 
 Example
 -------
@@ -426,7 +545,7 @@ This is the JSON output extracted by *micrometa* looks like this:
 
 Demo
 ----
-There's a [demo page](demo/micrometa.php) included in this package, which you can use for checking arbitrary URLs for embedded micro information. Please be aware that the demo page has to be hosted on a PHP enabled server (preferably PHP 5.4+ for getting a pretty-printed JSON result). A live version of the demo page can be found [here](http://micrometa.jkphl.is).
+There's a [demo page](demo/micrometa.php) included in this package, which you can use for checking arbitrary URLs for embedded micro information. Please be aware that the demo page has to be hosted on a PHP enabled server (preferably PHP 5.4+ for getting a pretty-printed JSON result). A live version can be found [here](http://micrometa.jkphl.is).
 
 Legal
 -----

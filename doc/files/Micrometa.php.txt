@@ -137,7 +137,7 @@ class Micrometa {
 		$this->baseUrl					= $this->_url;
 		foreach ($this->xpath->query('//base[@href]') as $base) {
 			$this->baseUrl				= new \Jkphl\Utility\Url($base->getAttribute('href'), true);
-			$this->baseUrl->resolve($this->_url);
+			$this->baseUrl->absolutize($this->_url);
 			break;
 		}
 		
@@ -168,7 +168,7 @@ class Micrometa {
 	public function parse() {
 		
 		// Parse with the microformats2 parser
-		$microformatsParser				= new \Jkphl\Micrometa\Parser\Microformats2($this->dom);
+		$microformatsParser				= new \Jkphl\Micrometa\Parser\Microformats2($this->dom, $this->baseUrl);
 		$microformats					= $microformatsParser->parse(true, $this->_focus);
 		$this->_result					= (object)array_merge(array(
 			'items'						=> array(),
@@ -184,6 +184,7 @@ class Micrometa {
 		$microdataParser				= new \Jkphl\Micrometa\Parser\Microdata(strval($this->_url), $this->dom->saveXML());
 		$this->_result->items			= array_merge($this->_result->items, $microdataParser->items());
 		
+		// Set the "parsed" flag
 		$this->_parsed					= true;
 	}
 
@@ -260,6 +261,28 @@ class Micrometa {
 	}
 	
 	/**
+	 * Return a list of related resources of a particular type (or a single item out of this list)
+	 * 
+	 * @param \string $type					Resource type
+	 * @param \int|NULL $index				Optional: list index
+	 * @return \mixed						Resource or resource list
+	 */
+	public function rel($type, $index = null) {
+		$rels							= $this->rels();
+		if ($type && array_key_exists($type, $rels)) {
+			if ($index !== null) {
+				if (is_array($rels[$type])) {
+					$index				= intval($index);
+					return (($index < 0) || ($index > count($rels[$type]) - 1)) ? null : $rels[$type][$index];
+				}
+			} else {
+				return $rels[$type];
+			}
+		}
+		return null;
+	}
+	
+	/**
 	 * Return all alternative resources
 	 *
 	 * @return \array						Alternative resources
@@ -273,9 +296,104 @@ class Micrometa {
 	}
 	
 	/**
+	 * Convenienve method extracting author data according to the microformats authorship algorithm
+	 * 
+	 * @param \int $entry										h-entry index
+	 * @return \Jkphl\Micrometa\Parser\Microformats2\Item		Author micro information item
+	 * @see http://indiewebcamp.com/authorship
+	 */
+	public function author($entry = 0) {
+		try {
+			
+			// 1. Look for the appropriate h-entry within the document
+			$hEntry					= $this->hEntry($entry);
+			
+			// 2. Try to find p-author property respectively a nested h-card
+ 			$authorItem				= $hEntry->author;
+ 			if (($authorItem instanceof \Jkphl\Micrometa\Parser\Microformats2\Item) && $authorItem->isOfType('h-card')) {
+ 				return $authorItem;
+ 			}
+ 			
+ 			// 3. If there's no p-author property / nested h-card
+			$authorUrl				= trim($this->rel('author', 0));
+			
+			// 3.1. If there's an author page
+			if (strlen($authorUrl)) {
+				$authorProfileUrl	= \Jkphl\Utility\Url::instance($authorUrl, true, $this->baseUrl);
+				$authorUrl			= "$authorProfileUrl";
+				$authorProfile		= new self($authorProfileUrl);
+				$hCards				= array();
+				
+				// Run through all h-cards on the author profile page
+				foreach ((array)$authorProfile->hCard() as $hCard) {
+					if (($hCard instanceof \Jkphl\Micrometa\Parser\Microformats2\Item) && $hCard->isOfType('h-card')) {
+						
+						// Run through all uid properties (there should only be one!)
+						try {
+							foreach ((array)$hCard->uid() as $uidUrl) {
+								if (strval(\Jkphl\Utility\Url::instance($uidUrl, true, $authorProfileUrl)) == $authorUrl) {
+
+									// Compare with each URL registered with the h-card
+									foreach ((array)$hCard->url() as $hCardUrl) {
+
+										// 3.1.2. In case of a match: Use this h-card as the author
+										if (\Jkphl\Utility\Url::instance($hCardUrl, true, $authorProfileUrl) == $authorUrl) {
+											return $hCard;
+										}
+									}
+								}
+							}
+						} catch(\Jkphl\Micrometa\Parser\Microformats2\Exception $e) {}
+						
+						$hCards[]						= $hCard;
+					}
+				}
+				
+				// Gather all rel-me URLs on the author profile page
+				$meUrls					= array();
+				foreach ((array)$authorProfile->rel('me') as $meUrl) {
+					if (strlen($meUrl)) {
+						$meUrls[]		= strval(\Jkphl\Utility\Url::instance($meUrl, true, $authorProfileUrl)); 
+					}
+				}
+				
+				// Run through all the h-cards on the author profile page again
+				foreach ($hCards as $hCard) {
+					
+					// Compare the rel-me URLS with every h-card URL
+					foreach ((array)$hCard->url() as $hCardUrl) {
+							
+						// 3.1.3. In case of a match: Use this h-card as the author
+						if (in_array(strval(\Jkphl\Utility\Url::instance($hCardUrl, true, $authorProfileUrl)), $meUrls)) {
+							return $hCard;
+						}
+					}
+				}
+				
+				// Final try: Run through all h-cards on the h-entry's page
+				foreach ((array)$this->hCard() as $hCard) {
+				
+					// Compare the rel-author URL with every h-card URL
+					foreach ((array)$hCard->url() as $hCardUrl) {
+						
+						// 3.1.4. In case of a match: Use this h-card as the author
+						if ($authorUrl == strval(\Jkphl\Utility\Url::instance($hCardUrl, true, $authorProfileUrl))) {
+							return $hCard;
+						}
+					}
+				}
+			}
+			
+		} catch (\Jkphl\Micrometa\Parser\Microformats2\Exception $exception) {}
+		
+		return null;
+	}
+	
+	/**
 	 * Load and extract an external author definition
 	 * 
 	 * @return NULL|\Jkphl\Micrometa\Item	Author micro information item
+	 * @deprecated 							Will be dropped in favour of the authorship algorithm, see author()
 	 */
 	public function externalAuthor() {
 		$author							= null;
@@ -378,6 +496,61 @@ class Micrometa {
 		}
 		
 		return $response;
+	}
+	
+	/************************************************************************************************
+	 * MAGIC METHODS
+	 ***********************************************************************************************/
+	
+	/**
+	 * Generic caller
+	 * 
+	 * Returns all microformats2 items of a spefic type (or a particular index out of this list)
+	 * 
+	 * @param \string $method										Method name (lowerCamelCased microformats2 item type)
+	 * @param \array $arguments										List of arguments, of which the first is interpreted as list index (NULL = return the complete list)
+	 * @return \array|\Jkphl\Micrometa\Item							List of microformats2 items or a single microformats2 item
+	 * @throws \Jkphl\Micrometa\Parser\Microformats2\Exception		If it's not a valid microformats2 vocable
+	 * @throws \Jkphl\Micrometa\Parser\Microformats2\Exception		If the item index is out of range
+	 */
+	public function __call($method, array $arguments) {
+		$mf2ItemType					= \Jkphl\Micrometa\Parser\Microformats2::decamelize($method);
+		$mf2Items						= $this->items($mf2ItemType);
+		$mf2ItemIndex					= count($arguments) ? intval($arguments[0]) : null;
+		
+		// If the complete item list is to be returned
+		if ($mf2ItemIndex === null) {
+			return $mf2Items;
+			
+		// Else: If the requested item index is out of range: Error
+		} elseif (($mf2ItemIndex < 0) || ($mf2ItemIndex > count($mf2Items) - 1)) {
+			throw new \Jkphl\Micrometa\Parser\Microformats2\Exception(sprintf(\Jkphl\Micrometa\Parser\Microformats2\Exception::INDEX_OUT_OF_RANGE_STR, $mf2ItemIndex), \Jkphl\Micrometa\Parser\Microformats2\Exception::INDEX_OUT_OF_RANGE);
+			
+		// Else: Return the requested item index
+		} else {
+			return $mf2Items[$mf2ItemIndex];
+		}
+	}
+	
+	/**
+	 * Generic getter
+	 * 
+	 * Returns the first microformats2 item of a specific type. Calling this method is equivalent to
+	 * 
+	 * - calling the generic caller with 0 as the first argument
+	 * - calling item() with the specific microformats2 item type
+	 * 
+	 * Example: All of the following are equivalent
+	 * 
+	 * $micrometa->item('h-card')
+	 * $micrometa->hCard
+	 * $micrometa->hCard(0)
+	 * 
+	 * @param \string $key				Property name (lowerCamelCased microformats2 item type)
+	 * @return \Jkphl\Micrometa\Item	microformats2 item
+	 */
+	public function __get($key) {
+		return $this->$key(0);
 	}
 	
 	/************************************************************************************************

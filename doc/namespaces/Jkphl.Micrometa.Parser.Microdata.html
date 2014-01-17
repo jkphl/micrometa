@@ -21,55 +21,7 @@
     <script src="../js/jquery.smooth-scroll.js"></script>
     <script src="../js/prism.min.js"></script>
     <!-- TODO: Add http://jscrollpane.kelvinluck.com/ to style the scrollbars for browsers not using webkit-->
-        <script type="text/javascript">
-        function loadExternalCodeSnippets() {
-            Array.prototype.slice.call(document.querySelectorAll('pre[data-src]')).forEach(function (pre) {
-                var src = pre.getAttribute('data-src');
-                var extension = (src.match(/\.(\w+)$/) || [, ''])[1];
-                var language = 'php';
-
-                var code = document.createElement('code');
-                code.className = 'language-' + language;
-
-                pre.textContent = '';
-
-                code.textContent = 'Loading…';
-
-                pre.appendChild(code);
-
-                var xhr = new XMLHttpRequest();
-
-                xhr.open('GET', src, true);
-
-                xhr.onreadystatechange = function () {
-                    if (xhr.readyState == 4) {
-
-                        if (xhr.status < 400 && xhr.responseText) {
-                            code.textContent = xhr.responseText;
-
-                            Prism.highlightElement(code);
-                        }
-                        else if (xhr.status >= 400) {
-                            code.textContent = '✖ Error ' + xhr.status + ' while fetching file: ' + xhr.statusText;
-                        }
-                        else {
-                            code.textContent = '✖ Error: File does not exist or is empty';
-                        }
-                    }
-                };
-
-                xhr.send(null);
-            });
-        }
-
-        $(document).ready(function(){
-            loadExternalCodeSnippets();
-        });
-        $('#source-view').on('shown', function () {
-            loadExternalCodeSnippets();
-        })
-    </script>
-
+    
     <link rel="shortcut icon" href="../images/favicon.ico"/>
     <link rel="apple-touch-icon" href="../images/apple-touch-icon.png"/>
     <link rel="apple-touch-icon" sizes="72x72" href="../images/apple-touch-icon-72x72.png"/>
@@ -139,44 +91,81 @@
                                 <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-502198189"></a>
+                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-906248143"></a>
                                 <a href="../namespaces/default.html" style="margin-left: 30px; padding-left: 0">\</a>
             </div>
-            <div id="namespace-502198189" class="accordion-body collapse in">
+            <div id="namespace-906248143" class="accordion-body collapse in">
                 <div class="accordion-inner">
 
                                                     <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1371900647"></a>
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1650220656"></a>
                                 <a href="../namespaces/Jkphl.html" style="margin-left: 30px; padding-left: 0">Jkphl</a>
             </div>
-            <div id="namespace-1371900647" class="accordion-body collapse ">
+            <div id="namespace-1650220656" class="accordion-body collapse ">
                 <div class="accordion-inner">
 
                                                     <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-647377576"></a>
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1924321376"></a>
                                 <a href="../namespaces/Jkphl.Micrometa.html" style="margin-left: 30px; padding-left: 0">Micrometa</a>
             </div>
-            <div id="namespace-647377576" class="accordion-body collapse ">
+            <div id="namespace-1924321376" class="accordion-body collapse ">
                 <div class="accordion-inner">
 
                                                     <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1929481999"></a>
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-559522481"></a>
                                 <a href="../namespaces/Jkphl.Micrometa.Parser.html" style="margin-left: 30px; padding-left: 0">Parser</a>
             </div>
-            <div id="namespace-1929481999" class="accordion-body collapse ">
+            <div id="namespace-559522481" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1861475730"></a>
+                                <a href="../namespaces/Jkphl.Micrometa.Parser.Microdata.html" style="margin-left: 30px; padding-left: 0">Microdata</a>
+            </div>
+            <div id="namespace-1861475730" class="accordion-body collapse ">
                 <div class="accordion-inner">
 
                     
                     <ul>
-                                                                                                    <li class="class"><a href="../classes/Jkphl.Micrometa.Parser.MicrodataPhp.html">MicrodataPhp</a></li>
+                                                                                                    <li class="class"><a href="../classes/Jkphl.Micrometa.Parser.Microdata.Item.html">Item</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-663739081"></a>
+                                <a href="../namespaces/Jkphl.Micrometa.Parser.Microformats2.html" style="margin-left: 30px; padding-left: 0">Microformats2</a>
+            </div>
+            <div id="namespace-663739081" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/Jkphl.Micrometa.Parser.Microformats2.Exception.html">Exception</a></li>
+                                                    <li class="class"><a href="../classes/Jkphl.Micrometa.Parser.Microformats2.Item.html">Item</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/Jkphl.Micrometa.Parser.Microdata.html">Microdata</a></li>
+                                                    <li class="class"><a href="../classes/Jkphl.Micrometa.Parser.MicrodataPhp.html">MicrodataPhp</a></li>
                                                     <li class="class"><a href="../classes/Jkphl.Micrometa.Parser.Microformats2.html">Microformats2</a></li>
-                                                    <li class="class"><a href="../classes/Jkphl.Micrometa.Parser.Microdata.html">Microdata</a></li>
                                             </ul>
                 </div>
             </div>
@@ -195,10 +184,10 @@
                                                     <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-734187732"></a>
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1686806204"></a>
                                 <a href="../namespaces/Jkphl.Utility.html" style="margin-left: 30px; padding-left: 0">Utility</a>
             </div>
-            <div id="namespace-734187732" class="accordion-body collapse ">
+            <div id="namespace-1686806204" class="accordion-body collapse ">
                 <div class="accordion-inner">
 
                     
@@ -232,74 +221,39 @@
     <section class="row-fluid">
         <div class="span10 offset2">
             <div class="row-fluid">
-                <div class="span8 content file">
+                <div class="span8 content namespace">
                     <nav>
-                                                                    </nav>
+                                                <a href="../namespaces/Jkphl.Micrometa.Parser.html">\Jkphl\Micrometa\Parser</a>
+                                            </nav>
+                    <h1><small>\Jkphl\Micrometa\Parser</small>Microdata</h1>
 
-                    <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal"><i class="icon-code"></i></a>
-                    <h1><small></small>Microdata.php</h1>
-                    <p><em>micrometa – Micro information meta parser</em></p>
                     
-
-
                     
                     
                                         <h2>Classes</h2>
                     <table class="table table-hover">
                                             <tr>
-                            <td><a href="../classes/Jkphl.Micrometa.Parser.Microdata.html">Microdata</a></td>
-                            <td><em>Extended Microdata parser</em></td>
+                            <td><a href="../classes/Jkphl.Micrometa.Parser.Microdata.Item.html">Item</a></td>
+                            <td><em>Extended microdata item</em></td>
                         </tr>
                                         </table>
                                     </div>
 
                 <aside class="span4 detailsbar">
                     <dl>
-                                                    <dt>Package</dt>
-                            <dd><div class="namespace-wrapper">Jkphl_Micrometa</div></dd>
-                        
-                        
+                        <dt>Namespace hierarchy</dt>
+                        <dd class="hierarchy">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+                                    <div class="namespace-wrapper"><a href="../namespaces/default.html">\</a></div>
+                                                            
+                                    <div class="namespace-wrapper"><a href="../namespaces/Jkphl.html">\Jkphl</a></div>
+                                                            
+                                    <div class="namespace-wrapper"><a href="../namespaces/Jkphl.Micrometa.html">\Jkphl\Micrometa</a></div>
+                                                            
+                                    <div class="namespace-wrapper"><a href="../namespaces/Jkphl.Micrometa.Parser.html">\Jkphl\Micrometa\Parser</a></div>
+                                                                                        <div class="namespace-wrapper">\Jkphl\Micrometa\Parser\Microdata</div>
+                        </dd>
                     </dl>
-                    <h2>Tags</h2>
-                    <table class="table table-condensed">
-                                                    <tr>
-                                <th>
-                                    category
-                                </th>
-                                <td>
-                                                                            <p>Jkphl</p>
-
-                                                                    </td>
-                            </tr>
-                                                    <tr>
-                                <th>
-                                    author
-                                </th>
-                                <td>
-                                                                            <p>Joschi Kuphal <a href="&#x6d;&#x61;&#x69;&#x6c;&#116;&#111;&#58;&#106;o&#x73;&#x63;&#x68;&#x69;&#64;&#107;&#117;&#112;h&#x61;&#x6c;&#x2e;&#x6e;&#101;&#116;">&#106;o&#x73;&#x63;&#x68;&#x69;&#64;&#107;&#117;&#112;h&#x61;&#x6c;&#x2e;&#x6e;&#101;&#116;</a> / @jkphl</p>
-
-                                                                    </td>
-                            </tr>
-                                                    <tr>
-                                <th>
-                                    copyright
-                                </th>
-                                <td>
-                                                                            <p>Copyright © 2014 Joschi Kuphal <a href="&#x6d;&#x61;&#x69;&#x6c;&#116;&#111;&#58;&#106;o&#x73;&#x63;&#x68;&#x69;&#64;&#107;&#117;&#112;h&#x61;&#x6c;&#x2e;&#x6e;&#101;&#116;">&#106;o&#x73;&#x63;&#x68;&#x69;&#64;&#107;&#117;&#112;h&#x61;&#x6c;&#x2e;&#x6e;&#101;&#116;</a> / @jkphl</p>
-
-                                                                    </td>
-                            </tr>
-                                                    <tr>
-                                <th>
-                                    license
-                                </th>
-                                <td>
-                                                                            <p>http://opensource.org/licenses/MIT  The MIT License (MIT)</p>
-
-                                                                    </td>
-                            </tr>
-                                            </table>
-
                 </aside>
             </div>
 
@@ -307,16 +261,6 @@
             
         </div>
     </section>
-
-    <div id="source-view" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="source-view-label" aria-hidden="true">
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            <h3 id="source-view-label"></h3>
-        </div>
-        <div class="modal-body">
-            <pre data-src="../files/src\Jkphl\Micrometa\Parser\Microdata.php.txt" class="language-php line-numbers"></pre>
-        </div>
-    </div>
 
     <footer class="row-fluid">
         <section class="span10 offset2">
@@ -355,7 +299,7 @@
                 <section class="span10 offset1">
                     <hr />
                     Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and authored
-                    on January 8th, 2014 at 11:11.
+                    on January 17th, 2014 at 22:12.
                 </section>
             </section>
         </section>

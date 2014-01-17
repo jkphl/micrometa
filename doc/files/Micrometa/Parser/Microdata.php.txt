@@ -35,6 +35,8 @@ namespace Jkphl\Micrometa\Parser;
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
+require_once __DIR__.DIRECTORY_SEPARATOR.'Microdata'.DIRECTORY_SEPARATOR.'Item.php';
+
 // Include the Composer autoloader
 if (@is_file(dirname(dirname(dirname(dirname(__DIR__)))).DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'autoload.php')) {
 	require_once dirname(dirname(dirname(dirname(__DIR__)))).DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'autoload.php';
@@ -106,7 +108,7 @@ class Microdata extends \Microdata\Reader {
 		$microdata							= $this->read();
 		if (!empty($microdata->items) && is_array($microdata->items)) {
 			foreach ($microdata->items as $data) {
-				$items[]					= new \Jkphl\Micrometa\Item((array)$data, $this->_url);
+				$items[]					= new \Jkphl\Micrometa\Parser\Microdata\Item((array)$data, $this->_url);
 			}
 		}
 		return $items;
