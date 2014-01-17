@@ -35,6 +35,9 @@ namespace Jkphl\Micrometa\Parser;
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
+require_once __DIR__.DIRECTORY_SEPARATOR.'Microformats2'.DIRECTORY_SEPARATOR.'Exception.php';
+require_once __DIR__.DIRECTORY_SEPARATOR.'Microformats2'.DIRECTORY_SEPARATOR.'Item.php';
+
 // Include the Composer autoloader
 if (@is_file(dirname(dirname(dirname(dirname(__DIR__)))).DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'autoload.php')) {
 	require_once dirname(dirname(dirname(dirname(__DIR__)))).DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'autoload.php';
@@ -78,8 +81,7 @@ class Microformats2 extends \Mf2\Parser {
 	 */
 	public function __construct($input, $url = null) {
 		$this->_url							= ($url instanceof \Jkphl\Utility\Url) ? $url : new \Jkphl\Utility\Url($url);
-		$url								= strval($url);
-		parent::__construct($input, $url);
+		parent::__construct($input, strval($url));
 	}
 	
 	/**
@@ -116,9 +118,38 @@ class Microformats2 extends \Mf2\Parser {
 		
 		// Run through all original parsing results
 		foreach ($results as $data) {
-			$refined[]			= new \Jkphl\Micrometa\Item($data, $this->_url);
+			$refined[]			= new \Jkphl\Micrometa\Parser\Microformats2\Item($data, $this->_url);
 		}
 		
 		return $refined;
+	}
+	
+	/************************************************************************************************
+	 * STATIC METHODS
+	 ***********************************************************************************************/
+	
+	/**
+	 * Check if a string is a valid microformats2 vocable (regular or camelCased)
+	 * 
+	 * @param \string $str							String
+	 * @return \boolean								Whether it's a valid microformats2 vocable
+	 */
+	public static function isValidVocable($str) {
+		return preg_match("%^[a-z]+([A-Z][a-z]*)*$%", $str) || preg_match("%^[a-z]+(\-[a-z]+)*$%", $str); 
+	}
+	
+	/**
+	 * Decamelize a lower- or UpperCameCase microformats2 vocable (has no effect on regular vocables)
+	 * 
+	 * @param \string $vocable			Vocable
+	 * @param \string $separator		Separation char / vocable
+	 * @return \string					Decamelized vocable
+	 * @throws \Jkphl\Micrometa\Parser\Microformats2\Exception		If it's not a valid microformats2 vocable
+	 */
+	public static function decamelize($vocable, $separator = '-') {
+		if (!self::isValidVocable($vocable)) {
+			throw new \Jkphl\Micrometa\Parser\Microformats2\Exception(sprintf(\Jkphl\Micrometa\Parser\Microformats2\Exception::INVALID_MICROFORMAT_VOCABLE_STR, $vocable), \Jkphl\Micrometa\Parser\Microformats2\Exception::INVALID_MICROFORMAT_VOCABLE);
+		}
+		return strtolower(preg_replace("%[A-Z]%", "$separator$0", $vocable));
 	}
 }
