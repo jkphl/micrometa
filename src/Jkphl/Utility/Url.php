@@ -110,8 +110,8 @@ class Url {
 	 * @return \Jkphl\Utility\Url				URL manipulation object
 	 */
 	public function set($key, $value) {
-		if (array_key_exists($key, self::$_keys)) {
-			$this->_parts[self::$_keys[$key]] = $value;
+		if (in_array($key, self::$_keys)) {
+			$this->_parts[$key] = $value;
 		}
 		return $this;
 	}
@@ -149,6 +149,8 @@ class Url {
 		}
 		if (empty($this->_parts['path'])) {
 			$this->_parts['path']		= '/';
+		} if (!empty($this->_parts['host']) && strncmp($this->_parts['path'], '/', 1)) {
+			$this->_parts['path']		= '/'.$this->_parts['path'];
 		}
 		return $this;
 	}
@@ -159,11 +161,16 @@ class Url {
 	 * @param \Jkphl\Utility\Url $reference		Reference URL
 	 * @return \Jkphl\Utility\Url				URL manipulation object
 	 */
-	public function resolve(\Jkphl\Utility\Url $reference) {
+	public function absolutize(\Jkphl\Utility\Url $reference) {
 
-		// If this URL is relative
+		// If the host part is missing
 		if (empty($this->_parts['host'])) {
 			$transfer					= array('scheme', 'host', 'port', 'user', 'pass');
+			
+			// If this is a relative URL
+			if ($this->isRelative()) {
+				$this->_parts['path']	= dirname(rtrim($reference->path, '/')).'/'.$this->_parts['path'];
+			}
 		
 		// Else if this URL is protocol relative
 		} elseif (empty($this->_parts['scheme'])) {
@@ -182,6 +189,15 @@ class Url {
 		}
 		
 		return $this;
+	}
+	
+	/**
+	 * Return whether this URL is relative
+	 * 
+	 * @return \boolean							Whether this URL is relative
+	 */
+	public function isRelative() {
+		return empty($this->_parts['path']) ? false : (empty($this->_parts['host']) && (boolean)strncmp($this->_parts['path'], '/', 1));
 	}
 	
 	/************************************************************************************************
@@ -215,13 +231,37 @@ class Url {
 	 * @return \string							URL string
 	 */
 	public function __toString() {
-		$url							= (empty($this->_parts['scheme']) ? 'http' : $this->_parts['scheme']).'://';
-		$url							.= empty($this->_parts['user']) ? '' : rawurlencode($this->_parts['user']).(empty($this->_parts['pass']) ? '' : ':'.rawurlencode($this->_parts['pass'])).'@';
-		$url							.= $this->_parts['host'];
-		$url							.= empty($this->_parts['port']) ? '' : ':'.$this->_parts['port'];
+		if ($this->isRelative()) {
+			$url						= './';
+		} else {
+			$url						= (empty($this->_parts['scheme']) ? 'http' : $this->_parts['scheme']).'://';
+			$url						.= empty($this->_parts['user']) ? '' : rawurlencode($this->_parts['user']).(empty($this->_parts['pass']) ? '' : ':'.rawurlencode($this->_parts['pass'])).'@';
+			$url						.= $this->_parts['host'];
+			$url						.= empty($this->_parts['port']) ? '' : ':'.$this->_parts['port'];
+		}
 		$url							.= empty($this->_parts['path']) ? '' : $this->_parts['path'];
 		$url							.= count($this->_parts['query']) ? '?'.http_build_query($this->_parts['query']) : '';
 		$url							.= empty($this->_parts['fragment']) ? '' : '#'.$this->_parts['fragment'];
 		return $url;
+	}
+	
+	/************************************************************************************************
+	 * STATIC METHODS
+	 ***********************************************************************************************/
+	
+	/**
+	 * Create and return a (possibly sanitized and resolved) URL manipulation object
+	 * 
+	 * @param \string $url								Original URL
+	 * @param \boolean $sanitize						Sanitize URL
+	 * @param \string|\Jkphl\Utility\Url $resolve		URL (string or object) to resolve the new one against
+	 * @return \Jkphl\Utility\Url						URL manipulation object
+	 */
+	public static function instance($url, $sanitize = false, $resolve = null) {
+		$instance						= new self($url, $sanitize);
+		if ($resolve !== null) {
+			$instance->absolutize(($resolve instanceof self) ? $resolve : self::instance($resolve, true));
+		}	
+		return $instance;	
 	}
 }
