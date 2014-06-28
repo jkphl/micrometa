@@ -205,7 +205,6 @@ class Item {
 	 * @return \mixed				Property (list) value(s)
 	 */
 	public function __get($key) {
-		$key						= strtolower(preg_replace("%([A-Z])%", "-$1", $key));
 	
 		// If a single property value was requested
 		if (isset($this->_properties->$key)) {
