@@ -6,14 +6,14 @@
  * @category	Jkphl
  * @package		Jkphl_Micrometa
  * @author		Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright	Copyright © 2014 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright	Copyright © 2015 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license		http://opensource.org/licenses/MIT	The MIT License (MIT)
  */
 
 /***********************************************************************************
  *  The MIT License (MIT)
  *  
- *  Copyright © 2014 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ *  Copyright © 2015 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -39,7 +39,7 @@
  * @category	Jkphl
  * @package		Jkphl_Micrometa
  * @author		Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright	Copyright © 2014 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright	Copyright © 2015 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license		http://opensource.org/licenses/MIT	The MIT License (MIT)
  */
 class MicrometaTest extends \PHPUnit_Framework_TestCase {
@@ -48,7 +48,7 @@ class MicrometaTest extends \PHPUnit_Framework_TestCase {
 	 * 
 	 * @var \string
 	 */
-	protected $_urlPrefix = 'https://rawgithub.com/sandeepshetty/authorship-test-cases/master/';
+	protected $_urlPrefix = 'https://raw.githubusercontent.com/sandeepshetty/authorship-test-cases/master/';
 	
 	/**
 	 * Test a document without an h-card element
@@ -71,7 +71,7 @@ class MicrometaTest extends \PHPUnit_Framework_TestCase {
 		$micrometa			= \Jkphl\Micrometa::instance($this->_urlPrefix.'h-entry_with_p-author.html');
 		$author				= $micrometa->author();
 		$this->assertInstanceOf('\Jkphl\Micrometa\Parser\Microformats2\Item', $author);
-		$this->assertJsonStringEqualsJsonString($author->toJSON(), '{"id":null,"types":["h-card"],"value":"John Doe","properties":{"name":["John Doe"],"url":["http:\/\/example.com\/johndoe\/"],"photo":["http:\/\/www.gravatar.com\/avatar\/fd876f8cd6a58277fc664d47ea10ad19.jpg?s=80&d=mm"]}}');
+		$this->assertJsonStringEqualsJsonString($author->toJSON(), '{"id":null,"types":["h-card"],"value":"http:\/\/www.gravatar.com\/avatar\/fd876f8cd6a58277fc664d47ea10ad19.jpg?s=80&d=mm\n\t\t\tJohn Doe","properties":{"name":["John Doe"],"url":["http:\/\/example.com\/johndoe\/"],"photo":["http:\/\/www.gravatar.com\/avatar\/fd876f8cd6a58277fc664d47ea10ad19.jpg?s=80&d=mm"]}}');
 	}
 	
 	/**
@@ -84,7 +84,7 @@ class MicrometaTest extends \PHPUnit_Framework_TestCase {
 		$micrometa			= \Jkphl\Micrometa::instance($this->_urlPrefix.'h-entry_with_rel-author_pointing_to_h-card_with_u-url_equal_to_u-uid_equal_to_self.html');
 		$author				= $micrometa->author();
 		$this->assertInstanceOf('\Jkphl\Micrometa\Parser\Microformats2\Item', $author);
-		$this->assertJsonStringEqualsJsonString($author->toJSON(), '{"id":null,"types":["h-card"],"value":null,"properties":{"name":["John Doe"],"url":["https:\/\/rawgithub.com\/sandeepshetty\/authorship-test-cases\/master\/h-card_with_u-url_equal_to_u-uid_equal_to_self.html"],"uid":["https:\/\/rawgithub.com\/sandeepshetty\/authorship-test-cases\/master\/h-card_with_u-url_equal_to_u-uid_equal_to_self.html"],"photo":["http:\/\/www.gravatar.com\/avatar\/fd876f8cd6a58277fc664d47ea10ad19.jpg?s=80&d=mm"]}}');
+		$this->assertJsonStringEqualsJsonString($author->toJSON(), '{"id":null,"types":["h-card"],"value":null,"properties":{"name":["John Doe"],"url":["https:\/\/raw.githubusercontent.com\/sandeepshetty\/authorship-test-cases\/master\/h-card_with_u-url_equal_to_u-uid_equal_to_self.html"],"uid":["https:\/\/raw.githubusercontent.com\/sandeepshetty\/authorship-test-cases\/master\/h-card_with_u-url_equal_to_u-uid_equal_to_self.html"],"photo":["http:\/\/www.gravatar.com\/avatar\/fd876f8cd6a58277fc664d47ea10ad19.jpg?s=80&d=mm"]}}');
 	}
 	
 	/**
@@ -97,7 +97,7 @@ class MicrometaTest extends \PHPUnit_Framework_TestCase {
 		$micrometa			= \Jkphl\Micrometa::instance($this->_urlPrefix.'h-entry_with_rel-author_pointing_to_h-card_with_u-url_that_is_also_rel-me.html');
 		$author				= $micrometa->author();
 		$this->assertInstanceOf('\Jkphl\Micrometa\Parser\Microformats2\Item', $author);
-		$this->assertJsonStringEqualsJsonString($author->toJSON(), '{"id":null,"types":["h-card"],"value":null,"properties":{"name":["John Doe"],"url":["https:\/\/rawgithub.com\/sandeepshetty\/authorship-test-cases\/master\/h-card_with_u-url_that_is_also_rel-me.html"],"photo":["http:\/\/www.gravatar.com\/avatar\/fd876f8cd6a58277fc664d47ea10ad19.jpg?s=80&d=mm"]}}');
+		$this->assertJsonStringEqualsJsonString($author->toJSON(), '{"id":null,"types":["h-card"],"value":null,"properties":{"name":["John Doe"],"url":["https:\/\/raw.githubusercontent.com\/sandeepshetty\/authorship-test-cases\/master\/h-card_with_u-url_that_is_also_rel-me.html"],"photo":["http:\/\/www.gravatar.com\/avatar\/fd876f8cd6a58277fc664d47ea10ad19.jpg?s=80&d=mm"]}}');
 	}
 	
 	/**
@@ -110,6 +110,6 @@ class MicrometaTest extends \PHPUnit_Framework_TestCase {
 		$micrometa			= \Jkphl\Micrometa::instance($this->_urlPrefix.'h-entry_with_rel-author_and_h-card_with_u-url_pointing_to_rel-author_href.html');
 		$author				= $micrometa->author();
 		$this->assertInstanceOf('\Jkphl\Micrometa\Parser\Microformats2\Item', $author);
-		$this->assertJsonStringEqualsJsonString($author->toJSON(), '{"id":null,"types":["h-card"],"value":null,"properties":{"name":["John Doe"],"url":["https:\/\/rawgithub.com\/sandeepshetty\/authorship-test-cases\/master\/no_h-card.html"],"photo":["http:\/\/www.gravatar.com\/avatar\/fd876f8cd6a58277fc664d47ea10ad19.jpg?s=80&d=mm"]}}');
+		$this->assertJsonStringEqualsJsonString($author->toJSON(), '{"id":null,"types":["h-card"],"value":null,"properties":{"name":["John Doe"],"url":["https:\/\/raw.githubusercontent.com\/sandeepshetty\/authorship-test-cases\/master\/no_h-card.html"],"photo":["http:\/\/www.gravatar.com\/avatar\/fd876f8cd6a58277fc664d47ea10ad19.jpg?s=80&d=mm"]}}');
 	}
 }

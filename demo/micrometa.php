@@ -6,14 +6,14 @@
  * @category	Jkphl
  * @package		Jkphl_Micrometa
  * @author		Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright	Copyright © 2014 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright	Copyright © 2015 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license		http://opensource.org/licenses/MIT	The MIT License (MIT)
  */
 
 /***********************************************************************************
  *  The MIT License (MIT)
  *  
- *  Copyright © 2014 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ *  Copyright © 2015 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -264,7 +264,7 @@ endif;
             ?></form>
         </article>
         <footer>
-        	<p>This demo page is part of the <a href="https://github.com/jkphl/micrometa" target="_blank">micrometa parser</a> package | Copyright © 2014 Joschi Kuphal &lt;<a href="mailto:joschi@kuphal.net">joschi@kuphal.net</a>&gt; / <a href="https://twitter.com/jkphl" target="_blank">@jkphl</a></p>
+        	<p>This demo page is part of the <a href="https://github.com/jkphl/micrometa" target="_blank">micrometa parser</a> package | Copyright © 2015 Joschi Kuphal &lt;<a href="mailto:joschi@kuphal.net">joschi@kuphal.net</a>&gt; / <a href="https://twitter.com/jkphl" target="_blank">@jkphl</a></p>
         </footer>
     </body>
 </html>
