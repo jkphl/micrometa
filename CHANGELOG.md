@@ -1,3 +1,11 @@
+v0.3.1: Bugfix release (2015-05-10)
+------------------------------------
+
+#### Bugfixes
+
+1. Fixed regression bug introduced by dependency removal
+
+
 v0.3.0: Feature release (2015-05-10)
 ------------------------------------
 

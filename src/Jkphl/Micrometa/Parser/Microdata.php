@@ -49,7 +49,7 @@ require_once __DIR__.DIRECTORY_SEPARATOR.'Microdata'.DIRECTORY_SEPARATOR.'Elemen
  * @license		http://opensource.org/licenses/MIT	The MIT License (MIT)
  * @link		https://github.com/euskadi31/Microdata
  */
-class Microdata extends \Microdata\Reader {
+class Microdata {
 	/**
 	 * Original resource URL
 	 * 
