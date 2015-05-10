@@ -33,7 +33,7 @@ bower install micrometa
 Dependencies
 ------------
 
-*micrometa* relies on the [IndieWeb](https://github.com/indieweb) [microformats-2 parser for PHP](https://github.com/indieweb/php-mf2) (which also supports the original set of microformats). It also used to depend on [MicrodataPHP parser](https://github.com/linclark/MicrodataPHP) and [Microdata parser](https://github.com/euskadi31/Microdata) — with the latter one being deprecated as of release v0.2.0.
+*micrometa* relies on the [IndieWeb](https://github.com/indieweb) [microformats-2 parser for PHP](https://github.com/indieweb/php-mf2) (which also supports the original set of microformats). It also used to depend on [MicrodataPHP parser](https://github.com/linclark/MicrodataPHP) and [Microdata parser](https://github.com/euskadi31/Microdata) — with the latter one being deprecated as of release v0.3.0.
 
 *micrometa* comes with **Composer** support, so go and [get Composer](http://getcomposer.org/doc/00-intro.md#installation-nix) to install the dependency:
 
@@ -545,16 +545,6 @@ Demo
 There's a [demo page](demo/micrometa.php) included in this package, which you can use for checking arbitrary URLs for embedded micro information. You can also use this demo page for displaying the embedded authorship data of a remote URL.
 
 Please be aware that the demo page has to be hosted on a PHP enabled server (preferably PHP 5.4+ for getting a pretty-printed JSON result). A live version can be found [here](http://micrometa.jkphl.is).
-
-Changelog
----------
-
-### v0.2.0 (2015-05-10)
-* Depecated [Microdata parser](https://github.com/euskadi31/Microdata) dependency
-* Support for infinitely nested schema.org microdata
-
-### v0.1.0
-* Initial release
 
 Legal
 -----

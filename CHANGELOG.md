@@ -1,3 +1,12 @@
+v0.3.0: Feature release (2015-05-10)
+------------------------------------
+
+#### Enhancements / Features
+
+1. Deprecated [Microdata parser](https://github.com/euskadi31/Microdata) dependency
+2. Support for infinitely nested schema.org microdata
+
+
 v0.2.1: Bugfix release
 ----------------------
 
@@ -11,7 +20,7 @@ v0.2.0: IndieWebCamp authorship algorithm
 
 #### Enhancements / Features
 
-1.	Implemented the IndieWebCamp authorship algorithm
+1.	Implemented the [IndieWebCamp authorship algorithm](http://indiewebcamp.com/authorship)
 2.	Added PHPUnit authorship tests
 3.	Added Microformats 2 special features
 
