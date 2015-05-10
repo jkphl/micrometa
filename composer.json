@@ -4,7 +4,6 @@
   "require" : {
     "php" : ">=5.3.0",
     "mf2/mf2" : ">=v0.2.10",
-    "euskadi31/microdata" : "dev-master",
     "phpunit/phpunit" : ">=3.7.29"
   },
   "repositories" : [ {

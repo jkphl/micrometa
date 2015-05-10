@@ -47,7 +47,7 @@ function tree($object, $link = false) {
 	if ($object instanceof \stdClass) {
 		
 		// If it's a micro information item
-		if (property_exists($object, types) && property_exists($object, id) && property_exists($object, value) && property_exists($object, properties)) {
+		if (property_exists($object, 'types') && property_exists($object, 'id') && property_exists($object, 'value') && property_exists($object, 'properties')) {
 			$html				.= '<h3><span class="item-type">'.implode('</span> + <span class="item-type">', array_map('htmlspecialchars', $object->types)).'</span> <span class="item-id">[ID = '.htmlspecialchars($object->id ? $object->id : 'NULL').']</span></h3>';
 			if (strlen($object->value)) {
 				$html			.= '<div class="item-value">'.htmlspecialchars($object->value).'</div>';
@@ -74,7 +74,7 @@ function tree($object, $link = false) {
 	} elseif (is_array($object)) {
 		$html				.= '<ol>';
 		foreach ($object as $value) {
-			$value			= tree($value, $link || in_array($property, array('rels')));
+			$value			= tree($value, $link || in_array($value, array('rels')));
 			$html			.= '<li>'.($link ? '<a href="'.$value.'" target="_blank">'.$value.'</a>' : $value).'</li>';
 		}
 		$html				.= '</ol>';

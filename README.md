@@ -33,12 +33,9 @@ bower install micrometa
 Dependencies
 ------------
 
-*micrometa* relies on the following external parser packages:
+*micrometa* relies on the [IndieWeb](https://github.com/indieweb) [microformats-2 parser for PHP](https://github.com/indieweb/php-mf2) (which also supports the original set of microformats). It also used to depend on [MicrodataPHP parser](https://github.com/linclark/MicrodataPHP) and [Microdata parser](https://github.com/euskadi31/Microdata) — with the latter one being deprecated as of release v0.2.0.
 
-1.	The [IndieWeb](https://github.com/indieweb) [microformats-2 parser for PHP](https://github.com/indieweb/php-mf2) (which also supports the original set of microformats),
-2.	and the ~~[MicrodataPHP parser](https://github.com/linclark/MicrodataPHP) by [Lin Clark](https://github.com/linclark)~~ [Microdata parser](https://github.com/euskadi31/Microdata) by [Axel Etcheverry](https://github.com/euskadi31).
-
-*micrometa* comes with **Composer** support, so go and [get Composer](http://getcomposer.org/doc/00-intro.md#installation-nix) and install the two libraries like this:
+*micrometa* comes with **Composer** support, so go and [get Composer](http://getcomposer.org/doc/00-intro.md#installation-nix) to install the dependency:
 
 ```bash
 cd /path/to/project/basedir/micrometa
@@ -549,8 +546,18 @@ There's a [demo page](demo/micrometa.php) included in this package, which you ca
 
 Please be aware that the demo page has to be hosted on a PHP enabled server (preferably PHP 5.4+ for getting a pretty-printed JSON result). A live version can be found [here](http://micrometa.jkphl.is).
 
+Changelog
+---------
+
+### v0.2.0 (2015-05-10)
+* Depecated [Microdata parser](https://github.com/euskadi31/Microdata) dependency
+* Support for infinitely nested schema.org microdata
+
+### v0.1.0
+* Initial release
+
 Legal
 -----
-Copyright © 2014 Joschi Kuphal <joschi@kuphal.net> / [@jkphl](https://twitter.com/jkphl)
+Copyright © 2015 Joschi Kuphal <joschi@kuphal.net> / [@jkphl](https://twitter.com/jkphl)
 
 *micrometa* is licensed under the terms of the [MIT license](LICENSE.txt).

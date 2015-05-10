@@ -36,19 +36,8 @@ namespace Jkphl\Micrometa\Parser;
  ***********************************************************************************/
 
 require_once __DIR__.DIRECTORY_SEPARATOR.'Microdata'.DIRECTORY_SEPARATOR.'Item.php';
-
-// Include the Composer autoloader
-if (@is_file(dirname(dirname(dirname(dirname(__DIR__)))).DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'autoload.php')) {
-	require_once dirname(dirname(dirname(dirname(__DIR__)))).DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'autoload.php';
-}
-
-// Exit on failure
-if (!@class_exists('\Microdata\Reader')) {
-	die ((PHP_SAPI == 'cli') ?
-		"\nPlease follow the instructions at https://github.com/jkphl/micrometa#dependencies to install the library containing the PHP class \"\Microdata\Reader\".\n\n" :
-		'<p style="font-weight:bold;color:red">Please follow the <a href="https://github.com/jkphl/micrometa#dependencies" target="_blank">instructions</a> to install the library containing the PHP class "MicrodataPhp"</p>'
-	);
-}
+require_once __DIR__.DIRECTORY_SEPARATOR.'Microdata'.DIRECTORY_SEPARATOR.'Document.php';
+require_once __DIR__.DIRECTORY_SEPARATOR.'Microdata'.DIRECTORY_SEPARATOR.'Element.php';
 
 /**
  * Extended Microdata parser
@@ -67,6 +56,18 @@ class Microdata extends \Microdata\Reader {
 	 * @var \Jkphl\Utility\Url
 	 */
 	protected $_url = null;
+	/**
+	 * DOM
+	 * 
+	 * @var \Jkphl\Micrometa\Parser\Microdata\Document
+	 */
+	protected $_dom = null;
+	/**
+	 * Top-level microdata items
+	 * 
+	 * @var \array
+	 */
+	protected $_items = null;
 	
 	/************************************************************************************************
 	 * PUBLIC METHODS
@@ -81,20 +82,19 @@ class Microdata extends \Microdata\Reader {
 	 */
 	public function __construct($url, $source = null) {
 		$this->_url							= ($url instanceof \Jkphl\Utility\Url) ? $url : new \Jkphl\Utility\Url($url);
-		$url								= strval($url);
-		
-		// If the source document has to be loaded by URL: Use the parent constructor
+		$url		    					= strval($url);
+		$this->_dom                         = new \Jkphl\Micrometa\Parser\Microdata\Document();
+		$this->_dom->registerNodeClass('DOMDocument', '\Jkphl\Micrometa\Parser\Microdata\Document');
+		$this->_dom->registerNodeClass('DOMElement', '\Jkphl\Micrometa\Parser\Microdata\Element');
+		$this->_dom ->preserveWhiteSpace	= false;
+				
+		// Load document from an URL ...
 		if ($source === null) {
-			parent::__construct($url);
+			@$this->_dom->loadHTMLFile($url);
 			
-		// Else: Load it from a HTML string
+		// ... or from an HTML string
 		} else {
-			$dom							= new \Microdata\Reader\Document($url);
-			$dom->registerNodeClass('DOMDocument', '\Microdata\Reader\Document');
-			$dom->registerNodeClass('DOMElement', '\Microdata\Reader\Element');
-			$dom->preserveWhiteSpace		= false;
-			@$dom->loadHTML($source);
-			$this->dom						= $dom;
+			@$this->_dom->loadHTML($source);
 		}
 	}
 	
@@ -104,13 +104,16 @@ class Microdata extends \Microdata\Reader {
 	 * @return \array								Refined items
 	 */
 	public function items() {
-		$items								= array();
-		$microdata							= $this->read();
-		if (!empty($microdata->items) && is_array($microdata->items)) {
-			foreach ($microdata->items as $data) {
-				$items[]					= new \Jkphl\Micrometa\Parser\Microdata\Item((array)$data, $this->_url);
-			}
-		}
-		return $items;
+	    if ($this->_items === null) {
+	       $this->_items                   = array();
+	       $register                       = array();
+	       
+	       /* @var $element \Jkphl\Micrometa\Parser\Microdata\Element */
+	       foreach ($this->_dom->topLevelElements() as $element) {
+	           $this->_items[]             = $element->toItem($this->_url, $register);
+	       }
+	    }
+	    
+	    return $this->_items;
 	}
 }
