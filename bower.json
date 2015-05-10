@@ -1,6 +1,6 @@
 {
   "name": "micrometa",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "homepage": "https://github.com/jkphl/micrometa",
   "description": "A PHP meta parser for extracting embedded micro information out of HTML documents, currently supporting Microformats (1 + 2) and W3C Microdata",
   "main": "micrometa.phps",
