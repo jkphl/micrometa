@@ -1,5 +1,13 @@
+v0.3.2: Bugfix release (2015-08-18)
+-----------------------------------
+
+#### Enhancements / Features
+
+1. Updated dependencies & unit tests
+
+
 v0.3.1: Bugfix release (2015-05-10)
-------------------------------------
+-----------------------------------
 
 #### Bugfixes
 

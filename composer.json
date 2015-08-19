@@ -3,7 +3,7 @@
   "description" : "A PHP meta parser for extracting embedded micro information out of HTML documents, currently supporting Microformats (1 + 2) and W3C Microdata",
   "require" : {
     "php" : ">=5.3.0",
-    "mf2/mf2" : ">=v0.2.10",
+    "mf2/mf2" : ">=v0.2.12",
     "phpunit/phpunit" : ">=3.7.29"
   },
   "repositories" : [ {
@@ -16,7 +16,7 @@
   "authors" : [ {
     "name" : "Joschi Kuphal",
     "email" : "joschi@kuphal.net",
-    "homepage" : "http://joschi.kuphal.net",
+    "homepage" : "https://jkphl.is",
     "role" : "Developer"
   } ],
   "support" : {

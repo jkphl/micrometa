@@ -71,7 +71,7 @@ class MicrometaTest extends \PHPUnit_Framework_TestCase {
 		$micrometa			= \Jkphl\Micrometa::instance($this->_urlPrefix.'h-entry_with_p-author.html');
 		$author				= $micrometa->author();
 		$this->assertInstanceOf('\Jkphl\Micrometa\Parser\Microformats2\Item', $author);
-		$this->assertJsonStringEqualsJsonString($author->toJSON(), '{"id":null,"types":["h-card"],"value":"http:\/\/www.gravatar.com\/avatar\/fd876f8cd6a58277fc664d47ea10ad19.jpg?s=80&d=mm\n\t\t\tJohn Doe","properties":{"name":["John Doe"],"url":["http:\/\/example.com\/johndoe\/"],"photo":["http:\/\/www.gravatar.com\/avatar\/fd876f8cd6a58277fc664d47ea10ad19.jpg?s=80&d=mm"]}}');
+		$this->assertJsonStringEqualsJsonString($author->toJSON(), '{"id":null,"types":["h-card"],"value":"John Doe","properties":{"name":["John Doe"],"url":["http:\/\/example.com\/johndoe\/"],"photo":["http:\/\/www.gravatar.com\/avatar\/fd876f8cd6a58277fc664d47ea10ad19.jpg?s=80&d=mm"]}}');
 	}
 	
 	/**
