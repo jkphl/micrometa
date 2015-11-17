@@ -75,6 +75,6 @@ class Document extends \DOMDocument {
      * @return \DOMNodeList         Top level microdata elements
      */
     public function topLevelElements() {
-        return $this->xpath()->query('//*[@itemscope and not(@itemprop)][count(ancestor::*[@itemscope]) = 0]');
+        return $this->xpath()->query('//*[@itemscope and not(@itemprop)]');
     }
 }

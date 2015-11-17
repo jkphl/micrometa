@@ -1,3 +1,15 @@
+v0.3.3: Bugfix release (2015-11-17)
+-----------------------------------
+
+#### Bufixes
+
+1. Changed detection of top-level Microdata items ([#3](https://github.com/jkphl/micrometa/issues/3))  
+
+#### Enhancements / Features
+
+1. Updated dependencies
+
+
 v0.3.2: Bugfix release (2015-08-18)
 -----------------------------------
 

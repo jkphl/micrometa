@@ -1,31 +1,38 @@
 {
-  "name" : "jkphl/micrometa",
-  "description" : "A PHP meta parser for extracting embedded micro information out of HTML documents, currently supporting Microformats (1 + 2) and W3C Microdata",
-  "require" : {
-    "php" : ">=5.3.0",
-    "mf2/mf2" : ">=v0.2.12",
-    "phpunit/phpunit" : ">=3.7.29"
+  "name": "jkphl/micrometa",
+  "description": "A PHP meta parser for extracting embedded micro information out of HTML documents, currently supporting Microformats (1 + 2) and W3C Microdata",
+  "require": {
+    "php": ">=5.3.0",
+    "mf2/mf2": ">=v0.2.12",
+    "phpunit/phpunit": "~4.8.18"
   },
-  "repositories" : [ {
-    "type" : "composer",
-    "url" : "https://packagist.org/"
-  }, {
-    "type" : "vcs",
-    "url" : "https://github.com/jkphl/micrometa"
-  } ],
-  "authors" : [ {
-    "name" : "Joschi Kuphal",
-    "email" : "joschi@kuphal.net",
-    "homepage" : "https://jkphl.is",
-    "role" : "Developer"
-  } ],
-  "support" : {
-    "email" : "joschi@kuphal.net",
-    "issues" : "https://github.com/jkphl/micrometa/issues",
-    "source" : "https://github.com/jkphl/micrometa"
+  "authors": [
+    {
+      "name": "Joschi Kuphal",
+      "email": "joschi@kuphal.net",
+      "homepage": "https://jkphl.is",
+      "role": "Developer"
+    }
+  ],
+  "support": {
+    "email": "joschi@kuphal.net",
+    "issues": "https://github.com/jkphl/micrometa/issues",
+    "source": "https://github.com/jkphl/micrometa"
   },
-  "keywords" : [ "html", "micro", "parser", "meta", "microformats", "microdata" ],
-  "license" : "MIT",
-  "type" : "library",
-  "homepage" : "http://micrometa.jkphl.is"
+  "keywords": [
+    "html",
+    "micro",
+    "parser",
+    "meta",
+    "microformats",
+    "microdata"
+  ],
+  "license": "MIT",
+  "type": "library",
+  "homepage": "http://micrometa.jkphl.is",
+  "autoload": {
+    "psr-4": {
+      "Jkphl\\": "src/Jkphl/"
+    }
+  }
 }
