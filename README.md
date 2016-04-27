@@ -546,6 +546,12 @@ There's a [demo page](demo/micrometa.php) included in this package, which you ca
 
 Please be aware that the demo page has to be hosted on a PHP enabled server (preferably PHP 5.4+ for getting a pretty-printed JSON result). A live version can be found [here](http://micrometa.jkphl.is).
 
+You can use the following JavaScript snippet to create a **bookmarklet in your browser** that sends the current page to the live instance and shows you the embeded Microformats 2 and schema.org microdata:
+  
+```js
+javascript:var f=document.createElement("form");f.action="http://micrometa.jkphl.is",f.method="post",f.target="_blank";var u=document.createElement("input");u.type="hidden",u.name="url",u.value=document.location,f.appendChild(u);var s=document.createElement("input");s.type="hidden",s.name="microdata",s.value=1,f.appendChild(s),document.body.appendChild(f),f.submit();
+```
+
 Legal
 -----
 Copyright © 2015 Joschi Kuphal <joschi@kuphal.net> / [@jkphl](https://twitter.com/jkphl)
