@@ -3,8 +3,8 @@
   "description": "A PHP meta parser for extracting embedded micro information out of HTML documents, currently supporting Microformats (1 + 2) and W3C Microdata",
   "require": {
     "php": ">=5.3.0",
-    "mf2/mf2": ">=v0.2.12",
-    "phpunit/phpunit": "~4.8.18"
+    "mf2/mf2": ">=v0.3.0",
+    "phpunit/phpunit": "~5.3.2"
   },
   "authors": [
     {
