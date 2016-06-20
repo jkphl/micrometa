@@ -35,8 +35,6 @@ namespace Jkphl\Micrometa\Parser\Microdata;
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-require_once dirname(dirname(__DIR__)).DIRECTORY_SEPARATOR.'Item.php';
-
 /**
  * Extended microdata item
  * 

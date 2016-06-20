@@ -95,9 +95,9 @@ class Item {
 	/**
 	 * Constructor
 	 * 
-	 * @param \array $data					Item data
-	 * @param \Jkphl\Utility\Url $url		Item base URL
-	 * @return \Jkphl\Micrometa\Item		Micro information item
+	 * @param \array $data						Item data
+	 * @param string|\Jkphl\Utility\Url $url	Item base URL
+	 * @return \Jkphl\Micrometa\Item			Micro information item
 	 */
 	public function __construct(array $data, \Jkphl\Utility\Url $url) {
 		$this->_url					= $url;

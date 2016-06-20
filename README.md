@@ -30,6 +30,23 @@ This will create a subdirectory called `micrometa` containing all the package fi
 bower install micrometa
 ```
 
+Both cloning the GitHub repository and installing via Bower will require you to run **Composer** afterwards. Alternatively, you can directly add *micrometa* as a composer dependency to your project by running
+
+```
+composer require jkphl/micrometa
+```
+
+or manually adding it as a dependency to your `composer.json`:
+
+```
+{
+  "require": {
+    "jkphl/micrometa": "*"
+  }
+}
+
+```
+
 Dependencies
 ------------
 

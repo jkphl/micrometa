@@ -30,5 +30,5 @@ if (($GLOBALS['argc'] < 2) || !strlen(trim($GLOBALS['argv'][1]))) {
 	die("\nUsage: ".$GLOBALS['argv'][0]." <url>\n\n");
 }
 
-require_once __DIR__.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.'Jkphl'.DIRECTORY_SEPARATOR.'Micrometa.php';
+require_once __DIR__.DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'autoload.php';
 die(\Jkphl\Micrometa::instance(trim($GLOBALS['argv'][1]))->toJSON(false));

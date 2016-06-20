@@ -35,22 +35,6 @@ namespace Jkphl\Micrometa\Parser;
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-require_once __DIR__.DIRECTORY_SEPARATOR.'Microformats2'.DIRECTORY_SEPARATOR.'Exception.php';
-require_once __DIR__.DIRECTORY_SEPARATOR.'Microformats2'.DIRECTORY_SEPARATOR.'Item.php';
-
-// Include the Composer autoloader
-if (@is_file(dirname(dirname(dirname(dirname(__DIR__)))).DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'autoload.php')) {
-	require_once dirname(dirname(dirname(dirname(__DIR__)))).DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'autoload.php';
-}
-
-// Exit on failure
-if (!@class_exists('\Mf2\Parser')) {
-	die ((PHP_SAPI == 'cli') ?
-		"\nPlease follow the instructions at https://github.com/jkphl/micrometa#dependencies to install the library containing the PHP class \"\Mf2\Parser\".\n\n" :
-		'<p style="font-weight:bold;color:red">Please follow the <a href="https://github.com/jkphl/micrometa#dependencies" target="_blank">instructions</a> to install the library containing the PHP class "\Mf2\Parser"</p>'
-	);
-}
-
 /**
  * Extended Microformats2 parser
  * 

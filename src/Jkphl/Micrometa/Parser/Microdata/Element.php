@@ -36,8 +36,6 @@ namespace Jkphl\Micrometa\Parser\Microdata;
  * *********************************************************************************
  */
  
-require_once __DIR__.DIRECTORY_SEPARATOR.'Item.php';
-
 /**
  * Extended DOM element
  *
@@ -85,7 +83,7 @@ class Element extends \DOMElement {
                 
                 // If it has already been parsed: Reference it
                 if (!empty($register[$property->getNodePath()])) {
-                    $value                  &= $register[$property->getNodePath()];
+                    $value                  =& $register[$property->getNodePath()];
                     
                 // Else: Parse it
                 } else {
