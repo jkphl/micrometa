@@ -1,3 +1,10 @@
+v0.3.4: Feature release (2016-06-20)
+-----------------------------------
+
+#### Enhancements / Features
+
+1. Added support for nested child microformats
+
 v0.3.3: Bugfix release (2015-11-17)
 -----------------------------------
 
