@@ -94,7 +94,7 @@ class Microformats2 extends \Mf2\Parser {
 	 * be parsed for microformats.
 	 * 
 	 * @param bool $convertClassic					Whether or not to html-encode non e-* properties. Defaults to false
-	 * @param DOMElement $context					Optionall: An element from which to parse microformats
+	 * @param \DOMElement $context					Optional: An element from which to parse microformats
 	 * @return array								An array containing all the µfs found in the current document
 	 */
 	public function parse($convertClassic = true, \DOMElement $context = null) {

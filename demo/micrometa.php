@@ -60,7 +60,13 @@ function tree($object, $link = false) {
 				}
 				$html			.= '</dl>';
 			}
-			
+			if (count($object->children)) {
+				$html			.= '<dl class="item-children">';
+				$html			.= '<dt>children</dt>';
+				$html			.= '<dd>'.tree($object->children, false).'</dd>';
+				$html			.= '</dl>';
+			}
+
 		} else {
 			$html				.= '<dl class="object">';
 			foreach (get_object_vars($object) as $property => $values) {

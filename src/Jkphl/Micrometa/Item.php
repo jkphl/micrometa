@@ -72,9 +72,15 @@ class Item {
 	/**
 	 * List of nested properties
 	 *
-	 * @var \array
+	 * @var \stdClass
 	 */
 	protected $_properties = null;
+	/**
+	 * List of nested children
+	 *
+	 * @var \array
+	 */
+	protected $_children = array();
 	/**
 	 * Properties holding URL strings (and that need to get expanded / sanitized)
 	 * 
@@ -98,7 +104,8 @@ class Item {
 		$this->types				= empty($data['type']) ? array() : (array)$data['type'];
 		$this->_properties			= new \stdClass();
 		$classname					= get_class($this);
-		
+
+		// Construct the properties
 		if (!empty($data['properties']) && is_array($data['properties'])) {
 			foreach ($data['properties'] as $property => $values) {
 				if (is_array($values)) {
@@ -113,11 +120,22 @@ class Item {
 						}
 					}
 					foreach ($values as $value) {
-						$propertyValues[]				= $hasSubItems ? new $classname((array)$value, $this->_url) : $this->_resolveUrlValue($property, $value);
+						$propertyValues[]				= $hasSubItems ?
+							new $classname((array)$value, $this->_url) : $this->_resolveUrlValue($property, $value);
 					}
 				}
 			}
 		}
+
+		// Construct the children
+		if (!empty($data['children']) && is_array($data['children'])) {
+			foreach ($data['children'] as $child) {
+				if ($this->_isItem($child)) {
+					$this->_children[] = new $classname((array)$child, $this->_url);
+				}
+			}
+		}
+
 		if (!empty($data['value'])) {
 			$this->value			= $data['value'];
 		}
@@ -165,9 +183,10 @@ class Item {
 			'types'					=> $this->types,
 			'value'					=> $this->value,
 			'properties'			=> array(),
+			'children'				=> array(),
 		);
 		
-		// Run through all properties and recursively refine them
+		// Run through all properties and recursively serialize them
 		foreach ($this->_properties as $propertyKey => $propertyValues) {
 			if (is_array($propertyValues) && count($propertyValues)) {
 				$result->properties[$propertyKey]			= array();
@@ -175,6 +194,11 @@ class Item {
 					$result->properties[$propertyKey][]		= ($propertyValue instanceof self) ? $propertyValue->toObject() : $propertyValue; 
 				}
 			}
+		}
+
+		// Run through all children and recursively serialize them
+		foreach ($this->_children as $child) {
+			$result->children[] = $child->toObject();
 		}
 		
 		return $result;
@@ -255,7 +279,7 @@ class Item {
 	 * 
 	 * @param \string $property		Property name
 	 * @param \mixed $value			Value
-	 * @return void
+	 * @return mixed 				URL resolved value
 	 */
 	protected function _resolveUrlValue($property, $value) {
 		return in_array($property, self::$urlProperties) ? strval(\Jkphl\Utility\Url::instance($value, true, $this->_url)) : $value;

@@ -60,6 +60,8 @@ require_once __DIR__.DIRECTORY_SEPARATOR.'Micrometa'.DIRECTORY_SEPARATOR.'Parser
  * @author		Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @copyright	Copyright © 2015 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license		http://opensource.org/licenses/MIT	The MIT License (MIT)
+ * @method array|\Jkphl\Micrometa\Item hEntry(int $index = null) Return a nested h-entry
+ * @method array|\Jkphl\Micrometa\Item hCard(int $index = null) Return a nested h-card
  */
 class Micrometa {
 	/**
@@ -135,6 +137,7 @@ class Micrometa {
 		
 		// Determine and resolve the base URL
 		$this->baseUrl					= $this->_url;
+		/** @var \DOMElement $base */
 		foreach ($this->xpath->query('//base[@href]') as $base) {
 			$this->baseUrl				= new \Jkphl\Utility\Url($base->getAttribute('href'), true);
 			$this->baseUrl->absolutize($this->_url);
