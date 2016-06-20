@@ -1,3 +1,10 @@
+v0.3.6: Bugfix release (2016-06-20)
+------------------------------------
+
+#### Bufixes
+
+1. Fixed broken Microdata parser code
+
 v0.3.5: Feature release (2016-06-20)
 ------------------------------------
 

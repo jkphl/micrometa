@@ -35,7 +35,7 @@ namespace Jkphl\Micrometa\Parser\Microdata;
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * *********************************************************************************
  */
- 
+
 /**
  * Extended DOM element
  *
@@ -83,7 +83,7 @@ class Element extends \DOMElement {
                 
                 // If it has already been parsed: Reference it
                 if (!empty($register[$property->getNodePath()])) {
-                    $value                  =& $register[$property->getNodePath()];
+                    $value                  &= $register[$property->getNodePath()];
                     
                 // Else: Parse it
                 } else {
@@ -289,12 +289,12 @@ class Element extends \DOMElement {
             // If the node itself creates a new scope: Break            
             if ($node->itemScope()) {
                 return;
-            }h()->query('*', $node) as $child) {
-                $this->_traverse($child, $t
+            }
         }
         
         // Recursively descend into the DOM tree and search for nested properties
-        foreach ($this->ownerDocument->xpatoTraverse, $properties, $root);
+        foreach ($this->ownerDocument->xpath()->query('*', $node) as $child) {
+            $this->_traverse($child, $toTraverse, $properties, $root);
         }
     }
 }
