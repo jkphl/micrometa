@@ -289,12 +289,12 @@ class Element extends \DOMElement {
             // If the node itself creates a new scope: Break            
             if ($node->itemScope()) {
                 return;
-            }
+            }h()->query('*', $node) as $child) {
+                $this->_traverse($child, $t
         }
         
         // Recursively descend into the DOM tree and search for nested properties
-        foreach ($this->ownerDocument->xpath()->query('*', $node) as $child) {
-            $this->_traverse($child, $toTraverse, $properties, $root);
+        foreach ($this->ownerDocument->xpatoTraverse, $properties, $root);
         }
     }
 }

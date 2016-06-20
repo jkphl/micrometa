@@ -1,10 +1,17 @@
-v0.3.4: Feature release (2016-06-20)
------------------------------------
+v0.3.5: Feature release (2016-06-20)
+------------------------------------
 
 #### Enhancements / Features
 
 1. Added support for nested child microformats
 2. Refactored to proper composer support (autoloading, etc.)
+
+v0.3.4: Maintenance release (2016-04-27)
+----------------------------------------
+
+#### Enhancements / Features
+
+1. Updated dependencies
 
 v0.3.3: Bugfix release (2015-11-17)
 -----------------------------------
