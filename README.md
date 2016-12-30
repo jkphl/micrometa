@@ -61,7 +61,7 @@ php /path/to/composer.phar install
 # or (depending on your setup ...):
 
 composer install
-``` 
+```
 
 Usage
 -----
@@ -69,8 +69,8 @@ Usage
 *micrometa* essentially consists of one [main parser class](src/Jkphl/Micrometa.php) and several auxiliary classes. You can incorporate *micrometa* into your project by including and instanciating the main parser class. Fetching and parsing a remote HTML document is a easy as this:
 
 ```php
-require_once '/path/to/micrometa/src/Jkphl/Micrometa.php'
-	
+require_once '/path/to/micrometa/src/Jkphl/Micrometa.php';
+
 $url					= 'https://github.com/jkphl/micrometa';
 $micrometaParser		= new \Jkphl\Micrometa($url);
 $micrometaObjectData	= $micrometaParser->toObject();
@@ -252,7 +252,7 @@ if (!($author instanceof \Jkphl\Micrometa\Item)) {
 	$author				= $micrometaParser->externalAuthor();
 }
 if ($author instanceof \Jkphl\Micrometa\Item) {
-	...
+	// ...
 }
 ```
 
@@ -302,7 +302,7 @@ You can use the `isOfType()` method to check if an item is of a specific type. T
 
 ```php
 if ($item->isOfType('http://schema.org/Person', 'h-card')) {
-	...
+	// ...
 }
 ```
 
@@ -323,7 +323,7 @@ Also, remember that all nested item properties are value lists themselves. When 
 $allPhotos			= $item->photos;
 ```
 
-For Microformat 2 items (exclusively) there exist some [additional convenience methods](#accessing-nested-items--properties) for accessing properties and nested items. If a requested property doesn't exist at all, `NULL` is returned. 
+For Microformat 2 items (exclusively) there exist some [additional convenience methods](#accessing-nested-items--properties) for accessing properties and nested items. If a requested property doesn't exist at all, `NULL` is returned.
 
 #### Finding the first defined property
 
@@ -564,13 +564,13 @@ There's a [demo page](demo/micrometa.php) included in this package, which you ca
 Please be aware that the demo page has to be hosted on a PHP enabled server (preferably PHP 5.4+ for getting a pretty-printed JSON result). A live version can be found [here](http://micrometa.jkphl.is).
 
 You can use the following JavaScript snippet to create a **bookmarklet in your browser** that sends the current page to the live instance and shows you the embeded Microformats 2 and schema.org microdata:
-  
+
 ```js
 javascript:var f=document.createElement("form");f.action="http://micrometa.jkphl.is",f.method="post",f.target="_blank";var u=document.createElement("input");u.type="hidden",u.name="url",u.value=document.location,f.appendChild(u);var s=document.createElement("input");s.type="hidden",s.name="microdata",s.value=1,f.appendChild(s),document.body.appendChild(f),f.submit();
 ```
 
 Legal
 -----
-Copyright © 2015 Joschi Kuphal <joschi@kuphal.net> / [@jkphl](https://twitter.com/jkphl)
+Copyright © 2016 Joschi Kuphal <joschi@kuphal.net> / [@jkphl](https://twitter.com/jkphl)
 
 *micrometa* is licensed under the terms of the [MIT license](LICENSE.txt).

@@ -1,4 +1,3 @@
-#!/usr/bin/php
 <?php
 
 /***********************************************************************************
@@ -24,11 +23,11 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl;
-
-if (($GLOBALS['argc'] < 2) || !strlen(trim($GLOBALS['argv'][1]))) {
-	die("\nUsage: ".$GLOBALS['argv'][0]." <url>\n\n");
+error_reporting(E_ALL);
+$autoloader = __DIR__.'/vendor/autoload.php';
+if (!file_exists($autoloader)) {
+    echo "Composer autoloader not found: $autoloader".PHP_EOL;
+    echo "Please issue 'composer install' and try again.".PHP_EOL;
+    exit(1);
 }
-
-require_once __DIR__.DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'autoload.php';
-die(\Jkphl\Micrometa::instance(trim($GLOBALS['argv'][1]))->toJSON(false));
+require $autoloader;
