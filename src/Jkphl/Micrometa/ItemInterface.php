@@ -10,7 +10,7 @@
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
-namespace Jkphl\Micrometa\Parser\Microformats2;
+namespace Jkphl\Micrometa;
 
 /***********************************************************************************
  *  The MIT License (MIT)
@@ -35,40 +35,81 @@ namespace Jkphl\Micrometa\Parser\Microformats2;
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
+namespace Jkphl\Micrometa;
+
+use Jkphl\Utility\Url;
+
 /**
- * Extended Microformats2 exception
+ * Micro information item interface
  *
  * @category Jkphl
  * @package Jkphl_Micrometa
  * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @copyright Copyright © 2016 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
- * @link https://github.com/indieweb/php-mf2
  */
-class Exception extends \OutOfBoundsException
+interface ItemInterface
 {
     /**
-     * Invalid microformat vocable
+     * Constructor
      *
-     * @var \int
+     * @param \array $data Item data
+     * @param string|Url $url Item base URL
      */
-    const INVALID_MICROFORMAT_VOCABLE = 1;
+    public function __construct(array $data, Url $url);
+
     /**
-     * Invalid microformat vocable
+     * Check if this item is of a specific type
      *
-     * @var \string
+     * @param \string $type List of type names (arbitrary length)
+     * @return \boolean                If this item is of a specific type
      */
-    const INVALID_MICROFORMAT_VOCABLE_STR = 'Invalid microformat vocable "%s"';
+    public function isOfType();
+
     /**
-     * Item index out of range
+     * Return the first available property in a list of properties
      *
-     * @var \int
+     * @param \string $property1 First property
+     * @param \string $property2 Second property
+     * ...
+     * @return \mixed                Property value
      */
-    const INDEX_OUT_OF_RANGE = 2;
+    public function firstOf();
+
     /**
-     * Item index out of range
+     * Return a list of properties or a single property
      *
-     * @var \string
+     * @param \string $key Property (list) name
+     * @return \mixed                Property (list) value(s)
      */
-    const INDEX_OUT_OF_RANGE_STR = 'Item index %s out of range';
+    public function __get($key);
+
+    /**
+     * String serialization as JSON object
+     *
+     * @return \string                String serialization as JSON object
+     */
+    public function __toString();
+
+    /**
+     * Return a JSON representation of the embedded micro information
+     *
+     * @param \boolean $beautify Beautify the JSON output (available since PHP 5.4)
+     * @return \string                    JSON representation
+     */
+    public function toJSON($beautify = false);
+
+    /**
+     * Return a vanilla object representation of this item
+     *
+     * @return \stdClass            Vanilla object item representation
+     */
+    public function toObject();
+
+    /**
+     * Return the parser name
+     *
+     * @return string Parser name
+     */
+    public function parser();
 }

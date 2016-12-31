@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 15.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="Ebene_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="390px" height="400px" viewBox="0 0 390 400" enable-background="new 0 0 390 400" xml:space="preserve">
+<g id="microformat-logo">
+	
+		<linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="-314.8533" y1="649.9033" x2="-313.8525" y2="650.9041" gradientTransform="matrix(320 0 0 320 100763.0781 -207899)">
+		<stop  offset="0.05" style="stop-color:#56A231"/>
+		<stop  offset="0.95" style="stop-color:#3B792D"/>
+	</linearGradient>
+	<path fill="url(#SVGID_1_)" stroke="#FFFFFF" stroke-width="20" d="M70,70h200c33.138,0,60,26.863,60,60v200
+		c0,33.137-26.862,60-60,60H70c-33.137,0-60-26.863-60-60V130C10,96.863,36.863,70,70,70z"/>
+	
+		<linearGradient id="SVGID_2_" gradientUnits="userSpaceOnUse" x1="-314.5022" y1="650.4854" x2="-313.5014" y2="651.4861" gradientTransform="matrix(245 0 0 245 77173.0625 -159344)">
+		<stop  offset="0.05" style="stop-color:#72BD2D"/>
+		<stop  offset="0.95" style="stop-color:#56A231"/>
+	</linearGradient>
+	<path fill="url(#SVGID_2_)" stroke="#FFFFFF" stroke-width="20" d="M165,25h155c24.854,0,45,20.146,45,45v155
+		c0,24.854-20.146,45-45,45H165c-24.854,0-45-20.146-45-45V70C120,45.146,140.146,25,165,25z"/>
+	
+		<linearGradient id="SVGID_3_" gradientUnits="userSpaceOnUse" x1="-313.7053" y1="651.8076" x2="-312.7053" y2="652.8076" gradientTransform="matrix(160 0 0 160 50413.0391 -104279)">
+		<stop  offset="0.05" style="stop-color:#99CC33"/>
+		<stop  offset="0.95" style="stop-color:#72BD2D"/>
+	</linearGradient>
+	<path fill="url(#SVGID_3_)" stroke="#FFFFFF" stroke-width="20" d="M240,10h120c11.046,0,20,8.954,20,20v120
+		c0,11.046-8.954,20-20,20H240c-11.046,0-20-8.954-20-20V30C220,18.954,228.954,10,240,10z"/>
+</g>
+</svg>

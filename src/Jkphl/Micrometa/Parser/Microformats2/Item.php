@@ -3,11 +3,11 @@
 /**
  * micrometa – Micro information meta parser
  *
- * @category    Jkphl
- * @package        Jkphl_Micrometa
- * @author        Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright    Copyright © 2016 Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @license        http://opensource.org/licenses/MIT	The MIT License (MIT)
+ * @category Jkphl
+ * @package Jkphl_Micrometa
+ * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright Copyright © 2016 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @license http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 namespace Jkphl\Micrometa\Parser\Microformats2;
@@ -35,18 +35,27 @@ namespace Jkphl\Micrometa\Parser\Microformats2;
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
+use Jkphl\Micrometa\Parser\Microformats2;
+use Jkphl\Micrometa\Parser\Microformats2\Exception;
+
 /**
  * Extended microformats2 item
  *
- * @category    Jkphl
- * @package        Jkphl_Micrometa
- * @author        Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright    Copyright © 2016 Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @license        http://opensource.org/licenses/MIT	The MIT License (MIT)
- * @link        https://github.com/indieweb/php-mf2
+ * @category Jkphl
+ * @package Jkphl_Micrometa
+ * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright Copyright © 2016 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @license http://opensource.org/licenses/MIT The MIT License (MIT)
+ * @link https://github.com/indieweb/php-mf2
  */
 class Item extends \Jkphl\Micrometa\Item
 {
+    /**
+     * Yielding parser
+     *
+     * @var string
+     */
+    const PARSER = Microformats2::NAME;
 
     /**
      * Generic caller
@@ -61,7 +70,7 @@ class Item extends \Jkphl\Micrometa\Item
      */
     public function __call($method, array $arguments)
     {
-        $method = \Jkphl\Micrometa\Parser\Microformats2::decamelize($method);
+        $method = Microformats2::decamelize($method);
 
         // If a property of this name exists
         if (isset($this->_properties->$method)) {
@@ -74,9 +83,9 @@ class Item extends \Jkphl\Micrometa\Item
 
                 // Else: If the requested property value index is out of range: Error
             } elseif (($itemIndex < 0) || ($itemIndex > count($property) - 1)) {
-                throw new \Jkphl\Micrometa\Parser\Microformats2\Exception(
-                    sprintf(\Jkphl\Micrometa\Parser\Microformats2\Exception::INDEX_OUT_OF_RANGE_STR, $itemIndex),
-                    \Jkphl\Micrometa\Parser\Microformats2\Exception::INDEX_OUT_OF_RANGE
+                throw new Exception(
+                    sprintf(Exception::INDEX_OUT_OF_RANGE_STR, $itemIndex),
+                    Exception::INDEX_OUT_OF_RANGE
                 );
 
                 // Else: Return the requested property value index
@@ -98,7 +107,7 @@ class Item extends \Jkphl\Micrometa\Item
      */
     public function __get($key)
     {
-        $property = \Jkphl\Micrometa\Parser\Microformats2::decamelize($key);
+        $property = Microformats2::decamelize($key);
 
         // If a single property value was requested
         if (isset($this->_properties->$property)) {

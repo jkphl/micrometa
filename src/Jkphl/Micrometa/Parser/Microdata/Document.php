@@ -3,11 +3,11 @@
 /**
  * micrometa – Micro information meta parser
  *
- * @category    Jkphl
- * @package        Jkphl_Micrometa
- * @author        Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright    Copyright © 2016 Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @license        http://opensource.org/licenses/MIT	The MIT License (MIT)
+ * @category Jkphl
+ * @package Jkphl_Micrometa
+ * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright Copyright © 2016 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @license http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 namespace Jkphl\Micrometa\Parser\Microdata;
@@ -38,26 +38,14 @@ namespace Jkphl\Micrometa\Parser\Microdata;
 /**
  * Extended DOM document
  *
- * @category    Jkphl
- * @package        Jkphl_Micrometa
- * @author        Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright    Copyright © 2016 Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @license        http://opensource.org/licenses/MIT	The MIT License (MIT)
- * @link        https://github.com/euskadi31/Microdata
+ * @category Jkphl
+ * @package Jkphl_Micrometa
+ * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright Copyright © 2016 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @license http://opensource.org/licenses/MIT The MIT License (MIT)
  */
-class Document extends \DOMDocument
+class Document extends \Jkphl\Micrometa\Document
 {
-    /**
-     * XPath operator
-     *
-     * @var \DOMXPath
-     */
-    protected $_xpath = null;
-
-    /************************************************************************************************
-     * PUBLIC METHODS
-     ***********************************************************************************************/
-
     /**
      * Return top level microdata elements
      *
@@ -66,18 +54,5 @@ class Document extends \DOMDocument
     public function topLevelElements()
     {
         return $this->xpath()->query('//*[@itemscope and not(@itemprop)]');
-    }
-
-    /**
-     * Instanciate and return an XPath operator for this document
-     *
-     * @return \DOMXPath            XPath operator
-     */
-    public function xpath()
-    {
-        if ($this->_xpath === null) {
-            $this->_xpath = new \DOMXPath($this);
-        }
-        return $this->_xpath;
     }
 }

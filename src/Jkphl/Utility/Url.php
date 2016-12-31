@@ -3,11 +3,11 @@
 /**
  * micrometa – Micro information meta parser
  *
- * @category    Jkphl
+ * @category Jkphl
  * @package        Jkphl_Utility
- * @author        Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright    Copyright © 2016 Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @license        http://opensource.org/licenses/MIT	The MIT License (MIT)
+ * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright Copyright © 2016 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @license http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 namespace Jkphl\Utility;
@@ -38,11 +38,11 @@ namespace Jkphl\Utility;
 /**
  * URL manipulation class
  *
- * @category    Jkphl
+ * @category Jkphl
  * @package        Jkphl_Utility
- * @author        Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright    Copyright © 2016 Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @license        http://opensource.org/licenses/MIT	The MIT License (MIT)
+ * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright Copyright © 2016 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @license http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 class Url
 {

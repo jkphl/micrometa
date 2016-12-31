@@ -10,7 +10,7 @@
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
-namespace Jkphl\Micrometa\Parser\Microformats2;
+namespace Jkphl\Micrometa\Parser\JsonLD;
 
 /***********************************************************************************
  *  The MIT License (MIT)
@@ -35,40 +35,23 @@ namespace Jkphl\Micrometa\Parser\Microformats2;
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
+use Jkphl\Micrometa\Parser\JsonLD;
+
 /**
- * Extended Microformats2 exception
+ * Extended microdata item
  *
  * @category Jkphl
  * @package Jkphl_Micrometa
  * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @copyright Copyright © 2016 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
- * @link https://github.com/indieweb/php-mf2
  */
-class Exception extends \OutOfBoundsException
+class Item extends \Jkphl\Micrometa\Item
 {
     /**
-     * Invalid microformat vocable
+     * Yielding parser
      *
-     * @var \int
+     * @var string
      */
-    const INVALID_MICROFORMAT_VOCABLE = 1;
-    /**
-     * Invalid microformat vocable
-     *
-     * @var \string
-     */
-    const INVALID_MICROFORMAT_VOCABLE_STR = 'Invalid microformat vocable "%s"';
-    /**
-     * Item index out of range
-     *
-     * @var \int
-     */
-    const INDEX_OUT_OF_RANGE = 2;
-    /**
-     * Item index out of range
-     *
-     * @var \string
-     */
-    const INDEX_OUT_OF_RANGE_STR = 'Item index %s out of range';
+    const PARSER = JsonLD::NAME;
 }

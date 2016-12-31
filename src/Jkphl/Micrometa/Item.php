@@ -3,11 +3,11 @@
 /**
  * micrometa – Micro information meta parser
  *
- * @category    Jkphl
- * @package        Jkphl_Micrometa
- * @author        Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright    Copyright © 2016 Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @license        http://opensource.org/licenses/MIT	The MIT License (MIT)
+ * @category Jkphl
+ * @package Jkphl_Micrometa
+ * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright Copyright © 2016 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @license http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 namespace Jkphl\Micrometa;
@@ -35,16 +35,18 @@ namespace Jkphl\Micrometa;
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
+use Jkphl\Utility\Url;
+
 /**
  * Micro information item
  *
- * @category    Jkphl
- * @package        Jkphl_Micrometa
- * @author        Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright    Copyright © 2016 Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @license        http://opensource.org/licenses/MIT	The MIT License (MIT)
+ * @category Jkphl
+ * @package Jkphl_Micrometa
+ * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright Copyright © 2016 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @license http://opensource.org/licenses/MIT The MIT License (MIT)
  */
-class Item
+class Item implements ItemInterface
 {
     /**
      * Properties holding URL strings (and that need to get expanded / sanitized)
@@ -73,7 +75,7 @@ class Item
     /**
      * Item base URL (used for relative URL resolution)
      *
-     * @var \Jkphl\Utility\Url
+     * @var Url
      */
     protected $_url = null;
     /**
@@ -88,18 +90,20 @@ class Item
      * @var \array
      */
     protected $_children = array();
-
-    /************************************************************************************************
-     * PUBLIC METHODS
-     ***********************************************************************************************/
+    /**
+     * Yielding parser
+     *
+     * @var string
+     */
+    const PARSER = 'none';
 
     /**
      * Constructor
      *
      * @param \array $data Item data
-     * @param string|\Jkphl\Utility\Url $url Item base URL
+     * @param string|Url $url Item base URL
      */
-    public function __construct(array $data, \Jkphl\Utility\Url $url)
+    public function __construct(array $data, Url $url)
     {
         $this->_url = $url;
         $this->types = empty($data['type']) ? array() : (array)$data['type'];
@@ -132,7 +136,7 @@ class Item
         if (!empty($data['children']) && is_array($data['children'])) {
             foreach ($data['children'] as $child) {
                 if ($this->_isItem($child)) {
-                    $this->_children[] = new $classname((array)$child, $this->_url);
+                    $this->_children[] = ($child instanceof self) ? $child : new $classname((array)$child, $this->_url);
                 }
             }
         }
@@ -140,44 +144,10 @@ class Item
         if (!empty($data['value'])) {
             $this->value = $data['value'];
         }
+
         if (!empty($data['id'])) {
             $this->id = $data['id'];
         }
-    }
-
-    /**
-     * Check if a subelement is a microcontent item itself
-     *
-     * @param \mixed $item Subelement
-     * @return \boolean                Is an item
-     */
-    protected function _isItem($item)
-    {
-        if (is_array($item)) {
-            return array_key_exists('type', $item) && is_array($item['type']) && array_key_exists(
-                    'properties', $item
-                ) && is_array($item['properties']);
-        } elseif (is_object($item)) {
-            return isset($item->type) && is_array($item->type) && isset($item->properties) && is_array(
-                    $item->properties
-                );
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * Sanitize URL values
-     *
-     * @param \string $property Property name
-     * @param \mixed $value Value
-     * @return mixed                URL resolved value
-     */
-    protected function _resolveUrlValue($property, $value)
-    {
-        return in_array($property, self::$urlProperties) ? strval(
-            \Jkphl\Utility\Url::instance($value, true, $this->_url)
-        ) : $value;
     }
 
     /**
@@ -214,10 +184,6 @@ class Item
         return null;
     }
 
-    /************************************************************************************************
-     * MAGIC METHODS
-     ***********************************************************************************************/
-
     /**
      * Return a list of properties or a single property
      *
@@ -252,10 +218,6 @@ class Item
         return strval($this->toJSON(false));
     }
 
-    /************************************************************************************************
-     * PRIVATE METHODS
-     ***********************************************************************************************/
-
     /**
      * Return a JSON representation of the embedded micro information
      *
@@ -284,6 +246,7 @@ class Item
             'value' => $this->value,
             'properties' => array(),
             'children' => array(),
+            'parser' => $this->parser(),
         );
 
         // Run through all properties and recursively serialize them
@@ -291,8 +254,7 @@ class Item
             if (is_array($propertyValues) && count($propertyValues)) {
                 $result->properties[$propertyKey] = array();
                 foreach ($propertyValues as $propertyValue) {
-                    $result->properties[$propertyKey][] = ($propertyValue instanceof self) ? $propertyValue->toObject(
-                    ) : $propertyValue;
+                    $result->properties[$propertyKey][] = ($propertyValue instanceof self) ? $propertyValue->toObject() : $propertyValue;
                 }
             }
         }
@@ -303,5 +265,53 @@ class Item
         }
 
         return $result;
+    }
+
+    /**
+     * Check if a subelement is a microcontent item itself
+     *
+     * @param \mixed $item Subelement
+     * @return \boolean                Is an item
+     */
+    protected function _isItem($item)
+    {
+        if ($item instanceof ItemInterface) {
+            return true;
+        } elseif (is_array($item)) {
+            return array_key_exists('type', $item) &&
+                is_array($item['type']) &&
+                array_key_exists('properties', $item) &&
+                is_array($item['properties']);
+        } elseif (is_object($item)) {
+            return isset($item->type) &&
+                is_array($item->type) &&
+                isset($item->properties) &&
+                is_array($item->properties);
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Sanitize URL values
+     *
+     * @param \string $property Property name
+     * @param \mixed $value Value
+     * @return mixed                URL resolved value
+     */
+    protected function _resolveUrlValue($property, $value)
+    {
+        return in_array($property, self::$urlProperties) ? strval(
+            Url::instance($value, true, $this->_url)
+        ) : $value;
+    }
+
+    /**
+     * Return the parser name
+     *
+     * @return string Parser name
+     */
+    public function parser() {
+        return static::PARSER;
     }
 }

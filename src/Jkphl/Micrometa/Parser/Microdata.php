@@ -3,11 +3,11 @@
 /**
  * micrometa – Micro information meta parser
  *
- * @category    Jkphl
- * @package        Jkphl_Micrometa
- * @author        Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright    Copyright © 2016 Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @license        http://opensource.org/licenses/MIT	The MIT License (MIT)
+ * @category Jkphl
+ * @package Jkphl_Micrometa
+ * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright Copyright © 2016 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @license http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 namespace Jkphl\Micrometa\Parser;
@@ -35,28 +35,31 @@ namespace Jkphl\Micrometa\Parser;
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
+use Jkphl\Micrometa\Parser\Microdata\Document;
+use Jkphl\Utility\Url;
+use Jkphl\Micrometa\Parser\Microdata\Element;
+
 /**
  * Extended Microdata parser
  *
- * @category    Jkphl
- * @package        Jkphl_Micrometa
- * @author        Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright    Copyright © 2016 Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @license        http://opensource.org/licenses/MIT	The MIT License (MIT)
- * @link        https://github.com/euskadi31/Microdata
+ * @category Jkphl
+ * @package Jkphl_Micrometa
+ * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright Copyright © 2016 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @license http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 class Microdata
 {
     /**
      * Original resource URL
      *
-     * @var \Jkphl\Utility\Url
+     * @var Url
      */
     protected $_url = null;
     /**
      * DOM
      *
-     * @var \Jkphl\Micrometa\Parser\Microdata\Document
+     * @var Document
      */
     protected $_dom = null;
     /**
@@ -65,6 +68,12 @@ class Microdata
      * @var \array
      */
     protected $_items = null;
+    /**
+     * Parser name
+     *
+     * @var string
+     */
+    const NAME = 'microdata';
 
     /************************************************************************************************
      * PUBLIC METHODS
@@ -73,15 +82,15 @@ class Microdata
     /**
      * Constructor
      *
-     * @param \Jkphl\Utility\Url|\string $url Document URL
+     * @param Url|\string $url Document URL
      * @param \string $source Optional: Document source code
      * @return void
      */
     public function __construct($url, $source = null)
     {
-        $this->_url = ($url instanceof \Jkphl\Utility\Url) ? $url : new \Jkphl\Utility\Url($url);
+        $this->_url = ($url instanceof Url) ? $url : new Url($url);
         $url = strval($url);
-        $this->_dom = new \Jkphl\Micrometa\Parser\Microdata\Document();
+        $this->_dom = new Document();
         $this->_dom->registerNodeClass('DOMDocument', '\Jkphl\Micrometa\Parser\Microdata\Document');
         $this->_dom->registerNodeClass('DOMElement', '\Jkphl\Micrometa\Parser\Microdata\Element');
         $this->_dom->preserveWhiteSpace = false;
@@ -107,7 +116,7 @@ class Microdata
             $this->_items = array();
             $register = array();
 
-            /* @var $element \Jkphl\Micrometa\Parser\Microdata\Element */
+            /* @var $element Element */
             foreach ($this->_dom->topLevelElements() as $element) {
                 $this->_items[] = $element->toItem($this->_url, $register);
             }

@@ -3,11 +3,11 @@
 /**
  * micrometa – Micro information meta parser
  *
- * @category    Jkphl
- * @package        Jkphl_Micrometa
- * @author        Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright    Copyright © 2016 Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @license        http://opensource.org/licenses/MIT	The MIT License (MIT)
+ * @category Jkphl
+ * @package Jkphl_Micrometa
+ * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright Copyright © 2016 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @license http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 namespace Jkphl\Micrometa\Parser\Microdata;
 
@@ -36,6 +36,8 @@ namespace Jkphl\Micrometa\Parser\Microdata;
  * *********************************************************************************
  */
 
+use Jkphl\Micrometa\Parser\Microdata\Item;
+
 /**
  * Extended DOM element
  *
@@ -49,7 +51,6 @@ namespace Jkphl\Micrometa\Parser\Microdata;
  */
 class Element extends \DOMElement
 {
-
     /************************************************************************************************
      * PUBLIC METHODS
      ***********************************************************************************************/
@@ -59,7 +60,7 @@ class Element extends \DOMElement
      *
      * @param \string $url URL
      * @param \array $register Registry of parsed item nodes
-     * @return \Jkphl\Micrometa\Parser\Microdata\Item       Item
+     * @return Item Item
      */
     public function toItem($url, array &$register)
     {
@@ -78,7 +79,7 @@ class Element extends \DOMElement
         }
 
         // Run through all properties
-        /* @var $property \Jkphl\Micrometa\Parser\Microdata\Element */
+        /* @var $property Element */
         foreach ($this->properties() as $property) {
             $value = null;
 
@@ -106,7 +107,7 @@ class Element extends \DOMElement
             }
         }
 
-        return new \Jkphl\Micrometa\Parser\Microdata\Item($data, $url);
+        return new Item($data, $url);
     }
 
     /**
@@ -196,21 +197,16 @@ class Element extends \DOMElement
     /**
      * Traverses the DOM tree
      *
-     * @param \Jkphl\Micrometa\Parser\Microdata\Element $node Node to be traversed
+     * @param Element $node Node to be traversed
      * @param \array $toTraverse Complete list of nodes to be traversed
      * @param \array $properties Gathered properties
-     * @param \Jkphl\Micrometa\Parser\Microdata\Element $root Root element
+     * @param Element $root Root element
      * @return \void
      */
-    protected function _traverse(
-        \Jkphl\Micrometa\Parser\Microdata\Element $node,
-        array &$toTraverse,
-        array &$properties,
-        \Jkphl\Micrometa\Parser\Microdata\Element $root
-    ) {
-
+    protected function _traverse(Element $node, array &$toTraverse, array &$properties, Element $root)
+    {
         // Remove the current node from the list of still to be traversed elements
-        /* @var $element \Jkphl\Micrometa\Parser\Microdata\Element */
+        /* @var $element Element */
         $filteredToTraverse = array();
         foreach ($toTraverse as $element) {
             if (!$element->isSameNode($node)) {
@@ -259,11 +255,10 @@ class Element extends \DOMElement
     /**
      * Retrieve a property's value (type and tagname dependent)
      *
-     * @return NULL|\Jkphl\Micrometa\Parser\Microdata\Element|\string       Property value
+     * @return NULL|Element|\string       Property value
      */
     public function propertyValue()
     {
-
         // If this is not a property: Don't return a value
         if (!count($this->itemProp())) {
             return null;

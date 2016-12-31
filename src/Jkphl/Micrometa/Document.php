@@ -10,7 +10,7 @@
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
-namespace Jkphl\Micrometa\Parser\Microformats2;
+namespace Jkphl\Micrometa;
 
 /***********************************************************************************
  *  The MIT License (MIT)
@@ -36,39 +36,48 @@ namespace Jkphl\Micrometa\Parser\Microformats2;
  ***********************************************************************************/
 
 /**
- * Extended Microformats2 exception
+ * Extended DOM document
  *
  * @category Jkphl
  * @package Jkphl_Micrometa
  * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @copyright Copyright © 2016 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
- * @link https://github.com/indieweb/php-mf2
  */
-class Exception extends \OutOfBoundsException
+class Document extends \DOMDocument
 {
     /**
-     * Invalid microformat vocable
+     * XPath operator
      *
-     * @var \int
+     * @var \DOMXPath
      */
-    const INVALID_MICROFORMAT_VOCABLE = 1;
+    protected $_xpath = null;
+
     /**
-     * Invalid microformat vocable
+     * Instanciate and return an XPath operator for this document
      *
-     * @var \string
+     * @return \DOMXPath XPath operator
      */
-    const INVALID_MICROFORMAT_VOCABLE_STR = 'Invalid microformat vocable "%s"';
+    public function xpath()
+    {
+        if ($this->_xpath === null) {
+            $this->_xpath = new \DOMXPath($this);
+        }
+        return $this->_xpath;
+    }
+
     /**
-     * Item index out of range
+     * Create a document instance from HTML source
      *
-     * @var \int
+     * @param string $source HTML source
+     * @return Document Document instance
      */
-    const INDEX_OUT_OF_RANGE = 2;
-    /**
-     * Item index out of range
-     *
-     * @var \string
-     */
-    const INDEX_OUT_OF_RANGE_STR = 'Item index %s out of range';
+    public static function fromHTMLSource($source)
+    {
+        libxml_use_internal_errors(true);
+        $document = new static();
+        @$document->loadHTML($source);
+        libxml_use_internal_errors(false);
+        return $document;
+    }
 }

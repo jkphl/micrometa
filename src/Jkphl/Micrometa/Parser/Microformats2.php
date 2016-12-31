@@ -3,11 +3,11 @@
 /**
  * micrometa – Micro information meta parser
  *
- * @category    Jkphl
- * @package        Jkphl_Micrometa
- * @author        Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright    Copyright © 2016 Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @license        http://opensource.org/licenses/MIT	The MIT License (MIT)
+ * @category Jkphl
+ * @package Jkphl_Micrometa
+ * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright Copyright © 2016 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @license http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 namespace Jkphl\Micrometa\Parser;
@@ -35,24 +35,34 @@ namespace Jkphl\Micrometa\Parser;
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
+use Jkphl\Utility\Url;
+use Jkphl\Micrometa\Parser\Microformats2\Exception;
+use Jkphl\Micrometa\Parser\Microformats2\Item;
+
 /**
  * Extended Microformats2 parser
  *
- * @category    Jkphl
- * @package        Jkphl_Micrometa
- * @author        Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright    Copyright © 2016 Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @license        http://opensource.org/licenses/MIT	The MIT License (MIT)
- * @link        https://github.com/indieweb/php-mf2
+ * @category Jkphl
+ * @package Jkphl_Micrometa
+ * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright Copyright © 2016 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @license http://opensource.org/licenses/MIT The MIT License (MIT)
+ * @link https://github.com/indieweb/php-mf2
  */
 class Microformats2 extends \Mf2\Parser
 {
     /**
      * Original resource URL
      *
-     * @var \Jkphl\Utility\Url
+     * @var Url
      */
     protected $_url = null;
+    /**
+     * Parser name
+     *
+     * @var string
+     */
+    const NAME = 'mf2';
 
     /************************************************************************************************
      * PUBLIC METHODS
@@ -61,13 +71,13 @@ class Microformats2 extends \Mf2\Parser
     /**
      * Constructor
      *
-     * @param \DOMDocument|string $input The data to parse. A string of HTML or a DOMDocument
-     * @param \Jkphl\Utility\Url|\string $url Optional: The URL of the parsed document, for relative URL resolution
+     * @param \DOMDocument|string $source The data to parse. A string of HTML or a DOMDocument
+     * @param Url|\string $url Optional: The URL of the parsed document, for relative URL resolution
      */
-    public function __construct($input, $url = null)
+    public function __construct($source, $url = null)
     {
-        $this->_url = ($url instanceof \Jkphl\Utility\Url) ? $url : new \Jkphl\Utility\Url($url);
-        parent::__construct($input, strval($url));
+        $this->_url = ($url instanceof Url) ? $url : new Url($url);
+        parent::__construct($source, strval($url));
     }
 
     /**
@@ -75,15 +85,15 @@ class Microformats2 extends \Mf2\Parser
      *
      * @param \string $vocable Vocable
      * @param \string $separator Separation char / vocable
-     * @return \string                    Decamelized vocable
-     * @throws \Jkphl\Micrometa\Parser\Microformats2\Exception        If it's not a valid microformats2 vocable
+     * @return \string Decamelized vocable
+     * @throws Exception If it's not a valid microformats2 vocable
      */
     public static function decamelize($vocable, $separator = '-')
     {
         if (!self::isValidVocable($vocable)) {
-            throw new \Jkphl\Micrometa\Parser\Microformats2\Exception(
-                sprintf(\Jkphl\Micrometa\Parser\Microformats2\Exception::INVALID_MICROFORMAT_VOCABLE_STR, $vocable),
-                \Jkphl\Micrometa\Parser\Microformats2\Exception::INVALID_MICROFORMAT_VOCABLE
+            throw new Exception(
+                sprintf(Exception::INVALID_MICROFORMAT_VOCABLE_STR, $vocable),
+                Exception::INVALID_MICROFORMAT_VOCABLE
             );
         }
         return strtolower(preg_replace("%[A-Z]%", "$separator$0", $vocable));
@@ -140,7 +150,7 @@ class Microformats2 extends \Mf2\Parser
 
         // Run through all original parsing results
         foreach ($results as $data) {
-            $refined[] = new \Jkphl\Micrometa\Parser\Microformats2\Item($data, $this->_url);
+            $refined[] = new Item($data, $this->_url);
         }
 
         return $refined;
