@@ -95,7 +95,7 @@ class MicrometaTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('\Jkphl\Micrometa\Parser\Microformats2\Item', $author);
         $this->assertJsonStringEqualsJsonString(
             $author->toJSON(),
-            '{"id":null,"types":["h-card"],"value":null,"properties":{"name":["John Doe"],"url":["https:\/\/raw.githubusercontent.com\/sandeepshetty\/authorship-test-cases\/master\/h-card_with_u-url_equal_to_u-uid_equal_to_self.html"],"uid":["https:\/\/raw.githubusercontent.com\/sandeepshetty\/authorship-test-cases\/master\/h-card_with_u-url_equal_to_u-uid_equal_to_self.html"],"photo":["http:\/\/www.gravatar.com\/avatar\/fd876f8cd6a58277fc664d47ea10ad19.jpg?s=80&d=mm"]},"children":[]}'
+            '{"id":null,"types":["h-card"],"value":null,"properties":{"name":["John Doe"],"url":["https:\/\/cdn.rawgit.com\/sandeepshetty\/authorship-test-cases\/master\/h-card_with_u-url_equal_to_u-uid_equal_to_self.html"],"uid":["https:\/\/cdn.rawgit.com\/sandeepshetty\/authorship-test-cases\/master\/h-card_with_u-url_equal_to_u-uid_equal_to_self.html"],"photo":["http:\/\/www.gravatar.com\/avatar\/fd876f8cd6a58277fc664d47ea10ad19.jpg?s=80&d=mm"]},"children":[]}'
         );
     }
 
@@ -114,7 +114,7 @@ class MicrometaTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('\Jkphl\Micrometa\Parser\Microformats2\Item', $author);
         $this->assertJsonStringEqualsJsonString(
             $author->toJSON(),
-            '{"id":null,"types":["h-card"],"value":null,"properties":{"name":["John Doe"],"url":["https:\/\/raw.githubusercontent.com\/sandeepshetty\/authorship-test-cases\/master\/h-card_with_u-url_that_is_also_rel-me.html"],"photo":["http:\/\/www.gravatar.com\/avatar\/fd876f8cd6a58277fc664d47ea10ad19.jpg?s=80&d=mm"]},"children":[]}'
+            '{"id":null,"types":["h-card"],"value":null,"properties":{"name":["John Doe"],"url":["https:\/\/cdn.rawgit.com\/sandeepshetty\/authorship-test-cases\/master\/h-card_with_u-url_that_is_also_rel-me.html"],"photo":["http:\/\/www.gravatar.com\/avatar\/fd876f8cd6a58277fc664d47ea10ad19.jpg?s=80&d=mm"]},"children":[]}'
         );
     }
 
@@ -133,7 +133,7 @@ class MicrometaTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('\Jkphl\Micrometa\Parser\Microformats2\Item', $author);
         $this->assertJsonStringEqualsJsonString(
             $author->toJSON(),
-            '{"id":null,"types":["h-card"],"value":null,"properties":{"name":["John Doe"],"url":["https:\/\/raw.githubusercontent.com\/sandeepshetty\/authorship-test-cases\/master\/no_h-card.html"],"photo":["http:\/\/www.gravatar.com\/avatar\/fd876f8cd6a58277fc664d47ea10ad19.jpg?s=80&d=mm"]},"children":[]}'
+            '{"id":null,"types":["h-card"],"value":null,"properties":{"name":["John Doe"],"url":["https:\/\/cdn.rawgit.com\/sandeepshetty\/authorship-test-cases\/master\/no_h-card.html"],"photo":["http:\/\/www.gravatar.com\/avatar\/fd876f8cd6a58277fc664d47ea10ad19.jpg?s=80&d=mm"]},"children":[]}'
         );
     }
 }
