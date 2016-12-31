@@ -49,7 +49,7 @@ class MicrometaTest extends \PHPUnit_Framework_TestCase
      *
      * @var \string
      */
-    protected $_urlPrefix = 'https://raw.githubusercontent.com/sandeepshetty/authorship-test-cases/master/';
+    protected $_urlPrefix = 'https://cdn.rawgit.com/sandeepshetty/authorship-test-cases/master/';
 
     /**
      * Test a document without an h-card element

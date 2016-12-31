@@ -3,4 +3,5 @@
 /apidoc
 /vendor/*
 /composer.lock
-.env
+/node_modules
+/test.php
