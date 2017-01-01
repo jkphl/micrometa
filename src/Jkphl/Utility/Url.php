@@ -6,7 +6,7 @@
  * @category Jkphl
  * @package        Jkphl_Utility
  * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright Copyright © 2016 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
@@ -15,7 +15,7 @@ namespace Jkphl\Utility;
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2016 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ *  Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -41,7 +41,7 @@ namespace Jkphl\Utility;
  * @category Jkphl
  * @package        Jkphl_Utility
  * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright Copyright © 2016 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 class Url

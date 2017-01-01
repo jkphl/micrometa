@@ -6,7 +6,7 @@
  * @category Jkphl
  * @package Jkphl_Micrometa
  * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright Copyright © 2016 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 namespace Jkphl\Micrometa\Parser\Microdata;
@@ -15,7 +15,7 @@ namespace Jkphl\Micrometa\Parser\Microdata;
  * *********************************************************************************
  * The MIT License (MIT)
  *
- * Copyright © 2016 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -44,7 +44,7 @@ use Jkphl\Micrometa\Parser\Microdata\Item;
  * @category Jkphl
  * @package Jkphl_Micrometa
  * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright Copyright © 2016 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
  * @link https://github.com/euskadi31/Microdata
  * @property Document $ownerDocument Owner document
