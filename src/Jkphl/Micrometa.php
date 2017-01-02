@@ -99,6 +99,12 @@ class Micrometa
      * @var \stdClass
      */
     protected $_result = null;
+    /**
+     * Parsers to use
+     *
+     * @var int
+     */
+    protected $_parsers = null;
 
     /************************************************************************************************
      * PUBLIC METHODS
@@ -109,8 +115,9 @@ class Micrometa
      *
      * @param \string $url Resource document URL
      * @param \string $source Resource document source code
+     * @param \int Parsers to use (NULL = all parsers)
      */
-    public function __construct($url, $source = null)
+    public function __construct($url, $source = null, $parser = null)
     {
         $this->_url = new Url($url, true);
         $this->_source = ($source === null) ? $this->_getUrl($url) : $source;
@@ -125,6 +132,12 @@ class Micrometa
             $this->baseUrl = new Url($base->getAttribute('href'), true);
             $this->baseUrl->absolutize($this->_url);
             break;
+        }
+
+        // Determine the parsers to use
+        $this->_parsers = Microformats2::PARSE | Microdata::PARSE | JsonLD::PARSE;
+        if ($parser !== null) {
+            $this->_parsers &= intval($parser);
         }
     }
 
@@ -180,11 +193,12 @@ class Micrometa
      *
      * @param \string $url Resource document URL
      * @param \string $source Resource document source code
+     * @param \int Parsers to use (NULL = all parsers)
      * @return \Jkphl\Micrometa Micrometa parser object
      */
-    public static function instance($url, $source = null)
+    public static function instance($url, $source = null, $parser = null)
     {
-        return new self($url, $source);
+        return new self($url, $source, $parser);
     }
 
     /**
@@ -221,62 +235,64 @@ class Micrometa
      */
     public function parse()
     {
+        $this->_result = array(
+            'items' => array(),
+            'rels' => array(),
+            'alternates' => array(),
+        );
+
         // Parse with the microformats2 parser
-        $this->_result = $this->parseMicroformats2();
+        if ($this->_parsers & Microformats2::PARSE) {
+            $this->parseMicroformats2();
+        }
 
         // Parse with the microdata parser
-//        $this->_result->items = array_merge($this->_result->items, $this->parseMicrodata());
+        if ($this->_parsers & Microdata::PARSE) {
+            $this->parseMicrodata();
+        }
 
         // Parse with the JSON-LD parser
-        $this->_result->items = array_merge($this->_result->items, $this->parseJsonLD());
+        if ($this->_parsers & JsonLD::PARSE) {
+            $this->parseJsonLD();
+        }
+
+        $this->_result = (object)$this->_result;
+        $this->_result->rels = (object)$this->_result->rels;
+        foreach ($this->_result->alternates as $index => $alternate) {
+            $this->_result->alternates[$index] = (object)$alternate;
+        }
 
         // Set the "parsed" flag
         $this->_parsed = true;
     }
 
     /**
-     * Parse Microformats2
-     *
-     * @return \stdClass Result items
+     * Parse Microformats 1+2
      */
     protected function parseMicroformats2()
     {
         $microformatsParser = new Microformats2($this->dom, $this->baseUrl);
-        $microformats = $microformatsParser->parse(true, $this->_focus);
-        $result = (object)array_merge(
-            array(
-                'items' => array(),
-                'rels' => array(),
-                'alternates' => array(),
-            ), $microformats
-        );
-        $result->rels = (object)$result->rels;
-        foreach ($result->alternates as $index => $alternate) {
-            $result->alternates[$index] = (object)$alternate;
+        foreach ($microformatsParser->parse(true, $this->_focus) as $key => $items) {
+            $this->_result[$key] = array_merge($this->_result[$key], $items);
         }
-        return $result;
     }
 
     /**
-     * Parse Microdata
-     *
-     * @return array Microdata items
+     * Parse HTML Microdata
      */
     protected function parseMicrodata()
     {
         $microdataParser = new Microdata(strval($this->_url), $this->dom->saveXML());
-        return $microdataParser->items();
+        $this->_result['items'] = array_merge($this->_result['items'], $microdataParser->items());
     }
 
     /**
      * Parse JSON-LD
-     *
-     * @return array JSON-LD items
      */
     protected function parseJsonLD()
     {
         $jsonLDParser = new JsonLD($this->dom, $this->_url);
-        return $jsonLDParser->items();
+        $this->_result['items'] = array_merge($this->_result['items'], $jsonLDParser->items());
     }
 
     /**

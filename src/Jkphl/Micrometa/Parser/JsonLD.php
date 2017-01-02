@@ -81,6 +81,12 @@ class JsonLD
      * @var string
      */
     const NAME = 'json-ld';
+    /**
+     * JSON-LD parse flag
+     *
+     * @var int
+     */
+    const PARSE = 4;
 
     /**
      * Constructor
@@ -108,9 +114,10 @@ class JsonLD
             /** @var \DOMElement $jsonLD */
             foreach ($this->_dom->xpath()->query('//script[@type = "application/ld+json"]') as $jsonLD) {
                 $jsonLDInline = trim($jsonLD->textContent);
-                if (strlen($jsonLDInline)) {
-                    $this->_items = $this->_items + $this->parseBlock($jsonLDInline);
-                }
+                print_r(jsonld_expand(json_decode($jsonLDInline)));
+//                if (strlen($jsonLDInline)) {
+//                    $this->_items = $this->_items + $this->parseBlock($jsonLDInline);
+//                }
             }
         }
 

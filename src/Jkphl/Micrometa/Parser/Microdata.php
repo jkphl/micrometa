@@ -74,6 +74,12 @@ class Microdata
      * @var string
      */
     const NAME = 'microdata';
+    /**
+     * Microdata parse flag
+     *
+     * @var int
+     */
+    const PARSE = 2;
 
     /************************************************************************************************
      * PUBLIC METHODS

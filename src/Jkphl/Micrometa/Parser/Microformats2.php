@@ -63,6 +63,12 @@ class Microformats2 extends \Mf2\Parser
      * @var string
      */
     const NAME = 'mf2';
+    /**
+     * Microformats parse flag
+     *
+     * @var int
+     */
+    const PARSE = 1;
 
     /************************************************************************************************
      * PUBLIC METHODS
