@@ -67,38 +67,38 @@ function tree($object, $link = false)
             property_exists($object, 'properties') &&
             property_exists($object, 'parser')
         ) {
-            $html .= '<h3><span class="item-type item-type-'.$object->parser.'">'.implode(
+            $html .= '<details>';
+            $html .= '<summary class="item-type-'.$object->parser.'"><h3><span class="item-type">'.implode(
                     '</span> + <span class="item-type">', array_map('htmlspecialchars', $object->types)
                 ).'</span> <span class="item-id">[ID = '.htmlspecialchars(
                     $object->id ? $object->id : 'NULL'
-                ).']</span></h3>';
+                ).']</span></h3></summary>';
             if (strlen($object->value)) {
                 $html .= '<div class="item-value">'.htmlspecialchars($object->value).'</div>';
             }
             if (count($object->properties)) {
                 $html .= '<dl class="item-properties">';
                 foreach ($object->properties as $property => $values) {
-                    $html .= '<dt>'.htmlspecialchars($property).'</dt>';
+                    $html .= '<dt title="'.htmlspecialchars($property).'">'.htmlspecialchars(pathinfo(parse_url($property, PHP_URL_PATH), PATHINFO_FILENAME)).'</dt>';
                     $html .= '<dd>'.tree($values, in_array($property, \Jkphl\Micrometa\Item::$urlProperties)).'</dd>';
                 }
                 $html .= '</dl>';
             }
             if (count($object->children)) {
                 $html .= '<dl class="item-children">';
-                $html .= '<dt>children</dt>';
+                $html .= '<dt title="children">children</dt>';
                 $html .= '<dd>'.tree($object->children, false).'</dd>';
                 $html .= '</dl>';
             }
 
+            $html .= '</details>';
+
         } else {
             $html .= '<dl class="object">';
             foreach (get_object_vars($object) as $property => $values) {
-                $html .= '<dt>'.htmlspecialchars($property).'</dt>';
-                $html .= '<dd>'.tree(
-                        $values, $link || in_array(
-                            $property, array_merge(\Jkphl\Micrometa\Item::$urlProperties, array('rels'))
-                        )
-                    ).'</dd>';
+                $html .= '<dt title="'.htmlspecialchars($property).'">'.htmlspecialchars($property).'</dt>';
+                $html .= '<dd>'.tree($values,
+                        $link || in_array($property, \Jkphl\Micrometa\Item::$urlProperties)).'</dd>';
             }
             $html .= '</dl>';
         }
@@ -107,7 +107,7 @@ function tree($object, $link = false)
     } elseif (is_array($object)) {
         $html .= '<ol>';
         foreach ($object as $value) {
-            $value = tree($value, $link || in_array($value, array('rels')));
+            $value = tree($value, $link);
             $html .= '<li>'.($link ? '<a href="'.$value.'" target="_blank">'.$value.'</a>' : $value).'</li>';
         }
         $html .= '</ol>';
@@ -144,8 +144,8 @@ $parser = array_map('intval', $parser);
             body {
                 padding: 2em;
                 margin: 0;
-                color: #333;
-                background: #fafafa;
+                color: #222;
+                background: #eee;
                 line-height: 1.4
             }
 
@@ -154,8 +154,41 @@ $parser = array_map('intval', $parser);
                 font-size: medium;
             }
 
-            h1 {
+            h1, h2 {
+                padding: 0;
+                margin: 0;
+            }
+
+            h2 {
+                font-size: larger;
+                display: inline;
+            }
+
+            h3 {
+                font-size: medium;
+                display: inline;
+            }
+
+            details, summary {
+                display: block;
+            }
+
+            details {
+                margin-bottom: 1em;
+            }
+
+            summary {
+                cursor: pointer;
+                padding: 0.2em .5em;
+                background-size: 20px;
+                background-position: right center;
+                background-repeat: no-repeat;
+            }
+
+            .main > summary {
                 margin-top: 0;
+                background-color: #090;
+                color: #fff;
             }
 
             input, select {
@@ -182,6 +215,7 @@ $parser = array_map('intval', $parser);
                 border: 2px solid #ccc;
                 padding: 1em;
                 margin: 3em 0;
+                background-color: #fff;
             }
 
             fieldset div + div {
@@ -189,8 +223,13 @@ $parser = array_map('intval', $parser);
             }
 
             legend {
-                padding: 0 .5em;
-                font-weight: bold;
+                padding: .2em .5em;
+                background-color: #ccc;
+                color: #222;
+            }
+
+            legend a {
+                color: #222;
             }
 
             article {
@@ -214,47 +253,58 @@ $parser = array_map('intval', $parser);
                 margin: 0;
                 padding: 0;
                 position: relative;
-                line-height: 32px;
+                line-height: 1.2rem;
             }
 
             dt {
                 display: block;
                 float: left;
-                width: 6em;
-                margin: 0;
-                font-weight: bold;
-                line-height: 32px;
+                width: 6rem;
+                margin: .5rem 0 0 0;
                 font-size: small;
+                color: #090;
+                cursor: help;
+                overflow: hidden;
+            }
+
+            dt:first-child {
+                margin-top: 0;
             }
 
             dd {
                 overflow: hidden;
                 display: block;
-                margin: 0;
+                margin: .5rem 0 0 7rem;
             }
 
-            dd dt {
-                width: 10em;
+            ol { counter-reset: item; }
+            ol li:before {
+                content: counter(item) ".";
+                counter-increment: item;
+                color: #090;
+                font-size: small;
+                position: absolute;
+                right: 100%;
+                text-align: right;
+                line-height: 1.2rem;
+                padding-right: 1em;
             }
 
-            ol {
-                margin: 0 0 0 2em;
-                padding: 0;
+            .rel ol, .alternate ol {
+                margin-top: 0;
+                margin-bottom: 0;
+                padding-left: 2rem;
             }
 
             li {
                 margin: 0;
+                color: #222;
+                display: block;
+                position: relative;
             }
 
             li:last-child .item-properties .item-properties {
                 margin-bottom: 0;
-            }
-
-            h3 {
-                padding: 0;
-                margin: 0;
-                font-weight: bold;
-                font-size: medium;
             }
 
             .item-properties {
@@ -264,12 +314,6 @@ $parser = array_map('intval', $parser);
             .item-type {
                 display: inline-block;
                 color: #090;
-                padding-right: 26px;
-                background-size: contain;
-                background-position: right center;
-                background-repeat: no-repeat;
-                height: 20px;
-                line-height: 20px;
             }
 
             .item-type-mf2 {
@@ -299,7 +343,12 @@ $parser = array_map('intval', $parser);
             }
 
             .object {
-                margin-bottom: 2em;
+                margin-top: .5rem;
+                padding-bottom: .5rem;
+            }
+
+            .alternate .object {
+                border-bottom: 1px solid #ccc;
             }
         </style>
     </head>
@@ -347,9 +396,11 @@ $parser = array_map('intval', $parser);
                                       value="<?= Microformats2::PARSE; ?>"<?= empty($parser[Microformats2::NAME]) ? '' : ' checked="checked"'; ?>/>
                             Microformats 1+2</label>
                         <label><input type="checkbox" name="parser[<?= Microdata::NAME; ?>]"
-                                      value="<?= Microdata::PARSE; ?>"<?= empty($parser[Microdata::NAME]) ? '' : ' checked="checked"'; ?>/> HTML Microdata</label>
+                                      value="<?= Microdata::PARSE; ?>"<?= empty($parser[Microdata::NAME]) ? '' : ' checked="checked"'; ?>/>
+                            HTML Microdata</label>
                         <label><input type="checkbox" name="parser[<?= JsonLD::NAME; ?>]"
-                                      value="<?= JsonLD::PARSE; ?>"<?= empty($parser[JsonLD::NAME]) ? '' : ' checked="checked"'; ?>/> JSON-LD</label>
+                                      value="<?= JsonLD::PARSE; ?>"<?= empty($parser[JsonLD::NAME]) ? '' : ' checked="checked"'; ?>/>
+                            JSON-LD</label>
                         <input type="submit" name="microdata" value="Fetch &amp; parse URL"/>
                     </div>
                 </fieldset><?php
@@ -379,7 +430,36 @@ $parser = array_map('intval', $parser);
                         ?>
                         <pre><?php echo htmlspecialchars($micrometa->toJSON(true)); ?></pre><?php
                     else:
-                        echo tree($micrometa->toObject());
+
+                        $micro = $micrometa->toObject();
+
+                        // Items
+                        ?>
+                        <details class="items main" open="open">
+                        <summary><h2>Items</h2></summary><?php
+
+                        echo tree($micro->items);
+
+                        ?></details><?php
+
+                        // Rels
+                        ?>
+                        <details class="rel main">
+                        <summary><h2>Related resources</h2></summary><?php
+
+                        echo tree($micro->rels, true);
+
+                        ?></details><?php
+
+                        // Alternates
+                        ?>
+                        <details class="alternate main">
+                        <summary><h2>Alternate representations</h2></summary><?php
+
+                        echo tree($micro->alternates);
+
+                        ?></details><?php
+
                     endif;
 
                     ?></fieldset><?php
