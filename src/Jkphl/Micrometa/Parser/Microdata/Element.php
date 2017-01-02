@@ -36,8 +36,6 @@ namespace Jkphl\Micrometa\Parser\Microdata;
  * *********************************************************************************
  */
 
-use Jkphl\Micrometa\Parser\Microdata\Item;
-
 /**
  * Extended DOM element
  *
@@ -64,16 +62,16 @@ class Element extends \DOMElement
      */
     public function toItem($url, array &$register)
     {
-        $register[$this->getNodePath()] = $this;
+//        $register[$this->getNodePath()] = $this;
         $data = array(
             'properties' => array(),
         );
 
-        // Add itemtype.
+        // Add the item type
         if ($itemType = $this->itemType()) {
             $data['type'] = $itemType;
         }
-        // Add itemid.
+        // Add the item ID
         if ($itemId = $this->itemId()) {
             $data['id'] = $itemId;
         }
@@ -88,7 +86,7 @@ class Element extends \DOMElement
 
                 // If it has already been parsed: Reference it
                 if (!empty($register[$property->getNodePath()])) {
-                    $value &= $register[$property->getNodePath()];
+                    $value = $register[$property->getNodePath()];
 
                     // Else: Parse it
                 } else {
@@ -107,7 +105,7 @@ class Element extends \DOMElement
             }
         }
 
-        return new Item($data, $url);
+        return $register[$this->getNodePath()] = new Item($data, $url);
     }
 
     /**

@@ -114,7 +114,6 @@ class JsonLD
             /** @var \DOMElement $jsonLD */
             foreach ($this->_dom->xpath()->query('//script[@type = "application/ld+json"]') as $jsonLD) {
                 $jsonLDInline = trim($jsonLD->textContent);
-//                print_r(jsonld_expand(json_decode($jsonLDInline)));
                 if (strlen($jsonLDInline)) {
                     $this->_items = $this->_items + $this->parseBlock($jsonLDInline);
                 }
@@ -260,7 +259,7 @@ class JsonLD
             // If this is a nested item
             if ($value instanceof Item) {
                 if (count($value->types)) {
-                    $data['children'][] = $value;
+                    $data['properties'][$name][] = $value;
 
                     // @type = @id
                 } else {

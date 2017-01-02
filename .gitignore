@@ -1,7 +1,7 @@
 /.idea
-/build
-/apidoc
 /vendor/*
 /composer.lock
 /node_modules
 /test.php
+/demo/logos
+/demo/test.html

@@ -126,7 +126,8 @@ class Item implements ItemInterface
                     }
                     foreach ($values as $value) {
                         $propertyValues[] = $hasSubItems ?
-                            new $classname((array)$value, $this->_url) : $this->_resolveUrlValue($property, $value);
+                            (($value instanceof ItemInterface) ? $value : new $classname((array)$value, $this->_url)) :
+                            $this->_resolveUrlValue($property, $value);
                     }
                 }
             }
