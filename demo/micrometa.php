@@ -33,6 +33,19 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
+use Jkphl\Micrometa\Parser\Microformats2;
+use Jkphl\Micrometa\Parser\Microdata;
+use Jkphl\Micrometa\Parser\JsonLD;
+
+// Include the Composer autoloader
+if (@is_file(dirname(__DIR__).DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'autoload.php')) {
+    require_once dirname(__DIR__).DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'autoload.php';
+
+    // Exit on failure
+} else {
+    die ('<p style="font-weight:bold;color:red">Please follow the <a href="https://github.com/jkphl/micrometa#dependencies" target="_blank">instructions</a> to install the additional libraries that micrometa is depending on</p>');
+}
+
 /**
  * Output a microdata object representation as tree
  *
@@ -114,6 +127,13 @@ function tree($object, $link = false)
 $url = empty($_POST['url']) ? (empty($_GET['url']) ? '' : $_GET['url']) : $_POST['url'];
 $data = empty($_POST['data']) ? (empty($_GET['data']) ? '' : $_GET['data']) : $_POST['data'];
 $format = empty($_POST['format']) ? (empty($_GET['format']) ? '' : $_GET['format']) : $_POST['format'];
+$defaultParser = array(
+    Microformats2::NAME => Microformats2::PARSE,
+    Microdata::NAME => Microdata::PARSE,
+    JsonLD::NAME => JsonLD::PARSE
+);
+$parser = empty($_POST['parser']) ? (empty($_GET['parser']) ? $defaultParser : $_GET['parser']) : $_POST['parser'];
+$parser = array_map('intval', $parser);
 
 ?><!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -126,9 +146,12 @@ $format = empty($_POST['format']) ? (empty($_GET['format']) ? '' : $_GET['format
                 margin: 0;
                 color: #333;
                 background: #fafafa;
-                font-family: Arial, Helvetica, sans-serif;
-                font-size: 1em;
                 line-height: 1.4
+            }
+
+            body, input, select {
+                font-family: Arial, Helvetica, sans-serif;
+                font-size: medium;
             }
 
             h1 {
@@ -159,6 +182,10 @@ $format = empty($_POST['format']) ? (empty($_GET['format']) ? '' : $_GET['format
                 border: 2px solid #ccc;
                 padding: 1em;
                 margin: 3em 0;
+            }
+
+            fieldset div + div {
+                margin-top: 1em;
             }
 
             legend {
@@ -289,29 +316,42 @@ $format = empty($_POST['format']) ? (empty($_GET['format']) ? '' : $_GET['format
             <form method="post">
                 <fieldset>
                     <legend>Enter an URL to be fetched &amp; examined</legend>
-                    <label><span>URL</span><input type="url" name="url" value="<?php echo htmlspecialchars($url); ?>"
-                                                  placeholder="http://" required="required"/></label>
-                    <label><span>Data</span><select name="data">
-                            <option value="all"<?php if ($data == 'all') {
-                                echo ' selected="selected"';
-                            } ?>>All
-                            </option>
-                            <option value="author"<?php if ($data == 'author') {
-                                echo ' selected="selected"';
-                            } ?>>Author
-                            </option>
-                        </select></label>
-                    <label><span>Format</span><select name="format">
-                            <option value="tree"<?php if ($format == 'tree') {
-                                echo ' selected="selected"';
-                            } ?>>Tree
-                            </option>
-                            <option value="json"<?php if ($format == 'json') {
-                                echo ' selected="selected"';
-                            } ?>>JSON
-                            </option>
-                        </select></label>
-                    <input type="submit" name="microdata" value="Fetch &amp; parse URL"/>
+                    <div>
+                        <label><span>URL</span><input type="url" name="url"
+                                                      value="<?php echo htmlspecialchars($url); ?>"
+                                                      placeholder="http://" required="required"/></label>
+                        <label><span>Data</span><select name="data">
+                                <option value="all"<?php if ($data == 'all') {
+                                    echo ' selected="selected"';
+                                } ?>>All
+                                </option>
+                                <option value="author"<?php if ($data == 'author') {
+                                    echo ' selected="selected"';
+                                } ?>>Author
+                                </option>
+                            </select></label>
+                        <label><span>Format</span><select name="format">
+                                <option value="tree"<?php if ($format == 'tree') {
+                                    echo ' selected="selected"';
+                                } ?>>Tree
+                                </option>
+                                <option value="json"<?php if ($format == 'json') {
+                                    echo ' selected="selected"';
+                                } ?>>JSON
+                                </option>
+                            </select></label>
+                    </div>
+                    <div>
+                        Extract with parsers
+                        <label><input type="checkbox" name="parser[<?= Microformats2::NAME; ?>]"
+                                      value="<?= Microformats2::PARSE; ?>"<?= empty($parser[Microformats2::NAME]) ? '' : ' checked="checked"'; ?>/>
+                            Microformats 1+2</label>
+                        <label><input type="checkbox" name="parser[<?= Microdata::NAME; ?>]"
+                                      value="<?= Microdata::PARSE; ?>"<?= empty($parser[Microdata::NAME]) ? '' : ' checked="checked"'; ?>/> HTML Microdata</label>
+                        <label><input type="checkbox" name="parser[<?= JsonLD::NAME; ?>]"
+                                      value="<?= JsonLD::PARSE; ?>"<?= empty($parser[JsonLD::NAME]) ? '' : ' checked="checked"'; ?>/> JSON-LD</label>
+                        <input type="submit" name="microdata" value="Fetch &amp; parse URL"/>
+                    </div>
                 </fieldset><?php
 
                 if (!empty($_POST['microdata']) && strlen($url)):
@@ -324,18 +364,11 @@ $format = empty($_POST['format']) ? (empty($_GET['format']) ? '' : $_GET['format
                     if (version_compare(PHP_VERSION, '5.4', '<')):
                         ?><p class="hint">Unfortunately JSON pretty-printing is only available with PHP 5.4+.</p><?php
                     endif;
-                    // Include the Composer autoloader
-                    if (@is_file(dirname(__DIR__).DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'autoload.php')) {
-                        require_once dirname(__DIR__).DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'autoload.php';
 
-                        // Exit on failure
-                    } else {
-                        die ('<p style="font-weight:bold;color:red">Please follow the <a href="https://github.com/jkphl/micrometa#dependencies" target="_blank">instructions</a> to install the additional libraries that micrometa is depending on</p>');
-                    }
                     require_once dirname(
                             __DIR__
                         ).DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.'Jkphl'.DIRECTORY_SEPARATOR.'Micrometa.php';
-                    $micrometa = \Jkphl\Micrometa::instance(trim($url));
+                    $micrometa = \Jkphl\Micrometa::instance(trim($url), null, array_sum($parser));
                     if ($data == 'author') {
                         $micrometa = $micrometa->author();
                     }

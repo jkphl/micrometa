@@ -114,10 +114,10 @@ class JsonLD
             /** @var \DOMElement $jsonLD */
             foreach ($this->_dom->xpath()->query('//script[@type = "application/ld+json"]') as $jsonLD) {
                 $jsonLDInline = trim($jsonLD->textContent);
-                print_r(jsonld_expand(json_decode($jsonLDInline)));
-//                if (strlen($jsonLDInline)) {
-//                    $this->_items = $this->_items + $this->parseBlock($jsonLDInline);
-//                }
+//                print_r(jsonld_expand(json_decode($jsonLDInline)));
+                if (strlen($jsonLDInline)) {
+                    $this->_items = $this->_items + $this->parseBlock($jsonLDInline);
+                }
             }
         }
 
