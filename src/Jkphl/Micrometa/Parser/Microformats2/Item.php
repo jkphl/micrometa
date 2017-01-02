@@ -36,7 +36,6 @@ namespace Jkphl\Micrometa\Parser\Microformats2;
  ***********************************************************************************/
 
 use Jkphl\Micrometa\Parser\Microformats2;
-use Jkphl\Micrometa\Parser\Microformats2\Exception;
 
 /**
  * Extended microformats2 item
