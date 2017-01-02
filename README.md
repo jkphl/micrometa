@@ -91,6 +91,15 @@ Instead of fetching a remote URL you can also directly pipe in some HTML source 
 $micrometaObjectData = \Jkphl\Micrometa::instance($url, $htmlSourceCode)->toObject();
 ```
 
+By default, *micrometa* scans for both Microformats, HTML Microdata and JSON-LD items. You can control parsers used by providing a bitmask as the third argument to `Micrometa`'s constructor or `Micrometa::instance()`:
+
+```php
+$parsers =  \Jkphl\Micrometa\Parser\Microformats2::PARSE |  // Microformats = 1
+            \Jkphl\Micrometa\Parser\Microdata::PARSE |      // Microdata = 2
+            \Jkphl\Micrometa\Parser\JsonLD::PARSE;          // JSON-LD = 4
+$micrometaParser = new \Jkphl\Micrometa($url, null, $parsers);
+```
+
 ### Parsing results
 
 *micrometa* provides several methods for accessing the micro information extracted out of an HTML document. You may retrieve the embedded metadata as a whole (in [PHP object](#object-data) or [JSON](#json-data) format) or access single facets through dedicated methods. Only the most important methods are described here – for full details please have a look at the source code or the included, automatically generated [PHPDocumentor API documentation](doc/index.html).
@@ -250,7 +259,7 @@ The parser object's `externalAuthor()` method is a convenient way to load extern
 $micrometaParser = new \Jkphl\Micrometa($url);
 $author = $micrometaParser->item('h-card');
 if (!($author instanceof \Jkphl\Micrometa\Item)) {
- $author = $micrometaParser->externalAuthor();
+	$author = $micrometaParser->externalAuthor();
 }
 if ($author instanceof \Jkphl\Micrometa\Item) {
  // ...
