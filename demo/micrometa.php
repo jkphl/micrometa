@@ -288,6 +288,7 @@ $parser = array_map('intval', $parser);
                 color: #090;
                 cursor: help;
                 overflow: hidden;
+                white-space: nowrap;
             }
 
             dt:first-child {
