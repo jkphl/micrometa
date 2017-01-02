@@ -281,6 +281,7 @@ $parser = array_map('intval', $parser);
             dt {
                 display: block;
                 float: left;
+                clear: left;
                 width: 6rem;
                 margin: .5rem 0 0 0;
                 font-size: small;
