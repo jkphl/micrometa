@@ -126,7 +126,7 @@ class Micrometa
         $this->_focus = $this->dom->documentElement;
 
         // Determine and resolve the base URL
-        $this->baseUrl = $this->_url;
+        $this->baseUrl = $this->_url->base();
         /** @var \DOMElement $base */
         foreach ($this->dom->xpath()->query('//base[@href]') as $base) {
             $this->baseUrl = new Url($base->getAttribute('href'), true);
@@ -271,7 +271,7 @@ class Micrometa
      */
     protected function parseMicroformats2()
     {
-        $microformatsParser = new Microformats2($this->dom, $this->baseUrl);
+        $microformatsParser = new Microformats2($this->dom, $this->_url);
         foreach ($microformatsParser->parse(true, $this->_focus) as $key => $items) {
             $this->_result[$key] = array_merge($this->_result[$key], $items);
         }
