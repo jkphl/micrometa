@@ -74,10 +74,6 @@ class Url
      */
     protected $_parts = null;
 
-    /************************************************************************************************
-     * PUBLIC METHODS
-     ***********************************************************************************************/
-
     /**
      * Constructor
      *
@@ -147,14 +143,13 @@ class Url
      */
     public function absolutize(\Jkphl\Utility\Url $reference)
     {
-
         // If the host part is missing
         if (empty($this->_parts['host'])) {
             $transfer = array('scheme', 'host', 'port', 'user', 'pass');
 
             // If this is a relative URL
             if ($this->isRelative()) {
-                $this->_parts['path'] = dirname(rtrim($reference->path, '/')).'/'.$this->_parts['path'];
+                $this->_parts['path'] = $this->resolve(dirname(rtrim($reference->path, '/')).'/'.$this->_parts['path']);
             }
 
             // Else if this URL is protocol relative
@@ -174,6 +169,56 @@ class Url
         }
 
         return $this;
+    }
+
+    /**
+     * Return this URLs base URL
+     *
+     * @return Url Base URL
+     */
+    public function base() {
+        $baseUrl = clone $this;
+        if (!empty($baseUrl->_parts['path']) && (substr($baseUrl->_parts['path'], -1) != '/')) {
+            $baseUrl->_parts['path'] = dirname($baseUrl->_parts['path']).'/';
+        }
+        return $baseUrl;
+    }
+
+    /**
+     * Return whether this URL is relative
+     *
+     * @return \boolean                            Whether this URL is relative
+     */
+    public function isRelative()
+    {
+        return empty($this->_parts['path']) ? false :
+            (empty($this->_parts['host']) && (boolean)strncmp($this->_parts['path'], '/', 1));
+    }
+
+    /**
+     * Resolve a path and remove aliases
+     *
+     * @param string $path Path
+     * @return string Resolved path
+     */
+    protected function resolve($path)
+    {
+        $parents = array();
+        foreach (explode('/', $path) as $dir) {
+            switch ($dir) {
+                case '.':
+                    // Don't need to do anything here
+                    break;
+                case '..':
+                    array_pop($parents);
+                    break;
+                default:
+                    $parents[] = $dir;
+                    break;
+            }
+        }
+
+        return implode('/', $parents);
     }
 
     /**
@@ -210,10 +255,6 @@ class Url
     {
         return array_key_exists($key, $this->_parts) ? $this->_parts[$key] : null;
     }
-
-    /************************************************************************************************
-     * MAGIC METHODS
-     ***********************************************************************************************/
 
     /**
      * Set a specific URL part (generic setter)
@@ -263,21 +304,5 @@ class Url
         $url .= count($this->_parts['query']) ? '?'.http_build_query($this->_parts['query']) : '';
         $url .= empty($this->_parts['fragment']) ? '' : '#'.$this->_parts['fragment'];
         return $url;
-    }
-
-    /************************************************************************************************
-     * STATIC METHODS
-     ***********************************************************************************************/
-
-    /**
-     * Return whether this URL is relative
-     *
-     * @return \boolean                            Whether this URL is relative
-     */
-    public function isRelative()
-    {
-        return empty($this->_parts['path']) ? false : (empty($this->_parts['host']) && (boolean)strncmp(
-                $this->_parts['path'], '/', 1
-            ));
     }
 }
