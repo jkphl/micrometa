@@ -204,17 +204,25 @@ class JsonLD
     /**
      * Parse a JSON-LD fragment
      *
-     * @param Node|TypedValue $jsonLD JSON-LD fragment
+     * @param Node|TypedValue|array $jsonLD JSON-LD fragment
      * @return mixed Parsed fragment
      */
     protected function parse($jsonLD)
     {
+        // If it's a node object
         if ($jsonLD instanceof NodeInterface) {
             return $this->parseNode($jsonLD);
+
+            // Else if it's a value
         } elseif ($jsonLD instanceof Value) {
             return $this->parseValue($jsonLD);
+
+            // Else if it's a list of items
+        } elseif (is_array($jsonLD)) {
+            return array_map([$this, 'parse'], $jsonLD);
+
         } else {
-            echo 'Unknown JSON-LD item: '.get_class($jsonLD).PHP_EOL;
+            trigger_error('Unknown JSON-LD item: '.gettype($jsonLD), E_USER_NOTICE);
             return null;
         }
     }
@@ -265,6 +273,11 @@ class JsonLD
                 } else {
                     $data['properties'][$name][] = $value->id;
                 }
+
+            } elseif (is_array($value)) {
+                $data['properties'][$name] =
+                    (array_key_exists($name, $data['properties']) && is_array($data['properties'][$name])) ?
+                        array_merge($data['properties'][$name], $value) : $value;
 
                 // Else
             } elseif ($value) {
