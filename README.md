@@ -1,8 +1,6 @@
 micrometa [![Build Status](https://travis-ci.org/jkphl/micrometa.svg?branch=master)](https://travis-ci.org/jkphl/micrometa.svg?branch=master)
 =========
 
-
-
 is a simple **meta parser** for extracting micro information out of HTML documents, currently supporting [Microformats (1 + 2)](http://microformats.org), [HTML Microdata](https://www.w3.org/TR/microdata/) and [JSON-LD](http://json-ld.org). It's written in PHP.
 
 Embedding micro information into HTML documents is a nice way of enriching your content with machine readable metadata. There are several different (at least de facto) standards for doing so, e.g.
