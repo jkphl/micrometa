@@ -1,10 +1,21 @@
 {
   "name": "micrometa",
-  "version": "0.3.2",
+  "version": "1.0.2",
   "homepage": "https://github.com/jkphl/micrometa",
   "description": "A PHP meta parser for extracting embedded micro information out of HTML documents, currently supporting Microformats (1 + 2) and W3C Microdata",
   "main": "micrometa.phps",
-  "keywords": ["meta", "micro", "data", "microformat", "HTML", "extract", "extraction", "PHP", "analyze", "API" ],
+  "keywords": [
+    "meta",
+    "micro",
+    "data",
+    "microformat",
+    "HTML",
+    "extract",
+    "extraction",
+    "PHP",
+    "analyze",
+    "API"
+  ],
   "authors": [
     "Joschi Kuphal <joschi@kuphal.net>"
   ],

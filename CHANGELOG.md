@@ -1,3 +1,9 @@
+## v1.0.2: Feature release (2017-02-10)
+1. Added support for JSON-LD value lists ([#10](https://github.com/jkphl/micrometa/issues/10))
+
+## v1.0.1: Bugfix release (2017-01-04)
+1. Fixed incorrect handling of relative base URLs ([#9](https://github.com/jkphl/micrometa/issues/9))
+
 ## v1.0.0: Feature release (2017-01-02)
 1. JSON-LD support ([#6](https://github.com/jkphl/micrometa/issues/6))
 2. Visually improved demo application
