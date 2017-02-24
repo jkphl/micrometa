@@ -1,13 +1,20 @@
 <phpunit bootstrap="./phpunit.php">
     <testsuites>
         <testsuite>
-            <directory>./tests</directory>
+            <directory>./src/Micrometa/Tests</directory>
         </testsuite>
     </testsuites>
+
+    <logging>
+        <log type="coverage-xml" target="build/coverage"/>
+    </logging>
 
     <filter>
         <whitelist addUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">src</directory>
+            <exclude>
+                <directory suffix=".php">src/Micrometa/Tests</directory>
+            </exclude>
         </whitelist>
     </filter>
 </phpunit>
