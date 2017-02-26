@@ -36,6 +36,13 @@
 
 namespace Jkphl\Micrometa\Ports;
 
+use Jkphl\Micrometa\Ports\Item\Item;
+use Jkphl\Micrometa\Ports\Item\ItemInterface;
+use Jkphl\Micrometa\Ports\Rel\Alternate;
+use Jkphl\Micrometa\Ports\Rel\AlternateInterface;
+use Jkphl\Micrometa\Ports\Rel\Rel;
+use Jkphl\Micrometa\Ports\Rel\RelInterface;
+
 /**
  * Parser
  *
@@ -44,5 +51,130 @@ namespace Jkphl\Micrometa\Ports;
  */
 class Parser
 {
+    /**
+     * Document URL
+     *
+     * @var string
+     */
+    protected $url;
+    /**
+     * Source code
+     *
+     * @var string
+     */
+    protected $source;
+    /**
+     * Micro information formats
+     *
+     * @var int
+     */
+    protected $formats;
 
+    /**
+     * Parser constructor
+     *
+     * @param string $url Document URL
+     * @param string $source Document source
+     * @param int $formats Micro information formats to extract
+     * @api
+     */
+    public function __construct($url, $source = null, $formats = null)
+    {
+        $this->url = $url;
+        $this->source = $source;
+        $this->formats = $formats;
+    }
+
+    /**
+     * Return an object representation of the micro information items
+     *
+     * @return \stdClass Micro information items
+     * @api
+     */
+    public function toObject()
+    {
+        return new \stdClass();
+    }
+
+    /**
+     * Return a JSON representation of the micro information items
+     *
+     * @return string Micro information items
+     * @api
+     */
+    public function toJson()
+    {
+        return json_encode(new \stdClass());
+    }
+
+    /**
+     * Return all items, optionally of particular types
+     *
+     * @param array ...$types Item types
+     * @return array Items matching the requested types
+     * @api
+     */
+    public function items(...$types)
+    {
+        return [];
+    }
+
+    /**
+     * Return the first item, optionally of particular types
+     *
+     * @param array ...$types Item types
+     * @return ItemInterface Item
+     * @api
+     */
+    public function item(...$types)
+    {
+        return new Item();
+    }
+
+    /**
+     * Return all rel=* declaration groups
+     *
+     * @return RelInterface[] Rel=* declaration groups
+     * @api
+     */
+    public function rels()
+    {
+        return [];
+    }
+
+    /**
+     * Return all rel declarations of a particular type
+     *
+     * @param string $rel Rel type
+     * @param int|null $index Optional: particular index
+     * @return RelInterface|RelInterface[] Single rel=* declaration or list of particular rel declarations
+     * @api
+     */
+    public function rel($rel, $index = null)
+    {
+        return new Rel();
+    }
+
+    /**
+     * Return all alternate resources
+     *
+     * @return AlternateInterface[] Alternate resources
+     * @api
+     */
+    public function alternates()
+    {
+        return [];
+    }
+
+    /**
+     * Return the alternate resource of a particular type
+     *
+     * @param string $type Alternate representation type
+     * @return AlternateInterface|null Alternate resource
+     * @api
+     */
+    public function alternate($type)
+    {
+        return new Alternate();
+    }
 }
