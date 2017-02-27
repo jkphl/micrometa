@@ -5,7 +5,7 @@
  *
  * @category Jkphl
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Ports
+ * @subpackage Jkphl\Micrometa\Ports\Item
  * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -34,47 +34,47 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Ports;
+namespace Jkphl\Micrometa\Ports\Item;
+
+use Jkphl\Micrometa\Ports\Rel\AlternateInterface;
+use Jkphl\Micrometa\Ports\Rel\RelInterface;
 
 /**
- * Parser
+ * Item object model interface
  *
  * @package Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Ports
  */
-class Parser
+interface ItemObjectModelInterface extends ItemListInterface
 {
     /**
-     * Document URL
+     * Return all rel=* declaration groups
      *
-     * @var string
+     * @return RelInterface[] Rel=* declaration groups
      */
-    protected $url;
-    /**
-     * Source code
-     *
-     * @var string
-     */
-    protected $source;
-    /**
-     * Micro information formats
-     *
-     * @var int
-     */
-    protected $formats;
+    public function rels();
 
     /**
-     * Parser constructor
+     * Return all rel declarations of a particular type
      *
-     * @param string $url Document URL
-     * @param string $source Document source
-     * @param int $formats Micro information formats to extract
-     * @api
+     * @param string $rel Rel type
+     * @param int|null $index Optional: particular index
+     * @return RelInterface|RelInterface[] Single rel=* declaration or list of particular rel declarations
      */
-    public function __construct($url, $source = null, $formats = null)
-    {
-        $this->url = $url;
-        $this->source = $source;
-        $this->formats = $formats;
-    }
+    public function rel($rel, $index = null);
+
+    /**
+     * Return all alternate resources
+     *
+     * @return AlternateInterface[] Alternate resources
+     */
+    public function alternates();
+
+    /**
+     * Return the alternate resource of a particular type
+     *
+     * @param string $type Alternate representation type
+     * @return AlternateInterface|null Alternate resource
+     */
+    public function alternate($type);
 }

@@ -5,7 +5,7 @@
  *
  * @category Jkphl
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Ports
+ * @subpackage Jkphl\Micrometa\Ports\Item
  * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -34,47 +34,65 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Ports;
+namespace Jkphl\Micrometa\Ports\Item;
+
+use Jkphl\Micrometa\Ports\Rel\Alternate;
+use Jkphl\Micrometa\Ports\Rel\AlternateInterface;
+use Jkphl\Micrometa\Ports\Rel\Rel;
+use Jkphl\Micrometa\Ports\Rel\RelInterface;
 
 /**
- * Parser
+ * Item object model
  *
  * @package Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Ports
  */
-class Parser
+class ItemObjectModel extends ItemList implements ItemObjectModelInterface
 {
     /**
-     * Document URL
+     * Return all rel=* declaration groups
      *
-     * @var string
-     */
-    protected $url;
-    /**
-     * Source code
-     *
-     * @var string
-     */
-    protected $source;
-    /**
-     * Micro information formats
-     *
-     * @var int
-     */
-    protected $formats;
-
-    /**
-     * Parser constructor
-     *
-     * @param string $url Document URL
-     * @param string $source Document source
-     * @param int $formats Micro information formats to extract
+     * @return RelInterface[] Rel=* declaration groups
      * @api
      */
-    public function __construct($url, $source = null, $formats = null)
+    public function rels()
     {
-        $this->url = $url;
-        $this->source = $source;
-        $this->formats = $formats;
+        return [];
+    }
+
+    /**
+     * Return all rel declarations of a particular type
+     *
+     * @param string $rel Rel type
+     * @param int|null $index Optional: particular index
+     * @return RelInterface|RelInterface[] Single rel=* declaration or list of particular rel declarations
+     * @api
+     */
+    public function rel($rel, $index = null)
+    {
+        return new Rel();
+    }
+
+    /**
+     * Return all alternate resources
+     *
+     * @return AlternateInterface[] Alternate resources
+     * @api
+     */
+    public function alternates()
+    {
+        return [];
+    }
+
+    /**
+     * Return the alternate resource of a particular type
+     *
+     * @param string $type Alternate representation type
+     * @return AlternateInterface|null Alternate resource
+     * @api
+     */
+    public function alternate($type)
+    {
+        return new Alternate();
     }
 }

@@ -5,7 +5,7 @@
  *
  * @category Jkphl
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Ports
+ * @subpackage Jkphl\Micrometa\Ports\Item
  * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -34,47 +34,43 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Ports;
+namespace Jkphl\Micrometa\Ports\Item;
 
 /**
- * Parser
+ * Item list interface
  *
  * @package Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Ports
  */
-class Parser
+interface ItemListInterface extends \Iterator
 {
     /**
-     * Document URL
+     * Return an object representation of the item list
      *
-     * @var string
+     * @return \stdClass Micro information items
      */
-    protected $url;
-    /**
-     * Source code
-     *
-     * @var string
-     */
-    protected $source;
-    /**
-     * Micro information formats
-     *
-     * @var int
-     */
-    protected $formats;
+    public function toObject();
 
     /**
-     * Parser constructor
+     * Return a JSON representation of the item list
      *
-     * @param string $url Document URL
-     * @param string $source Document source
-     * @param int $formats Micro information formats to extract
-     * @api
+     * @return string Micro information items
      */
-    public function __construct($url, $source = null, $formats = null)
-    {
-        $this->url = $url;
-        $this->source = $source;
-        $this->formats = $formats;
-    }
+    public function toJson();
+
+    /**
+     * Return all items, optionally of particular types
+     *
+     * @param array ...$types Item types
+     * @return ItemListInterface Items matching the requested types
+     */
+    public function items(...$types);
+
+    /**
+     * Return the first item, optionally of particular types
+     *
+     * @param array ...$types Item types
+     * @return ItemInterface Item
+     */
+    public function item(...$types);
 }
