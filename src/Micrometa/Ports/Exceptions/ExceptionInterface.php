@@ -5,7 +5,7 @@
  *
  * @category Jkphl
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Ports
+ * @subpackage Jkphl\Micrometa\Ports\Exceptions
  * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -34,53 +34,15 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Ports;
-
-use Jkphl\Micrometa\Infrastructure\Factory\DocumentFactory;
-use Jkphl\Micrometa\Ports\Item\ItemObjectModel;
-use Jkphl\Micrometa\Ports\Item\ItemObjectModelInterface;
+namespace Jkphl\Micrometa\Ports\Exceptions;
 
 /**
- * Parser
+ * Micrometa exception interface
  *
  * @package Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Ports
  */
-class Parser
+interface ExceptionInterface
 {
-    /**
-     * Micro information formats
-     *
-     * @var int
-     */
-    protected $formats;
 
-    /**
-     * Parser constructor
-     *
-     * @param int $formats Micro information formats to extract
-     * @api
-     */
-    public function __construct($formats = null)
-    {
-        $this->formats = $formats;
-    }
-
-    /**
-     * Extract micro information items out of a URI or piece of source
-     *
-     * @param string $uri URI
-     * @param string $source Source code
-     * @param int $formats Micro information formats to extract
-     * @return ItemObjectModelInterface Item object model
-     */
-    public function __invoke($uri, $source = null, $formats = null)
-    {
-        // If source code has been passed in
-        $document = (($source !== null) && strlen(trim($source))) ?
-            DocumentFactory::createFromString($source) : DocumentFactory::createFromUri($uri);
-
-
-        return new ItemObjectModel();
-    }
 }

@@ -62,7 +62,7 @@ class ItemList implements ItemListInterface
      *
      * @param ItemInterface[] $items Items
      */
-    public function __construct(array $items)
+    public function __construct(array $items = [])
     {
         $this->items = $items;
         $this->pointer = 0;

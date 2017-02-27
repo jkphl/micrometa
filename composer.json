@@ -28,7 +28,9 @@
     },
     "require": {
         "php": ">=5.5",
+        "guzzlehttp/guzzle": "^6.2",
         "jkphl/rdfa-lite-microdata": "^0.1.0",
+        "league/uri": "4.*",
         "mf2/mf2": "^0.3.0",
         "ml/json-ld": "^1.0"
     },

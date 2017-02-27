@@ -5,7 +5,7 @@
  *
  * @category Jkphl
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Ports
+ * @subpackage Infrastructure
  * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -34,53 +34,31 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Ports;
+namespace Jkphl\Micromoeta\Tests\Infrastructure;
 
 use Jkphl\Micrometa\Infrastructure\Factory\DocumentFactory;
-use Jkphl\Micrometa\Ports\Item\ItemObjectModel;
-use Jkphl\Micrometa\Ports\Item\ItemObjectModelInterface;
 
 /**
- * Parser
+ * Document factory test
  *
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Ports
+ * @subpackage Jkphl\Micromoeta\Tests
  */
-class Parser
+class DocumentFactoryTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * Micro information formats
+     * Valid local test URL
      *
-     * @var int
+     * @var string
      */
-    protected $formats;
+    const VALID_HTML_URL = 'http://localhost:1349/valid-test.html';
 
     /**
-     * Parser constructor
-     *
-     * @param int $formats Micro information formats to extract
-     * @api
+     * Test the HTML document instantiation via a HTTP client
      */
-    public function __construct($formats = null)
+    public function testDocumentCreationViaHttpClient()
     {
-        $this->formats = $formats;
-    }
-
-    /**
-     * Extract micro information items out of a URI or piece of source
-     *
-     * @param string $uri URI
-     * @param string $source Source code
-     * @param int $formats Micro information formats to extract
-     * @return ItemObjectModelInterface Item object model
-     */
-    public function __invoke($uri, $source = null, $formats = null)
-    {
-        // If source code has been passed in
-        $document = (($source !== null) && strlen(trim($source))) ?
-            DocumentFactory::createFromString($source) : DocumentFactory::createFromUri($uri);
-
-
-        return new ItemObjectModel();
+        $dom = DocumentFactory::createFromUri(self::VALID_HTML_URL);
+        $this->assertInstanceOf(\DOMDocument::class, $dom);
     }
 }
