@@ -37,23 +37,12 @@
 namespace Jkphl\Micrometa\Ports\Exceptions;
 
 /**
- * Invalid argument Exception
+ * Micrometa exception interface
  *
  * @package Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Ports
  */
-class InvalidArgumentException extends \InvalidArgumentException implements MicrometaExceptionInterface
+interface MicrometaExceptionInterface extends \Jkphl\Micrometa\Domain\Exceptions\MicrometaExceptionInterface
 {
-    /**
-     * Invalid data source
-     *
-     * @var string
-     */
-    const INVALID_DATA_SOURCE_STR = 'Invalid data source (%s)';
-    /**
-     * Invalid data source
-     *
-     * @var int
-     */
-    const INVALID_DATA_SOURCE = 1488228437;
+
 }

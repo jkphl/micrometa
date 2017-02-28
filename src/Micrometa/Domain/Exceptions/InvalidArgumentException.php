@@ -5,7 +5,7 @@
  *
  * @category Jkphl
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Ports\Exceptions
+ * @subpackage Jkphl\Micrometa\Domain\Exceptions
  * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -34,26 +34,50 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Ports\Exceptions;
+namespace Jkphl\Micrometa\Domain\Exceptions;
 
 /**
- * Invalid argument Exception
+ * Invalid argument exception
  *
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Ports
+ * @subpackage Jkphl\Micrometa\Domain
  */
 class InvalidArgumentException extends \InvalidArgumentException implements MicrometaExceptionInterface
 {
     /**
-     * Invalid data source
+     * An empty type list is not allowed
      *
      * @var string
      */
-    const INVALID_DATA_SOURCE_STR = 'Invalid data source (%s)';
+    const EMPTY_TYPES_STR = 'Empty type list is not allowed';
     /**
-     * Invalid data source
+     * An empty type list is not allowed
      *
      * @var int
      */
-    const INVALID_DATA_SOURCE = 1488228437;
+    const EMPTY_TYPES = 1488314667;
+    /**
+     * An empty property name is not allowed
+     *
+     * @var string
+     */
+    const EMPTY_PROPERTY_NAME_STR = 'Empty property name is not allowed';
+    /**
+     * An empty property name is not allowed
+     *
+     * @var int
+     */
+    const EMPTY_PROPERTY_NAME = 1488314921;
+    /**
+     * Invalid property value
+     *
+     * @var string
+     */
+    const INVALID_PROPERTY_VALUE_STR = 'Invalid property value of type "%s"';
+    /**
+     * Invalid property value
+     *
+     * @var int
+     */
+    const INVALID_PROPERTY_VALUE = 1488315339;
 }

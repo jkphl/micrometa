@@ -86,7 +86,6 @@ class DocumentFactory
 
             // If a runtime exception occurred
         } catch (GuzzleRuntimeException $e) {
-            echo $e->getMessage();
             throw new RuntimeException($e->getMessage(), $e->getCode());
         }
     }

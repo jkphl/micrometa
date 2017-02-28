@@ -5,7 +5,7 @@
  *
  * @category Jkphl
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Ports\Exceptions
+ * @subpackage Jkphl\Micrometa\Domain\Item
  * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -34,15 +34,42 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Ports\Exceptions;
+namespace Jkphl\Micrometa\Domain\Item;
 
 /**
- * Micrometa exception interface
+ * Item interface
  *
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Ports
+ * @subpackage Jkphl\Micrometa\Domain
  */
-interface ExceptionInterface
+interface ItemInterface
 {
+    /**
+     * Return the item types
+     *
+     * @return string[] Item types
+     */
+    public function getType();
 
+    /**
+     * Return the item ID (if any)
+     *
+     * @return string|null Item id
+     */
+    public function getId();
+
+    /**
+     * Return all item properties
+     *
+     * @return array[] Item properties list
+     */
+    public function getProperties();
+
+    /**
+     * Return the values of a particular property
+     *
+     * @param string $name Property name
+     * @return array Item property values
+     */
+    public function getProperty($name);
 }

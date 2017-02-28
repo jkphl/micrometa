@@ -5,7 +5,7 @@
  *
  * @category Jkphl
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Domain\Miom
+ * @subpackage Jkphl\Micrometa\Domain\Exceptions
  * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -34,15 +34,26 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Domain;
+namespace Jkphl\Micrometa\Domain\Exceptions;
 
 /**
- * Micro information item
+ * Out of bounds exception
  *
  * @package Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Domain
  */
-class Item
+class OutOfBoundsException extends \InvalidArgumentException implements MicrometaExceptionInterface
 {
-
+    /**
+     * Unknown property
+     *
+     * @var string
+     */
+    const UNKNOWN_PROPERTY_NAME_STR = 'Unknown property "%s"';
+    /**
+     * Unknown property
+     *
+     * @var int
+     */
+    const UNKNOWN_PROPERTY_NAME = 1488315604;
 }

@@ -5,7 +5,7 @@
  *
  * @category Jkphl
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Ports\Exceptions
+ * @subpackage Jkphl\Micrometa\Domain\Exceptions
  * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -34,26 +34,15 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Ports\Exceptions;
+namespace Jkphl\Micrometa\Domain\Exceptions;
 
 /**
- * Invalid argument Exception
+ * Micrometa exception interface
  *
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Ports
+ * @subpackage Jkphl\Micrometa\Domain
  */
-class InvalidArgumentException extends \InvalidArgumentException implements MicrometaExceptionInterface
+interface MicrometaExceptionInterface
 {
-    /**
-     * Invalid data source
-     *
-     * @var string
-     */
-    const INVALID_DATA_SOURCE_STR = 'Invalid data source (%s)';
-    /**
-     * Invalid data source
-     *
-     * @var int
-     */
-    const INVALID_DATA_SOURCE = 1488228437;
+
 }
