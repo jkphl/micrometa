@@ -34,31 +34,101 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micromoeta\Tests\Infrastructure;
+namespace Jkphl\Micromoeta\Tests\Infrastructure {
 
-use Jkphl\Micrometa\Infrastructure\Factory\DocumentFactory;
+    use Jkphl\Micrometa\Infrastructure\Factory\DocumentFactory;
 
-/**
- * Document factory test
- *
- * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micromoeta\Tests
- */
-class DocumentFactoryTest extends \PHPUnit_Framework_TestCase
-{
     /**
-     * Valid local test URL
+     * Document factory test
      *
-     * @var string
+     * @package Jkphl\Micrometa
+     * @subpackage Jkphl\Micromoeta\Tests
      */
-    const VALID_HTML_URL = 'http://localhost:1349/valid-test.html';
+    class DocumentFactoryTest extends \PHPUnit_Framework_TestCase
+    {
+        /**
+         * Valid local test HTML document
+         *
+         * @var string
+         */
+        const VALID_HTML_URL = 'http://localhost:1349/valid-test.html';
+        /**
+         * Invalid local test document
+         *
+         * @var string
+         */
+        const INVALID_DOCUMENT_URL = 'http://localhost:1349/invalid-test.html';
+        /**
+         * Non-existing local test document
+         *
+         * @var string
+         */
+        const NONEXISTING_DOCUMENT_URL = 'http://localhost:1349/none';
+
+        /**
+         * Test the HTML document instantiation via a HTTP client
+         */
+        public function testDocumentCreationViaHttpClient()
+        {
+            $dom = DocumentFactory::createFromUri(self::VALID_HTML_URL);
+            $this->assertInstanceOf(\DOMDocument::class, $dom);
+        }
+
+        /**
+         * Test the HTML document instantiation via the PHP stream wrapper
+         */
+        public function testDocumentCreationViaStreamWrapper()
+        {
+            putenv('MOCK_EXTENSION_LOADED=1');
+            $dom = DocumentFactory::createFromUri(self::VALID_HTML_URL);
+            $this->assertInstanceOf(\DOMDocument::class, $dom);
+            putenv('MOCK_EXTENSION_LOADED=');
+        }
+
+        /**
+         * Test an invalid document
+         *
+         * @expectedException \Jkphl\Micrometa\Ports\Exceptions\InvalidArgumentException
+         */
+        public function testDocumentCreationWithInvalidDocument()
+        {
+            DocumentFactory::createFromUri(self::INVALID_DOCUMENT_URL);
+        }
+
+        /**
+         * Test a malformed URL
+         *
+         * @expectedException \Jkphl\Micrometa\Ports\Exceptions\InvalidArgumentException
+         */
+        public function testDocumentCreationWithMalformedUrl()
+        {
+            DocumentFactory::createFromUri('test://');
+        }
+
+        /**
+         * Test a non-existing document
+         *
+         * @expectedException \Jkphl\Micrometa\Ports\Exceptions\RuntimeException
+         */
+        public function testDocumentCreationWithNonExistingDocument()
+        {
+            DocumentFactory::createFromUri(self::NONEXISTING_DOCUMENT_URL);
+        }
+    }
+}
+
+
+namespace Jkphl\Micrometa\Infrastructure\Factory {
 
     /**
-     * Test the HTML document instantiation via a HTTP client
+     * Find out whether an extension is loaded
+     *
+     * @link http://php.net/manual/en/function.extension-loaded.php
+     * @param string $name The extension name
+     * @return bool true if the extension identified by name is loaded, false otherwise
      */
-    public function testDocumentCreationViaHttpClient()
+    function extension_loaded($name)
     {
-        $dom = DocumentFactory::createFromUri(self::VALID_HTML_URL);
-        $this->assertInstanceOf(\DOMDocument::class, $dom);
+        return getenv('MOCK_EXTENSION_LOADED') ? false : \extension_loaded($name);
     }
 }

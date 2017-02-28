@@ -78,13 +78,6 @@ class DocumentFactory
             $client = new Client(['timeout' => 10.0]);
             $request = $client->get($guzzleUrl);
             $response = $client->send($request);
-
-            // If the request wasn't successful
-            $statusCode = $response->getStatusCode();
-            if (($statusCode < 200) || ($statusCode >= 300)) {
-                throw new RuntimeException($response->getReasonPhrase(), $statusCode);
-            }
-
             return self::createFromString(strval($response->getBody()));
 
             // If an argument was invalid
@@ -93,6 +86,7 @@ class DocumentFactory
 
             // If a runtime exception occurred
         } catch (GuzzleRuntimeException $e) {
+            echo $e->getMessage();
             throw new RuntimeException($e->getMessage(), $e->getCode());
         }
     }
@@ -118,7 +112,7 @@ class DocumentFactory
             // If an error occurred
             if (count($errors)) {
                 $error = array_pop($errors);
-                throw new RuntimeException(
+                throw new InvalidArgumentException(
                     sprintf(InvalidArgumentException::INVALID_DATA_SOURCE_STR, trim($error->message)),
                     InvalidArgumentException::INVALID_DATA_SOURCE
                 );
@@ -134,7 +128,7 @@ class DocumentFactory
      * @param string $url URL
      * @return \DOMDocument DOM document
      */
-    protected function createViaStreamWrapper($url)
+    protected static function createViaStreamWrapper($url)
     {
         $opts = array(
             'http' => array(
