@@ -5,7 +5,7 @@
  *
  * @category Jkphl
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Infrastructure\Parser
+ * @subpackage Jkphl\Micrometa\Tests\Domain
  * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -34,15 +34,32 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Infrastructure\Parser;
+namespace Jkphl\Micrometa\Tests\Infrastructure;
+
+use Jkphl\Micrometa\Infrastructure\Factory\ParserFactory;
+use Jkphl\Micrometa\Infrastructure\Parser\JsonLD;
+use Jkphl\Micrometa\Infrastructure\Parser\Microdata;
+use Jkphl\Micrometa\Infrastructure\Parser\Microformats;
+use Jkphl\Micrometa\Infrastructure\Parser\RdfaLite;
 
 /**
- * Parser interface
+ * Parser factory tests
  *
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Infrastructure
+ * @subpackage Jkphl\Micrometa\Tests
  */
-interface ParserInterface
+class ParserFactoryTest extends \PHPUnit_Framework_TestCase
 {
-
+    /**
+     * Test the parser factory
+     */
+    public function testParserFactory()
+    {
+        $formats = Microformats::FORMAT | Microdata::FORMAT | JsonLD::FORMAT | RdfaLite::FORMAT;
+        foreach (ParserFactory::createParsersFromFormats($formats) as $parserFormat => $parser) {
+            $this->assertInstanceOf(ParserFactory::$parsers[$parserFormat], $parser);
+            $formats &= ~$parserFormat;
+        }
+        $this->assertEquals(0, $formats);
+    }
 }

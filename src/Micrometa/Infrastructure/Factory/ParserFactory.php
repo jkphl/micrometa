@@ -5,7 +5,7 @@
  *
  * @category Jkphl
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Infrastructure\Parser
+ * @subpackage Jkphl\Micrometa\Infrastructure\Factory
  * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -34,20 +34,48 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Infrastructure\Parser;
+namespace Jkphl\Micrometa\Infrastructure\Factory;
+
+use Jkphl\Micrometa\Infrastructure\Parser\JsonLD;
+use Jkphl\Micrometa\Infrastructure\Parser\Microdata;
+use Jkphl\Micrometa\Infrastructure\Parser\Microformats;
+use Jkphl\Micrometa\Infrastructure\Parser\RdfaLite;
 
 /**
- * JsonLD parser
+ * Parser factory
  *
  * @package Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Infrastructure
  */
-class JsonLD extends AbstractParser
+class ParserFactory
 {
     /**
-     * Format
+     * Format parsers
      *
-     * @var int
+     * @var array
      */
-    const FORMAT = 4;
+    public static $parsers = [
+        Microformats::FORMAT => Microformats::class,
+        Microdata::FORMAT => Microdata::class,
+        JsonLD::FORMAT => JsonLD::class,
+        RdfaLite::FORMAT => RdfaLite::class
+    ];
+
+    /**
+     * Create a list of parsers from a formats bitmask
+     *
+     * @param int $formats Parser format bitmask
+     * @return \Generator Parser generator
+     */
+    public static function createParsersFromFormats($formats)
+    {
+        $formatBits = intval($formats);
+
+        // Run through all registered parsers and yield the requested instances
+        foreach (self::$parsers as $parserFormat => $parserClass) {
+            if ($parserFormat & $formatBits) {
+                yield $parserFormat => new $parserClass;
+            }
+        }
+    }
 }

@@ -36,7 +36,9 @@
 
 namespace Jkphl\Micrometa\Ports;
 
+use Jkphl\Micrometa\Application\Service\ExtractorService;
 use Jkphl\Micrometa\Infrastructure\Factory\DocumentFactory;
+use Jkphl\Micrometa\Infrastructure\Factory\ParserFactory;
 use Jkphl\Micrometa\Ports\Item\ItemObjectModel;
 use Jkphl\Micrometa\Ports\Item\ItemObjectModelInterface;
 
@@ -80,6 +82,12 @@ class Parser
         $document = (($source !== null) && strlen(trim($source))) ?
             DocumentFactory::createFromString($source) : DocumentFactory::createFromUri($uri);
 
+        // Run through all format parsers
+        $items = [];
+        $extractor = new ExtractorService();
+        foreach (ParserFactory::createParsersFromFormats(intval($formats ?: $this->formats)) as $parser) {
+
+        }
 
         return new ItemObjectModel();
     }

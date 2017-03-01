@@ -34,20 +34,15 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Infrastructure\Parser;
+namespace Jkphl\Micrometa\Application\Contract;
 
 /**
- * JsonLD parser
+ * Parser interface
  *
  * @package Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Infrastructure
  */
-class JsonLD extends AbstractParser
+interface ParserInterface
 {
-    /**
-     * Format
-     *
-     * @var int
-     */
-    const FORMAT = 4;
+
 }

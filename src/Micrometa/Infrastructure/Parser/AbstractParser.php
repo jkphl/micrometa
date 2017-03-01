@@ -36,13 +36,20 @@
 
 namespace Jkphl\Micrometa\Infrastructure\Parser;
 
+use Jkphl\Micrometa\Application\Contract\ParserInterface;
+
 /**
- * Abstractparser
+ * Abstract parser base class
  *
  * @package Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Infrastructure
  */
 abstract class AbstractParser implements ParserInterface
 {
-
+    /**
+     * Format
+     *
+     * @var int
+     */
+    const FORMAT = 0;
 }

@@ -5,7 +5,7 @@
  *
  * @category Jkphl
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Infrastructure\Parser
+ * @subpackage Jkphl\Micrometa\Tests\Domain
  * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -34,20 +34,38 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Infrastructure\Parser;
+namespace Jkphl\Micrometa\Tests\Ports;
+
+use Jkphl\Micrometa\Infrastructure\Parser\JsonLD;
+use Jkphl\Micrometa\Infrastructure\Parser\Microdata;
+use Jkphl\Micrometa\Infrastructure\Parser\Microformats;
+use Jkphl\Micrometa\Infrastructure\Parser\RdfaLite;
+use Jkphl\Micrometa\Ports\Item\ItemObjectModelInterface;
+use Jkphl\Micrometa\Ports\Parser;
 
 /**
- * JsonLD parser
+ * Parser tests
  *
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Infrastructure
+ * @subpackage Jkphl\Micrometa\Tests
  */
-class JsonLD extends AbstractParser
+class ParserTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * Format
+     * Valid local test HTML document
      *
-     * @var int
+     * @var string
      */
-    const FORMAT = 4;
+    const VALID_HTML_URL = 'http://localhost:1349/valid-test.html';
+
+    /**
+     * Test the parser facade
+     */
+    public function testParser()
+    {
+        $formats = Microformats::FORMAT | Microdata::FORMAT | JsonLD::FORMAT | RdfaLite::FORMAT;
+        $parser = new Parser(Microformats::FORMAT);
+        $itemObjectModel = $parser(self::VALID_HTML_URL, null, $formats);
+        $this->assertInstanceOf(ItemObjectModelInterface::class, $itemObjectModel);
+    }
 }

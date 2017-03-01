@@ -44,5 +44,10 @@ namespace Jkphl\Micrometa\Infrastructure\Parser;
  */
 class Microformats extends AbstractParser
 {
-
+    /**
+     * Format
+     *
+     * @var int
+     */
+    const FORMAT = 1;
 }

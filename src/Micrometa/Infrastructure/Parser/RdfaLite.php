@@ -44,5 +44,10 @@ namespace Jkphl\Micrometa\Infrastructure\Parser;
  */
 class RdfaLite extends AbstractParser
 {
-
+    /**
+     * Format
+     *
+     * @var int
+     */
+    const FORMAT = 8;
 }
