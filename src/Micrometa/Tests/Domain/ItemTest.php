@@ -79,6 +79,7 @@ class ItemTest extends \PHPUnit_Framework_TestCase
      */
     public function creationArgumentProvider()
     {
+        $item = new Item('test');
         return [
             ['test', [], null, ['test'], [], null],
             [['test'], [], null, ['test'], [], null],
@@ -96,6 +97,7 @@ class ItemTest extends \PHPUnit_Framework_TestCase
                 ['name1' => ['value1'], 'name2' => ['value2']],
                 null
             ],
+            ['test', ['name' => $item], null, ['test'], ['name' => [$item]], null],
             ['test', [], 'id', ['test'], [], 'id'],
         ];
     }
@@ -143,5 +145,14 @@ class ItemTest extends \PHPUnit_Framework_TestCase
     {
         $item = new Item('type');
         $item->getProperty('name');
+    }
+
+    /**
+     * Test the item property getter
+     */
+    public function testItemPropertyGetter()
+    {
+        $item = new Item('type', ['name' => '123']);
+        $this->assertEquals(['123'], $item->getProperty('name'));
     }
 }
