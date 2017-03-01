@@ -37,6 +37,7 @@
 namespace Jkphl\Micrometa\Infrastructure\Parser;
 
 use Jkphl\Micrometa\Application\Contract\ParserInterface;
+use Psr\Http\Message\UriInterface;
 
 /**
  * Abstract parser base class
@@ -52,4 +53,30 @@ abstract class AbstractParser implements ParserInterface
      * @var int
      */
     const FORMAT = 0;
+    /**
+     * Base URI
+     *
+     * @var UriInterface
+     */
+    protected $uri;
+
+    /**
+     * Parser constructor
+     *
+     * @param UriInterface $uri Base URI
+     */
+    public function __construct(UriInterface $uri)
+    {
+        $this->uri = $uri;
+    }
+
+    /**
+     * Return the base URI
+     *
+     * @return UriInterface Base URI
+     */
+    public function getUri()
+    {
+        return $this->uri;
+    }
 }

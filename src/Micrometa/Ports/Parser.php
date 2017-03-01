@@ -41,6 +41,7 @@ use Jkphl\Micrometa\Infrastructure\Factory\DocumentFactory;
 use Jkphl\Micrometa\Infrastructure\Factory\ParserFactory;
 use Jkphl\Micrometa\Ports\Item\ItemObjectModel;
 use Jkphl\Micrometa\Ports\Item\ItemObjectModelInterface;
+use League\Uri\Schemes\Http;
 
 /**
  * Parser
@@ -79,14 +80,17 @@ class Parser
     public function __invoke($uri, $source = null, $formats = null)
     {
         // If source code has been passed in
-        $document = (($source !== null) && strlen(trim($source))) ?
+        $dom = (($source !== null) && strlen(trim($source))) ?
             DocumentFactory::createFromString($source) : DocumentFactory::createFromUri($uri);
 
         // Run through all format parsers
         $items = [];
         $extractor = new ExtractorService();
-        foreach (ParserFactory::createParsersFromFormats(intval($formats ?: $this->formats)) as $parser) {
-
+        foreach (ParserFactory::createParsersFromFormats(
+            intval($formats ?: $this->formats),
+            Http::createFromString($uri)
+        ) as $parser) {
+            $items += $extractor->extract($dom, $parser);
         }
 
         return new ItemObjectModel();

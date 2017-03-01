@@ -40,6 +40,7 @@ use Jkphl\Micrometa\Infrastructure\Parser\JsonLD;
 use Jkphl\Micrometa\Infrastructure\Parser\Microdata;
 use Jkphl\Micrometa\Infrastructure\Parser\Microformats;
 use Jkphl\Micrometa\Infrastructure\Parser\RdfaLite;
+use Psr\Http\Message\UriInterface;
 
 /**
  * Parser factory
@@ -65,16 +66,17 @@ class ParserFactory
      * Create a list of parsers from a formats bitmask
      *
      * @param int $formats Parser format bitmask
+     * @param UriInterface $uri Base Uri
      * @return \Generator Parser generator
      */
-    public static function createParsersFromFormats($formats)
+    public static function createParsersFromFormats($formats, UriInterface $uri)
     {
         $formatBits = intval($formats);
 
         // Run through all registered parsers and yield the requested instances
         foreach (self::$parsers as $parserFormat => $parserClass) {
             if ($parserFormat & $formatBits) {
-                yield $parserFormat => new $parserClass;
+                yield $parserFormat => new $parserClass($uri);
             }
         }
     }

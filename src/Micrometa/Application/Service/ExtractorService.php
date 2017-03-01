@@ -36,6 +36,8 @@
 
 namespace Jkphl\Micrometa\Application\Service;
 
+use Jkphl\Micrometa\Application\Contract\ParserInterface;
+
 /**
  * Extractor service
  *
@@ -44,5 +46,15 @@ namespace Jkphl\Micrometa\Application\Service;
  */
 class ExtractorService
 {
-public function extract(\DOMDocument $dom, )
+    /**
+     * Extract items from a DOM document
+     *
+     * @param \DOMDocument $dom DOM document
+     * @param ParserInterface $parser Parser
+     * @return array items
+     */
+    public function extract(\DOMDocument $dom, ParserInterface $parser)
+    {
+        return [];
+    }
 }

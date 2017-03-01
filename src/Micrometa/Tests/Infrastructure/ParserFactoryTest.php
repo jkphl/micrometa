@@ -37,10 +37,13 @@
 namespace Jkphl\Micrometa\Tests\Infrastructure;
 
 use Jkphl\Micrometa\Infrastructure\Factory\ParserFactory;
+use Jkphl\Micrometa\Infrastructure\Parser\AbstractParser;
 use Jkphl\Micrometa\Infrastructure\Parser\JsonLD;
 use Jkphl\Micrometa\Infrastructure\Parser\Microdata;
 use Jkphl\Micrometa\Infrastructure\Parser\Microformats;
 use Jkphl\Micrometa\Infrastructure\Parser\RdfaLite;
+use Jkphl\Micromoeta\Tests\Infrastructure\DocumentFactoryTest;
+use League\Uri\Schemes\Http;
 
 /**
  * Parser factory tests
@@ -56,8 +59,16 @@ class ParserFactoryTest extends \PHPUnit_Framework_TestCase
     public function testParserFactory()
     {
         $formats = Microformats::FORMAT | Microdata::FORMAT | JsonLD::FORMAT | RdfaLite::FORMAT;
-        foreach (ParserFactory::createParsersFromFormats($formats) as $parserFormat => $parser) {
+        /**
+         * @var int $parserFormat
+         * @var AbstractParser $parser
+         */
+        foreach (ParserFactory::createParsersFromFormats(
+            $formats,
+            Http::createFromString(DocumentFactoryTest::VALID_HTML_URL)
+        ) as $parserFormat => $parser) {
             $this->assertInstanceOf(ParserFactory::$parsers[$parserFormat], $parser);
+            $this->assertEquals(DocumentFactoryTest::VALID_HTML_URL, $parser->getUri());
             $formats &= ~$parserFormat;
         }
         $this->assertEquals(0, $formats);
