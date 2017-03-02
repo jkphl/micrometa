@@ -75,7 +75,7 @@ class DocumentFactory
     {
         try {
             $guzzleUrl = Url::factory($url);
-            $client = new Client(['timeout' => 10.0]);
+            $client = new Client($guzzleUrl, ['timeout' => 10.0]);
             $request = $client->get($guzzleUrl);
             $response = $client->send($request);
             return self::createFromString(strval($response->getBody()));

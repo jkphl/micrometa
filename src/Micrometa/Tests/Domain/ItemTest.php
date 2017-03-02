@@ -121,7 +121,7 @@ class ItemTest extends \PHPUnit_Framework_TestCase
      */
     public function testEmptyPropertyName()
     {
-        new Item('type', ['' => 'value']);
+        new Item('type', ['' => ['value']]);
     }
 
     /**
@@ -132,7 +132,7 @@ class ItemTest extends \PHPUnit_Framework_TestCase
      */
     public function testInvalidPropertyValue()
     {
-        new Item('type', ['name' => 123]);
+        new Item('type', ['name' => [123]]);
     }
 
     /**
@@ -152,7 +152,7 @@ class ItemTest extends \PHPUnit_Framework_TestCase
      */
     public function testItemPropertyGetter()
     {
-        $item = new Item('type', ['name' => '123']);
+        $item = new Item('type', ['name' => ['123']]);
         $this->assertEquals(['123'], $item->getProperty('name'));
     }
 }

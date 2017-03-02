@@ -50,12 +50,13 @@ class ItemList implements ItemListInterface
      * @var ItemInterface[]
      */
     protected $items;
+
     /**
      * Internal pointer
      *
-     * @var null
+     * @var int
      */
-    protected $pointer = null;
+    protected $pointer;
 
     /**
      * ItemList constructor
@@ -64,7 +65,7 @@ class ItemList implements ItemListInterface
      */
     public function __construct(array $items = [])
     {
-        $this->items = $items;
+        $this->items = array_values($items);
         $this->pointer = 0;
     }
 
@@ -141,18 +142,6 @@ class ItemList implements ItemListInterface
     }
 
     /**
-     * Return all items, optionally of particular types
-     *
-     * @param array ...$types Item types
-     * @return ItemListInterface Items matching the requested types
-     * @api
-     */
-    public function items(...$types)
-    {
-        return [];
-    }
-
-    /**
      * Return the first item, optionally of particular types
      *
      * @param array ...$types Item types
@@ -161,6 +150,40 @@ class ItemList implements ItemListInterface
      */
     public function item(...$types)
     {
-        return new Item();
+        return $this->items(...$types)[0];
+    }
+
+    /**
+     * Filter the items by item type(s)
+     *
+     * @param array ...$types Item types
+     * @return ItemListInterface Items matching the requested types
+     * @api
+     */
+    public function filter(...$types)
+    {
+        return new static($this->items(...$types));
+    }
+
+    /**
+     * Return all items as an array, optionally filtered by item type(s)
+     *
+     * @param array ...$types Item types
+     * @return ItemInterface[] Items matching the requested types
+     * @api
+     */
+    public function items(...$types)
+    {
+        // If particular item types should be filtered
+        if (count($types)) {
+            return array_filter(
+                $this->items,
+                function (ItemInterface $item) use ($types) {
+                    return $item->isOfType(...$types);
+                }
+            );
+        }
+
+        return $this->items;
     }
 }

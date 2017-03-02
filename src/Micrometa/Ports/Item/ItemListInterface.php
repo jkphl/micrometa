@@ -59,7 +59,15 @@ interface ItemListInterface extends \Iterator
     public function toJson();
 
     /**
-     * Return all items, optionally of particular types
+     * Return all items as an array, optionally filtered by item type(s)
+     *
+     * @param array ...$types Item types
+     * @return ItemInterface[] Items matching the requested types
+     */
+    public function filter(...$types);
+
+    /**
+     * Filter the items by item type(s)
      *
      * @param array ...$types Item types
      * @return ItemListInterface Items matching the requested types
