@@ -3,7 +3,7 @@
 // Start the built-in web server
 chdir(__DIR__);
 $server = defined('HHVM_VERSION') ?
-    'hhvm -m server -d hhvm.server.host=%s -d hhvm.server.type=proxygen -d hhvm.server.port=%d -d hhvm.server.source_root=%s' :
+    'hhvm -m server -d hhvm.server.host=%s -d hhvm.server.type=fastcgi -d hhvm.server.port=%d -d hhvm.server.source_root=%s' :
     'php -S %s:%d -t %s';
 $command = sprintf($server, WEB_SERVER_HOST, WEB_SERVER_PORT, WEB_SERVER_DOCROOT);
 $process = proc_open($command, [['pipe', 'r']], $pipes);
