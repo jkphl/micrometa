@@ -36,6 +36,8 @@
 
 namespace Jkphl\Micrometa\Application\Contract;
 
+use Psr\Http\Message\UriInterface;
+
 /**
  * Parser interface
  *
@@ -44,5 +46,17 @@ namespace Jkphl\Micrometa\Application\Contract;
  */
 interface ParserInterface
 {
+    /**
+     * Parser constructor
+     *
+     * @param UriInterface $uri Base URI
+     */
+    public function __construct(UriInterface $uri);
 
+    /**
+     * Return the base URI
+     *
+     * @return UriInterface Base URI
+     */
+    public function getUri();
 }

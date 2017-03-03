@@ -62,7 +62,7 @@ interface ItemListInterface extends \Iterator
      * Return all items as an array, optionally filtered by item type(s)
      *
      * @param array ...$types Item types
-     * @return ItemInterface[] Items matching the requested types
+     * @return ItemListInterface Items matching the requested types
      */
     public function filter(...$types);
 
@@ -70,7 +70,7 @@ interface ItemListInterface extends \Iterator
      * Filter the items by item type(s)
      *
      * @param array ...$types Item types
-     * @return ItemListInterface Items matching the requested types
+     * @return ItemInterface[] Items matching the requested types
      */
     public function items(...$types);
 
