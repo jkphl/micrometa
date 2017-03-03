@@ -2,7 +2,8 @@
     "name": "jkphl/micrometa",
     "description": "A meta parser for extracting micro information out of web documents, currently supporting Microformats 1+2, HTML Microdata, RDFa Lite 1.1 and JSON-LD",
     "homepage": "https://jkphl.is/projects/micrometa/",
-    "minimum-stability": "RC",
+    "minimum-stability": "dev",
+    "prefer-stable" : true,
     "license": "MIT",
     "authors": [
         {
@@ -24,6 +25,10 @@
         "graph-composer": {
             "type": "git",
             "url": "https://github.com/jkphl/graph-composer"
+        },
+        "microformats-tests": {
+            "type": "vcs",
+            "url": "https://github.com/microformats/tests"
         }
     },
     "require": {
@@ -51,6 +56,7 @@
         "codeclimate/php-test-reporter": "^0.4.4",
         "phpunit/phpunit": "^4.8",
         "satooshi/php-coveralls": "^1.0",
-        "squizlabs/php_codesniffer": "^2.8"
+        "squizlabs/php_codesniffer": "^2.8",
+        "microformats/test": "@dev"
     }
 }

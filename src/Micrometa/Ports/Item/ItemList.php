@@ -92,7 +92,7 @@ class ItemList implements ItemListInterface
     /**
      * Return the position of the current element
      *
-     * @return mixed Position of the current element
+     * @return int Position of the current element
      */
     public function key()
     {
@@ -154,18 +154,6 @@ class ItemList implements ItemListInterface
     }
 
     /**
-     * Filter the items by item type(s)
-     *
-     * @param array ...$types Item types
-     * @return ItemListInterface Items matching the requested types
-     * @api
-     */
-    public function filter(...$types)
-    {
-        return new static($this->items(...$types));
-    }
-
-    /**
      * Return all items as an array, optionally filtered by item type(s)
      *
      * @param array ...$types Item types
@@ -178,12 +166,24 @@ class ItemList implements ItemListInterface
         if (count($types)) {
             return array_filter(
                 $this->items,
-                function (ItemInterface $item) use ($types) {
+                function(ItemInterface $item) use ($types) {
                     return $item->isOfType(...$types);
                 }
             );
         }
 
         return $this->items;
+    }
+
+    /**
+     * Filter the items by item type(s)
+     *
+     * @param array ...$types Item types
+     * @return ItemListInterface Items matching the requested types
+     * @api
+     */
+    public function filter(...$types)
+    {
+        return new static($this->items(...$types));
     }
 }
