@@ -36,6 +36,9 @@
 
 namespace Jkphl\Micrometa\Infrastructure\Parser;
 
+use Jkphl\RdfaLiteMicrodata\Ports\Parser\Microdata as MicrodataParser;
+use Psr\Http\Message\UriInterface;
+
 /**
  * HTML Microdata parser
  *
@@ -50,4 +53,32 @@ class Microdata extends AbstractParser
      * @var int
      */
     const FORMAT = 2;
+    /**
+     * Parser
+     *
+     * @var MicrodataParser
+     */
+    protected $parser;
+
+    /**
+     * RdfaLite constructor
+     *
+     * @param UriInterface $uri
+     */
+    public function __construct(UriInterface $uri)
+    {
+        parent::__construct($uri);
+        $this->parser = new MicrodataParser();
+    }
+
+    /**
+     * Parse a DOM document
+     *
+     * @param \DOMDocument $dom DOM Document
+     * @return array Micro information items
+     */
+    public function parseDom(\DOMDocument $dom)
+    {
+        return (array)$this->parser->parseDom($dom);
+    }
 }

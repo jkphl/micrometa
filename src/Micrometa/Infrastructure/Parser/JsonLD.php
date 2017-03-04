@@ -50,4 +50,16 @@ class JsonLD extends AbstractParser
      * @var int
      */
     const FORMAT = 4;
+
+    /**
+     * Parse a DOM document
+     *
+     * @param \DOMDocument $dom DOM Document
+     * @return array Micro information items
+     */
+    public function parseDom(\DOMDocument $dom)
+    {
+        // TODO: Implement parseDom() method.
+        return [];
+    }
 }

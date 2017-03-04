@@ -55,6 +55,6 @@ class ExtractorService
      */
     public function extract(\DOMDocument $dom, ParserInterface $parser)
     {
-        return [];
+        return $parser->parseDom($dom);
     }
 }

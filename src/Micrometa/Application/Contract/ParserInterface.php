@@ -59,4 +59,12 @@ interface ParserInterface
      * @return UriInterface Base URI
      */
     public function getUri();
+
+    /**
+     * Parse a DOM document
+     *
+     * @param \DOMDocument $dom DOM Document
+     * @return array Micro information items
+     */
+    public function parseDom(\DOMDocument $dom);
 }

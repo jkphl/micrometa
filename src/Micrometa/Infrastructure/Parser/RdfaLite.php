@@ -36,6 +36,9 @@
 
 namespace Jkphl\Micrometa\Infrastructure\Parser;
 
+use Jkphl\RdfaLiteMicrodata\Ports\Parser\RdfaLite as RdfaLiteParser;
+use Psr\Http\Message\UriInterface;
+
 /**
  * Rdfa Lite 1.1 parser
  *
@@ -50,4 +53,32 @@ class RdfaLite extends AbstractParser
      * @var int
      */
     const FORMAT = 8;
+    /**
+     * Parser
+     *
+     * @var RdfaLiteParser
+     */
+    protected $parser;
+
+    /**
+     * RdfaLite constructor
+     *
+     * @param UriInterface $uri
+     */
+    public function __construct(UriInterface $uri)
+    {
+        parent::__construct($uri);
+        $this->parser = new RdfaLiteParser();
+    }
+
+    /**
+     * Parse a DOM document
+     *
+     * @param \DOMDocument $dom DOM Document
+     * @return array Micro information items
+     */
+    public function parseDom(\DOMDocument $dom)
+    {
+        return (array)$this->parser->parseDom($dom);
+    }
 }
