@@ -36,7 +36,10 @@
 
 namespace Jkphl\Micrometa\Tests\Application;
 
+use Jkphl\Micrometa\Application\Service\ExtractorService;
 use Jkphl\Micrometa\Infrastructure\Factory\DocumentFactory;
+use Jkphl\Micrometa\Infrastructure\Parser\RdfaLite;
+use League\Uri\Schemes\Http;
 
 /**
  * Extractor tests
@@ -47,12 +50,30 @@ use Jkphl\Micrometa\Infrastructure\Factory\DocumentFactory;
 class ExtractorTest extends \PHPUnit_Framework_TestCase
 {
     /**
+     * RDFa Lite 1.1 HTML document
+     *
+     * @var string
+     */
+    const RDFA_LITE_HTML_URL = 'http://localhost:1349/article-rdfa-lite.html';
+
+    /**
      * Test the RDFa Lite 1.1 extraction
      */
     public function testRdfaLiteExtraction()
     {
+        // Create a DOM with RDFa Lite 1.1 markup
         $rdfaLite = file_get_contents(dirname(__DIR__).DIRECTORY_SEPARATOR.'Fixture'.DIRECTORY_SEPARATOR.'article-rdfa-lite.html');
-        $dom = DocumentFactory::createFromString($rdfaLite);
-        $this->assertInstanceOf(\DOMDocument::class, $dom);
+        $rdfaLiteDom = DocumentFactory::createFromString($rdfaLite);
+        $this->assertInstanceOf(\DOMDocument::class, $rdfaLiteDom);
+
+        // Create an RDFa Lite 1.1 parser
+        $rdfaLiteUri = Http::createFromString(self::RDFA_LITE_HTML_URL);
+        $rdfaLiteParser = new RdfaLite($rdfaLiteUri);
+        $this->assertEquals($rdfaLiteUri, $rdfaLiteParser->getUri());
+
+        // Create an extractor service
+        $extractorService = new ExtractorService();
+        $rdfaLiteItems = $extractorService->extract($rdfaLiteDom, $rdfaLiteParser);
+        $this->assertTrue(is_array($rdfaLiteItems));
     }
 }

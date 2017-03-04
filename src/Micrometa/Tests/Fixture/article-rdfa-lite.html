@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>News article</title>
+    </head>
+    <body vocab="http://schema.org/">
+        <article typeof="NewsArticle">
+            <h1 property="name">Nam dictum eros at libero tempor semper</h1>
+            <p>Published on
+                <time property="datePublished" datetime="2014-03-04T09:00:00+00:00">4th March 2014</time>
+            </p>
+            <p property="description">Nullam in convallis metus, quis hendrerit velit. Nam mollis congue orci, a
+                lobortis nibh feugiat id.</p>
+
+            <div property="articleBody">
+                <figure property="associatedMedia" typeof="ImageObject">
+                    <img property="contentURL" src="image.jpg">
+                    <figcaption property="caption">Lorem ipsum dolor.</figcaption>
+                </figure>
+                <p>News article content here.</p>
+            </div>
+        </article>
+    </body>
+</html>

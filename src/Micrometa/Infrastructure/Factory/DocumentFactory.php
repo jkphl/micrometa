@@ -56,7 +56,7 @@ class DocumentFactory
      *
      * @var array
      */
-    const HTML5 = [
+    protected static $html5 = [
         'a',
         'abbr',
         'acronym',
@@ -258,7 +258,7 @@ class DocumentFactory
                 if (($error->code != 801) ||
                     (
                         preg_match('/^tag\s+(\S+)\s+invalid$/', strtolower($error->message), $tag) &&
-                        !in_array($tag[1], self::HTML5)
+                        !in_array($tag[1], self::$html5)
                     )
                 ) {
                     throw new InvalidArgumentException(
