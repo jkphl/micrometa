@@ -89,17 +89,29 @@ class ItemFactory
         $properties = [];
         if (isset($item->properties) && is_array($item->properties)) {
             foreach ($item->properties as $propertyName => $propertyValues) {
-                try {
-                    $expandedPropertyValues = $this->getPropertyValues($propertyValues);
-                    if (count($expandedPropertyValues)) {
-                        $properties [$propertyName] = $expandedPropertyValues;
-                    }
-                } catch (InvalidArgumentException $e) {
-                    continue;
-                }
+                $this->processPropertyValues($properties, $propertyName, $propertyValues);
             }
         }
         return $properties;
+    }
+
+    /**
+     * Process the values of a property
+     *
+     * @param array $properties Properties
+     * @param string $propertyName Property name
+     * @param array $propertyValues Property values
+     */
+    protected function processPropertyValues(array &$properties, $propertyName, $propertyValues)
+    {
+        try {
+            $expandedPropertyValues = $this->getPropertyValues($propertyValues);
+            if (count($expandedPropertyValues)) {
+                $properties[$propertyName] = $expandedPropertyValues;
+            }
+        } catch (InvalidArgumentException $e) {
+            // Skip this property
+        }
     }
 
     /**
@@ -119,7 +131,7 @@ class ItemFactory
         }
 
         return array_map(
-            function($propertyValue) {
+            function ($propertyValue) {
                 return is_object($propertyValue) ? $this->__invoke($propertyValue) : $propertyValue;
             },
             $propertyValues

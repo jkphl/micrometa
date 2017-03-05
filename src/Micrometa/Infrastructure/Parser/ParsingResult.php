@@ -52,7 +52,7 @@ class ParsingResult implements ParsingResultInterface
     /**
      * Extracted items
      *
-     * @var \stdClass[]
+     * @var ItemInterface[]
      */
     protected $items;
     /**
