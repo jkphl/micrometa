@@ -34,34 +34,29 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Infrastructure\Parser;
+namespace Jkphl\Micrometa\Application\Contract;
 
-use Jkphl\Micrometa\Application\Contract\ParsingResultInterface;
+use Jkphl\Micrometa\Application\Item\ItemInterface;
 
 /**
- * JsonLD parser
+ * Parsing result interface
  *
  * @package Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Infrastructure
  */
-class JsonLD extends AbstractParser
+interface ParsingResultInterface
 {
     /**
-     * Format
+     * Return all extracted items
      *
-     * @var int
+     * @return ItemInterface[] Extracted items
      */
-    const FORMAT = 4;
+    public function getItems();
 
     /**
-     * Parse a DOM document
+     * Return all extra results
      *
-     * @param \DOMDocument $dom DOM Document
-     * @return ParsingResultInterface Micro information items
+     * @return array[] Extra results
      */
-    public function parseDom(\DOMDocument $dom)
-    {
-        // TODO: Implement parseDom() method.
-        return new ParsingResult(self::FORMAT, []);
-    }
+    public function getExtra();
 }

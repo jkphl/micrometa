@@ -90,7 +90,7 @@ class Parser
             intval($formats ?: $this->formats),
             Http::createFromString($uri)
         ) as $parser) {
-            $items += $extractor->extract($dom, $parser);
+            $items += $extractor->extract($dom, $parser)->getItems();
         }
 
         return new ItemObjectModel();

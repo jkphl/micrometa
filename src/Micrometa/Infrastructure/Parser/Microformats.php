@@ -37,6 +37,7 @@
 namespace Jkphl\Micrometa\Infrastructure\Parser;
 
 use Jkphl\Micrometa\Application\Contract\ParserInterface;
+use Jkphl\Micrometa\Application\Contract\ParsingResultInterface;
 use Psr\Http\Message\UriInterface;
 
 /**
@@ -75,11 +76,11 @@ class Microformats extends AbstractParser
      * Parse a DOM document
      *
      * @param \DOMDocument $dom DOM Document
-     * @return array Micro information items
+     * @return ParsingResultInterface Micro information items
      */
     public function parseDom(\DOMDocument $dom)
     {
 //        return $this->parser->parseDom($dom);
-        return [];
+        return new ParsingResult(self::FORMAT, []);
     }
 }

@@ -5,7 +5,7 @@
  *
  * @category Jkphl
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Infrastructure\Parser
+ * @subpackage Jkphl\Micrometa\Tests\Application
  * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -34,34 +34,39 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Infrastructure\Parser;
+namespace Jkphl\Micrometa\Tests\Application;
 
-use Jkphl\Micrometa\Application\Contract\ParsingResultInterface;
+use Jkphl\Micrometa\Application\Factory\ItemFactory;
+use Jkphl\Micrometa\Application\Item\Item;
 
 /**
- * JsonLD parser
+ * Item factory tests
  *
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Infrastructure
+ * @subpackage Jkphl\Micrometa\Tests
  */
-class JsonLD extends AbstractParser
+class ItemFactoryTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * Format
-     *
-     * @var int
+     * Test the item factory
      */
-    const FORMAT = 4;
+    public function testItemFactory()
+    {
+        $itemFactory = new ItemFactory(0);
+        $rawItem = (object)['type' => ['test']];
+        $item = $itemFactory($rawItem);
+        $this->assertInstanceOf(Item::class, $item);
+        $this->assertEquals(['test'], $item->getType());
+    }
 
     /**
-     * Parse a DOM document
-     *
-     * @param \DOMDocument $dom DOM Document
-     * @return ParsingResultInterface Micro information items
+     * Test an invalid item property list
      */
-    public function parseDom(\DOMDocument $dom)
-    {
-        // TODO: Implement parseDom() method.
-        return new ParsingResult(self::FORMAT, []);
+    public function testInvalidItemPropertyList() {
+        $itemFactory = new ItemFactory(0);
+        $rawItem = (object)['type' => ['test'], 'properties' => ['test' => false]];
+        $item = $itemFactory($rawItem);
+        $this->assertInstanceOf(Item::class, $item);
+        $this->assertEquals([], $item->getProperties());
     }
 }

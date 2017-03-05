@@ -5,7 +5,7 @@
  *
  * @category Jkphl
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Infrastructure\Parser
+ * @subpackage Jkphl\Micrometa\Application\Item
  * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -34,34 +34,44 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Infrastructure\Parser;
-
-use Jkphl\Micrometa\Application\Contract\ParsingResultInterface;
+namespace Jkphl\Micrometa\Application\Item;
 
 /**
- * JsonLD parser
+ * Item
  *
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Infrastructure
+ * @subpackage Jkphl\Micrometa\Application
  */
-class JsonLD extends AbstractParser
+class Item extends \Jkphl\Micrometa\Domain\Item\Item implements ItemInterface
 {
     /**
-     * Format
+     * Parser format
      *
      * @var int
      */
-    const FORMAT = 4;
+    protected $format;
 
     /**
-     * Parse a DOM document
+     * Item constructor
      *
-     * @param \DOMDocument $dom DOM Document
-     * @return ParsingResultInterface Micro information items
+     * @param int $format Parser format
+     * @param string|array $type Item type(s)
+     * @param array[] $properties Item properties
+     * @param string|null $itemId Item id
      */
-    public function parseDom(\DOMDocument $dom)
+    public function __construct($format, $type, array $properties = [], $itemId = null)
     {
-        // TODO: Implement parseDom() method.
-        return new ParsingResult(self::FORMAT, []);
+        $this->format = $format;
+        parent::__construct($type, $properties, $itemId);
+    }
+
+    /**
+     * Return the parser format
+     *
+     * @return int Parser format
+     */
+    public function getFormat()
+    {
+        return $this->format;
     }
 }

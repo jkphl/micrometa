@@ -36,6 +36,7 @@
 
 namespace Jkphl\Micrometa\Infrastructure\Parser;
 
+use Jkphl\Micrometa\Application\Contract\ParsingResultInterface;
 use Jkphl\RdfaLiteMicrodata\Ports\Parser\RdfaLite as RdfaLiteParser;
 use Psr\Http\Message\UriInterface;
 
@@ -75,10 +76,11 @@ class RdfaLite extends AbstractParser
      * Parse a DOM document
      *
      * @param \DOMDocument $dom DOM Document
-     * @return array Micro information items
+     * @return ParsingResultInterface Micro information items
      */
     public function parseDom(\DOMDocument $dom)
     {
-        return (array)$this->parser->parseDom($dom);
+        $rdfaItems = $this->parser->parseDom($dom);
+        return new ParsingResult(self::FORMAT, $rdfaItems->items);
     }
 }

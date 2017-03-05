@@ -5,7 +5,7 @@
  *
  * @category Jkphl
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Infrastructure\Parser
+ * @subpackage Jkphl\Micrometa\Application
  * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -34,34 +34,20 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Infrastructure\Parser;
-
-use Jkphl\Micrometa\Application\Contract\ParsingResultInterface;
+namespace Jkphl\Micrometa\Application\Item;
 
 /**
- * JsonLD parser
+ * Item interface
  *
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Infrastructure
+ * @subpackage Jkphl\Micrometa\Application
  */
-class JsonLD extends AbstractParser
+interface ItemInterface extends \Jkphl\Micrometa\Domain\Item\ItemInterface
 {
     /**
-     * Format
+     * Return the parser format
      *
-     * @var int
+     * @return int Parser format
      */
-    const FORMAT = 4;
-
-    /**
-     * Parse a DOM document
-     *
-     * @param \DOMDocument $dom DOM Document
-     * @return ParsingResultInterface Micro information items
-     */
-    public function parseDom(\DOMDocument $dom)
-    {
-        // TODO: Implement parseDom() method.
-        return new ParsingResult(self::FORMAT, []);
-    }
+    public function getFormat();
 }

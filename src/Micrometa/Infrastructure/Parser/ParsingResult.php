@@ -36,32 +36,62 @@
 
 namespace Jkphl\Micrometa\Infrastructure\Parser;
 
+
 use Jkphl\Micrometa\Application\Contract\ParsingResultInterface;
+use Jkphl\Micrometa\Application\Factory\ItemFactory;
+use Jkphl\Micrometa\Application\Item\ItemInterface;
 
 /**
- * JsonLD parser
+ * Parsing result
  *
  * @package Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Infrastructure
  */
-class JsonLD extends AbstractParser
+class ParsingResult implements ParsingResultInterface
 {
     /**
-     * Format
+     * Extracted items
      *
-     * @var int
+     * @var \stdClass[]
      */
-    const FORMAT = 4;
+    protected $items;
+    /**
+     * Extra results
+     *
+     * @var array[]
+     */
+    protected $extra;
 
     /**
-     * Parse a DOM document
+     * Parsing result constructor
      *
-     * @param \DOMDocument $dom DOM Document
-     * @return ParsingResultInterface Micro information items
+     * @param int $format Parser format
+     * @param \stdClass[] $items Extracted items
+     * @param array[] $extra Extra results
      */
-    public function parseDom(\DOMDocument $dom)
+    public function __construct($format, array $items, array $extra = [])
     {
-        // TODO: Implement parseDom() method.
-        return new ParsingResult(self::FORMAT, []);
+        $this->items = array_map(new ItemFactory($format), $items);
+        $this->extra = $extra;
+    }
+
+    /**
+     * Return all extracted items
+     *
+     * @return ItemInterface[] Extracted items
+     */
+    public function getItems()
+    {
+        return $this->items;
+    }
+
+    /**
+     * Return all extra results
+     *
+     * @return array[] Extra results
+     */
+    public function getExtra()
+    {
+        return $this->extra;
     }
 }

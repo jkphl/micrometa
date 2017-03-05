@@ -36,6 +36,8 @@
 
 namespace Jkphl\Micrometa\Tests\Application;
 
+use Jkphl\Micrometa\Application\Contract\ParsingResultInterface;
+use Jkphl\Micrometa\Application\Item\Item;
 use Jkphl\Micrometa\Application\Service\ExtractorService;
 use Jkphl\Micrometa\Infrastructure\Factory\DocumentFactory;
 use Jkphl\Micrometa\Infrastructure\Parser\RdfaLite;
@@ -62,7 +64,9 @@ class ExtractorTest extends \PHPUnit_Framework_TestCase
     public function testRdfaLiteExtraction()
     {
         // Create a DOM with RDFa Lite 1.1 markup
-        $rdfaLite = file_get_contents(dirname(__DIR__).DIRECTORY_SEPARATOR.'Fixture'.DIRECTORY_SEPARATOR.'article-rdfa-lite.html');
+        $rdfaLite = file_get_contents(
+            dirname(__DIR__).DIRECTORY_SEPARATOR.'Fixture'.DIRECTORY_SEPARATOR.'article-rdfa-lite.html'
+        );
         $rdfaLiteDom = DocumentFactory::createFromString($rdfaLite);
         $this->assertInstanceOf(\DOMDocument::class, $rdfaLiteDom);
 
@@ -74,6 +78,10 @@ class ExtractorTest extends \PHPUnit_Framework_TestCase
         // Create an extractor service
         $extractorService = new ExtractorService();
         $rdfaLiteItems = $extractorService->extract($rdfaLiteDom, $rdfaLiteParser);
-        $this->assertTrue(is_array($rdfaLiteItems));
+        $this->assertInstanceOf(ParsingResultInterface::class, $rdfaLiteItems);
+        $this->assertEquals(1, count($rdfaLiteItems->getItems()));
+        $this->assertEquals(0, count($rdfaLiteItems->getExtra()));
+        $this->assertInstanceOf(Item::class, $rdfaLiteItems->getItems()[0]);
+        $this->assertEquals(RdfaLite::FORMAT, $rdfaLiteItems->getItems()[0]->getFormat());
     }
 }

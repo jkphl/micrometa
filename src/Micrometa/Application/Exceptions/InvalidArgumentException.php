@@ -5,7 +5,7 @@
  *
  * @category Jkphl
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Infrastructure\Parser
+ * @subpackage Jkphl\Micrometa\Domain\Exceptions
  * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -34,34 +34,28 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Infrastructure\Parser;
+namespace Jkphl\Micrometa\Application\Exceptions;
 
-use Jkphl\Micrometa\Application\Contract\ParsingResultInterface;
+use Jkphl\Micrometa\Domain\Exceptions\MicrometaExceptionInterface;
 
 /**
- * JsonLD parser
+ * Invalid argument exception
  *
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Infrastructure
+ * @subpackage Jkphl\Micrometa\Domain
  */
-class JsonLD extends AbstractParser
+class InvalidArgumentException extends \InvalidArgumentException implements MicrometaExceptionInterface
 {
     /**
-     * Format
+     * Invalid property value list
+     *
+     * @var string
+     */
+    const INVALID_PROPERTY_VALUES_STR = 'Invalid property value list';
+    /**
+     * Invalid property value list
      *
      * @var int
      */
-    const FORMAT = 4;
-
-    /**
-     * Parse a DOM document
-     *
-     * @param \DOMDocument $dom DOM Document
-     * @return ParsingResultInterface Micro information items
-     */
-    public function parseDom(\DOMDocument $dom)
-    {
-        // TODO: Implement parseDom() method.
-        return new ParsingResult(self::FORMAT, []);
-    }
+    const INVALID_PROPERTY_VALUES = 1488314667;
 }

@@ -64,7 +64,7 @@ interface ParserInterface
      * Parse a DOM document
      *
      * @param \DOMDocument $dom DOM Document
-     * @return array Micro information items
+     * @return ParsingResultInterface Parsing results
      */
     public function parseDom(\DOMDocument $dom);
 }
