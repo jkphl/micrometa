@@ -40,6 +40,7 @@ use Jkphl\Micrometa\Application\Contract\ParsingResultInterface;
 use Jkphl\Micrometa\Application\Item\Item;
 use Jkphl\Micrometa\Application\Service\ExtractorService;
 use Jkphl\Micrometa\Infrastructure\Factory\DocumentFactory;
+use Jkphl\Micrometa\Infrastructure\Parser\Microdata;
 use Jkphl\Micrometa\Infrastructure\Parser\RdfaLite;
 use League\Uri\Schemes\Http;
 
@@ -57,6 +58,12 @@ class ExtractorTest extends \PHPUnit_Framework_TestCase
      * @var string
      */
     const RDFA_LITE_HTML_URL = 'http://localhost:1349/article-rdfa-lite.html';
+    /**
+     * Microdata HTML document
+     *
+     * @var string
+     */
+    const MICRODATA_HTML_URL = 'http://localhost:1349/article-microdata.html';
 
     /**
      * Test the RDFa Lite 1.1 extraction
@@ -83,5 +90,37 @@ class ExtractorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(0, count($rdfaLiteItems->getExtra()));
         $this->assertInstanceOf(Item::class, $rdfaLiteItems->getItems()[0]);
         $this->assertEquals(RdfaLite::FORMAT, $rdfaLiteItems->getItems()[0]->getFormat());
+    }
+
+    /**
+     * Test the HTML Microdata extraction
+     */
+    public function testMicrodataExtraction()
+    {
+        // Create a DOM with HTML Microdata markup
+        $microdata = file_get_contents(
+            dirname(__DIR__).DIRECTORY_SEPARATOR.'Fixture'.DIRECTORY_SEPARATOR.'article-microdata.html'
+        );
+        $microdataDom = DocumentFactory::createFromString($microdata);
+        $this->assertInstanceOf(\DOMDocument::class, $microdataDom);
+
+        // Create an RDFa Lite 1.1 parser
+        $microdataUri = Http::createFromString(self::MICRODATA_HTML_URL);
+        $microdataParser = new Microdata($microdataUri);
+        $this->assertEquals($microdataUri, $microdataParser->getUri());
+
+        // Create an extractor service
+        $extractorService = new ExtractorService();
+        $microdataItems = $extractorService->extract($microdataDom, $microdataParser);
+        $this->assertInstanceOf(ParsingResultInterface::class, $microdataItems);
+        $this->assertEquals(1, count($microdataItems->getItems()));
+        $this->assertEquals(0, count($microdataItems->getExtra()));
+        $this->assertInstanceOf(Item::class, $microdataItems->getItems()[0]);
+        $this->assertEquals(microdata::FORMAT, $microdataItems->getItems()[0]->getFormat());
+    }
+
+    public function testMicroformatExtraction() {
+//        $composer = new Composer
+//        \Composer\Factory::getComposerFile()
     }
 }
