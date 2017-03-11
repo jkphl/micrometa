@@ -37,6 +37,7 @@
 namespace Jkphl\Micrometa\Infrastructure\Parser;
 
 use Jkphl\Micrometa\Application\Contract\ParsingResultInterface;
+use Jkphl\Micrometa\Infrastructure\Factory\MicroformatsFactory;
 use Psr\Http\Message\UriInterface;
 
 /**
@@ -73,7 +74,8 @@ class Microformats extends AbstractParser
     public function parseDom(\DOMDocument $dom)
     {
         $microformats = \Mf2\parse($dom, strval($this->uri), false);
-        $items = isset($microformats['items']) ? $microformats['items'] : [];
+        $items = isset($microformats['items']) ?
+            MicroformatsFactory::createFromParserResult($microformats['items']) : [];
         unset($microformats['items']);
         return new ParsingResult(self::FORMAT, $items, $microformats);
     }

@@ -36,6 +36,7 @@
 
 namespace Jkphl\Micrometa\Tests\Domain;
 
+use Jkphl\Micrometa\Application\Value\StringValue;
 use Jkphl\Micrometa\Domain\Item\Item;
 
 /**
@@ -79,22 +80,41 @@ class ItemTest extends \PHPUnit_Framework_TestCase
      */
     public function creationArgumentProvider()
     {
+        function s($s)
+        {
+            return new StringValue($s);
+        }
+
         $item = new Item('test');
         return [
             ['test', [], null, ['test'], [], null],
             [['test'], [], null, ['test'], [], null],
             [['test', 'lorem'], [], null, ['test', 'lorem'], [], null],
             [['test', '', 'lorem'], [], null, ['test', 'lorem'], [], null],
-            ['test', ['name1' => 'value1'], null, ['test'], ['name1' => ['value1']], null],
-            ['test', ['name1' => ['value1']], null, ['test'], ['name1' => ['value1']], null],
-            ['test', ['name1' => ['value1', 'value2']], null, ['test'], ['name1' => ['value1', 'value2']], null],
-            ['test', ['name1' => ['value1', '', 'value2']], null, ['test'], ['name1' => ['value1', 'value2']], null],
+            ['test', ['name1' => s('value1')], null, ['test'], ['name1' => [s('value1')]], null],
+            ['test', ['name1' => [s('value1')]], null, ['test'], ['name1' => [s('value1')]], null],
             [
                 'test',
-                ['name1' => 'value1', 'name2' => ['value2']],
+                ['name1' => [s('value1'), s('value2')]],
                 null,
                 ['test'],
-                ['name1' => ['value1'], 'name2' => ['value2']],
+                ['name1' => [s('value1'), s('value2')]],
+                null
+            ],
+            [
+                'test',
+                ['name1' => [s('value1'), s(''), s('value2')]],
+                null,
+                ['test'],
+                ['name1' => [s('value1'), s('value2')]],
+                null
+            ],
+            [
+                'test',
+                ['name1' => s('value1'), 'name2' => [s('value2')]],
+                null,
+                ['test'],
+                ['name1' => [s('value1')], 'name2' => [s('value2')]],
                 null
             ],
             ['test', ['name' => $item], null, ['test'], ['name' => [$item]], null],
@@ -152,7 +172,7 @@ class ItemTest extends \PHPUnit_Framework_TestCase
      */
     public function testItemPropertyGetter()
     {
-        $item = new Item('type', ['name' => ['123']]);
-        $this->assertEquals(['123'], $item->getProperty('name'));
+        $item = new Item('type', ['name' => [new StringValue('123')]]);
+        $this->assertEquals([new StringValue('123')], $item->getProperty('name'));
     }
 }

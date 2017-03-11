@@ -50,6 +50,12 @@ class Item extends \Jkphl\Micrometa\Domain\Item\Item implements ItemInterface
      * @var int
      */
     protected $format;
+    /**
+     * Item value
+     *
+     * @var string
+     */
+    protected $value;
 
     /**
      * Item constructor
@@ -58,10 +64,12 @@ class Item extends \Jkphl\Micrometa\Domain\Item\Item implements ItemInterface
      * @param string|array $type Item type(s)
      * @param array[] $properties Item properties
      * @param string|null $itemId Item id
+     * @param string|null $value Item value
      */
-    public function __construct($format, $type, array $properties = [], $itemId = null)
+    public function __construct($format, $type, array $properties = [], $itemId = null, $value = null)
     {
         $this->format = $format;
+        $this->value = $value;
         parent::__construct($type, $properties, $itemId);
     }
 
@@ -73,5 +81,15 @@ class Item extends \Jkphl\Micrometa\Domain\Item\Item implements ItemInterface
     public function getFormat()
     {
         return $this->format;
+    }
+
+    /**
+     * Return the item value
+     *
+     * @return string Item value
+     */
+    public function getValue()
+    {
+        return $this->value;
     }
 }

@@ -196,6 +196,34 @@ class DocumentFactory
     ];
 
     /**
+     * HTML void elements
+     *
+     * @var array
+     */
+    protected static $htmlVoid = [
+        'area',
+        'base',
+        'br',
+        'col',
+        'embed',
+        'hr',
+        'img',
+        'input',
+        'keygen',
+        'link',
+        'menuitem',
+        'meta',
+        'param',
+        'source',
+        'track',
+        'wbr',
+        'basefont',
+        'bgsound',
+        'frame',
+        'isindex'
+    ];
+
+    /**
      * Create a DOM document from a URI
      *
      * @param string $url HTTP / HTTPS URL
@@ -255,12 +283,7 @@ class DocumentFactory
             // Run through all errors
             /** @var \LibXMLError $error */
             foreach ($errors as $error) {
-                if (($error->code != 801) ||
-                    (
-                        preg_match('/^tag\s+(\S+)\s+invalid$/', strtolower($error->message), $tag) &&
-                        !in_array($tag[1], self::$html5)
-                    )
-                ) {
+                if (!self::isAcceptableError($error)) {
                     throw new InvalidArgumentException(
                         sprintf(InvalidArgumentException::INVALID_DATA_SOURCE_STR, trim($error->message)),
                         InvalidArgumentException::INVALID_DATA_SOURCE
@@ -270,6 +293,30 @@ class DocumentFactory
         }
 
         return $dom;
+    }
+
+    /**
+     * Test whether a parsing error is acceptable
+     *
+     * @param \LibXMLError $error Parsing error
+     * @return bool Acceptable error
+     */
+    protected static function isAcceptableError(\LibXMLError $error)
+    {
+        // If it's an error based on an HTML5 element
+        if (($error->code == 801) &&
+            preg_match('/^tag\s+(\S+)\s+invalid$/', strtolower($error->message), $tag) &&
+            in_array($tag[1], self::$html5)
+        ) {
+            return true;
+        }
+
+        // If it's an error based on a non closing element
+        if (in_array($error->code, [76, 77])) {
+            return true;
+        }
+
+        return false;
     }
 
     /**

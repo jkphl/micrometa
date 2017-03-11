@@ -36,13 +36,15 @@
 
 namespace Jkphl\Micrometa\Domain\Item;
 
+use Jkphl\Micrometa\Domain\Value\ValueInterface;
+
 /**
  * Item interface
  *
  * @package Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Domain
  */
-interface ItemInterface
+interface ItemInterface extends ValueInterface
 {
     /**
      * Return the item types

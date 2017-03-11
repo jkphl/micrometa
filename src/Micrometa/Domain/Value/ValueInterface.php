@@ -5,7 +5,7 @@
  *
  * @category Jkphl
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Application
+ * @subpackage Jkphl\Micrometa\Domain
  * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -34,27 +34,20 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Application\Item;
+namespace Jkphl\Micrometa\Domain\Value;
 
 /**
- * Item interface
+ * Value interface
  *
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Application
+ * @subpackage Jkphl\Micrometa\Domain
  */
-interface ItemInterface extends \Jkphl\Micrometa\Domain\Item\ItemInterface
+interface ValueInterface
 {
     /**
-     * Return the parser format
+     * Return whether the value should be considered empty
      *
-     * @return int Parser format
+     * @return boolean Value is empty
      */
-    public function getFormat();
-
-    /**
-     * Return the item value
-     *
-     * @return string Item value
-     */
-    public function getValue();
+    public function isEmpty();
 }

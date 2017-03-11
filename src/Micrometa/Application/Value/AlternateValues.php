@@ -34,27 +34,25 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Application\Item;
+namespace Jkphl\Micrometa\Application\Value;
+
+use Jkphl\Micrometa\Domain\Value\ValueInterface;
 
 /**
- * Item interface
+ * Alternate value
  *
  * @package Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Application
  */
-interface ItemInterface extends \Jkphl\Micrometa\Domain\Item\ItemInterface
+class AlternateValues extends \ArrayObject implements ValueInterface
 {
     /**
-     * Return the parser format
+     * Return whether the value should be considered empty
      *
-     * @return int Parser format
+     * @return boolean Value is empty
      */
-    public function getFormat();
-
-    /**
-     * Return the item value
-     *
-     * @return string Item value
-     */
-    public function getValue();
+    public function isEmpty()
+    {
+        return !count($this->getArrayCopy());
+    }
 }

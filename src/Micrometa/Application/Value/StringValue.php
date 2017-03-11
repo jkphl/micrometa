@@ -5,7 +5,7 @@
  *
  * @category Jkphl
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Application
+ * @subpackage Jkphl\Micrometa\Application\Value
  * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -34,27 +34,42 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Application\Item;
+namespace Jkphl\Micrometa\Application\Value;
+
+use Jkphl\Micrometa\Domain\Value\ValueInterface;
 
 /**
- * Item interface
+ * String value
  *
  * @package Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Application
  */
-interface ItemInterface extends \Jkphl\Micrometa\Domain\Item\ItemInterface
+class StringValue implements ValueInterface
 {
     /**
-     * Return the parser format
+     * String value
      *
-     * @return int Parser format
+     * @var string
      */
-    public function getFormat();
+    protected $value;
 
     /**
-     * Return the item value
+     * String value constructor
      *
-     * @return string Item value
+     * @param string $value String value
      */
-    public function getValue();
+    public function __construct($value)
+    {
+        $this->value = $value;
+    }
+
+    /**
+     * Return whether the value should be considered empty
+     *
+     * @return boolean Value is empty
+     */
+    public function isEmpty()
+    {
+        return !strlen(trim($this->value));
+    }
 }

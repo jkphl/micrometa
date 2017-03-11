@@ -38,6 +38,7 @@ namespace Jkphl\Micrometa\Domain\Item;
 
 use Jkphl\Micrometa\Domain\Exceptions\InvalidArgumentException;
 use Jkphl\Micrometa\Domain\Exceptions\OutOfBoundsException;
+use Jkphl\Micrometa\Domain\Value\ValueInterface;
 
 /**
  * Micro information item
@@ -149,25 +150,19 @@ class Item implements ItemInterface
         $nonEmptyPropertyValues = [];
 
         // Run through all property values
+        /** @var ValueInterface $value */
         foreach ($values as $value) {
-            // If it's a string value
-            if (is_string($value)) {
-                $nonEmptyValue = trim($value);
-                if (strlen($nonEmptyValue)) {
-                    $nonEmptyPropertyValues[] = $nonEmptyValue;
-                }
-                continue;
-            }
-
             // If the value is not a nested item
-            if (!($value instanceof ItemInterface)) {
+            if (!($value instanceof ValueInterface)) {
                 throw new InvalidArgumentException(
                     sprintf(InvalidArgumentException::INVALID_PROPERTY_VALUE_STR, gettype($value)),
                     InvalidArgumentException::INVALID_PROPERTY_VALUE
                 );
             }
 
-            $nonEmptyPropertyValues[] = $value;
+            if (!$value->isEmpty()) {
+                $nonEmptyPropertyValues[] = $value;
+            }
         }
 
         return $nonEmptyPropertyValues;
@@ -221,5 +216,15 @@ class Item implements ItemInterface
         }
 
         return $this->properties[$name];
+    }
+
+    /**
+     * Return whether the value should be considered empty
+     *
+     * @return boolean Value is empty
+     */
+    public function isEmpty()
+    {
+        return false;
     }
 }

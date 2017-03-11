@@ -38,6 +38,9 @@ namespace Jkphl\Micrometa\Application\Factory;
 
 use Jkphl\Micrometa\Application\Exceptions\InvalidArgumentException;
 use Jkphl\Micrometa\Application\Item\Item;
+use Jkphl\Micrometa\Application\Value\AlternateValues;
+use Jkphl\Micrometa\Application\Value\StringValue;
+use Jkphl\Micrometa\Domain\Value\ValueInterface;
 
 /**
  * Item factory
@@ -65,6 +68,23 @@ class ItemFactory
     }
 
     /**
+     * Prepare a single property value
+     *
+     * @param mixed $propertyValue Property Value
+     * @return ValueInterface Value
+     */
+    protected function processPropertyValue($propertyValue)
+    {
+        if (is_object($propertyValue)) {
+            return $this->__invoke($propertyValue);
+        }
+        if (is_array($propertyValue)) {
+            return new AlternateValues($propertyValue);
+        }
+        return new StringValue($propertyValue);
+    }
+
+    /**
      * Create an item instance
      *
      * @param \stdClass $item Raw item
@@ -74,8 +94,9 @@ class ItemFactory
     {
         $type = isset($item->type) ? $item->type : null;
         $itemId = isset($item->id) ? $item->id : null;
+        $value = isset($item->value) ? $item->value : null;
         $properties = $this->getProperties($item);
-        return new Item($this->format, $type, $properties, $itemId);
+        return new Item($this->format, $type, $properties, $itemId, $value);
     }
 
     /**
@@ -130,11 +151,6 @@ class ItemFactory
             );
         }
 
-        return array_map(
-            function ($propertyValue) {
-                return is_object($propertyValue) ? $this->__invoke($propertyValue) : $propertyValue;
-            },
-            $propertyValues
-        );
+        return array_map([$this, 'processPropertyValue'], $propertyValues);
     }
 }
