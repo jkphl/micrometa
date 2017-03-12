@@ -5,7 +5,7 @@
  *
  * @category Jkphl
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Ports\Rel
+ * @subpackage Jkphl\Micrometa\Infrastructure
  * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -34,60 +34,48 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Ports\Rel;
+namespace Jkphl\Micrometa\Infrastructure\Factory;
+
+use Jkphl\Micrometa\Ports\Rel\Rel;
 
 /**
- * Alternate resource
+ * Rel declaration factory
  *
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Ports
+ * @subpackage Jkphl\Micrometa\Infrastructure
  */
-class Alternate extends Rel implements AlternateInterface
+class RelFactory
 {
     /**
-     * Alternate resource type
+     * Create rel declaration from parser results
      *
-     * @var string
+     * @param array[] $rels Parser results
+     * @return array[] Rel declaration
      */
-    protected $type;
-    /**
-     * Alternate resource title
-     *
-     * @var string
-     */
-    protected $title;
-
-    /**
-     * Alternate resource constructor
-     *
-     * @param string $value Alternate resource URL
-     * @param string $type Alternate resource type
-     * @param string $title Alternate resource title
-     */
-    public function __construct($value, $type, $title)
+    public static function createFromParserResult(array $rels)
     {
-        parent::__construct($value);
-        $this->type = $type;
-        $this->title = $title;
+        return array_map([static::class, 'createRelType'], $rels);
     }
 
     /**
-     * Return the alternate resource type
+     * Create rel declarations of a particular type
      *
-     * @return string Alternate resource type
+     * @param array $relType Rel type values
+     * @return Rel[] Rel declarations
      */
-    public function getType()
+    protected static function createRelType(array $relType)
     {
-        return $this->type;
+        return array_map([static::class, 'createRel'], $relType);
     }
 
     /**
-     * Alternate resource title
+     * Create a rel declaration
      *
-     * @return string Alternate resource title
+     * @param string $relValue Rel declaration value
+     * @return Rel Rel declaration
      */
-    public function getTitle()
+    protected function createRel($relValue)
     {
-        return $this->title;
+        return new Rel($relValue);
     }
 }

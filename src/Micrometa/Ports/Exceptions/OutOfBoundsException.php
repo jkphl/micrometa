@@ -5,7 +5,7 @@
  *
  * @category Jkphl
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Ports\Rel
+ * @subpackage Jkphl\Micrometa\Ports
  * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -34,60 +34,50 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Ports\Rel;
+namespace Jkphl\Micrometa\Ports\Exceptions;
 
 /**
- * Alternate resource
+ * Out of bounds exception
  *
  * @package Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Ports
  */
-class Alternate extends Rel implements AlternateInterface
+class OutOfBoundsException extends \OutOfBoundsException implements MicrometaExceptionInterface
 {
     /**
-     * Alternate resource type
+     * Invalid rel tyle
      *
      * @var string
      */
-    protected $type;
+    const INVALID_REL_TYPE_STR = 'Rel type "%s" is out of bounds';
     /**
-     * Alternate resource title
+     * Invalid rel type
+     *
+     * @var int
+     */
+    const INVALID_REL_TYPE = 1489269267;
+    /**
+     * Invalid rel type index
      *
      * @var string
      */
-    protected $title;
-
+    const INVALID_REL_INDEX_STR = 'Index "%s" for rel type "%s" is out of bounds';
     /**
-     * Alternate resource constructor
+     * Invalid rel type index
      *
-     * @param string $value Alternate resource URL
-     * @param string $type Alternate resource type
-     * @param string $title Alternate resource title
+     * @var int
      */
-    public function __construct($value, $type, $title)
-    {
-        parent::__construct($value);
-        $this->type = $type;
-        $this->title = $title;
-    }
-
+    const INVALID_REL_INDEX = 1489268571;
     /**
-     * Return the alternate resource type
+     * Invalid alternate type
      *
-     * @return string Alternate resource type
+     * @var string
      */
-    public function getType()
-    {
-        return $this->type;
-    }
-
+    const INVALID_ALTERNATE_TYPE_STR = 'Alternate type "%s" is out of bounds';
     /**
-     * Alternate resource title
+     * Invalid alternate type
      *
-     * @return string Alternate resource title
+     * @var int
      */
-    public function getTitle()
-    {
-        return $this->title;
-    }
+    const INVALID_ALTERNATE_TYPE = 1489268753;
 }

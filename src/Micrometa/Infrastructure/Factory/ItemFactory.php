@@ -5,7 +5,7 @@
  *
  * @category Jkphl
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Ports\Rel
+ * @subpackage Jkphl\Micrometa\Infrastructure
  * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -34,60 +34,31 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Ports\Rel;
+namespace Jkphl\Micrometa\Infrastructure\Factory;
+
+use Jkphl\Micrometa\Application\Item\ItemInterface as ApplicationItemInterface;
+use Jkphl\Micrometa\Ports\Item\ItemInterface;
 
 /**
- * Alternate resource
+ * Item factory
  *
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Ports
+ * @subpackage Jkphl\Micrometa\Infrastructure
  */
-class Alternate extends Rel implements AlternateInterface
+class ItemFactory
 {
     /**
-     * Alternate resource type
+     * Create items from parser results
      *
-     * @var string
+     * @param ApplicationItemInterface[] $items Items
+     * @return ItemInterface[] Items
      */
-    protected $type;
-    /**
-     * Alternate resource title
-     *
-     * @var string
-     */
-    protected $title;
-
-    /**
-     * Alternate resource constructor
-     *
-     * @param string $value Alternate resource URL
-     * @param string $type Alternate resource type
-     * @param string $title Alternate resource title
-     */
-    public function __construct($value, $type, $title)
+    public static function createFromParserResult(array $items)
     {
-        parent::__construct($value);
-        $this->type = $type;
-        $this->title = $title;
+        return array_map([static::class, 'createItem'], $items);
     }
 
-    /**
-     * Return the alternate resource type
-     *
-     * @return string Alternate resource type
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
+    public static function createItem(ApplicationItemInterface $item) {
 
-    /**
-     * Alternate resource title
-     *
-     * @return string Alternate resource title
-     */
-    public function getTitle()
-    {
-        return $this->title;
     }
 }

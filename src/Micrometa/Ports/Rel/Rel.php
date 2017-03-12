@@ -44,5 +44,30 @@ namespace Jkphl\Micrometa\Ports\Rel;
  */
 class Rel implements RelInterface
 {
+    /**
+     * Rel declaration value
+     *
+     * @var string
+     */
+    protected $value;
 
+    /**
+     * Rel constructor
+     *
+     * @param string $value Rel declaration value
+     */
+    public function __construct($value)
+    {
+        $this->value = $value;
+    }
+
+    /**
+     * Serialize the rel declaration value
+     *
+     * @return string Rel declaration value
+     */
+    public function __toString()
+    {
+        return strval($this->value);
+    }
 }

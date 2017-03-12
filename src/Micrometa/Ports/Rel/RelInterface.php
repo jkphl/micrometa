@@ -44,5 +44,10 @@ namespace Jkphl\Micrometa\Ports\Rel;
  */
 interface RelInterface
 {
-
+    /**
+     * Serialize the rel declaration value
+     *
+     * @return string Rel declaration value
+     */
+    public function __toString();
 }

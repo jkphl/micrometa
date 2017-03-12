@@ -5,7 +5,7 @@
  *
  * @category Jkphl
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Ports\Rel
+ * @subpackage Jkphl\Micrometa\Infrastructure
  * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -34,60 +34,37 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Ports\Rel;
+namespace Jkphl\Micrometa\Infrastructure\Factory;
+
+use Jkphl\Micrometa\Ports\Rel\Alternate;
 
 /**
- * Alternate resource
+ * Alternate resource factory
  *
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Ports
+ * @subpackage Jkphl\Micrometa\Infrastructure
  */
-class Alternate extends Rel implements AlternateInterface
+class AlternateFactory
 {
     /**
-     * Alternate resource type
+     * Create alternate resource declaration from parser results
      *
-     * @var string
+     * @param array[] $rels Parser results
+     * @return Alternate[] Alternate resource declarations
      */
-    protected $type;
-    /**
-     * Alternate resource title
-     *
-     * @var string
-     */
-    protected $title;
-
-    /**
-     * Alternate resource constructor
-     *
-     * @param string $value Alternate resource URL
-     * @param string $type Alternate resource type
-     * @param string $title Alternate resource title
-     */
-    public function __construct($value, $type, $title)
+    public static function createFromParserResult(array $alternates)
     {
-        parent::__construct($value);
-        $this->type = $type;
-        $this->title = $title;
+        return array_map([static::class, 'createAlternate'], $alternates);
     }
 
     /**
-     * Return the alternate resource type
+     * Create an alternate resource declaration
      *
-     * @return string Alternate resource type
+     * @param array $alternate Alternate resource values
+     * @return Alternate Alternate resource
      */
-    public function getType()
+    protected function createRel($alternate)
     {
-        return $this->type;
-    }
-
-    /**
-     * Alternate resource title
-     *
-     * @return string Alternate resource title
-     */
-    public function getTitle()
-    {
-        return $this->title;
+        return new Alternate($alternate['value'], $alternate['type'], $alternate['title']);
     }
 }

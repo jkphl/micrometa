@@ -162,11 +162,10 @@ class ExtractorTest extends \PHPUnit_Framework_TestCase
         // Create an extractor service
         $extractorService = new ExtractorService();
         $microformatsItems = $extractorService->extract($microformatsDom, $microformatsParser);
-        print_r($microformatsItems);
-//        $this->assertInstanceOf(ParsingResultInterface::class, $microformatsItems);
-//        $this->assertEquals(1, count($microformatsItems->getItems()));
-//        $this->assertEquals(0, count($microformatsItems->getExtra()));
-//        $this->assertInstanceOf(Item::class, $microformatsItems->getItems()[0]);
-//        $this->assertEquals(microdata::FORMAT, $microformatsItems->getItems()[0]->getFormat());
+        $this->assertInstanceOf(ParsingResultInterface::class, $microformatsItems);
+        $this->assertEquals(1, count($microformatsItems->getItems()));
+        $this->assertEquals(1, count($microformatsItems->getExtra()));
+        $this->assertInstanceOf(Item::class, $microformatsItems->getItems()[0]);
+        $this->assertEquals(Microformats::FORMAT, $microformatsItems->getItems()[0]->getFormat());
     }
 }

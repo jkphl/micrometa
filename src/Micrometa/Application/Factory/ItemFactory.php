@@ -38,6 +38,7 @@ namespace Jkphl\Micrometa\Application\Factory;
 
 use Jkphl\Micrometa\Application\Exceptions\InvalidArgumentException;
 use Jkphl\Micrometa\Application\Item\Item;
+use Jkphl\Micrometa\Application\Item\ItemInterface;
 use Jkphl\Micrometa\Application\Value\AlternateValues;
 use Jkphl\Micrometa\Application\Value\StringValue;
 use Jkphl\Micrometa\Domain\Value\ValueInterface;
@@ -88,7 +89,7 @@ class ItemFactory
      * Create an item instance
      *
      * @param \stdClass $item Raw item
-     * @return Item Item instance
+     * @return ItemInterface Item instance
      */
     public function __invoke(\stdClass $item)
     {

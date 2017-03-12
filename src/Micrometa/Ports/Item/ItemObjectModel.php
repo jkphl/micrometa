@@ -36,9 +36,9 @@
 
 namespace Jkphl\Micrometa\Ports\Item;
 
-use Jkphl\Micrometa\Ports\Rel\Alternate;
+use Jkphl\Micrometa\Application\Item\ItemInterface;
+use Jkphl\Micrometa\Ports\Exceptions\OutOfBoundsException;
 use Jkphl\Micrometa\Ports\Rel\AlternateInterface;
-use Jkphl\Micrometa\Ports\Rel\Rel;
 use Jkphl\Micrometa\Ports\Rel\RelInterface;
 
 /**
@@ -50,6 +50,66 @@ use Jkphl\Micrometa\Ports\Rel\RelInterface;
 class ItemObjectModel extends ItemList implements ItemObjectModelInterface
 {
     /**
+     * Rel declarations
+     *
+     * @var RelInterface[]
+     */
+    protected $rels;
+
+    /**
+     * Alternate resources
+     *
+     * @var AlternateInterface[]
+     */
+    protected $alternates;
+
+    /**
+     * ItemList constructor
+     *
+     * @param ItemInterface[] $items Items
+     * @param RelInterface[] $rels Rel declarations
+     * @param AlternateInterface[] $alternates Alternate resources
+     */
+    public function __construct(array $items = [], array $rels = [], array $alternates = [])
+    {
+        parent::__construct($items);
+        $this->rels = $rels;
+        $this->alternates = $alternates;
+    }
+
+    /**
+     * Return all rel declarations of a particular type
+     *
+     * @param string $type Rel type
+     * @param int|null $index Optional: particular index
+     * @return RelInterface|RelInterface[] Single rel=* declaration or list of particular rel declarations
+     * @throws OutOfBoundsException If the rel type is out of bounds
+     * @throws OutOfBoundsException If the rel index is out of bounds
+     * @api
+     */
+    public function rel($type, $index = null)
+    {
+        if ($index === null) {
+            return $this->rels();
+        }
+        // If the rel type is out of bounds
+        if (!array_key_exists($type, $this->rels)) {
+            throw new OutOfBoundsException(
+                sprintf(OutOfBoundsException::INVALID_REL_TYPE_STR, $type),
+                OutOfBoundsException::INVALID_REL_TYPE
+            );
+        }
+        // If the rel index is out of bounds
+        if (!is_int($index) || !array_key_exists($index, $this->rels[$type])) {
+            throw new OutOfBoundsException(
+                sprintf(OutOfBoundsException::INVALID_REL_INDEX_STR, $index, $type),
+                OutOfBoundsException::INVALID_REL_INDEX
+            );
+        }
+        return $this->rels[$type][$index];
+    }
+
+    /**
      * Return all rel=* declaration groups
      *
      * @return RelInterface[] Rel=* declaration groups
@@ -57,20 +117,7 @@ class ItemObjectModel extends ItemList implements ItemObjectModelInterface
      */
     public function rels()
     {
-        return [];
-    }
-
-    /**
-     * Return all rel declarations of a particular type
-     *
-     * @param string $rel Rel type
-     * @param int|null $index Optional: particular index
-     * @return RelInterface|RelInterface[] Single rel=* declaration or list of particular rel declarations
-     * @api
-     */
-    public function rel($rel, $index = null)
-    {
-        return new Rel();
+        return $this->rels;
     }
 
     /**
@@ -81,7 +128,7 @@ class ItemObjectModel extends ItemList implements ItemObjectModelInterface
      */
     public function alternates()
     {
-        return [];
+        return $this->alternates;
     }
 
     /**
@@ -89,10 +136,18 @@ class ItemObjectModel extends ItemList implements ItemObjectModelInterface
      *
      * @param string $type Alternate representation type
      * @return AlternateInterface|null Alternate resource
+     * @throws OutOfBoundsException If the alternate type is out of bounds
      * @api
      */
     public function alternate($type)
     {
-        return new Alternate();
+        // If the alternate type is out of bounds
+        if (!array_key_exists($type, $this->alternates)) {
+            throw new OutOfBoundsException(
+                sprintf(OutOfBoundsException::INVALID_ALTERNATE_TYPE_STR, $type),
+                OutOfBoundsException::INVALID_ALTERNATE_TYPE
+            );
+        }
+        return $this->alternates[$type];
     }
 }
