@@ -39,6 +39,7 @@ namespace Jkphl\Micrometa\Ports;
 use Jkphl\Micrometa\Application\Service\ExtractorService;
 use Jkphl\Micrometa\Infrastructure\Factory\AlternateFactory;
 use Jkphl\Micrometa\Infrastructure\Factory\DocumentFactory;
+use Jkphl\Micrometa\Infrastructure\Factory\ItemFactory;
 use Jkphl\Micrometa\Infrastructure\Factory\ParserFactory;
 use Jkphl\Micrometa\Infrastructure\Factory\RelFactory;
 use Jkphl\Micrometa\Ports\Item\ItemObjectModel;
@@ -93,7 +94,7 @@ class Parser
             Http::createFromString($uri)
         ) as $parser) {
             $results = $extractor->extract($dom, $parser);
-            $items += $results->getItems();
+            $items += ItemFactory::createFromParserResult($results->getItems());
             $extra = $results->getExtra();
             if (!empty($extra['rels'])) {
                 $rels += RelFactory::createFromParserResult($extra['rels']);

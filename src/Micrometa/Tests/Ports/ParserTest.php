@@ -42,7 +42,6 @@ use Jkphl\Micrometa\Infrastructure\Parser\Microformats;
 use Jkphl\Micrometa\Infrastructure\Parser\RdfaLite;
 use Jkphl\Micrometa\Ports\Item\ItemObjectModelInterface;
 use Jkphl\Micrometa\Ports\Parser;
-use Jkphl\Micromoeta\Tests\Infrastructure\DocumentFactoryTest;
 
 /**
  * Parser tests
@@ -53,13 +52,22 @@ use Jkphl\Micromoeta\Tests\Infrastructure\DocumentFactoryTest;
 class ParserTest extends \PHPUnit_Framework_TestCase
 {
     /**
+     * Valid local test HTML document
+     *
+     * @var string
+     */
+    const VALID_HTML_URL = 'http://localhost:1349/valid-test.html';
+
+    /**
      * Test the parser facade
      */
     public function testParser()
     {
+        $microformatsHtml = \ComposerLocator::getPath('microformats/test').DIRECTORY_SEPARATOR.'tests'.
+            DIRECTORY_SEPARATOR.'microformats-v2'.DIRECTORY_SEPARATOR.'h-product'.DIRECTORY_SEPARATOR.'aggregate.html';
         $formats = Microformats::FORMAT | Microdata::FORMAT | JsonLD::FORMAT | RdfaLite::FORMAT;
         $parser = new Parser(Microformats::FORMAT);
-        $itemObjectModel = $parser(DocumentFactoryTest::VALID_HTML_URL, null, $formats);
+        $itemObjectModel = $parser(self::VALID_HTML_URL, file_get_contents($microformatsHtml), $formats);
         $this->assertInstanceOf(ItemObjectModelInterface::class, $itemObjectModel);
     }
 }

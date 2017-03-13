@@ -44,6 +44,7 @@ namespace Jkphl\Micrometa\Ports\Item;
  */
 class Item implements ItemInterface
 {
+
     /**
      * Return whether the item is of a particular type (or contained in a list of types)
      *

@@ -36,7 +36,6 @@
 
 namespace Jkphl\Micrometa\Ports\Item;
 
-use Jkphl\Micrometa\Application\Item\ItemInterface;
 use Jkphl\Micrometa\Ports\Exceptions\OutOfBoundsException;
 use Jkphl\Micrometa\Ports\Rel\AlternateInterface;
 use Jkphl\Micrometa\Ports\Rel\RelInterface;
