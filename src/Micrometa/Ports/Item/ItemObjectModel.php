@@ -36,6 +36,7 @@
 
 namespace Jkphl\Micrometa\Ports\Item;
 
+use Jkphl\Micrometa\Application\Item\ItemInterface as ApplicationItemInterface;
 use Jkphl\Micrometa\Ports\Exceptions\OutOfBoundsException;
 use Jkphl\Micrometa\Ports\Rel\AlternateInterface;
 use Jkphl\Micrometa\Ports\Rel\RelInterface;
@@ -65,7 +66,7 @@ class ItemObjectModel extends ItemList implements ItemObjectModelInterface
     /**
      * ItemList constructor
      *
-     * @param ItemInterface[] $items Items
+     * @param ApplicationItemInterface[] $items Items
      * @param RelInterface[] $rels Rel declarations
      * @param AlternateInterface[] $alternates Alternate resources
      */

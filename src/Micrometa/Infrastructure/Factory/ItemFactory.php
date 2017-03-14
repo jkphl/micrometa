@@ -37,6 +37,7 @@
 namespace Jkphl\Micrometa\Infrastructure\Factory;
 
 use Jkphl\Micrometa\Application\Item\ItemInterface as ApplicationItemInterface;
+use Jkphl\Micrometa\Ports\Item\Item;
 use Jkphl\Micrometa\Ports\Item\ItemInterface;
 
 /**
@@ -58,7 +59,14 @@ class ItemFactory
         return array_map([static::class, 'createItem'], $items);
     }
 
-    public static function createItem(ApplicationItemInterface $item) {
-
+    /**
+     * Create an application item decorator
+     *
+     * @param ApplicationItemInterface $applicationItem
+     * @return Item Item
+     */
+    public static function createItem(ApplicationItemInterface $applicationItem)
+    {
+        return new Item($applicationItem);
     }
 }

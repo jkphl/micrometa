@@ -104,6 +104,6 @@ class Parser
             }
         }
 
-        return new ItemObjectModel();
+        return new ItemObjectModel($items, $rels, $alternates);
     }
 }

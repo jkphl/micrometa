@@ -117,7 +117,6 @@ namespace Jkphl\Micromoeta\Tests\Infrastructure {
     }
 }
 
-
 namespace Jkphl\Micrometa\Infrastructure\Factory {
 
     /**
