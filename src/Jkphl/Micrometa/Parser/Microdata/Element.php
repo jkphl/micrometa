@@ -304,6 +304,10 @@ class Element extends \DOMElement
                 }
 
             default:
+                $value=$this->getAttribute('content');
+                if (!empty($value)) {
+                    return $value;
+                }
 //              trigger_error(sprintf('Microdata parser: Unhandled tag name "%s"', $this->tagName), E_USER_WARNING);
                 return $this->textContent;
         }
