@@ -57,4 +57,12 @@ interface ItemInterface extends \Jkphl\Micrometa\Domain\Item\ItemInterface
      * @return string Item value
      */
     public function getValue();
+
+    /**
+     * Return the nested children
+     *
+     * @return ItemInterface[] Nested children
+     */
+    public function getChildren();
+
 }

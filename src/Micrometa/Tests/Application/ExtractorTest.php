@@ -147,7 +147,7 @@ class ExtractorTest extends \PHPUnit_Framework_TestCase
      */
     public function testMicroformatsExtraction()
     {
-        // Create a DOM with HTML Microdata markup
+        // Create a DOM with Microformats markup
         $microformats = file_get_contents(
             self::$microformatsTests.'h-product'.DIRECTORY_SEPARATOR.'aggregate.html'
         );
@@ -167,5 +167,33 @@ class ExtractorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, count($microformatsItems->getExtra()));
         $this->assertInstanceOf(Item::class, $microformatsItems->getItems()[0]);
         $this->assertEquals(Microformats::FORMAT, $microformatsItems->getItems()[0]->getFormat());
+    }
+
+    /**
+     * Test the Microformats extraction
+     */
+    public function testNestedMicroformatsExtraction()
+    {
+        // Create a DOM with Microformats markup
+        $microformats = file_get_contents(
+            dirname(__DIR__).DIRECTORY_SEPARATOR.'Fixture'.DIRECTORY_SEPARATOR.'nested-events.html'
+        );
+        $microformatsDom = DocumentFactory::createFromString($microformats);
+        $this->assertInstanceOf(\DOMDocument::class, $microformatsDom);
+
+        // Create a Microformats 2 parser
+        $microformatsUri = Http::createFromString(self::MICROFORMATS_HTML_URL);
+        $microformatsParser = new Microformats($microformatsUri);
+        $this->assertEquals($microformatsUri, $microformatsParser->getUri());
+
+        // Create an extractor service
+        $extractorService = new ExtractorService();
+        $microformatsItems = $extractorService->extract($microformatsDom, $microformatsParser);
+        $this->assertInstanceOf(ParsingResultInterface::class, $microformatsItems);
+        $this->assertEquals(1, count($microformatsItems->getItems()));
+        $this->assertEquals(1, count($microformatsItems->getExtra()));
+        $this->assertInstanceOf(Item::class, $microformatsItems->getItems()[0]);
+        $this->assertEquals(Microformats::FORMAT, $microformatsItems->getItems()[0]->getFormat());
+        $this->assertEquals(2, count($microformatsItems->getItems()[0]->getChildren()));
     }
 }

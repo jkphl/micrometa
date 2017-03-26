@@ -81,6 +81,7 @@ class Item implements ItemInterface
                 InvalidArgumentException::MISSING_ITEM_TYPE
             );
         }
+
         return count(array_intersect($types, $this->item->getType())) > 0;
     }
 

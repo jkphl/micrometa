@@ -56,6 +56,12 @@ class Item extends \Jkphl\Micrometa\Domain\Item\Item implements ItemInterface
      * @var string
      */
     protected $value;
+    /**
+     * Nested Items
+     *
+     * @var ItemInterface[]
+     */
+    protected $children;
 
     /**
      * Item constructor
@@ -63,14 +69,22 @@ class Item extends \Jkphl\Micrometa\Domain\Item\Item implements ItemInterface
      * @param int $format Parser format
      * @param string|array $type Item type(s)
      * @param array[] $properties Item properties
+     * @param ItemInterface[] $children Nested items
      * @param string|null $itemId Item id
      * @param string|null $value Item value
      */
-    public function __construct($format, $type, array $properties = [], $itemId = null, $value = null)
-    {
+    public function __construct(
+        $format,
+        $type,
+        array $properties = [],
+        array $children = [],
+        $itemId = null,
+        $value = null
+    ) {
         $this->format = $format;
-        $this->value = $value;
         parent::__construct($type, $properties, $itemId);
+        $this->children = $children;
+        $this->value = $value;
     }
 
     /**
@@ -91,5 +105,15 @@ class Item extends \Jkphl\Micrometa\Domain\Item\Item implements ItemInterface
     public function getValue()
     {
         return $this->value;
+    }
+
+    /**
+     * Return the nested children
+     *
+     * @return ItemInterface[] Nested children
+     */
+    public function getChildren()
+    {
+        return $this->children;
     }
 }

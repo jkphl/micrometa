@@ -53,18 +53,6 @@ class MicroformatsFactory
     const MF2_PROFILE_URI = 'http://microformats.org/profile/';
 
     /**
-     * Refine and convert the Microformats parser result
-     *
-     * @param array $items Items
-     * @return array Refined items
-     */
-    public static function createFromParserResult(array $items)
-    {
-//        print_r($items);
-        return array_map([self::class, 'createItem'], $items);
-    }
-
-    /**
      * Refine an item
      *
      * @param array $item Item
@@ -82,6 +70,11 @@ class MicroformatsFactory
         // Create the value (if any)
         if (isset($item['value'])) {
             $microformatItem['value'] = self::createValue($item['value']);
+        }
+
+        // Create the nested children (if any)
+        if (isset($item['children']) && is_array($item['children'])) {
+            $microformatItem['children'] = self::createFromParserResult($item['children']);
         }
 
         return (object)$microformatItem;
@@ -144,5 +137,16 @@ class MicroformatsFactory
     protected static function createValue($value)
     {
         return $value;
+    }
+
+    /**
+     * Refine and convert the Microformats parser result
+     *
+     * @param array $items Items
+     * @return array Refined items
+     */
+    public static function createFromParserResult(array $items)
+    {
+        return array_map([self::class, 'createItem'], $items);
     }
 }
