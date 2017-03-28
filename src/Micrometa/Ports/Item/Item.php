@@ -69,7 +69,7 @@ class Item implements ItemInterface
      * Return whether the item is of a particular type (or contained in a list of types)
      *
      * @param array ...$types Item types
-     * @return boolean Item is contained in the list of types
+     * @return boolean Item type is contained in the list of types
      * @throws InvalidArgumentException If no item type was given
      */
     public function isOfType(...$types)

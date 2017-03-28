@@ -48,7 +48,7 @@ interface ItemInterface
      * Return whether the item is of a particular type (or contained in a list of types)
      *
      * @param array ...$types Item types
-     * @return boolean Item is contained in the list of types
+     * @return boolean Item type is contained in the list of types
      */
     public function isOfType(...$types);
 
