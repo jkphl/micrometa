@@ -56,7 +56,7 @@ class ItemFactoryTest extends \PHPUnit_Framework_TestCase
         $rawItem = (object)['type' => ['test']];
         $item = $itemFactory($rawItem);
         $this->assertInstanceOf(Item::class, $item);
-        $this->assertEquals(['test'], $item->getType());
+        $this->assertEquals([(object)['profile' => '', 'name' => 'test']], $item->getType());
     }
 
     /**
@@ -67,6 +67,6 @@ class ItemFactoryTest extends \PHPUnit_Framework_TestCase
         $rawItem = (object)['type' => ['test'], 'properties' => ['test' => false]];
         $item = $itemFactory($rawItem);
         $this->assertInstanceOf(Item::class, $item);
-        $this->assertEquals([], $item->getProperties());
+        $this->assertEquals([], $item->getProperties()->toArray());
     }
 }

@@ -57,6 +57,18 @@ class InvalidArgumentException extends \InvalidArgumentException implements Micr
      */
     const EMPTY_TYPES = 1488314667;
     /**
+     * Invalid IRI
+     *
+     * @var string
+     */
+    const INVALID_IRI_STR = 'Invalid IRI';
+    /**
+     * Invalid IRI
+     *
+     * @var int
+     */
+    const INVALID_IRI = 1490814631;
+    /**
      * An empty property name is not allowed
      *
      * @var string
@@ -68,6 +80,18 @@ class InvalidArgumentException extends \InvalidArgumentException implements Micr
      * @var int
      */
     const EMPTY_PROPERTY_NAME = 1488314921;
+    /**
+     * Invalid property
+     *
+     * @var string
+     */
+    const INVALID_PROPERTY_STR = 'Invalid property';
+    /**
+     * Invalid property
+     *
+     * @var int
+     */
+    const INVALID_PROPERTY = 1490814554;
     /**
      * Invalid property value
      *

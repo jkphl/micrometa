@@ -5,7 +5,7 @@
  *
  * @category Jkphl
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Infrastructure\Parser
+ * @subpackage Jkphl\Micrometa\Domain
  * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -34,53 +34,26 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Infrastructure\Parser;
-
-use Jkphl\Micrometa\Application\Contract\ParsingResultInterface;
-use Jkphl\RdfaLiteMicrodata\Ports\Parser\Microdata as MicrodataParser;
-use Psr\Http\Message\UriInterface;
+namespace Jkphl\Micrometa\Domain\Exceptions;
 
 /**
- * HTML Microdata parser
+ * Error exception
  *
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Infrastructure
+ * @subpackage Jkphl\Micrometa\Domain
  */
-class Microdata extends AbstractParser
+class ErrorException extends \ErrorException
 {
     /**
-     * Format
+     * Property cannot be unset
      *
-     * @var int
+     * @var string
      */
-    const FORMAT = 2;
+    const CANNOT_UNSET_PROPERTY_STR = 'Property "%s" cannot be unset';
     /**
-     * Parser
+     * Property cannot be unset
      *
-     * @var MicrodataParser
+     * @var string
      */
-    protected $parser;
-
-    /**
-     * RdfaLite constructor
-     *
-     * @param UriInterface $uri
-     */
-    public function __construct(UriInterface $uri)
-    {
-        parent::__construct($uri);
-        $this->parser = new MicrodataParser(true);
-    }
-
-    /**
-     * Parse a DOM document
-     *
-     * @param \DOMDocument $dom DOM Document
-     * @return ParsingResultInterface Micro information items
-     */
-    public function parseDom(\DOMDocument $dom)
-    {
-        $microdata = $this->parser->parseDom($dom);
-        return new ParsingResult(self::FORMAT, $microdata->items);
-    }
+    const CANNOT_UNSET_PROPERTY = 1489784392;
 }

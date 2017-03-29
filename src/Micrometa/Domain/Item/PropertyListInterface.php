@@ -5,7 +5,7 @@
  *
  * @category Jkphl
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Infrastructure\Parser
+ * @subpackage Jkphl\Micrometa\Domain\Item
  * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -34,53 +34,58 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Infrastructure\Parser;
-
-use Jkphl\Micrometa\Application\Contract\ParsingResultInterface;
-use Jkphl\RdfaLiteMicrodata\Ports\Parser\Microdata as MicrodataParser;
-use Psr\Http\Message\UriInterface;
+namespace Jkphl\Micrometa\Domain\Item;
 
 /**
- * HTML Microdata parser
+ * Property list interface
  *
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Infrastructure
+ * @subpackage Jkphl\Micrometa\Domain
  */
-class Microdata extends AbstractParser
+interface PropertyListInterface extends \ArrayAccess, \Iterator, \Countable
 {
     /**
-     * Format
+     * Return whether a property exists
      *
-     * @var int
+     * @param \stdClass|string $iri IRI
+     * @return boolean Property exists
      */
-    const FORMAT = 2;
-    /**
-     * Parser
-     *
-     * @var MicrodataParser
-     */
-    protected $parser;
+    public function offsetExists($iri);
 
     /**
-     * RdfaLite constructor
+     * Get a particular property
      *
-     * @param UriInterface $uri
+     * @param \stdClass|string $iri IRI
+     * @return array Property values
      */
-    public function __construct(UriInterface $uri)
-    {
-        parent::__construct($uri);
-        $this->parser = new MicrodataParser(true);
-    }
+    public function &offsetGet($iri);
 
     /**
-     * Parse a DOM document
+     * Set a particular property
      *
-     * @param \DOMDocument $dom DOM Document
-     * @return ParsingResultInterface Micro information items
+     * @param \stdClass|string $iri IRI
+     * @param array $value Property values
      */
-    public function parseDom(\DOMDocument $dom)
-    {
-        $microdata = $this->parser->parseDom($dom);
-        return new ParsingResult(self::FORMAT, $microdata->items);
-    }
+    public function offsetSet($iri, $value);
+
+    /**
+     * Unset a property
+     *
+     * @param \stdClass|string $iri IRI
+     */
+    public function offsetUnset($iri);
+
+    /**
+     * Add a property
+     *
+     * @param \stdClass $property Property
+     */
+    public function add($property);
+
+    /**
+     * Return an array form
+     *
+     * @return array Array form
+     */
+    public function toArray();
 }

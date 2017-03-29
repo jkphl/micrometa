@@ -38,6 +38,7 @@ namespace Jkphl\Micrometa\Tests\Domain;
 
 use Jkphl\Micrometa\Application\Value\StringValue;
 use Jkphl\Micrometa\Domain\Item\Item;
+use Jkphl\Micrometa\Domain\Value\ValueInterface;
 
 /**
  * Item tests
@@ -69,7 +70,7 @@ class ItemTest extends \PHPUnit_Framework_TestCase
         $item = new Item($type, $properties, $itemId);
         $this->assertInstanceOf(Item::class, $item);
         $this->assertEquals($expectedTypes, $item->getType());
-        $this->assertEquals($expectedProperties, $item->getProperties());
+        $this->assertEquals($expectedProperties, $item->getProperties()->toArray());
         $this->assertEquals($expectedId, $item->getId());
     }
 
@@ -80,53 +81,96 @@ class ItemTest extends \PHPUnit_Framework_TestCase
      */
     public function creationArgumentProvider()
     {
-        function s($s)
-        {
-            return new StringValue($s);
-        }
-
         $item = new Item('test');
         return [
-            ['test', [], null, ['test'], [], null],
-            [['test'], [], null, ['test'], [], null],
-            [['test', 'lorem'], [], null, ['test', 'lorem'], [], null],
-            [['test', '', 'lorem'], [], null, ['test', 'lorem'], [], null],
-            ['test', ['name1' => s('value1')], null, ['test'], ['name1' => [s('value1')]], null],
-            ['test', ['name1' => [s('value1')]], null, ['test'], ['name1' => [s('value1')]], null],
+            ['test', [], null, [$this->t('test')], [], null],
+            [$this->t('test', 'a'), [], null, [$this->t('test', 'a')], [], null],
+            [['test'], [], null, [$this->t('test')], [], null],
+            [['test', 'lorem'], [], null, [$this->t('test'), $this->t('lorem')], [], null],
+            [['test', '', 'lorem'], [], null, [$this->t('test'), $this->t('lorem')], [], null],
             [
                 'test',
-                ['name1' => [s('value1'), s('value2')]],
+                [$this->p('name1', 'value1')],
                 null,
-                ['test'],
-                ['name1' => [s('value1'), s('value2')]],
+                [$this->t('test')],
+                ['name1' => [$this->s('value1')]],
                 null
             ],
             [
                 'test',
-                ['name1' => [s('value1'), s(''), s('value2')]],
+                [$this->p('name1', 'value1', 'profile1/')],
                 null,
-                ['test'],
-                ['name1' => [s('value1'), s('value2')]],
+                [$this->t('test')],
+                ['profile1/name1' => [$this->s('value1')]],
                 null
             ],
             [
                 'test',
-                ['name1' => s('value1'), 'name2' => [s('value2')]],
+                [$this->p('name1', 'value1')],
                 null,
-                ['test'],
-                ['name1' => [s('value1')], 'name2' => [s('value2')]],
+                [$this->t('test')],
+                ['name1' => [$this->s('value1')]],
                 null
             ],
-            ['test', ['name' => $item], null, ['test'], ['name' => [$item]], null],
-            ['test', [], 'id', ['test'], [], 'id'],
+            [
+                'test',
+                [$this->p('name1', 'value1'), $this->p('name1', 'value2')],
+                null,
+                [$this->t('test')],
+                ['name1' => [$this->s('value1'), $this->s('value2')]],
+                null
+            ],
+            [
+                'test',
+                [$this->p('name1', 'value1'), $this->p('name2', 'value2')],
+                null,
+                [$this->t('test')],
+                ['name1' => [$this->s('value1')], 'name2' => [$this->s('value2')]],
+                null
+            ],
+[
+    'test',
+    [$this->p('name', [$item])],
+    null,
+    [$this->t('test')],
+    ['name' => [$item]],
+    null
+],
+            ['test', [], 'id', [$this->t('test')], [], 'id'],
         ];
+    }
+
+    /**
+     * Create a property object
+     *
+     * @param string $n Property name
+     * @param mixed $s Property value(s)
+     * @param string $p Property profiles
+     * @return object Property object
+     */
+    protected function p($n, $s, $p = '')
+    {
+        $values = array_map([$this, 's'], (array)$s);
+        return (object)['profile' => $p, 'name' => $n, 'values' => $values];
+    }
+
+    /**
+     * Create a type object
+     *
+     * @param string $n Type name
+     * @param string $p Type profile
+     * @return object Type object
+     */
+    protected function t($n, $p = '')
+    {
+        return (object)['profile' => $p, 'name' => $n];
     }
 
     /**
      * Test the item creation with an empty types list
      *
      * @expectedException \Jkphl\Micrometa\Domain\Exceptions\InvalidArgumentException
-     * @expectedExceptionCode 1488314667
+     * @expectedExceptionCode 1490814631
      */
     public function testEmptyTypesList()
     {
@@ -141,7 +185,7 @@ class ItemTest extends \PHPUnit_Framework_TestCase
      */
     public function testEmptyPropertyName()
     {
-        new Item('type', ['' => ['value']]);
+        new Item('type', [$this->p('', 'value')]);
     }
 
     /**
@@ -152,7 +196,7 @@ class ItemTest extends \PHPUnit_Framework_TestCase
      */
     public function testInvalidPropertyValue()
     {
-        new Item('type', ['name' => [123]]);
+        new Item('type', [(object)['profile' => '', 'name' => 'test', 'values' => [123]]]);
     }
 
     /**
@@ -172,7 +216,18 @@ class ItemTest extends \PHPUnit_Framework_TestCase
      */
     public function testItemPropertyGetter()
     {
-        $item = new Item('type', ['name' => [new StringValue('123')]]);
+        $item = new Item('type', [$this->p('name', 123)]);
         $this->assertEquals([new StringValue('123')], $item->getProperty('name'));
+    }
+
+    /**
+     * Create a string value
+     *
+     * @param string $s Value
+     * @return ValueInterface String value
+     */
+    protected function s($s)
+    {
+        return ($s instanceof ValueInterface) ? $s : new StringValue($s);
     }
 }

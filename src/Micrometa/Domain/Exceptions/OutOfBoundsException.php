@@ -45,13 +45,13 @@ namespace Jkphl\Micrometa\Domain\Exceptions;
 class OutOfBoundsException extends \InvalidArgumentException implements MicrometaExceptionInterface
 {
     /**
-     * Unknown property
+     * Unknown property name
      *
      * @var string
      */
-    const UNKNOWN_PROPERTY_NAME_STR = 'Unknown property "%s"';
+    const UNKNOWN_PROPERTY_NAME_STR = 'Unknown property name "%s"';
     /**
-     * Unknown property
+     * Unknown property name
      *
      * @var int
      */

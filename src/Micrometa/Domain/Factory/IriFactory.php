@@ -5,7 +5,7 @@
  *
  * @category Jkphl
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Infrastructure\Parser
+ * @subpackage Jkphl\Micrometa\Domain
  * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -34,53 +34,40 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Infrastructure\Parser;
+namespace Jkphl\Micrometa\Domain\Factory;
 
-use Jkphl\Micrometa\Application\Contract\ParsingResultInterface;
-use Jkphl\RdfaLiteMicrodata\Ports\Parser\Microdata as MicrodataParser;
-use Psr\Http\Message\UriInterface;
+use Jkphl\Micrometa\Domain\Exceptions\InvalidArgumentException;
 
 /**
- * HTML Microdata parser
+ * IRI factory
  *
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Infrastructure
+ * @subpackage Jkphl\Micrometa\Domain
  */
-class Microdata extends AbstractParser
+class IriFactory
 {
     /**
-     * Format
+     * Validate and sanitize an IRI
      *
-     * @var int
+     * @param string|\stdClass $iri IRI
+     * @return \stdClass Sanitized IRI
+     * @throws InvalidArgumentException If the IRI is invalid
      */
-    const FORMAT = 2;
-    /**
-     * Parser
-     *
-     * @var MicrodataParser
-     */
-    protected $parser;
-
-    /**
-     * RdfaLite constructor
-     *
-     * @param UriInterface $uri
-     */
-    public function __construct(UriInterface $uri)
+    public static function create($iri)
     {
-        parent::__construct($uri);
-        $this->parser = new MicrodataParser(true);
-    }
+        // Cast as item type object if only a string is given
+        if (is_string($iri)) {
+            $iri = (object)['profile' => '', 'name' => $iri];
+        }
 
-    /**
-     * Parse a DOM document
-     *
-     * @param \DOMDocument $dom DOM Document
-     * @return ParsingResultInterface Micro information items
-     */
-    public function parseDom(\DOMDocument $dom)
-    {
-        $microdata = $this->parser->parseDom($dom);
-        return new ParsingResult(self::FORMAT, $microdata->items);
+        // If the IRI is invalid
+        if (!is_object($iri) || !isset($iri->profile) || !isset($iri->name)) {
+            throw new InvalidArgumentException(
+                InvalidArgumentException::INVALID_IRI_STR,
+                InvalidArgumentException::INVALID_IRI
+            );
+        }
+
+        return (object)['profile' => $iri->profile, 'name' => $iri->name];
     }
 }

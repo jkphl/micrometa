@@ -38,6 +38,7 @@ namespace Jkphl\Micrometa\Domain\Item;
 
 use Jkphl\Micrometa\Domain\Exceptions\InvalidArgumentException;
 use Jkphl\Micrometa\Domain\Exceptions\OutOfBoundsException;
+use Jkphl\Micrometa\Domain\Factory\IriFactory;
 use Jkphl\Micrometa\Domain\Value\ValueInterface;
 
 /**
@@ -58,7 +59,7 @@ class Item implements ItemInterface
     /**
      * Item properties
      *
-     * @var array[]
+     * @var PropertyList
      */
     protected $properties;
 
@@ -72,7 +73,7 @@ class Item implements ItemInterface
     /**
      * Item constructor
      *
-     * @param string|array $type Item type(s)
+     * @param string|\stdClass|\stdClass[] $type Item type(s)
      * @param array[] $properties Item properties
      * @param string|null $itemId Item id
      */
@@ -86,13 +87,13 @@ class Item implements ItemInterface
     /**
      * Validate and sanitize the item types
      *
-     * @param array $types Item types
+     * @param \stdClass[] $types Item types
      * @return array Validated item types
      * @throws InvalidArgumentException If there are no valid types
      */
     protected function validateTypes(array $types)
     {
-        $nonEmptyTypes = array_filter(array_map('trim', $types));
+        $nonEmptyTypes = array_filter(array_map([$this, 'validateType'], $types));
 
         // If there are no valid types
         if (!count($nonEmptyTypes)) {
@@ -109,33 +110,144 @@ class Item implements ItemInterface
      * Validate the item properties
      *
      * @param array $properties Item properties
-     * @return array Validated item properties
+     * @return PropertyList Validated item properties
      * @throws InvalidArgumentException If the property name is empty
      */
     protected function validateProperties(array $properties)
     {
-        $nonEmptyProperties = [];
+        $validatedProperties = new PropertyList();
 
-        // Run through all properties
-        foreach ($properties as $name => $values) {
-            if ($values) {
-                $propertyName = trim($name);
+        // Run through all validated properties
+        foreach (array_filter(array_map([$this, 'validateProperty'], $properties)) as $property) {
+            $validatedProperties->add($property);
+        }
 
-                // If the property name is empty
-                if (!strlen($propertyName)) {
-                    throw new InvalidArgumentException(
-                        InvalidArgumentException::EMPTY_PROPERTY_NAME_STR,
-                        InvalidArgumentException::EMPTY_PROPERTY_NAME
-                    );
-                }
+        return $validatedProperties;
+    }
 
-                $nonEmptyProperties[$propertyName] = $this->validatePropertyValues(
-                    is_array($values) ? $values : [$values]
-                );
+    /**
+     * Return the item types
+     *
+     * @return string[] Item types
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * Return the item ID (if any)
+     *
+     * @return string|null Item id
+     */
+    public function getId()
+    {
+        return $this->itemId;
+    }
+
+    /**
+     * Return all item properties
+     *
+     * @return PropertyList Item properties list
+     */
+    public function getProperties()
+    {
+        return $this->properties;
+    }
+
+    /**
+     * Return the values of a particular property
+     *
+     * @param string $name Property name
+     * @param string|null $profile Property profile
+     * @return array Item property values
+     * @throws OutOfBoundsException If the property is unknown
+     */
+    public function getProperty($name, $profile = null)
+    {
+        $iri = IriFactory::create(($profile === null) ? $name : (object)['profile' => $profile, 'name' => $name]);
+        return $this->properties->offsetGet($iri);
+    }
+
+    /**
+     * Return whether the value should be considered empty
+     *
+     * @return boolean Value is empty
+     */
+    public function isEmpty()
+    {
+        return false;
+    }
+
+    /**
+     * Validate a single property
+     *
+     * @param \stdClass $property Property
+     * @return \stdClass Validated property
+     */
+    protected function validateProperty($property)
+    {
+        // Validate the property structure
+        $this->validatePropertyStructure($property);
+
+        // If the property has values
+        if (count($property->values)) {
+            // Validate the property name
+            $property->name = $this->validatePropertyName($property);
+
+            // Validate the property values
+            $property->values = $this->validatePropertyValues($property->values);
+
+            // If the property has significant values
+            if (count($property->values)) {
+                return $property;
             }
         }
 
-        return $nonEmptyProperties;
+        return null;
+    }
+
+    /**
+     * Validate the structure of a property object
+     *
+     * @param \stdClass $property Property object
+     * @throws InvalidArgumentException If the property object is invalid
+     */
+    protected function validatePropertyStructure($property)
+    {
+        // If the property object is invalid
+        if (!is_object($property)
+            || !isset($property->profile)
+            || !isset($property->name)
+            || !isset($property->values)
+            || !is_array($property->values)
+        ) {
+            throw new InvalidArgumentException(
+                InvalidArgumentException::INVALID_PROPERTY_STR,
+                InvalidArgumentException::INVALID_PROPERTY
+            );
+        }
+    }
+
+    /**
+     * Validate a property name
+     *
+     * @param \stdClass $property Property
+     * @return string Property name
+     */
+    protected function validatePropertyName($property)
+    {
+        $propertyName = trim($property->name);
+
+        // If the property name is empty
+        if (!strlen($propertyName)) {
+            throw new InvalidArgumentException(
+                InvalidArgumentException::EMPTY_PROPERTY_NAME_STR,
+                InvalidArgumentException::EMPTY_PROPERTY_NAME
+            );
+        }
+
+        return $propertyName;
     }
 
     /**
@@ -169,62 +281,15 @@ class Item implements ItemInterface
     }
 
     /**
-     * Return the item types
+     * Validate a single item type
      *
-     * @return string[] Item types
+     * @param \stdClass|string $type Item type
+     * @return \stdClass|null Validated item type
+     * @throws InvalidArgumentException If the item type object is invalid
      */
-    public function getType()
+    protected function validateType($type)
     {
-        return $this->type;
-    }
-
-    /**
-     * Return the item ID (if any)
-     *
-     * @return string|null Item id
-     */
-    public function getId()
-    {
-        return $this->itemId;
-    }
-
-    /**
-     * Return all item properties
-     *
-     * @return array[] Item properties list
-     */
-    public function getProperties()
-    {
-        return $this->properties;
-    }
-
-    /**
-     * Return the values of a particular property
-     *
-     * @param string $name Property name
-     * @return array Item property values
-     * @throws OutOfBoundsException If the property is unknown
-     */
-    public function getProperty($name)
-    {
-        // If the property is unknown
-        if (!isset($this->properties[$name])) {
-            throw new OutOfBoundsException(
-                sprintf(OutOfBoundsException::UNKNOWN_PROPERTY_NAME_STR, $name),
-                OutOfBoundsException::UNKNOWN_PROPERTY_NAME
-            );
-        }
-
-        return $this->properties[$name];
-    }
-
-    /**
-     * Return whether the value should be considered empty
-     *
-     * @return boolean Value is empty
-     */
-    public function isEmpty()
-    {
-        return false;
+        $type = IriFactory::create($type);
+        return strlen($type->name) ? $type : null;
     }
 }

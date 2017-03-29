@@ -69,7 +69,7 @@ class RdfaLite extends AbstractParser
     public function __construct(UriInterface $uri)
     {
         parent::__construct($uri);
-        $this->parser = new RdfaLiteParser();
+        $this->parser = new RdfaLiteParser(true);
     }
 
     /**

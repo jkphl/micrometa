@@ -90,7 +90,7 @@ class MicroformatsFactory
     {
         return array_map(
             function ($type) {
-                return self::MF2_PROFILE_URI.$type;
+                return (object)['profile' => self::MF2_PROFILE_URI, 'name' => $type];
             }, $types
         );
     }
@@ -105,7 +105,11 @@ class MicroformatsFactory
     {
         $microformatProperties = [];
         foreach ($properties as $propertyName => $propertyValues) {
-            $microformatProperties[self::MF2_PROFILE_URI.$propertyName] = self::createProperty($propertyValues);
+            $microformatProperties[] = (object)[
+                'profile' => self::MF2_PROFILE_URI,
+                'name' => $propertyName,
+                'values' => self::createProperty($propertyValues)
+            ];
         }
         return $microformatProperties;
     }

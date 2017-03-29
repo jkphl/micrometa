@@ -63,7 +63,7 @@ interface ItemInterface extends ValueInterface
     /**
      * Return all item properties
      *
-     * @return array[] Item properties list
+     * @return PropertyList Item properties list
      */
     public function getProperties();
 
@@ -71,7 +71,8 @@ interface ItemInterface extends ValueInterface
      * Return the values of a particular property
      *
      * @param string $name Property name
+     * @param string|null $profile Property profile
      * @return array Item property values
      */
-    public function getProperty($name);
+    public function getProperty($name, $profile = null);
 }
