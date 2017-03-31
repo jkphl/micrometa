@@ -111,26 +111,32 @@ class ItemFactory
     {
         $properties = [];
         if (isset($item->properties) && is_array($item->properties)) {
-            foreach ($item->properties as $propertyName => $propertyValues) {
-                $this->processPropertyValues($properties, $propertyName, $propertyValues);
+            foreach ($item->properties as $property) {
+                $this->processProperty($properties, $property);
             }
         }
         return $properties;
     }
 
+
     /**
-     * Process the values of a property
+     * Process a property
      *
      * @param array $properties Properties
-     * @param string $propertyName Property name
-     * @param array $propertyValues Property values
+     * @param \stdClass $property Property
      */
-    protected function processPropertyValues(array &$properties, $propertyName, $propertyValues)
+    protected function processProperty(array &$properties, $property)
     {
         try {
-            $expandedPropertyValues = $this->getPropertyValues($propertyValues);
-            if (count($expandedPropertyValues)) {
-                $properties[$propertyName] = $expandedPropertyValues;
+            if (is_object($property)
+                && isset($property->profile)
+                && isset($property->name)
+                && isset($property->values)
+            ) {
+                $property->values = $this->getPropertyValues($property->values);
+                if (count($property->values)) {
+                    $properties[] = $property;
+                }
             }
         } catch (InvalidArgumentException $e) {
             // Skip this property
