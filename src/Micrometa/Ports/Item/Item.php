@@ -38,6 +38,7 @@ namespace Jkphl\Micrometa\Ports\Item;
 
 use Jkphl\Micrometa\Application\Item\ItemInterface as ApplicationItemInterface;
 use Jkphl\Micrometa\Domain\Exceptions\OutOfBoundsException;
+use Jkphl\Micrometa\Infrastructure\Factory\ProfiledNameFactory;
 use Jkphl\Micrometa\Ports\Exceptions\InvalidArgumentException;
 
 /**
@@ -68,21 +69,29 @@ class Item implements ItemInterface
     /**
      * Return whether the item is of a particular type (or contained in a list of types)
      *
-     * @param array ...$types Item types
+     * @param string $name Name
+     * @param string|null $profile Profile
      * @return boolean Item type is contained in the list of types
-     * @throws InvalidArgumentException If no item type was given
      */
-    public function isOfType(...$types)
+    public function isOfType($name, $profile = null)
     {
-        // If no item type was given
-        if (!count($types)) {
-            throw new InvalidArgumentException(
-                sprintf(InvalidArgumentException::MISSING_ITEM_TYPE_STR, __CLASS__.'::'.__METHOD__),
-                InvalidArgumentException::MISSING_ITEM_TYPE
-            );
+        $types = ProfiledNameFactory::createFromArguments(func_get_args());
+
+        // Run through all item types
+        /** @var \stdClass $itemType */
+        foreach ($this->item->getType() as $itemType) {
+            // Run through all query types
+            /** @var \stdClass $queryType */
+            foreach ($types as $queryType) {
+                if (($queryType->name == $itemType->name) &&
+                    (($queryType->profile === null) ? true : ($queryType->profile == $itemType->profile))
+                ) {
+                    return true;
+                }
+            }
         }
 
-        return count(array_intersect($types, $this->item->getType())) > 0;
+        return false;
     }
 
     /**

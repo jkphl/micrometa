@@ -57,17 +57,29 @@ class InvalidArgumentException extends \InvalidArgumentException implements Micr
      */
     const INVALID_DATA_SOURCE = 1488228437;
     /**
-     * Missing item type
+     * Invalid type / property name
      *
      * @var string
      */
-    const MISSING_ITEM_TYPE_STR = 'You must provide at least one item type for %s()';
+    const INVALID_TYPE_PROPERTY_NAME_STR = 'Invalid type / property name';
     /**
-     * Missing item type
+     * Invalid type / property name
      *
      * @var int
      */
-    const MISSING_ITEM_TYPE = 1489528854;
+    const INVALID_TYPE_PROPERTY_NAME = 1489528854;
+    /**
+     * Invalid profiled type / property array definition
+     *
+     * @var string
+     */
+    const INVALID_TYPE_PROPERTY_ARRAY_STR = 'Invalid profiled type / property array definition';
+    /**
+     * Invalid profiled type / property array definition
+     *
+     * @var int
+     */
+    const INVALID_TYPE_PROPERTY_ARRAY = 1491063221;
     /**
      * Missing property name
      *

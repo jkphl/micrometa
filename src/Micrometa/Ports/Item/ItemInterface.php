@@ -47,10 +47,11 @@ interface ItemInterface
     /**
      * Return whether the item is of a particular type (or contained in a list of types)
      *
-     * @param array ...$types Item types
-     * @return boolean Item type is contained in the list of types
+     * @param string $name Name
+     * @param string|null $profile Profile
+     * @return bool Item type is contained in the list of types
      */
-    public function isOfType(...$types);
+    public function isOfType($name, $profile = null);
 
     /**
      * Get the values or first value of an item property

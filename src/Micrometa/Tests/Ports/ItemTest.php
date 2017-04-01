@@ -40,6 +40,7 @@ use Jkphl\Micrometa\Application\Item\Item as ApplicationItem;
 use Jkphl\Micrometa\Application\Value\StringValue;
 use Jkphl\Micrometa\Infrastructure\Factory\MicroformatsFactory;
 use Jkphl\Micrometa\Infrastructure\Parser\Microformats;
+use Jkphl\Micrometa\Ports\Item\Item;
 
 /**
  * Parser factory tests
@@ -53,6 +54,21 @@ class ItemTest extends \PHPUnit_Framework_TestCase
      * Test an item
      */
     public function testItem()
+    {
+        $feedItem = $this->getFeedItem();
+        $this->assertInstanceOf(Item::class, $feedItem);
+
+        // Test the item type
+        $this->assertTrue($feedItem->isOfType('h-feed'));
+        $this->assertTrue($feedItem->isOfType('h-feed', MicroformatsFactory::MF2_PROFILE_URI));
+    }
+
+    /**
+     * Create and return an h-feed Microformats item
+     *
+     * @return Item h-feed item
+     */
+    protected function getFeedItem()
     {
         $authorItem = new ApplicationItem(
             Microformats::FORMAT,
@@ -120,6 +136,6 @@ class ItemTest extends \PHPUnit_Framework_TestCase
             [$entryItem, $entryItem]
         );
 
-//        print_r($feedItem);
+        return new Item($feedItem);
     }
 }
