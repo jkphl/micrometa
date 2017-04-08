@@ -38,6 +38,7 @@ namespace Jkphl\Micrometa\Domain\Item;
 
 use Jkphl\Micrometa\Domain\Exceptions\ErrorException;
 use Jkphl\Micrometa\Domain\Exceptions\OutOfBoundsException;
+use Jkphl\Micrometa\Domain\Factory\AliasFactoryInterface;
 use Jkphl\Micrometa\Domain\Factory\IriFactory;
 
 /**
@@ -72,6 +73,22 @@ class PropertyList implements PropertyListInterface
      * @var int
      */
     protected $cursor = 0;
+    /**
+     * Alias factory
+     *
+     * @var AliasFactoryInterface
+     */
+    protected $aliasFactory;
+
+    /**
+     * Property list constructor
+     *
+     * @param AliasFactoryInterface $aliasFactory Alias factory
+     */
+    public function __construct(AliasFactoryInterface $aliasFactory)
+    {
+        $this->aliasFactory = $aliasFactory;
+    }
 
     /**
      * Unset a property
@@ -95,7 +112,7 @@ class PropertyList implements PropertyListInterface
      */
     public function count()
     {
-        return count($this->nameToCursor);
+        return count($this->values);
     }
 
     /**
@@ -187,8 +204,13 @@ class PropertyList implements PropertyListInterface
     {
         $iri = IriFactory::create($iri);
         $iriStr = $iri->profile.$iri->name;
-        $cursor = array_key_exists($iriStr, $this->nameToCursor) ?
-            $this->nameToCursor[$iriStr] : ($this->nameToCursor[$iriStr] = count($this->nameToCursor));
+        $cursor = array_key_exists($iriStr, $this->nameToCursor) ? $this->nameToCursor[$iriStr] : count($this->values);
+
+        // Run through all name aliases
+        foreach ($this->aliasFactory->createAliases($iri->name) as $alias) {
+            $this->nameToCursor[$iri->profile.$alias] = $cursor;
+        }
+
         $this->names[$cursor] = $iri;
         $this->values[$cursor] = $value;
     }
@@ -203,29 +225,13 @@ class PropertyList implements PropertyListInterface
     public function &offsetGet($iri)
     {
         $iri = IriFactory::create($iri);
-
-        // If a profiled property was requested
-        if ($iri->profile !== '') {
-            $cursor = $this->getProfiledPropertyCursor($iri);
-            return $this->values[$cursor];
-        }
-
-        // Run through all property names
-        foreach ($this->names as $cursor => $nameIri) {
-            if ($iri->name === $nameIri->name) {
-                return $this->values[$cursor];
-            }
-        }
-
-        // If the property name is unknown
-        throw new OutOfBoundsException(
-            sprintf(OutOfBoundsException::UNKNOWN_PROPERTY_NAME_STR, $iri->name),
-            OutOfBoundsException::UNKNOWN_PROPERTY_NAME
-        );
+        $cursor = ($iri->profile !== '') ?
+            $this->getProfiledPropertyCursor($iri) : $this->getPropertyCursor($iri->name);
+        return $this->values[$cursor];
     }
 
     /**
-     * Get a particular property by its profiled name
+     * Get a particular property cursor by its profiled name
      *
      * @param \stdClass $iri IRI
      * @return int Property cursor
@@ -237,13 +243,42 @@ class PropertyList implements PropertyListInterface
 
         // If the property name is unknown
         if (!isset($this->nameToCursor[$iriStr])) {
-            throw new OutOfBoundsException(
-                sprintf(OutOfBoundsException::UNKNOWN_PROPERTY_NAME_STR, $iriStr),
-                OutOfBoundsException::UNKNOWN_PROPERTY_NAME
-            );
+            $this->handleUnknownName($iriStr);
         }
 
         return $this->nameToCursor[$iriStr];
+    }
+
+    /**
+     * Handle an unknown property name
+     *
+     * @param string $name Property name
+     * @throws OutOfBoundsException If the property name is unknown
+     */
+    protected function handleUnknownName($name)
+    {
+        throw new OutOfBoundsException(
+            sprintf(OutOfBoundsException::UNKNOWN_PROPERTY_NAME_STR, $name),
+            OutOfBoundsException::UNKNOWN_PROPERTY_NAME
+        );
+    }
+
+    /**
+     * Get a particular property cursor by its name
+     *
+     * @param string $name Property name
+     * @return int Property cursor
+     */
+    protected function getPropertyCursor($name)
+    {
+        // Run through all property names
+        foreach ($this->names as $cursor => $iri) {
+            if ($name === $iri->name) {
+                return $cursor;
+            }
+        }
+
+        return $this->handleUnknownName($name);
     }
 
     /**

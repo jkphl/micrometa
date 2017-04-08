@@ -98,7 +98,7 @@ class ProfiledNamesFactory
      * Create a single profiled name by argument consumption
      *
      * @param array $args Arguments
-     * @param string $profile Profile
+     * @param string|boolean|null $profile Profile
      * @return \stdClass Profiled name
      */
     protected static function consumeProfiledName(&$args, &$profile)

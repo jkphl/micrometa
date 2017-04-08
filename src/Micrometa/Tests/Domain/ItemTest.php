@@ -98,6 +98,22 @@ class ItemTest extends \PHPUnit_Framework_TestCase
             ],
             [
                 'test',
+                [$this->p('name1', '')],
+                null,
+                [$this->t('test')],
+                [],
+                null
+            ],
+            [
+                'test',
+                [$this->p('name1', [])],
+                null,
+                [$this->t('test')],
+                [],
+                null
+            ],
+            [
+                'test',
                 [$this->p('name1', 'value1', 'profile1/')],
                 null,
                 [$this->t('test')],
@@ -128,16 +144,28 @@ class ItemTest extends \PHPUnit_Framework_TestCase
                 ['name1' => [$this->s('value1')], 'name2' => [$this->s('value2')]],
                 null
             ],
-[
-    'test',
-    [$this->p('name', [$item])],
-    null,
-    [$this->t('test')],
-    ['name' => [$item]],
-    null
-],
+            [
+                'test',
+                [$this->p('name', [$item])],
+                null,
+                [$this->t('test')],
+                ['name' => [$item]],
+                null
+            ],
             ['test', [], 'id', [$this->t('test')], [], 'id'],
         ];
+    }
+
+    /**
+     * Create a type object
+     *
+     * @param string $n Type name
+     * @param string $p Type profile
+     * @return object Type object
+     */
+    protected function t($n, $p = '')
+    {
+        return (object)['profile' => $p, 'name' => $n];
     }
 
     /**
@@ -155,15 +183,14 @@ class ItemTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Create a type object
+     * Create a string value
      *
-     * @param string $n Type name
-     * @param string $p Type profile
-     * @return object Type object
+     * @param string $s Value
+     * @return ValueInterface String value
      */
-    protected function t($n, $p = '')
+    protected function s($s)
     {
-        return (object)['profile' => $p, 'name' => $n];
+        return ($s instanceof ValueInterface) ? $s : new StringValue($s);
     }
 
     /**
@@ -178,6 +205,17 @@ class ItemTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test the item creation with an empty types list
+     *
+     * @expectedException \Jkphl\Micrometa\Domain\Exceptions\InvalidArgumentException
+     * @expectedExceptionCode 1488314667
+     */
+    public function testEmptyTypeName()
+    {
+        new Item('');
+    }
+
+    /**
      * Test the item creation with an empty property name
      *
      * @expectedException \Jkphl\Micrometa\Domain\Exceptions\InvalidArgumentException
@@ -186,6 +224,17 @@ class ItemTest extends \PHPUnit_Framework_TestCase
     public function testEmptyPropertyName()
     {
         new Item('type', [$this->p('', 'value')]);
+    }
+
+    /**
+     * Test empty property value list
+     *
+     * @expectedException \Jkphl\Micrometa\Domain\Exceptions\InvalidArgumentException
+     * @expectedExceptionCode 1490814554
+     */
+    public function testInvalidPropertyStructure()
+    {
+        new Item('type', [(object)['invalid' => 'structure']]);
     }
 
     /**
@@ -218,16 +267,5 @@ class ItemTest extends \PHPUnit_Framework_TestCase
     {
         $item = new Item('type', [$this->p('name', 123)]);
         $this->assertEquals([new StringValue('123')], $item->getProperty('name'));
-    }
-
-    /**
-     * Create a string value
-     *
-     * @param string $s Value
-     * @return ValueInterface String value
-     */
-    protected function s($s)
-    {
-        return ($s instanceof ValueInterface) ? $s : new StringValue($s);
     }
 }

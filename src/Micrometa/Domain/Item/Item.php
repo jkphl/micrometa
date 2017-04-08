@@ -37,6 +37,8 @@
 namespace Jkphl\Micrometa\Domain\Item;
 
 use Jkphl\Micrometa\Domain\Exceptions\InvalidArgumentException;
+use Jkphl\Micrometa\Domain\Factory\AliasFactory;
+use Jkphl\Micrometa\Domain\Factory\AliasFactoryInterface;
 use Jkphl\Micrometa\Domain\Factory\IriFactory;
 use Jkphl\Micrometa\Domain\Value\ValueInterface;
 
@@ -70,14 +72,27 @@ class Item implements ItemInterface
     protected $itemId;
 
     /**
+     * Alias factory
+     *
+     * @var AliasFactoryInterface
+     */
+    protected $aliasFactory;
+
+    /**
      * Item constructor
      *
      * @param string|\stdClass|\stdClass[] $type Item type(s)
      * @param array[] $properties Item properties
      * @param string|null $itemId Item id
+     * @param AliasFactoryInterface $aliasFactory Alias factory
      */
-    public function __construct($type, array $properties = [], $itemId = null)
-    {
+    public function __construct(
+        $type,
+        array $properties = [],
+        $itemId = null,
+        AliasFactoryInterface $aliasFactory = null
+    ) {
+        $this->aliasFactory = $aliasFactory ?: new AliasFactory();
         $this->type = $this->validateTypes(is_array($type) ? $type : [$type]);
         $this->properties = $this->validateProperties($properties);
         $this->itemId = trim($itemId) ?: null;
@@ -114,7 +129,7 @@ class Item implements ItemInterface
      */
     protected function validateProperties(array $properties)
     {
-        $validatedProperties = new PropertyList();
+        $validatedProperties = new PropertyList($this->aliasFactory);
 
         // Run through all validated properties
         foreach (array_filter(array_map([$this, 'validateProperty'], $properties)) as $property) {
