@@ -5,7 +5,7 @@
  *
  * @category Jkphl
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Ports
+ * @subpackage Jkphl\Micrometa\Tests
  * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -34,52 +34,27 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Ports\Item;
+namespace Jkphl\Micrometa\Tests\Domain;
+
+use Jkphl\Micrometa\Application\Value\StringValue;
 
 /**
- * Item interface
+ * Value tests
  *
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Ports
+ * @subpackage Jkphl\Micrometa\Tests\Domain
  */
-interface ItemInterface
+class ValueTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * Return whether the item is of a particular type (or contained in a list of types)
-     *
-     * @param string $name Name
-     * @param string|null $profile Profile
-     * @return bool Item type is contained in the list of types
+     * Test a string value
      */
-    public function isOfType($name, $profile = null);
-
-    /**
-     * Get a single property (value)
-     *
-     * @param string $name Property name
-     * @param string $profile Property profile
-     * @param int $index Property value index
-     * @return array|string|ItemInterface Property value(s)
-     */
-    public function getProperty($name, $profile = null, $index = null);
-
-    /**
-     * Get the values or first value of an item property
-     *
-     * Prepend the property name with an "s" to retrieve the list of all available property values.
-     *
-     * @param string $name Item property name
-     * @return string Values or first value of an item property
-     */
-    public function __get($name);
-
-    /**
-     * Get all values or the first value for a particular property (in a property list)
-     *
-     * Prepend the property names with an "s" to retrieve the list of all available property values.
-     *
-     * @param array ...$names Property names
-     * @return string|string[] Property value(s)
-     */
-    public function firstOf(...$names);
+    public function testStringValue()
+    {
+        $str = md5(rand());
+        $value = new StringValue($str);
+        $this->assertInstanceOf(StringValue::class, $value);
+        $this->assertFalse($value->isEmpty());
+        $this->assertEquals($str, strval($value));
+    }
 }

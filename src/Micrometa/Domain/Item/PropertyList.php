@@ -198,10 +198,41 @@ class PropertyList implements PropertyListInterface
      *
      * @param \stdClass|string $iri IRI
      * @return array Property values
+     * @throws OutOfBoundsException If the property name is unknown
      */
     public function &offsetGet($iri)
     {
         $iri = IriFactory::create($iri);
+
+        // If a profiled property was requested
+        if ($iri->profile !== '') {
+            $cursor = $this->getProfiledPropertyCursor($iri);
+            return $this->values[$cursor];
+        }
+
+        // Run through all property names
+        foreach ($this->names as $cursor => $nameIri) {
+            if ($iri->name === $nameIri->name) {
+                return $this->values[$cursor];
+            }
+        }
+
+        // If the property name is unknown
+        throw new OutOfBoundsException(
+            sprintf(OutOfBoundsException::UNKNOWN_PROPERTY_NAME_STR, $iri->name),
+            OutOfBoundsException::UNKNOWN_PROPERTY_NAME
+        );
+    }
+
+    /**
+     * Get a particular property by its profiled name
+     *
+     * @param \stdClass $iri IRI
+     * @return int Property cursor
+     * @throws OutOfBoundsException If the property name is unknown
+     */
+    protected function getProfiledPropertyCursor($iri)
+    {
         $iriStr = $iri->profile.$iri->name;
 
         // If the property name is unknown
@@ -212,8 +243,7 @@ class PropertyList implements PropertyListInterface
             );
         }
 
-        $cursor = $this->nameToCursor[$iriStr];
-        return $this->values[$cursor];
+        return $this->nameToCursor[$iriStr];
     }
 
     /**

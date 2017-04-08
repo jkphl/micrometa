@@ -37,7 +37,8 @@
 namespace Jkphl\Micrometa\Tests\Infrastructure;
 
 use Jkphl\Micrometa\Infrastructure\Factory\MicroformatsFactory;
-use Jkphl\Micrometa\Infrastructure\Factory\ProfiledNameFactory;
+use Jkphl\Micrometa\Infrastructure\Factory\ProfiledNamesFactory;
+use Jkphl\Micrometa\Infrastructure\Parser\ProfiledNamesList;
 
 /**
  * Profiled name factory tests
@@ -45,7 +46,7 @@ use Jkphl\Micrometa\Infrastructure\Factory\ProfiledNameFactory;
  * @package Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Tests
  */
-class ProfiledNameFactoryTest extends \PHPUnit_Framework_TestCase
+class ProfiledNamesFactoryTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * Test the profiled name factory
@@ -54,9 +55,13 @@ class ProfiledNameFactoryTest extends \PHPUnit_Framework_TestCase
      * @param array $expected Expected profiled names
      * @dataProvider getProfiledNames
      */
-    public function testProfiledNameFactory(array $args, array $expected)
+    public function testProfiledNamesFactory(array $args, array $expected)
     {
-        $this->assertEquals($expected, ProfiledNameFactory::createFromArguments($args));
+        /** @var ProfiledNamesList $profiledNamesList */
+        $profiledNamesList = ProfiledNamesFactory::createFromArguments($args);
+        $this->assertInstanceOf(ProfiledNamesList::class, $profiledNamesList);
+        $this->assertEquals($expected, $profiledNamesList->getArrayCopy());
+        print_r($profiledNamesList->getArrayCopy());
     }
 
     /**

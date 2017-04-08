@@ -36,7 +36,9 @@
 
 namespace Jkphl\Micrometa\Infrastructure\Factory;
 
+use Jkphl\Micrometa\Infrastructure\Parser\ProfiledNamesList;
 use Jkphl\Micrometa\Ports\Exceptions\InvalidArgumentException;
+use Jkphl\Micrometa\Ports\Item\Item;
 
 /**
  * Profiled name factory
@@ -44,13 +46,40 @@ use Jkphl\Micrometa\Ports\Exceptions\InvalidArgumentException;
  * @package Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Infrastructure
  */
-class ProfiledNameFactory
+class ProfiledNamesFactory
 {
     /**
      * Create a list of profiled names from function arguments
      *
+     * The method takes an arbitrary number of arguments and tries to parse them as profiled names. Arguments
+     * may be strings, arrays or objects.
+     *
+     * String values are interpreted as names — with one exception: If the first two arguments are both strings,
+     * the second one is taken as profile IRI. Optionally following string arguments are taken as names again,
+     * assuming to share the same profile:
+     *
+     *      createFromArguments($name1 [, $profile])
+     *      createFromArguments($name1, $profile1, $name2, $profile2 ...)
+     *
+     * Arrays arguments are expected to have at least one argument which is taken as name. If present, the
+     * second argument is used as profile (otherwise an empty profile is assumed):
+     *
+     *      createFromArguments(array($name [, $profile]))
+     *
+     * Object values are expected to have a "name" and an optional "profile" property:
+     *
+     *      createFromArguments((object)array('name' => $name [, 'profile' => $profile]))
+     *
+     * When an array or object argument is consumed, the profile value will be used for any following string
+     * argument. You can "reset" the profile to another value by specifying another array or object value in
+     * this case.
+     *
+     *      createFromArguments(array($name1, $profile1), $name2, $name3 ...)
+     *
      * @param array $args Arguments
-     * @return array Profiled names
+     * @return ProfiledNamesList Profiled names
+     * @see Item::isOfType()
+     * @see Item::firstOf()
      */
     public static function createFromArguments($args)
     {
@@ -62,7 +91,7 @@ class ProfiledNameFactory
             $profiledNames[] = self::consumeProfiledName($args, $profile);
         }
 
-        return $profiledNames;
+        return new ProfiledNamesList($profiledNames);
     }
 
     /**

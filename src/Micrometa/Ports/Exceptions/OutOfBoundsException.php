@@ -80,4 +80,16 @@ class OutOfBoundsException extends \OutOfBoundsException implements MicrometaExc
      * @var int
      */
     const INVALID_ALTERNATE_TYPE = 1489268753;
+    /**
+     * Invalid property value index
+     *
+     * @var string
+     */
+    const INVALID_PROPERTY_VALUE_INDEX_STR = 'Invalid property index "%s"';
+    /**
+     * Invalid property value index
+     *
+     * @var int
+     */
+    const INVALID_PROPERTY_VALUE_INDEX = 1491672553;
 }

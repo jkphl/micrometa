@@ -72,4 +72,14 @@ class StringValue implements ValueInterface
     {
         return !strlen(trim($this->value));
     }
+
+    /**
+     * String serialization
+     *
+     * @return string Value
+     */
+    public function __toString()
+    {
+        return strval($this->value);
+    }
 }

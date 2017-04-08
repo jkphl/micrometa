@@ -64,6 +64,60 @@ class ItemTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test an unprofiled property
+     *
+     * @expectedException \Jkphl\Micrometa\Ports\Exceptions\OutOfBoundsException
+     * @expectedExceptionCode 1488315604
+     */
+    public function testUnprofiledProperty()
+    {
+        $feedItem = $this->getFeedItem();
+        $this->assertInstanceOf(Item::class, $feedItem);
+
+        // Test the item name as an unprofiled property value list
+        $feedNameList = $feedItem->getProperty('name');
+        $this->assertTrue(is_array($feedNameList));
+        $this->assertEquals(1, count($feedNameList));
+        $this->assertInstanceOf(StringValue::class, $feedNameList[0]);
+        $this->assertEquals('John Doe\'s Blog', strval($feedNameList[0]));
+
+        // Test the item name as an unprofiled single property value
+        $feedName = $feedItem->getProperty('name', null, 0);
+        $this->assertInstanceOf(StringValue::class, $feedName);
+        $this->assertEquals('John Doe\'s Blog', strval($feedName));
+
+        // Test an invalid unprofiled property
+        $feedItem->getProperty('invalid');
+    }
+
+    /**
+     * Test an profiled property
+     *
+     * @expectedException \Jkphl\Micrometa\Ports\Exceptions\OutOfBoundsException
+     * @expectedExceptionCode 1488315604
+     */
+    public function testProfiledProperty()
+    {
+        $feedItem = $this->getFeedItem();
+        $this->assertInstanceOf(Item::class, $feedItem);
+
+        // Test the item name as an unprofiled property value list
+        $feedNameList = $feedItem->getProperty('name', MicroformatsFactory::MF2_PROFILE_URI);
+        $this->assertTrue(is_array($feedNameList));
+        $this->assertEquals(1, count($feedNameList));
+        $this->assertInstanceOf(StringValue::class, $feedNameList[0]);
+        $this->assertEquals('John Doe\'s Blog', strval($feedNameList[0]));
+
+        // Test the item name as an unprofiled single property value
+        $feedName = $feedItem->getProperty('name', MicroformatsFactory::MF2_PROFILE_URI, 0);
+        $this->assertInstanceOf(StringValue::class, $feedName);
+        $this->assertEquals('John Doe\'s Blog', strval($feedName));
+
+        // Test an invalid unprofiled property
+        $feedItem->getProperty('invalid', MicroformatsFactory::MF2_PROFILE_URI);
+    }
+
+    /**
      * Create and return an h-feed Microformats item
      *
      * @return Item h-feed item
@@ -76,14 +130,14 @@ class ItemTest extends \PHPUnit_Framework_TestCase
             [
                 (object)[
                     'profile' => MicroformatsFactory::MF2_PROFILE_URI,
-                    'name' => 'p-name',
+                    'name' => 'name',
                     'values' => [
                         new StringValue('John Doe')
                     ]
                 ],
                 (object)[
                     'profile' => MicroformatsFactory::MF2_PROFILE_URI,
-                    'name' => 'u-email',
+                    'name' => 'email',
                     'values' => [
                         new StringValue('john@example.com')
                     ]
@@ -98,14 +152,14 @@ class ItemTest extends \PHPUnit_Framework_TestCase
             [
                 (object)[
                     'profile' => MicroformatsFactory::MF2_PROFILE_URI,
-                    'name' => 'p-name',
+                    'name' => 'name',
                     'values' => [
                         new StringValue('Famous blog post')
                     ]
                 ],
                 (object)[
                     'profile' => MicroformatsFactory::MF2_PROFILE_URI,
-                    'name' => 'p-author',
+                    'name' => 'author',
                     'values' => [
                         $authorItem
                     ]
@@ -120,14 +174,14 @@ class ItemTest extends \PHPUnit_Framework_TestCase
             [
                 (object)[
                     'profile' => MicroformatsFactory::MF2_PROFILE_URI,
-                    'name' => 'p-name',
+                    'name' => 'name',
                     'values' => [
                         new StringValue('John Doe\'s Blog')
                     ]
                 ],
                 (object)[
                     'profile' => MicroformatsFactory::MF2_PROFILE_URI,
-                    'name' => 'p-author',
+                    'name' => 'author',
                     'values' => [
                         $authorItem
                     ]

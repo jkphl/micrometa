@@ -37,9 +37,11 @@
 namespace Jkphl\Micrometa\Ports\Item;
 
 use Jkphl\Micrometa\Application\Item\ItemInterface as ApplicationItemInterface;
-use Jkphl\Micrometa\Domain\Exceptions\OutOfBoundsException;
-use Jkphl\Micrometa\Infrastructure\Factory\ProfiledNameFactory;
+use Jkphl\Micrometa\Domain\Exceptions\OutOfBoundsException as DomainOutOfBoundsException;
+use Jkphl\Micrometa\Infrastructure\Factory\ProfiledNamesFactory;
+use Jkphl\Micrometa\Infrastructure\Parser\ProfiledNamesList;
 use Jkphl\Micrometa\Ports\Exceptions\InvalidArgumentException;
+use Jkphl\Micrometa\Ports\Exceptions\OutOfBoundsException;
 
 /**
  * Micro information item
@@ -69,13 +71,16 @@ class Item implements ItemInterface
     /**
      * Return whether the item is of a particular type (or contained in a list of types)
      *
+     * The item type(s) can be specified in a variety of ways, @see ProfiledNamesFactory::createFromArguments().
+     *
      * @param string $name Name
      * @param string|null $profile Profile
      * @return boolean Item type is contained in the list of types
      */
     public function isOfType($name, $profile = null)
     {
-        $types = ProfiledNameFactory::createFromArguments(func_get_args());
+        /** @var ProfiledNamesList $types */
+        $types = ProfiledNamesFactory::createFromArguments(func_get_args());
 
         // Run through all item types
         /** @var \stdClass $itemType */
@@ -95,6 +100,40 @@ class Item implements ItemInterface
     }
 
     /**
+     * Get a single property (value)
+     *
+     * @param string $name Property name
+     * @param string $profile Property profile
+     * @param int $index Property value index
+     * @return array|string|ItemInterface Property value(s)
+     * @throws OutOfBoundsException If the property name is unknown
+     * @throws OutOfBoundsException If the property value index is out of bounds
+     */
+    public function getProperty($name, $profile = null, $index = null)
+    {
+        try {
+            $propertyValues = $this->item->getProperty($name, $profile);
+        } catch (DomainOutOfBoundsException $e) {
+            throw new OutOfBoundsException($e->getMessage(), $e->getCode());
+        }
+
+        // If all property values should be returned
+        if ($index === null) {
+            return $propertyValues;
+        }
+
+        // If the property value index is out of bounds
+        if (!isset($propertyValues[$index])) {
+            throw new OutOfBoundsException(
+                sprintf(OutOfBoundsException::INVALID_PROPERTY_VALUE_INDEX_STR, $index),
+                OutOfBoundsException::INVALID_PROPERTY_VALUE_INDEX
+            );
+        }
+
+        return $propertyValues[$index];
+    }
+
+    /**
      * Get the values or first value of an item property
      *
      * Prepend the property name with an "s" to retrieve the list of all available property values.
@@ -105,11 +144,13 @@ class Item implements ItemInterface
     public function __get($name)
     {
         // TODO: Implement __get() method.
+        return '';
     }
 
     /**
      * Get all values or the first value for a particular property (in a property list)
      *
+     * The property name(s) can be specified in a variety of ways, @see ProfiledNamesFactory::createFromArguments().
      * Append the property names with an "s" to retrieve the list of all available property values.
      *
      * @param array ...$names Property names
@@ -126,45 +167,6 @@ class Item implements ItemInterface
             );
         }
 
-        return $this->firstOfPropertyNames($names);
-    }
-
-    /**
-     * Return the first non-NULL value of a property list
-     *
-     * @param array $names Property names
-     * @return string|array|null First existing property name
-     */
-    protected function firstOfPropertyNames(array $names)
-    {
-        // Run through all property names
-        foreach ($names as $name) {
-            $value = $this->getPropertyValueOrValueList($name);
-            if ($value !== null) {
-                return $value;
-            }
-        }
-
-        return null;
-    }
-
-    protected function getPropertyValueOrValueList($name)
-    {
-        return null;
-    }
-
-    /**
-     * Return the values of a particular property
-     *
-     * @param string $name Property name
-     * @return array|null Property values
-     */
-    protected function getPropertyValues($name)
-    {
-        try {
-            return $this->item->getProperty($name);
-        } catch (OutOfBoundsException $e) {
-            return null;
-        }
+        return '';
     }
 }

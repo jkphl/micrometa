@@ -37,7 +37,6 @@
 namespace Jkphl\Micrometa\Domain\Item;
 
 use Jkphl\Micrometa\Domain\Exceptions\InvalidArgumentException;
-use Jkphl\Micrometa\Domain\Exceptions\OutOfBoundsException;
 use Jkphl\Micrometa\Domain\Factory\IriFactory;
 use Jkphl\Micrometa\Domain\Value\ValueInterface;
 
@@ -161,7 +160,6 @@ class Item implements ItemInterface
      * @param string $name Property name
      * @param string|null $profile Property profile
      * @return array Item property values
-     * @throws OutOfBoundsException If the property is unknown
      */
     public function getProperty($name, $profile = null)
     {
