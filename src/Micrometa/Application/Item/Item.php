@@ -36,6 +36,8 @@
 
 namespace Jkphl\Micrometa\Application\Item;
 
+use Jkphl\Micrometa\Domain\Factory\AliasFactoryInterface;
+
 /**
  * Item
  *
@@ -67,6 +69,7 @@ class Item extends \Jkphl\Micrometa\Domain\Item\Item implements ItemInterface
      * Item constructor
      *
      * @param int $format Parser format
+     * @param AliasFactoryInterface $aliasFactory Alias factory
      * @param string|array $type Item type(s)
      * @param array[] $properties Item properties
      * @param ItemInterface[] $children Nested items
@@ -75,6 +78,7 @@ class Item extends \Jkphl\Micrometa\Domain\Item\Item implements ItemInterface
      */
     public function __construct(
         $format,
+        AliasFactoryInterface $aliasFactory,
         $type,
         array $properties = [],
         array $children = [],
@@ -82,7 +86,7 @@ class Item extends \Jkphl\Micrometa\Domain\Item\Item implements ItemInterface
         $value = null
     ) {
         $this->format = $format;
-        parent::__construct($type, $properties, $itemId);
+        parent::__construct($type, $properties, $itemId, $aliasFactory);
         $this->children = $children;
         $this->value = $value;
     }

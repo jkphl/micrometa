@@ -61,7 +61,6 @@ class ProfiledNamesFactoryTest extends \PHPUnit_Framework_TestCase
         $profiledNamesList = ProfiledNamesFactory::createFromArguments($args);
         $this->assertInstanceOf(ProfiledNamesList::class, $profiledNamesList);
         $this->assertEquals($expected, $profiledNamesList->getArrayCopy());
-        print_r($profiledNamesList->getArrayCopy());
     }
 
     /**

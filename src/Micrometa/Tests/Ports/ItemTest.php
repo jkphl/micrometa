@@ -36,6 +36,7 @@
 
 namespace Jkphl\Micrometa\Tests\Ports;
 
+use Jkphl\Micrometa\Application\Factory\AliasFactory;
 use Jkphl\Micrometa\Application\Item\Item as ApplicationItem;
 use Jkphl\Micrometa\Application\Value\StringValue;
 use Jkphl\Micrometa\Infrastructure\Factory\MicroformatsFactory;
@@ -53,7 +54,7 @@ class ItemTest extends \PHPUnit_Framework_TestCase
     /**
      * Test an item
      */
-    public function testItem()
+    public function testItemTypes()
     {
         $feedItem = $this->getFeedItem();
         $this->assertInstanceOf(Item::class, $feedItem);
@@ -61,6 +62,92 @@ class ItemTest extends \PHPUnit_Framework_TestCase
         // Test the item type
         $this->assertTrue($feedItem->isOfType('h-feed'));
         $this->assertTrue($feedItem->isOfType('h-feed', MicroformatsFactory::MF2_PROFILE_URI));
+    }
+
+    /**
+     * Create and return an h-feed Microformats item
+     *
+     * @return Item h-feed item
+     */
+    protected function getFeedItem()
+    {
+        $authorItem = new ApplicationItem(
+            Microformats::FORMAT,
+            new AliasFactory(),
+            (object)['profile' => MicroformatsFactory::MF2_PROFILE_URI, 'name' => 'h-card'],
+            [
+                (object)[
+                    'profile' => MicroformatsFactory::MF2_PROFILE_URI,
+                    'name' => 'name',
+                    'values' => [
+                        new StringValue('John Doe')
+                    ]
+                ],
+                (object)[
+                    'profile' => MicroformatsFactory::MF2_PROFILE_URI,
+                    'name' => 'email',
+                    'values' => [
+                        new StringValue('john@example.com')
+                    ]
+                ]
+            ]
+        );
+
+
+        $entryItem = new ApplicationItem(
+            Microformats::FORMAT,
+            new AliasFactory(),
+            (object)['profile' => MicroformatsFactory::MF2_PROFILE_URI, 'name' => 'h-entry'],
+            [
+                (object)[
+                    'profile' => MicroformatsFactory::MF2_PROFILE_URI,
+                    'name' => 'name',
+                    'values' => [
+                        new StringValue('Famous blog post')
+                    ]
+                ],
+                (object)[
+                    'profile' => MicroformatsFactory::MF2_PROFILE_URI,
+                    'name' => 'author',
+                    'values' => [
+                        $authorItem
+                    ]
+                ]
+            ]
+        );
+
+
+        $feedItem = new ApplicationItem(
+            Microformats::FORMAT,
+            new AliasFactory(),
+            (object)['profile' => MicroformatsFactory::MF2_PROFILE_URI, 'name' => 'h-feed'],
+            [
+                (object)[
+                    'profile' => MicroformatsFactory::MF2_PROFILE_URI,
+                    'name' => 'name',
+                    'values' => [
+                        new StringValue('John Doe\'s Blog')
+                    ]
+                ],
+                (object)[
+                    'profile' => MicroformatsFactory::MF2_PROFILE_URI,
+                    'name' => 'author',
+                    'values' => [
+                        $authorItem
+                    ]
+                ],
+                (object)[
+                    'profile' => MicroformatsFactory::MF2_PROFILE_URI,
+                    'name' => 'custom-property',
+                    'values' => [
+                        new StringValue('Property for alias testing')
+                    ]
+                ],
+            ],
+            [$entryItem, $entryItem]
+        );
+
+        return new Item($feedItem);
     }
 
     /**
@@ -91,7 +178,7 @@ class ItemTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test an profiled property
+     * Test a profiled property
      *
      * @expectedException \Jkphl\Micrometa\Ports\Exceptions\OutOfBoundsException
      * @expectedExceptionCode 1488315604
@@ -118,78 +205,53 @@ class ItemTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Create and return an h-feed Microformats item
+     * Test an unprofiled property
      *
-     * @return Item h-feed item
+     * @expectedException \Jkphl\Micrometa\Ports\Exceptions\OutOfBoundsException
+     * @expectedExceptionCode 1488315604
      */
-    protected function getFeedItem()
+    public function testAliasedProperty()
     {
-        $authorItem = new ApplicationItem(
-            Microformats::FORMAT,
-            (object)['profile' => MicroformatsFactory::MF2_PROFILE_URI, 'name' => 'h-card'],
-            [
-                (object)[
-                    'profile' => MicroformatsFactory::MF2_PROFILE_URI,
-                    'name' => 'name',
-                    'values' => [
-                        new StringValue('John Doe')
-                    ]
-                ],
-                (object)[
-                    'profile' => MicroformatsFactory::MF2_PROFILE_URI,
-                    'name' => 'email',
-                    'values' => [
-                        new StringValue('john@example.com')
-                    ]
-                ]
-            ]
-        );
+        $feedItem = $this->getFeedItem();
+        $this->assertInstanceOf(Item::class, $feedItem);
 
+        // Test the custom item property as an unprofiled property value list
+        $feedCustomPropList = $feedItem->getProperty('custom-property');
+        $this->assertTrue(is_array($feedCustomPropList));
+        $this->assertEquals(1, count($feedCustomPropList));
+        $this->assertInstanceOf(StringValue::class, $feedCustomPropList[0]);
+        $this->assertEquals('Property for alias testing', strval($feedCustomPropList[0]));
 
-        $entryItem = new ApplicationItem(
-            Microformats::FORMAT,
-            (object)['profile' => MicroformatsFactory::MF2_PROFILE_URI, 'name' => 'h-entry'],
-            [
-                (object)[
-                    'profile' => MicroformatsFactory::MF2_PROFILE_URI,
-                    'name' => 'name',
-                    'values' => [
-                        new StringValue('Famous blog post')
-                    ]
-                ],
-                (object)[
-                    'profile' => MicroformatsFactory::MF2_PROFILE_URI,
-                    'name' => 'author',
-                    'values' => [
-                        $authorItem
-                    ]
-                ]
-            ]
-        );
+        // Test the custom item property as an unprofiled single property value
+        $feedCustomProp = $feedItem->getProperty('custom-property', null, 0);
+        $this->assertInstanceOf(StringValue::class, $feedCustomProp);
+        $this->assertEquals('Property for alias testing', strval($feedCustomProp));
 
+        // Test the custom item property via the convenience getter
+        $feedCustomProp = $feedItem->customProperty;
+        $this->assertInstanceOf(StringValue::class, $feedCustomProp);
+        $this->assertEquals('Property for alias testing', strval($feedCustomProp));
 
-        $feedItem = new ApplicationItem(
-            Microformats::FORMAT,
-            (object)['profile' => MicroformatsFactory::MF2_PROFILE_URI, 'name' => 'h-feed'],
-            [
-                (object)[
-                    'profile' => MicroformatsFactory::MF2_PROFILE_URI,
-                    'name' => 'name',
-                    'values' => [
-                        new StringValue('John Doe\'s Blog')
-                    ]
-                ],
-                (object)[
-                    'profile' => MicroformatsFactory::MF2_PROFILE_URI,
-                    'name' => 'author',
-                    'values' => [
-                        $authorItem
-                    ]
-                ]
-            ],
-            [$entryItem, $entryItem]
-        );
+        // Test an invalid property
+        $feedItem->invalidProperty;
+    }
 
-        return new Item($feedItem);
+    /**
+     * Test a property stack
+     *
+     * @expectedException \Jkphl\Micrometa\Ports\Exceptions\OutOfBoundsException
+     * @expectedExceptionCode 1488315604
+     */
+    public function testPropertyStack()
+    {
+        $feedItem = $this->getFeedItem();
+        $this->assertInstanceOf(Item::class, $feedItem);
+
+        // Request a valid property stack
+        $propertyValues = $feedItem->getFirstProperty('photo', MicroformatsFactory::MF2_PROFILE_URI, 'name');
+        $this->assertEquals([new StringValue('John Doe\'s Blog')], $propertyValues);
+
+        // Request unknown properties only
+        $feedItem->getFirstProperty('photo', MicroformatsFactory::MF2_PROFILE_URI, 'invalid');
     }
 }

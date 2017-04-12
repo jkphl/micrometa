@@ -5,7 +5,7 @@
  *
  * @category Jkphl
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Ports
+ * @subpackage Jkphl\Micrometa\Infrastructure
  * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -34,49 +34,37 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Ports\Item;
+namespace Jkphl\Micrometa\Application\Factory;
 
 /**
- * Item interface
+ * Alias factory
  *
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Ports
+ * @subpackage Jkphl\Micrometa\Application
  */
-interface ItemInterface
+class AliasFactory extends \Jkphl\Micrometa\Domain\Factory\AliasFactory
 {
     /**
-     * Return whether the item is of a particular type (or contained in a list of types)
+     * Create aliases for a particular name
      *
      * @param string $name Name
-     * @param string|null $profile Profile
-     * @return bool Item type is contained in the list of types
+     * @return string[] Name aliases (including the name itself as first item)
      */
-    public function isOfType($name, $profile = null);
+    public function createAliases($name)
+    {
+        $aliases = parent::createAliases($name);
 
-    /**
-     * Get a single property (value)
-     *
-     * @param string $name Property name
-     * @param string $profile Property profile
-     * @param int $index Property value index
-     * @return array|string|ItemInterface Property value(s)
-     */
-    public function getProperty($name, $profile = null, $index = null);
+        // Sanitize the name if it isn't usable as PHP function name
+        if (!preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $name)) {
+            $name = preg_replace('/^[^a-zA-Z_\x7f-\xff]+(.*)?/', '$1', $name);
+            $aliases[] = lcfirst(
+                implode(
+                    '',
+                    array_map('ucfirst', preg_split('/[^a-zA-Z0-9_\x7f-\xff]+/', $name))
+                )
+            );
+        }
 
-    /**
-     * Get the first value of an item property
-     *
-     * @param string $name Item property name
-     * @return string First value of an item property
-     */
-    public function __get($name);
-
-    /**
-     * Get all values of the first available property in a stack
-     *
-     * @param string $name Name
-     * @param string $profile Profile
-     * @return array Property values
-     */
-    public function getFirstProperty($name, $profile = null);
+        return $aliases;
+    }
 }

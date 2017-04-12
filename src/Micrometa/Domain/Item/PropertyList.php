@@ -62,6 +62,12 @@ class PropertyList implements PropertyListInterface
      */
     protected $names = [];
     /**
+     * Property name aliases
+     *
+     * @var array[]
+     */
+    protected $aliases = [];
+    /**
      * Name cursor mapping
      *
      * @var int[]
@@ -205,9 +211,11 @@ class PropertyList implements PropertyListInterface
         $iri = IriFactory::create($iri);
         $iriStr = $iri->profile.$iri->name;
         $cursor = array_key_exists($iriStr, $this->nameToCursor) ? $this->nameToCursor[$iriStr] : count($this->values);
+        $this->aliases[$iriStr] = [];
 
         // Run through all name aliases
         foreach ($this->aliasFactory->createAliases($iri->name) as $alias) {
+            $this->aliases[$iriStr][] = $alias;
             $this->nameToCursor[$iri->profile.$alias] = $cursor;
         }
 
@@ -273,8 +281,10 @@ class PropertyList implements PropertyListInterface
     {
         // Run through all property names
         foreach ($this->names as $cursor => $iri) {
-            if ($name === $iri->name) {
-                return $cursor;
+            foreach ($this->aliases[$iri->profile.$iri->name] as $alias) {
+                if ($name === $alias) {
+                    return $cursor;
+                }
             }
         }
 
@@ -288,12 +298,12 @@ class PropertyList implements PropertyListInterface
      */
     public function toArray()
     {
-        $values = $this->values;
-        return array_map(
-            function ($cursor) use ($values) {
-                return $values[$cursor];
-            },
-            $this->nameToCursor
-        );
+        $propertyList = [];
+        foreach ($this->names as $name) {
+            $profiledName = $name->profile.$name->name;
+            $cursor = $this->nameToCursor[$profiledName];
+            $propertyList[$profiledName] = $this->values[$cursor];
+        }
+        return $propertyList;
     }
 }

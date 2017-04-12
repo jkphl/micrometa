@@ -71,7 +71,7 @@ class Item implements ItemInterface
     /**
      * Return whether the item is of a particular type (or contained in a list of types)
      *
-     * The item type(s) can be specified in a variety of ways, @see ProfiledNamesFactory::createFromArguments().
+     * The item type(s) can be specified in a variety of ways, @see ProfiledNamesFactory::createFromArguments()
      *
      * @param string $name Name
      * @param string|null $profile Profile
@@ -97,6 +97,17 @@ class Item implements ItemInterface
         }
 
         return false;
+    }
+
+    /**
+     * Get the first value of an item property
+     *
+     * @param string $name Item property name
+     * @return string First value of an item property
+     */
+    public function __get($name)
+    {
+        return $this->getProperty($name, null, 0);
     }
 
     /**
@@ -134,39 +145,36 @@ class Item implements ItemInterface
     }
 
     /**
-     * Get the values or first value of an item property
+     * Get all values of the first available property in a stack
      *
-     * Prepend the property name with an "s" to retrieve the list of all available property values.
+     * The property stack can be specified in a variety of ways, @see ProfiledNamesFactory::createFromArguments()
      *
-     * @param string $name Item property name
-     * @return string Values or first value of an item property
-     */
-    public function __get($name)
-    {
-        // TODO: Implement __get() method.
-        return '';
-    }
-
-    /**
-     * Get all values or the first value for a particular property (in a property list)
-     *
-     * The property name(s) can be specified in a variety of ways, @see ProfiledNamesFactory::createFromArguments().
-     * Append the property names with an "s" to retrieve the list of all available property values.
-     *
-     * @param array ...$names Property names
-     * @return string|string[] Property value(s)
+     * @param string $name Name
+     * @param string $profile Profile
+     * @return array Property values
      * @throws InvalidArgumentException If no property name was given
+     * @throws OutOfBoundsException If none of the requested properties is known
      */
-    public function firstOf(...$names)
+    public function getFirstProperty($name, $profile = null)
     {
-        // If no property name was given
-        if (!count($names)) {
-            throw new InvalidArgumentException(
-                sprintf(InvalidArgumentException::MISSING_PROPERTY_NAME_STR, __CLASS__.'::'.__METHOD__),
-                InvalidArgumentException::MISSING_PROPERTY_NAME
-            );
+        /** @var ProfiledNamesList $properties */
+        $properties = ProfiledNamesFactory::createFromArguments(func_get_args());
+
+        // Prepare a default exception
+        $e = new OutOfBoundsException(
+            OutOfBoundsException::NONMATCHING_PROPERTY_STACK_STR,
+            OutOfBoundsException::NONMATCHING_PROPERTY_STACK
+        );
+
+        // Run through all properties
+        foreach ($properties as $property) {
+            try {
+                return $this->getProperty($property->name, $property->profile);
+            } catch (OutOfBoundsException $e) {
+                continue;
+            }
         }
 
-        return '';
+        throw $e;
     }
 }

@@ -38,6 +38,8 @@ namespace Jkphl\Micrometa\Tests\Application;
 
 use Jkphl\Micrometa\Application\Factory\ItemFactory;
 use Jkphl\Micrometa\Application\Item\Item;
+use Jkphl\Micrometa\Application\Value\StringValue;
+use Jkphl\Micrometa\Infrastructure\Factory\MicroformatsFactory;
 
 /**
  * Item factory tests
@@ -60,9 +62,50 @@ class ItemFactoryTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test an item property list with alias
+     */
+    public function testAliasedItemProperty()
+    {
+        $itemFactory = new ItemFactory(0);
+        $rawItem = (object)[
+            'type' => ['test'],
+            'properties' => [
+                (object)[
+                    'name' => 'alias-property',
+                    'profile' => MicroformatsFactory::MF2_PROFILE_URI,
+                    'values' => ['value']
+                ]
+            ]
+        ];
+        $item = $itemFactory($rawItem);
+        $this->assertInstanceOf(Item::class, $item);
+        $this->assertEquals(
+            [MicroformatsFactory::MF2_PROFILE_URI.'alias-property' => [new StringValue('value')]],
+            $item->getProperties()->toArray()
+        );
+        $propertyList = $item->getProperties();
+        $this->assertTrue(
+            $propertyList->offsetExists(
+                (object)['name' => 'alias-property', 'profile' => MicroformatsFactory::MF2_PROFILE_URI]
+            )
+        );
+        $this->assertTrue(
+            isset(
+                $propertyList[(object)['name' => 'alias-property', 'profile' => MicroformatsFactory::MF2_PROFILE_URI]]
+            )
+        );
+        $this->assertTrue(
+            $propertyList->offsetExists(
+                (object)['name' => 'aliasProperty', 'profile' => MicroformatsFactory::MF2_PROFILE_URI]
+            )
+        );
+    }
+
+    /**
      * Test an invalid item property list
      */
-    public function testInvalidItemPropertyList() {
+    public function testInvalidItemPropertyList()
+    {
         $itemFactory = new ItemFactory(0);
         $rawItem = (object)['type' => ['test'], 'properties' => ['test' => false]];
         $item = $itemFactory($rawItem);

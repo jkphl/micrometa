@@ -57,6 +57,12 @@ class ItemFactory
      * @var int
      */
     protected $format;
+    /**
+     * Alias factory
+     *
+     * @var AliasFactory
+     */
+    protected $aliasFactory;
 
     /**
      * Item factory constructor
@@ -66,6 +72,7 @@ class ItemFactory
     public function __construct($format)
     {
         $this->format = $format;
+        $this->aliasFactory = new AliasFactory();
     }
 
     /**
@@ -98,7 +105,7 @@ class ItemFactory
         $value = isset($item->value) ? $item->value : null;
         $children = isset($item->children) ? array_map([$this, __METHOD__], $item->children) : [];
         $properties = $this->getProperties($item);
-        return new Item($this->format, $type, $properties, $children, $itemId, $value);
+        return new Item($this->format, $this->aliasFactory, $type, $properties, $children, $itemId, $value);
     }
 
     /**
