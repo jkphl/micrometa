@@ -48,37 +48,33 @@ interface ItemListInterface extends \Iterator
      * Return an object representation of the item list
      *
      * @return \stdClass Micro information items
+     * @api
      */
     public function toObject();
 
     /**
      * Return a JSON representation of the item list
      *
-     * @return string Micro information items
+     * @return string Item list JSON
+     * @api
      */
     public function toJson();
-
-    /**
-     * Return all items as an array, optionally filtered by item type(s)
-     *
-     * @param array ...$types Item types
-     * @return ItemListInterface Items matching the requested types
-     */
-    public function filter(...$types);
 
     /**
      * Filter the items by item type(s)
      *
      * @param array ...$types Item types
      * @return ItemInterface[] Items matching the requested types
+     * @api
      */
-    public function items(...$types);
+    public function getItems(...$types);
 
     /**
      * Return the first item, optionally of particular types
      *
      * @param array ...$types Item types
      * @return ItemInterface Item
+     * @api
      */
-    public function item(...$types);
+    public function getFirstItem(...$types);
 }

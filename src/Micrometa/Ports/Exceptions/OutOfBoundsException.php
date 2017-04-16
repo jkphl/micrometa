@@ -93,15 +93,27 @@ class OutOfBoundsException extends \OutOfBoundsException implements MicrometaExc
      */
     const INVALID_PROPERTY_VALUE_INDEX = 1491672553;
     /**
-     * Non-matching property stack
+     * No matching properties
      *
      * @var string
      */
-    const NONMATCHING_PROPERTY_STACK_STR = 'Non-matching property stack';
+    const NO_MATCHING_PROPERTIES_STR = 'No matching properties';
     /**
-     * Non-matching property stack
+     * No matching properties
      *
      * @var int
      */
-    const NONMATCHING_PROPERTY_STACK = 1492022860;
+    const NO_MATCHING_PROPERTIES = 1492022860;
+    /**
+     * No matching items
+     *
+     * @var string
+     */
+    const NO_MATCHING_ITEMS_STR = 'No matching items';
+    /**
+     * No matching items
+     *
+     * @var int
+     */
+    const NO_MATCHING_ITEMS = 1492030227;
 }

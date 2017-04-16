@@ -41,7 +41,7 @@ use Jkphl\Micrometa\Application\Item\Item;
 use Jkphl\Micrometa\Application\Item\ItemInterface;
 use Jkphl\Micrometa\Application\Value\AlternateValues;
 use Jkphl\Micrometa\Application\Value\StringValue;
-use Jkphl\Micrometa\Domain\Value\ValueInterface;
+use Jkphl\Micrometa\Application\Contract\ValueInterface;
 
 /**
  * Item factory
@@ -58,11 +58,11 @@ class ItemFactory
      */
     protected $format;
     /**
-     * Alias factory
+     * Property lit factory
      *
-     * @var AliasFactory
+     * @var PropertyListFactoryInterface
      */
-    protected $aliasFactory;
+    protected $propertyListFactory;
 
     /**
      * Item factory constructor
@@ -72,7 +72,7 @@ class ItemFactory
     public function __construct($format)
     {
         $this->format = $format;
-        $this->aliasFactory = new AliasFactory();
+        $this->propertyListFactory = new PropertyListFactory();
     }
 
     /**
@@ -105,7 +105,7 @@ class ItemFactory
         $value = isset($item->value) ? $item->value : null;
         $children = isset($item->children) ? array_map([$this, __METHOD__], $item->children) : [];
         $properties = $this->getProperties($item);
-        return new Item($this->format, $this->aliasFactory, $type, $properties, $children, $itemId, $value);
+        return new Item($this->format, $this->propertyListFactory, $type, $properties, $children, $itemId, $value);
     }
 
     /**

@@ -36,7 +36,7 @@
 
 namespace Jkphl\Micrometa\Application\Value;
 
-use Jkphl\Micrometa\Domain\Value\ValueInterface;
+use Jkphl\Micrometa\Application\Contract\ValueInterface;
 
 /**
  * Alternate value
@@ -54,5 +54,15 @@ class AlternateValues extends \ArrayObject implements ValueInterface
     public function isEmpty()
     {
         return !count($this->getArrayCopy());
+    }
+
+    /**
+     * Export the object
+     *
+     * @return mixed
+     */
+    public function export()
+    {
+        return $this->getArrayCopy();
     }
 }

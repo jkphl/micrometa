@@ -70,8 +70,8 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $parser = new Parser(Microformats::FORMAT);
         $itemObjectModel = $parser(self::VALID_HTML_URL, file_get_contents($microformatsHtml), $formats);
         $this->assertInstanceOf(ItemObjectModelInterface::class, $itemObjectModel);
-        $this->assertEquals(1, count($itemObjectModel->items()));
-        $item = $itemObjectModel->item();
+        $this->assertEquals(1, count($itemObjectModel->getItems()));
+        $item = $itemObjectModel->getFirstItem();
         $this->assertInstanceOf(Item::class, $item);
 //        $this->assertTrue($item->isOfType('invalid', MicroformatsFactory::MF2_PROFILE_URI.'h-product'));
     }

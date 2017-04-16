@@ -38,6 +38,7 @@ namespace Jkphl\Micrometa\Tests\Domain;
 
 use Jkphl\Micrometa\Application\Value\StringValue;
 use Jkphl\Micrometa\Domain\Item\Item;
+use Jkphl\Micrometa\Domain\Item\PropertyListInterface;
 use Jkphl\Micrometa\Domain\Value\ValueInterface;
 
 /**
@@ -70,8 +71,23 @@ class ItemTest extends \PHPUnit_Framework_TestCase
         $item = new Item($type, $properties, $itemId);
         $this->assertInstanceOf(Item::class, $item);
         $this->assertEquals($expectedTypes, $item->getType());
-        $this->assertEquals($expectedProperties, $item->getProperties()->toArray());
+        $this->assertEquals($expectedProperties, $this->convertPropertyListToArray($item->getProperties()));
         $this->assertEquals($expectedId, $item->getId());
+    }
+
+    /**
+     * Convert a property list to a plain array
+     *
+     * @param PropertyListInterface $propertyList Property list
+     * @return array Property list array
+     */
+    protected function convertPropertyListToArray(PropertyListInterface $propertyList)
+    {
+        $propertyListValues = [];
+        foreach ($propertyList as $iri => $values) {
+            $propertyListValues[$iri->profile.$iri->name] = $values;
+        }
+        return $propertyListValues;
     }
 
     /**

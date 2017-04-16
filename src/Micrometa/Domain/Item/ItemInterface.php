@@ -63,7 +63,7 @@ interface ItemInterface extends ValueInterface
     /**
      * Return all item properties
      *
-     * @return PropertyList Item properties list
+     * @return PropertyListInterface Item properties list
      */
     public function getProperties();
 

@@ -36,7 +36,7 @@
 
 namespace Jkphl\Micrometa\Tests\Ports;
 
-use Jkphl\Micrometa\Application\Factory\AliasFactory;
+use Jkphl\Micrometa\Application\Factory\PropertyListFactory;
 use Jkphl\Micrometa\Application\Item\Item as ApplicationItem;
 use Jkphl\Micrometa\Application\Value\StringValue;
 use Jkphl\Micrometa\Infrastructure\Factory\MicroformatsFactory;
@@ -73,7 +73,7 @@ class ItemTest extends \PHPUnit_Framework_TestCase
     {
         $authorItem = new ApplicationItem(
             Microformats::FORMAT,
-            new AliasFactory(),
+            new PropertyListFactory(),
             (object)['profile' => MicroformatsFactory::MF2_PROFILE_URI, 'name' => 'h-card'],
             [
                 (object)[
@@ -96,7 +96,7 @@ class ItemTest extends \PHPUnit_Framework_TestCase
 
         $entryItem = new ApplicationItem(
             Microformats::FORMAT,
-            new AliasFactory(),
+            new PropertyListFactory(),
             (object)['profile' => MicroformatsFactory::MF2_PROFILE_URI, 'name' => 'h-entry'],
             [
                 (object)[
@@ -119,7 +119,7 @@ class ItemTest extends \PHPUnit_Framework_TestCase
 
         $feedItem = new ApplicationItem(
             Microformats::FORMAT,
-            new AliasFactory(),
+            new PropertyListFactory(),
             (object)['profile' => MicroformatsFactory::MF2_PROFILE_URI, 'name' => 'h-feed'],
             [
                 (object)[
@@ -246,6 +246,8 @@ class ItemTest extends \PHPUnit_Framework_TestCase
     {
         $feedItem = $this->getFeedItem();
         $this->assertInstanceOf(Item::class, $feedItem);
+
+        print_r($feedItem->toJson());
 
         // Request a valid property stack
         $propertyValues = $feedItem->getFirstProperty('photo', MicroformatsFactory::MF2_PROFILE_URI, 'name');

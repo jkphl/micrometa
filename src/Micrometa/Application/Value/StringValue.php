@@ -36,7 +36,7 @@
 
 namespace Jkphl\Micrometa\Application\Value;
 
-use Jkphl\Micrometa\Domain\Value\ValueInterface;
+use Jkphl\Micrometa\Application\Contract\ValueInterface;
 
 /**
  * String value
@@ -81,5 +81,15 @@ class StringValue implements ValueInterface
     public function __toString()
     {
         return strval($this->value);
+    }
+
+    /**
+     * Export the object
+     *
+     * @return mixed
+     */
+    public function export()
+    {
+        return strval($this);
     }
 }

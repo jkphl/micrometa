@@ -5,7 +5,7 @@
  *
  * @category Jkphl
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Domain
+ * @subpackage Jkphl\Micrometa\Infrastructure\Parser
  * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -34,21 +34,17 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Domain\Factory;
+namespace Jkphl\Micrometa\Application\Contract;
 
 /**
- * Alias factory interface
+ * Value interface
  *
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Domain
+ * @subpackage Jkphl\Micrometa\Application
  */
-interface AliasFactoryInterface
+interface ValueInterface extends
+    \Jkphl\Micrometa\Domain\Value\ValueInterface,
+    ExportableInterface
 {
-    /**
-     * Create aliases for a particular name
-     *
-     * @param string $name Name
-     * @return string[] Name aliases (including the name itself as first item)
-     */
-    public function createAliases($name);
+
 }

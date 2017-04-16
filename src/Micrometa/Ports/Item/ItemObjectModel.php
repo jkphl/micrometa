@@ -47,7 +47,7 @@ use Jkphl\Micrometa\Ports\Rel\RelInterface;
  * @package Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Ports
  */
-class ItemObjectModel extends ItemList implements ItemObjectModelInterface
+class ItemObjectModel extends AbstractItemList implements ItemObjectModelInterface
 {
     /**
      * Rel declarations

@@ -5,7 +5,7 @@
  *
  * @category Jkphl
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Application
+ * @subpackage Jkphl\Micrometa\Application\Item
  * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -36,42 +36,17 @@
 
 namespace Jkphl\Micrometa\Application\Item;
 
-use Jkphl\Micrometa\Application\Contract\ValueInterface;
+use Jkphl\Micrometa\Application\Contract\ExportableInterface;
 
 /**
- * Item interface
+ * Property list interface
  *
  * @package Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Application
  */
-interface ItemInterface extends \Jkphl\Micrometa\Domain\Item\ItemInterface, ValueInterface
+interface PropertyListInterface extends
+    \Jkphl\Micrometa\Domain\Item\PropertyListInterface,
+    ExportableInterface
 {
-    /**
-     * Return the parser format
-     *
-     * @return int Parser format
-     */
-    public function getFormat();
 
-    /**
-     * Return the item value
-     *
-     * @return string Item value
-     */
-    public function getValue();
-
-    /**
-     * Return the nested children
-     *
-     * @return ItemInterface[] Nested children
-     * @api
-     */
-    public function getChildren();
-
-    /**
-     * Return all item properties
-     *
-     * @return PropertyListInterface Item properties list
-     */
-    public function getProperties();
 }

@@ -168,8 +168,7 @@ class Item implements ItemInterface
      *
      * @return PropertyListInterface Item properties list
      */
-    public
-    function getProperties()
+    public function getProperties()
     {
         return $this->properties;
     }

@@ -38,6 +38,7 @@ namespace Jkphl\Micrometa\Ports\Item;
 
 use Jkphl\Micrometa\Application\Item\ItemInterface as ApplicationItemInterface;
 use Jkphl\Micrometa\Domain\Exceptions\OutOfBoundsException as DomainOutOfBoundsException;
+use Jkphl\Micrometa\Infrastructure\Factory\ItemFactory;
 use Jkphl\Micrometa\Infrastructure\Factory\ProfiledNamesFactory;
 use Jkphl\Micrometa\Infrastructure\Parser\ProfiledNamesList;
 use Jkphl\Micrometa\Ports\Exceptions\InvalidArgumentException;
@@ -49,7 +50,7 @@ use Jkphl\Micrometa\Ports\Exceptions\OutOfBoundsException;
  * @package Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Ports
  */
-class Item implements ItemInterface
+class Item extends AbstractItemList implements ItemInterface
 {
     /**
      * Application item
@@ -66,37 +67,7 @@ class Item implements ItemInterface
     public function __construct(ApplicationItemInterface $item)
     {
         $this->item = $item;
-    }
-
-    /**
-     * Return whether the item is of a particular type (or contained in a list of types)
-     *
-     * The item type(s) can be specified in a variety of ways, @see ProfiledNamesFactory::createFromArguments()
-     *
-     * @param string $name Name
-     * @param string|null $profile Profile
-     * @return boolean Item type is contained in the list of types
-     */
-    public function isOfType($name, $profile = null)
-    {
-        /** @var ProfiledNamesList $types */
-        $types = ProfiledNamesFactory::createFromArguments(func_get_args());
-
-        // Run through all item types
-        /** @var \stdClass $itemType */
-        foreach ($this->item->getType() as $itemType) {
-            // Run through all query types
-            /** @var \stdClass $queryType */
-            foreach ($types as $queryType) {
-                if (($queryType->name == $itemType->name) &&
-                    (($queryType->profile === null) ? true : ($queryType->profile == $itemType->profile))
-                ) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
+        parent::__construct(ItemFactory::createFromParserResult($this->item->getChildren()));
     }
 
     /**
@@ -104,6 +75,7 @@ class Item implements ItemInterface
      *
      * @param string $name Item property name
      * @return string First value of an item property
+     * @api
      */
     public function __get($name)
     {
@@ -119,6 +91,7 @@ class Item implements ItemInterface
      * @return array|string|ItemInterface Property value(s)
      * @throws OutOfBoundsException If the property name is unknown
      * @throws OutOfBoundsException If the property value index is out of bounds
+     * @api
      */
     public function getProperty($name, $profile = null, $index = null)
     {
@@ -145,6 +118,38 @@ class Item implements ItemInterface
     }
 
     /**
+     * Return whether the item is of a particular type (or contained in a list of types)
+     *
+     * The item type(s) can be specified in a variety of ways, @see ProfiledNamesFactory::createFromArguments()
+     *
+     * @param string $name Name
+     * @param string|null $profile Profile
+     * @return boolean Item type is contained in the list of types
+     * @api
+     */
+    public function isOfType($name, $profile = null)
+    {
+        /** @var ProfiledNamesList $types */
+        $types = ProfiledNamesFactory::createFromArguments(func_get_args());
+
+        // Run through all item types
+        /** @var \stdClass $itemType */
+        foreach ($this->item->getType() as $itemType) {
+            // Run through all query types
+            /** @var \stdClass $queryType */
+            foreach ($types as $queryType) {
+                if (($queryType->name == $itemType->name) &&
+                    (($queryType->profile === null) ? true : ($queryType->profile == $itemType->profile))
+                ) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Get all values of the first available property in a stack
      *
      * The property stack can be specified in a variety of ways, @see ProfiledNamesFactory::createFromArguments()
@@ -154,6 +159,7 @@ class Item implements ItemInterface
      * @return array Property values
      * @throws InvalidArgumentException If no property name was given
      * @throws OutOfBoundsException If none of the requested properties is known
+     * @api
      */
     public function getFirstProperty($name, $profile = null)
     {
@@ -162,8 +168,8 @@ class Item implements ItemInterface
 
         // Prepare a default exception
         $e = new OutOfBoundsException(
-            OutOfBoundsException::NONMATCHING_PROPERTY_STACK_STR,
-            OutOfBoundsException::NONMATCHING_PROPERTY_STACK
+            OutOfBoundsException::NO_MATCHING_PROPERTIES_STR,
+            OutOfBoundsException::NO_MATCHING_PROPERTIES
         );
 
         // Run through all properties
@@ -176,5 +182,27 @@ class Item implements ItemInterface
         }
 
         throw $e;
+    }
+
+    /**
+     * Return all properties
+     *
+     * @return array[] Properties
+     * @api
+     */
+    public function getProperties()
+    {
+        return $this->item->getProperties()->export();
+    }
+
+    /**
+     * Return an object representation of the item
+     *
+     * @return \stdClass Micro information item
+     * @api
+     */
+    public function toObject()
+    {
+        return $this->item->export();
     }
 }

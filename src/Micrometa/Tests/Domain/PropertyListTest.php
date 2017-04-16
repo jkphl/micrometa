@@ -37,7 +37,6 @@
 namespace Jkphl\Micrometa\Tests\Domain;
 
 use Jkphl\Micrometa\Application\Value\StringValue;
-use Jkphl\Micrometa\Domain\Factory\AliasFactory;
 use Jkphl\Micrometa\Domain\Item\PropertyList;
 use Jkphl\Micrometa\Infrastructure\Factory\MicroformatsFactory;
 
@@ -57,7 +56,7 @@ class PropertyListTest extends \PHPUnit_Framework_TestCase
      */
     public function testPropertyList()
     {
-        $propertyList = new PropertyList(new AliasFactory());
+        $propertyList = new PropertyList();
         $this->assertInstanceOf(PropertyList::class, $propertyList);
         $this->assertEquals(0, count($propertyList));
 
@@ -77,16 +76,6 @@ class PropertyListTest extends \PHPUnit_Framework_TestCase
             $this->assertTrue(is_array($propertyValues));
             $this->assertEquals(2, count($propertyValues));
         }
-
-        // Test the array export
-        $this->assertEquals(
-            [
-                MicroformatsFactory::MF2_PROFILE_URI.'name' => [
-                    new StringValue('John Doe'),
-                    new StringValue('John Doe')
-                ]
-            ], $propertyList->toArray()
-        );
 
         // Get an unprofiled property
         $unprofiledProperty = $propertyList->offsetGet('name');
@@ -114,7 +103,7 @@ class PropertyListTest extends \PHPUnit_Framework_TestCase
      */
     public function testUnprofiledInvalidProperty()
     {
-        $propertyList = new PropertyList(new AliasFactory());
+        $propertyList = new PropertyList();
         $this->assertInstanceOf(PropertyList::class, $propertyList);
         $propertyList['invalid'];
     }
@@ -127,7 +116,7 @@ class PropertyListTest extends \PHPUnit_Framework_TestCase
      */
     public function testProfiledInvalidProperty()
     {
-        $propertyList = new PropertyList(new AliasFactory());
+        $propertyList = new PropertyList();
         $this->assertInstanceOf(PropertyList::class, $propertyList);
         $propertyList->offsetGet((object)['name' => 'invalid', 'profile' => MicroformatsFactory::MF2_PROFILE_URI]);
     }

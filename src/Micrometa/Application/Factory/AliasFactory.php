@@ -42,7 +42,7 @@ namespace Jkphl\Micrometa\Application\Factory;
  * @package Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Application
  */
-class AliasFactory extends \Jkphl\Micrometa\Domain\Factory\AliasFactory
+class AliasFactory implements AliasFactoryInterface
 {
     /**
      * Create aliases for a particular name
@@ -52,7 +52,7 @@ class AliasFactory extends \Jkphl\Micrometa\Domain\Factory\AliasFactory
      */
     public function createAliases($name)
     {
-        $aliases = parent::createAliases($name);
+        $aliases = [$name];
 
         // Sanitize the name if it isn't usable as PHP function name
         if (!preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $name)) {

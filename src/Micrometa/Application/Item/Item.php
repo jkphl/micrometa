@@ -36,13 +36,14 @@
 
 namespace Jkphl\Micrometa\Application\Item;
 
-use Jkphl\Micrometa\Domain\Factory\AliasFactoryInterface;
+use Jkphl\Micrometa\Application\Factory\PropertyListFactoryInterface;
 
 /**
  * Item
  *
  * @package Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Application
+ * @method PropertyListInterface getProperties() Item properties list
  */
 class Item extends \Jkphl\Micrometa\Domain\Item\Item implements ItemInterface
 {
@@ -69,7 +70,7 @@ class Item extends \Jkphl\Micrometa\Domain\Item\Item implements ItemInterface
      * Item constructor
      *
      * @param int $format Parser format
-     * @param AliasFactoryInterface $aliasFactory Alias factory
+     * @param PropertyListFactoryInterface $propertyListFactory Property list factory
      * @param string|array $type Item type(s)
      * @param array[] $properties Item properties
      * @param ItemInterface[] $children Nested items
@@ -78,7 +79,7 @@ class Item extends \Jkphl\Micrometa\Domain\Item\Item implements ItemInterface
      */
     public function __construct(
         $format,
-        AliasFactoryInterface $aliasFactory,
+        PropertyListFactoryInterface $propertyListFactory,
         $type,
         array $properties = [],
         array $children = [],
@@ -86,19 +87,9 @@ class Item extends \Jkphl\Micrometa\Domain\Item\Item implements ItemInterface
         $value = null
     ) {
         $this->format = $format;
-        parent::__construct($type, $properties, $itemId, $aliasFactory);
+        parent::__construct($type, $properties, $itemId, $propertyListFactory);
         $this->children = $children;
         $this->value = $value;
-    }
-
-    /**
-     * Return the parser format
-     *
-     * @return int Parser format
-     */
-    public function getFormat()
-    {
-        return $this->format;
     }
 
     /**
@@ -109,6 +100,41 @@ class Item extends \Jkphl\Micrometa\Domain\Item\Item implements ItemInterface
     public function getValue()
     {
         return $this->value;
+    }
+
+    /**
+     * Export the object
+     *
+     * @return mixed
+     */
+    public function export()
+    {
+        return (object)[
+            'format' => $this->getFormat(),
+            'types' => array_map(
+                function ($type) {
+                    return $type->profile.$type->name;
+                },
+                $this->getType()
+            ),
+            'properties' => $this->getProperties()->export(),
+            'items' => array_map(
+                function (ItemInterface $item) {
+                    return $item->export();
+                },
+                $this->getChildren()
+            )
+        ];
+    }
+
+    /**
+     * Return the parser format
+     *
+     * @return int Parser format
+     */
+    public function getFormat()
+    {
+        return $this->format;
     }
 
     /**

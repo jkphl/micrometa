@@ -51,6 +51,7 @@ interface ItemObjectModelInterface extends ItemListInterface
      * Return all rel=* declaration groups
      *
      * @return RelInterface[] Rel=* declaration groups
+     * @api
      */
     public function rels();
 
@@ -60,6 +61,7 @@ interface ItemObjectModelInterface extends ItemListInterface
      * @param string $rel Rel type
      * @param int|null $index Optional: particular index
      * @return RelInterface|RelInterface[] Single rel=* declaration or list of particular rel declarations
+     * @api
      */
     public function rel($rel, $index = null);
 
@@ -67,6 +69,7 @@ interface ItemObjectModelInterface extends ItemListInterface
      * Return all alternate resources
      *
      * @return AlternateInterface[] Alternate resources
+     * @api
      */
     public function alternates();
 
@@ -75,6 +78,7 @@ interface ItemObjectModelInterface extends ItemListInterface
      *
      * @param string $type Alternate representation type
      * @return AlternateInterface|null Alternate resource
+     * @api
      */
     public function alternate($type);
 }

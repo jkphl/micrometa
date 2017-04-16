@@ -81,7 +81,7 @@ class ItemFactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf(Item::class, $item);
         $this->assertEquals(
             [MicroformatsFactory::MF2_PROFILE_URI.'alias-property' => [new StringValue('value')]],
-            $item->getProperties()->toArray()
+            $item->getProperties()->export()
         );
         $propertyList = $item->getProperties();
         $this->assertTrue(
@@ -110,6 +110,6 @@ class ItemFactoryTest extends \PHPUnit_Framework_TestCase
         $rawItem = (object)['type' => ['test'], 'properties' => ['test' => false]];
         $item = $itemFactory($rawItem);
         $this->assertInstanceOf(Item::class, $item);
-        $this->assertEquals([], $item->getProperties()->toArray());
+        $this->assertEquals([], $item->getProperties()->export());
     }
 }

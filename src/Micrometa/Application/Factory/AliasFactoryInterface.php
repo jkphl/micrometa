@@ -34,44 +34,21 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Application\Item;
-
-use Jkphl\Micrometa\Application\Contract\ValueInterface;
+namespace Jkphl\Micrometa\Application\Factory;
 
 /**
- * Item interface
+ * Alias factory interface
  *
  * @package Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Application
  */
-interface ItemInterface extends \Jkphl\Micrometa\Domain\Item\ItemInterface, ValueInterface
+interface AliasFactoryInterface
 {
     /**
-     * Return the parser format
+     * Create aliases for a particular name
      *
-     * @return int Parser format
+     * @param string $name Name
+     * @return string[] Name aliases (including the name itself as first item)
      */
-    public function getFormat();
-
-    /**
-     * Return the item value
-     *
-     * @return string Item value
-     */
-    public function getValue();
-
-    /**
-     * Return the nested children
-     *
-     * @return ItemInterface[] Nested children
-     * @api
-     */
-    public function getChildren();
-
-    /**
-     * Return all item properties
-     *
-     * @return PropertyListInterface Item properties list
-     */
-    public function getProperties();
+    public function createAliases($name);
 }

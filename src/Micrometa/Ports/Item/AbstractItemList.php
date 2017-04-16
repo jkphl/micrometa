@@ -36,13 +36,15 @@
 
 namespace Jkphl\Micrometa\Ports\Item;
 
+use Jkphl\Micrometa\Ports\Exceptions\OutOfBoundsException;
+
 /**
- * Item list
+ * Abstract item list
  *
  * @package Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Ports
  */
-class ItemList implements ItemListInterface
+abstract class AbstractItemList implements ItemListInterface
 {
     /**
      * Items
@@ -62,6 +64,7 @@ class ItemList implements ItemListInterface
      * ItemList constructor
      *
      * @param ItemInterface[] $items Items
+     * @api
      */
     public function __construct(array $items = [])
     {
@@ -73,6 +76,7 @@ class ItemList implements ItemListInterface
      * Return the current item
      *
      * @return ItemInterface Item
+     * @api
      */
     public function current()
     {
@@ -83,6 +87,7 @@ class ItemList implements ItemListInterface
      * Move forward to next element
      *
      * @return void
+     * @api
      */
     public function next()
     {
@@ -93,6 +98,7 @@ class ItemList implements ItemListInterface
      * Return the position of the current element
      *
      * @return int Position of the current element
+     * @api
      */
     public function key()
     {
@@ -103,6 +109,7 @@ class ItemList implements ItemListInterface
      * Checks if current position is valid
      *
      * @return boolean The current position is valid
+     * @api
      */
     public function valid()
     {
@@ -113,10 +120,22 @@ class ItemList implements ItemListInterface
      * Rewind the item list to the first element
      *
      * @return void
+     * @api
      */
     public function rewind()
     {
         $this->pointer = 0;
+    }
+
+    /**
+     * Return a JSON representation of the item list
+     *
+     * @return string Item list JSON
+     * @api
+     */
+    public function toJson()
+    {
+        return json_encode($this->toObject(), JSON_PRETTY_PRINT);
     }
 
     /**
@@ -127,18 +146,13 @@ class ItemList implements ItemListInterface
      */
     public function toObject()
     {
-        return new \stdClass();
-    }
-
-    /**
-     * Return a JSON representation of the item list
-     *
-     * @return string Micro information items
-     * @api
-     */
-    public function toJson()
-    {
-        return json_encode(new \stdClass());
+        return (object)[
+            'items' => array_map(
+                function (ItemInterface $item) {
+                    return $item->toObject();
+                }, $this->items
+            )
+        ];
     }
 
     /**
@@ -146,11 +160,22 @@ class ItemList implements ItemListInterface
      *
      * @param array ...$types Item types
      * @return ItemInterface Item
+     * @throws OutOfBoundsException If there are no matching items
      * @api
      */
-    public function item(...$types)
+    public function getFirstItem(...$types)
     {
-        return $this->items(...$types)[0];
+        $items = $this->getItems(...$types);
+
+        // If there are no matching items
+        if (!count($items)) {
+            throw new OutOfBoundsException(
+                OutOfBoundsException::NO_MATCHING_ITEMS_STR,
+                OutOfBoundsException::NO_MATCHING_ITEMS
+            );
+        }
+
+        return $items[0];
     }
 
     /**
@@ -160,7 +185,7 @@ class ItemList implements ItemListInterface
      * @return ItemInterface[] Items matching the requested types
      * @api
      */
-    public function items(...$types)
+    public function getItems(...$types)
     {
         // If particular item types should be filtered
         if (count($types)) {
@@ -173,17 +198,5 @@ class ItemList implements ItemListInterface
         }
 
         return $this->items;
-    }
-
-    /**
-     * Filter the items by item type(s)
-     *
-     * @param array ...$types Item types
-     * @return ItemListInterface Items matching the requested types
-     * @api
-     */
-    public function filter(...$types)
-    {
-        return new static($this->items(...$types));
     }
 }

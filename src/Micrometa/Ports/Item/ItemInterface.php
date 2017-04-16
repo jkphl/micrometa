@@ -42,7 +42,7 @@ namespace Jkphl\Micrometa\Ports\Item;
  * @package Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Ports
  */
-interface ItemInterface
+interface ItemInterface extends ItemListInterface
 {
     /**
      * Return whether the item is of a particular type (or contained in a list of types)
@@ -50,8 +50,18 @@ interface ItemInterface
      * @param string $name Name
      * @param string|null $profile Profile
      * @return bool Item type is contained in the list of types
+     * @api
      */
     public function isOfType($name, $profile = null);
+
+    /**
+     * Get the first value of an item property
+     *
+     * @param string $name Item property name
+     * @return string First value of an item property
+     * @api
+     */
+    public function __get($name);
 
     /**
      * Get a single property (value)
@@ -60,16 +70,9 @@ interface ItemInterface
      * @param string $profile Property profile
      * @param int $index Property value index
      * @return array|string|ItemInterface Property value(s)
+     * @api
      */
     public function getProperty($name, $profile = null, $index = null);
-
-    /**
-     * Get the first value of an item property
-     *
-     * @param string $name Item property name
-     * @return string First value of an item property
-     */
-    public function __get($name);
 
     /**
      * Get all values of the first available property in a stack
@@ -77,6 +80,15 @@ interface ItemInterface
      * @param string $name Name
      * @param string $profile Profile
      * @return array Property values
+     * @api
      */
     public function getFirstProperty($name, $profile = null);
+
+    /**
+     * Return all properties
+     *
+     * @return array[] Properties
+     * @api
+     */
+    public function getProperties();
 }
