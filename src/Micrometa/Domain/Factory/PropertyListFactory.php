@@ -36,22 +36,23 @@
 
 namespace Jkphl\Micrometa\Domain\Factory;
 
+use Jkphl\Micrometa\Domain\Item\PropertyList;
+use Jkphl\Micrometa\Domain\Item\PropertyListInterface;
+
 /**
- * Default alias factory
+ * Property list factory
  *
  * @package Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Domain
  */
-class AliasFactory implements AliasFactoryInterface
+class PropertyListFactory implements PropertyListFactoryInterface
 {
     /**
-     * Create aliases for a particular name
+     * Create a property list
      *
-     * @param string $name Name
-     * @return string[] Name aliases (including the name itself as first item)
+     * @return PropertyListInterface Property list
      */
-    public function createAliases($name)
-    {
-        return [$name];
+    public function create() {
+        return new PropertyList();
     }
 }

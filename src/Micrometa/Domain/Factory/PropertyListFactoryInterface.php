@@ -5,7 +5,7 @@
  *
  * @category Jkphl
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Domain\Item
+ * @subpackage Jkphl\Micrometa\Domain\Factory
  * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -34,51 +34,22 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Domain\Item;
+namespace Jkphl\Micrometa\Domain\Factory;
+
+use Jkphl\Micrometa\Domain\Item\PropertyListInterface;
 
 /**
- * Property list interface
+ * Property list factory interface
  *
  * @package Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Domain
  */
-interface PropertyListInterface extends \ArrayAccess, \Iterator, \Countable
+interface PropertyListFactoryInterface
 {
     /**
-     * Return whether a property exists
+     * Create a property list
      *
-     * @param \stdClass|string $iri IRI
-     * @return boolean Property exists
+     * @return PropertyListInterface Property list
      */
-    public function offsetExists($iri);
-
-    /**
-     * Get a particular property
-     *
-     * @param \stdClass|string $iri IRI
-     * @return array Property values
-     */
-    public function &offsetGet($iri);
-
-    /**
-     * Set a particular property
-     *
-     * @param \stdClass|string $iri IRI
-     * @param array $value Property values
-     */
-    public function offsetSet($iri, $value);
-
-    /**
-     * Unset a property
-     *
-     * @param \stdClass|string $iri IRI
-     */
-    public function offsetUnset($iri);
-
-    /**
-     * Add a property
-     *
-     * @param \stdClass $property Property
-     */
-    public function add($property);
+    public function create();
 }

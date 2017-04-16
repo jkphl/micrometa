@@ -38,7 +38,6 @@ namespace Jkphl\Micrometa\Domain\Item;
 
 use Jkphl\Micrometa\Domain\Exceptions\ErrorException;
 use Jkphl\Micrometa\Domain\Exceptions\OutOfBoundsException;
-use Jkphl\Micrometa\Domain\Factory\AliasFactoryInterface;
 use Jkphl\Micrometa\Domain\Factory\IriFactory;
 
 /**
@@ -62,12 +61,6 @@ class PropertyList implements PropertyListInterface
      */
     protected $names = [];
     /**
-     * Property name aliases
-     *
-     * @var array[]
-     */
-    protected $aliases = [];
-    /**
      * Name cursor mapping
      *
      * @var int[]
@@ -79,22 +72,6 @@ class PropertyList implements PropertyListInterface
      * @var int
      */
     protected $cursor = 0;
-    /**
-     * Alias factory
-     *
-     * @var AliasFactoryInterface
-     */
-    protected $aliasFactory;
-
-    /**
-     * Property list constructor
-     *
-     * @param AliasFactoryInterface $aliasFactory Alias factory
-     */
-    public function __construct(AliasFactoryInterface $aliasFactory)
-    {
-        $this->aliasFactory = $aliasFactory;
-    }
 
     /**
      * Unset a property
@@ -210,15 +187,8 @@ class PropertyList implements PropertyListInterface
     {
         $iri = IriFactory::create($iri);
         $iriStr = $iri->profile.$iri->name;
-        $cursor = array_key_exists($iriStr, $this->nameToCursor) ? $this->nameToCursor[$iriStr] : count($this->values);
-        $this->aliases[$iriStr] = [];
-
-        // Run through all name aliases
-        foreach ($this->aliasFactory->createAliases($iri->name) as $alias) {
-            $this->aliases[$iriStr][] = $alias;
-            $this->nameToCursor[$iri->profile.$alias] = $cursor;
-        }
-
+        $cursor = array_key_exists($iriStr, $this->nameToCursor) ?
+            $this->nameToCursor[$iriStr] : ($this->nameToCursor[$iriStr] = count($this->nameToCursor));
         $this->names[$cursor] = $iri;
         $this->values[$cursor] = $value;
     }
@@ -281,29 +251,11 @@ class PropertyList implements PropertyListInterface
     {
         // Run through all property names
         foreach ($this->names as $cursor => $iri) {
-            foreach ($this->aliases[$iri->profile.$iri->name] as $alias) {
-                if ($name === $alias) {
-                    return $cursor;
-                }
+            if ($name === $iri->name) {
+                return $cursor;
             }
         }
 
         return $this->handleUnknownName($name);
-    }
-
-    /**
-     * Return an array form
-     *
-     * @return array Array form
-     */
-    public function toArray()
-    {
-        $propertyList = [];
-        foreach ($this->names as $name) {
-            $profiledName = $name->profile.$name->name;
-            $cursor = $this->nameToCursor[$profiledName];
-            $propertyList[$profiledName] = $this->values[$cursor];
-        }
-        return $propertyList;
     }
 }
