@@ -36,6 +36,7 @@
 
 namespace Jkphl\Micrometa\Ports\Item;
 
+use Jkphl\Micrometa\Ports\Exceptions\InvalidArgumentException;
 use Jkphl\Micrometa\Ports\Exceptions\OutOfBoundsException;
 
 /**
@@ -44,7 +45,7 @@ use Jkphl\Micrometa\Ports\Exceptions\OutOfBoundsException;
  * @package Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Ports
  */
-abstract class AbstractItemList implements ItemListInterface
+class ItemList implements ItemListInterface
 {
     /**
      * Items
@@ -198,5 +199,54 @@ abstract class AbstractItemList implements ItemListInterface
         }
 
         return $this->items;
+    }
+
+    /**
+     * Return the number of items in this list
+     *
+     * @return int Number of items
+     * @api
+     */
+    public function count()
+    {
+        return count($this->items);
+    }
+
+    /**
+     * Generic item getter
+     *
+     * @param string $type Item type
+     * @param array $arguments Arguments
+     * @return ItemInterface Item
+     * @throws InvalidArgumentException If the item index is invalid
+     * @throws OutOfBoundsException If the item index is out of bounds
+     * @api
+     */
+    public function __call($type, $arguments)
+    {
+        $index = 0;
+        if (count($arguments)) {
+            // If the item index is invalid
+            if (!is_int($arguments[0]) || ($arguments[0] < 0)) {
+                throw new InvalidArgumentException(
+                    sprintf(InvalidArgumentException::INVALID_ITEM_INDEX_STR, $arguments[0]),
+                    InvalidArgumentException::INVALID_ITEM_INDEX
+                );
+            }
+
+            $index = $arguments[0];
+        }
+
+        $typeItems = $this->getItems($type);
+
+        // If the item index is out of bounds
+        if (count($typeItems) <= $index) {
+            throw new OutOfBoundsException(
+                sprintf(OutOfBoundsException::INVALID_ITEM_INDEX_STR, $index),
+                OutOfBoundsException::INVALID_ITEM_INDEX
+            );
+        }
+
+        return $typeItems[$index];
     }
 }

@@ -36,6 +36,7 @@
 
 namespace Jkphl\Micrometa\Ports\Item;
 
+use Jkphl\Micrometa\Application\Contract\ValueInterface;
 use Jkphl\Micrometa\Application\Item\ItemInterface as ApplicationItemInterface;
 use Jkphl\Micrometa\Domain\Exceptions\OutOfBoundsException as DomainOutOfBoundsException;
 use Jkphl\Micrometa\Infrastructure\Factory\ItemFactory;
@@ -50,7 +51,7 @@ use Jkphl\Micrometa\Ports\Exceptions\OutOfBoundsException;
  * @package Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Ports
  */
-class Item extends AbstractItemList implements ItemInterface
+class Item extends ItemList implements ItemInterface
 {
     /**
      * Application item
@@ -67,7 +68,7 @@ class Item extends AbstractItemList implements ItemInterface
     public function __construct(ApplicationItemInterface $item)
     {
         $this->item = $item;
-        parent::__construct(ItemFactory::createFromParserResult($this->item->getChildren()));
+        parent::__construct(ItemFactory::createFromApplicationItems($this->item->getChildren()));
     }
 
     /**
@@ -103,7 +104,7 @@ class Item extends AbstractItemList implements ItemInterface
 
         // If all property values should be returned
         if ($index === null) {
-            return $propertyValues;
+            return array_map([$this, 'exportPropertyValue'], $propertyValues);
         }
 
         // If the property value index is out of bounds
@@ -114,7 +115,19 @@ class Item extends AbstractItemList implements ItemInterface
             );
         }
 
-        return $propertyValues[$index];
+        return $this->exportPropertyValue($propertyValues[$index]);
+    }
+
+    /**
+     * Prepare a property value for returning it
+     *
+     * @param ValueInterface $value Property value
+     * @return Item|mixed Returnable property value
+     */
+    protected function exportPropertyValue(ValueInterface $value)
+    {
+        return ($value instanceof ApplicationItemInterface) ?
+            ItemFactory::createFromApplicationItem($value) : $value->export();
     }
 
     /**
@@ -141,6 +154,7 @@ class Item extends AbstractItemList implements ItemInterface
                 if (($queryType->name == $itemType->name) &&
                     (($queryType->profile === null) ? true : ($queryType->profile == $itemType->profile))
                 ) {
+                    // TODO: Type aliasing
                     return true;
                 }
             }

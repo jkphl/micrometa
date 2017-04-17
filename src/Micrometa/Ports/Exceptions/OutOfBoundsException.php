@@ -116,4 +116,16 @@ class OutOfBoundsException extends \OutOfBoundsException implements MicrometaExc
      * @var int
      */
     const NO_MATCHING_ITEMS = 1492030227;
+    /**
+     * Invalid item index
+     *
+     * @var string
+     */
+    const INVALID_ITEM_INDEX_STR = 'Item index "%s" is out of bounds';
+    /**
+     * Invalid item index
+     *
+     * @var int
+     */
+    const INVALID_ITEM_INDEX = 1492418999;
 }

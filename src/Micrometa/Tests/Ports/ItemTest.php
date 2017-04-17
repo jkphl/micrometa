@@ -42,6 +42,7 @@ use Jkphl\Micrometa\Application\Value\StringValue;
 use Jkphl\Micrometa\Infrastructure\Factory\MicroformatsFactory;
 use Jkphl\Micrometa\Infrastructure\Parser\Microformats;
 use Jkphl\Micrometa\Ports\Item\Item;
+use Jkphl\Micrometa\Ports\Item\ItemInterface;
 
 /**
  * Parser factory tests
@@ -165,13 +166,13 @@ class ItemTest extends \PHPUnit_Framework_TestCase
         $feedNameList = $feedItem->getProperty('name');
         $this->assertTrue(is_array($feedNameList));
         $this->assertEquals(1, count($feedNameList));
-        $this->assertInstanceOf(StringValue::class, $feedNameList[0]);
-        $this->assertEquals('John Doe\'s Blog', strval($feedNameList[0]));
+        $this->assertTrue(is_string($feedNameList[0]));
+        $this->assertEquals('John Doe\'s Blog', $feedNameList[0]);
 
         // Test the item name as an unprofiled single property value
         $feedName = $feedItem->getProperty('name', null, 0);
-        $this->assertInstanceOf(StringValue::class, $feedName);
-        $this->assertEquals('John Doe\'s Blog', strval($feedName));
+        $this->assertTrue(is_string($feedName));
+        $this->assertEquals('John Doe\'s Blog', $feedName);
 
         // Test an invalid unprofiled property
         $feedItem->getProperty('invalid');
@@ -192,13 +193,13 @@ class ItemTest extends \PHPUnit_Framework_TestCase
         $feedNameList = $feedItem->getProperty('name', MicroformatsFactory::MF2_PROFILE_URI);
         $this->assertTrue(is_array($feedNameList));
         $this->assertEquals(1, count($feedNameList));
-        $this->assertInstanceOf(StringValue::class, $feedNameList[0]);
-        $this->assertEquals('John Doe\'s Blog', strval($feedNameList[0]));
+        $this->assertTrue(is_string($feedNameList[0]));
+        $this->assertEquals('John Doe\'s Blog', $feedNameList[0]);
 
         // Test the item name as an unprofiled single property value
         $feedName = $feedItem->getProperty('name', MicroformatsFactory::MF2_PROFILE_URI, 0);
-        $this->assertInstanceOf(StringValue::class, $feedName);
-        $this->assertEquals('John Doe\'s Blog', strval($feedName));
+        $this->assertTrue(is_string($feedName));
+        $this->assertEquals('John Doe\'s Blog', $feedName);
 
         // Test an invalid unprofiled property
         $feedItem->getProperty('invalid', MicroformatsFactory::MF2_PROFILE_URI);
@@ -219,18 +220,18 @@ class ItemTest extends \PHPUnit_Framework_TestCase
         $feedCustomPropList = $feedItem->getProperty('custom-property');
         $this->assertTrue(is_array($feedCustomPropList));
         $this->assertEquals(1, count($feedCustomPropList));
-        $this->assertInstanceOf(StringValue::class, $feedCustomPropList[0]);
-        $this->assertEquals('Property for alias testing', strval($feedCustomPropList[0]));
+        $this->assertTrue(is_string($feedCustomPropList[0]));
+        $this->assertEquals('Property for alias testing', $feedCustomPropList[0]);
 
         // Test the custom item property as an unprofiled single property value
         $feedCustomProp = $feedItem->getProperty('custom-property', null, 0);
-        $this->assertInstanceOf(StringValue::class, $feedCustomProp);
-        $this->assertEquals('Property for alias testing', strval($feedCustomProp));
+        $this->assertTrue(is_string($feedCustomProp));
+        $this->assertEquals('Property for alias testing', $feedCustomProp);
 
         // Test the custom item property via the convenience getter
         $feedCustomProp = $feedItem->customProperty;
-        $this->assertInstanceOf(StringValue::class, $feedCustomProp);
-        $this->assertEquals('Property for alias testing', strval($feedCustomProp));
+        $this->assertTrue(is_string($feedCustomProp));
+        $this->assertEquals('Property for alias testing', $feedCustomProp);
 
         // Test an invalid property
         $feedItem->invalidProperty;
@@ -247,13 +248,56 @@ class ItemTest extends \PHPUnit_Framework_TestCase
         $feedItem = $this->getFeedItem();
         $this->assertInstanceOf(Item::class, $feedItem);
 
-        print_r($feedItem->toJson());
-
         // Request a valid property stack
         $propertyValues = $feedItem->getFirstProperty('photo', MicroformatsFactory::MF2_PROFILE_URI, 'name');
-        $this->assertEquals([new StringValue('John Doe\'s Blog')], $propertyValues);
+        $this->assertEquals(['John Doe\'s Blog'], $propertyValues);
 
         // Request unknown properties only
         $feedItem->getFirstProperty('photo', MicroformatsFactory::MF2_PROFILE_URI, 'invalid');
+    }
+
+    /**
+     * Test a property item
+     */
+    public function testPropertyItem()
+    {
+        $feedItem = $this->getFeedItem();
+        $this->assertInstanceOf(Item::class, $feedItem);
+
+        // Request a valid property stack
+        /** @var ItemInterface[] $authors */
+        $authors = $feedItem->getFirstProperty('author');
+        $this->assertTrue(is_array($authors));
+        $this->assertInstanceOf(ItemInterface::class, $authors[0]);
+
+        // Test the author name as an unprofiled single property value
+        $authorName = $authors[0]->getProperty('name', MicroformatsFactory::MF2_PROFILE_URI, 0);
+        $this->assertTrue(is_string($authorName));
+        $this->assertEquals('John Doe', $authorName);
+    }
+
+    /**
+     * Test nested items
+     */
+    public function testNestedItems()
+    {
+        $feedItem = $this->getFeedItem();
+        $this->assertInstanceOf(Item::class, $feedItem);
+
+        // Test the number of nested items
+        $this->assertEquals(2, count($feedItem));
+        foreach ($feedItem as $entryItem) {
+            $this->assertInstanceOf(ItemInterface::class, $entryItem);
+        }
+        $this->assertInstanceOf(ItemInterface::class, $feedItem->getFirstItem('h-entry'));
+        $this->assertInstanceOf(
+            ItemInterface::class, $feedItem->getFirstItem('h-entry', MicroformatsFactory::MF2_PROFILE_URI)
+        );
+
+        // Test the second entry item
+        /** @var Item $entryItem */
+        $entryItem = $feedItem->getItems('h-entry')[1];
+        $this->assertInstanceOf(ItemInterface::class, $entryItem);
+
     }
 }

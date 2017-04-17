@@ -42,7 +42,7 @@ namespace Jkphl\Micrometa\Ports\Item;
  * @package Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Ports
  */
-interface ItemListInterface extends \Iterator
+interface ItemListInterface extends \Iterator, \Countable
 {
     /**
      * Return an object representation of the item list

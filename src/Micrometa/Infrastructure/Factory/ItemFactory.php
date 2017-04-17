@@ -54,9 +54,9 @@ class ItemFactory
      * @param ApplicationItemInterface[] $items Items
      * @return ItemInterface[] Items
      */
-    public static function createFromParserResult(array $items)
+    public static function createFromApplicationItems(array $items)
     {
-        return array_map([static::class, 'createItem'], $items);
+        return array_map([static::class, 'createFromApplicationItem'], $items);
     }
 
     /**
@@ -65,7 +65,7 @@ class ItemFactory
      * @param ApplicationItemInterface $applicationItem
      * @return Item Item
      */
-    public static function createItem(ApplicationItemInterface $applicationItem)
+    public static function createFromApplicationItem(ApplicationItemInterface $applicationItem)
     {
         return new Item($applicationItem);
     }

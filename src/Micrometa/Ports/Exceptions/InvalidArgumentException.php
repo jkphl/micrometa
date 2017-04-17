@@ -80,4 +80,16 @@ class InvalidArgumentException extends \InvalidArgumentException implements Micr
      * @var int
      */
     const INVALID_TYPE_PROPERTY_ARRAY = 1491063221;
+    /**
+     * Invalid item index
+     *
+     * @var string
+     */
+    const INVALID_ITEM_INDEX_STR = 'Invalid item index "%s"';
+    /**
+     * Invalid item index
+     *
+     * @var int
+     */
+    const INVALID_ITEM_INDEX = 1492418709;
 }
