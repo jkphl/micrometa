@@ -278,6 +278,9 @@ class ItemTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Test nested items
+     *
+     * @expectedException \Jkphl\Micrometa\Ports\Exceptions\InvalidArgumentException
+     * @expectedExceptionCode 1492418709
      */
     public function testNestedItems()
     {
@@ -299,5 +302,26 @@ class ItemTest extends \PHPUnit_Framework_TestCase
         $entryItem = $feedItem->getItems('h-entry')[1];
         $this->assertInstanceOf(ItemInterface::class, $entryItem);
 
+        // Test the magic item getter / item type aliases
+        /** @noinspection PhpUndefinedMethodInspection */
+        $entryItem = $feedItem->hEntry(0);
+        $this->assertInstanceOf(ItemInterface::class, $entryItem);
+        /** @noinspection PhpUndefinedMethodInspection */
+        $feedItem->hEntry(-1);
+    }
+
+    /**
+     * Test non-existent nested item
+     *
+     * @expectedException \Jkphl\Micrometa\Ports\Exceptions\OutOfBoundsException
+     * @expectedExceptionCode 1492418999
+     */
+    public function testNonExistentNestedItems()
+    {
+        $feedItem = $this->getFeedItem();
+        /** @noinspection PhpUndefinedMethodInspection */
+        $this->assertEquals('John Doe', $feedItem->hEntry()->author->name);
+        /** @noinspection PhpUndefinedMethodInspection */
+        $feedItem->hEntry(2);
     }
 }

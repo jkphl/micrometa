@@ -37,6 +37,7 @@
 namespace Jkphl\Micrometa\Ports\Item;
 
 use Jkphl\Micrometa\Application\Contract\ValueInterface;
+use Jkphl\Micrometa\Application\Factory\AliasFactory;
 use Jkphl\Micrometa\Application\Item\ItemInterface as ApplicationItemInterface;
 use Jkphl\Micrometa\Domain\Exceptions\OutOfBoundsException as DomainOutOfBoundsException;
 use Jkphl\Micrometa\Infrastructure\Factory\ItemFactory;
@@ -144,22 +145,39 @@ class Item extends ItemList implements ItemInterface
     {
         /** @var ProfiledNamesList $types */
         $types = ProfiledNamesFactory::createFromArguments(func_get_args());
+        $aliasFactory = new AliasFactory();
 
         // Run through all item types
         /** @var \stdClass $itemType */
         foreach ($this->item->getType() as $itemType) {
-            // Run through all query types
-            /** @var \stdClass $queryType */
-            foreach ($types as $queryType) {
-                if (($queryType->name == $itemType->name) &&
-                    (($queryType->profile === null) ? true : ($queryType->profile == $itemType->profile))
-                ) {
-                    // TODO: Type aliasing
-                    return true;
-                }
+            $itemTypeNames = $aliasFactory->createAliases($itemType->name);
+            if ($this->isOfProfiledTypes($itemType->profile, $itemTypeNames, $types)) {
+                return true;
             }
         }
 
+        return false;
+    }
+
+    /**
+     * Return whether an aliased item type in contained in a set of query types
+     *
+     * @param string $profile Type profile
+     * @param array $names Aliased type names
+     * @param ProfiledNamesList $types Query types
+     * @return bool Item type is contained in the set of query types
+     */
+    protected function isOfProfiledTypes($profile, array $names, ProfiledNamesList $types)
+    {
+        // Run through all query types
+        /** @var \stdClass $queryType */
+        foreach ($types as $queryType) {
+            if (in_array($queryType->name, $names) &&
+                (($queryType->profile === null) ? true : ($queryType->profile == $profile))
+            ) {
+                return true;
+            }
+        }
         return false;
     }
 

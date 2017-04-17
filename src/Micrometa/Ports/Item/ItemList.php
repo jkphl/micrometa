@@ -219,7 +219,6 @@ class ItemList implements ItemListInterface
      * @param array $arguments Arguments
      * @return ItemInterface Item
      * @throws InvalidArgumentException If the item index is invalid
-     * @throws OutOfBoundsException If the item index is out of bounds
      * @api
      */
     public function __call($type, $arguments)
@@ -236,6 +235,21 @@ class ItemList implements ItemListInterface
 
             $index = $arguments[0];
         }
+
+        // Return the item by type and index
+        return $this->getItemByTypeAndIndex($type, $index);
+    }
+
+    /**
+     * Return an item by type and index
+     *
+     * @param string $type Item type
+     * @param int $index Item index
+     * @return ItemInterface Item
+     * @throws OutOfBoundsException If the item index is out of bounds
+     */
+    protected function getItemByTypeAndIndex($type, $index)
+    {
 
         $typeItems = $this->getItems($type);
 
