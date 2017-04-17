@@ -36,12 +36,12 @@
 
 namespace Jkphl\Micrometa\Application\Factory;
 
+use Jkphl\Micrometa\Application\Contract\ValueInterface;
 use Jkphl\Micrometa\Application\Exceptions\InvalidArgumentException;
 use Jkphl\Micrometa\Application\Item\Item;
 use Jkphl\Micrometa\Application\Item\ItemInterface;
 use Jkphl\Micrometa\Application\Value\AlternateValues;
 use Jkphl\Micrometa\Application\Value\StringValue;
-use Jkphl\Micrometa\Application\Contract\ValueInterface;
 
 /**
  * Item factory
@@ -87,7 +87,7 @@ class ItemFactory
             return $this->__invoke($propertyValue);
         }
         if (is_array($propertyValue)) {
-            return new AlternateValues($propertyValue);
+            return new AlternateValues(array_map([$this, __METHOD__], $propertyValue));
         }
         return new StringValue($propertyValue);
     }
@@ -155,6 +155,7 @@ class ItemFactory
      *
      * @param array $propertyValues Property values
      * @return array Expanded property values
+     * @throws InvalidArgumentException If it's not a list of property values
      */
     protected function getPropertyValues($propertyValues)
     {

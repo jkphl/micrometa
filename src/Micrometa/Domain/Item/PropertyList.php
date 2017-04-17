@@ -173,39 +173,13 @@ class PropertyList implements PropertyListInterface
     public function offsetExists($iri)
     {
         $iri = IriFactory::create($iri);
-        $iriStr = $iri->profile.$iri->name;
-        return array_key_exists($iriStr, $this->nameToCursor);
-    }
-
-    /**
-     * Set a particular property
-     *
-     * @param \stdClass|string $iri IRI
-     * @param array $value Property values
-     */
-    public function offsetSet($iri, $value)
-    {
-        $iri = IriFactory::create($iri);
-        $iriStr = $iri->profile.$iri->name;
-        $cursor = array_key_exists($iriStr, $this->nameToCursor) ?
-            $this->nameToCursor[$iriStr] : ($this->nameToCursor[$iriStr] = count($this->nameToCursor));
-        $this->names[$cursor] = $iri;
-        $this->values[$cursor] = $value;
-    }
-
-    /**
-     * Get a particular property
-     *
-     * @param \stdClass|string $iri IRI
-     * @return array Property values
-     * @throws OutOfBoundsException If the property name is unknown
-     */
-    public function &offsetGet($iri)
-    {
-        $iri = IriFactory::create($iri);
-        $cursor = ($iri->profile !== '') ?
-            $this->getProfiledPropertyCursor($iri) : $this->getPropertyCursor($iri->name);
-        return $this->values[$cursor];
+        try {
+            ($iri->profile !== '') ?
+                $this->getProfiledPropertyCursor($iri) : $this->getPropertyCursor($iri->name);
+            return true;
+        } catch (OutOfBoundsException $e) {
+            return false;
+        }
     }
 
     /**
@@ -257,5 +231,36 @@ class PropertyList implements PropertyListInterface
         }
 
         return $this->handleUnknownName($name);
+    }
+
+    /**
+     * Set a particular property
+     *
+     * @param \stdClass|string $iri IRI
+     * @param array $value Property values
+     */
+    public function offsetSet($iri, $value)
+    {
+        $iri = IriFactory::create($iri);
+        $iriStr = $iri->profile.$iri->name;
+        $cursor = array_key_exists($iriStr, $this->nameToCursor) ?
+            $this->nameToCursor[$iriStr] : ($this->nameToCursor[$iriStr] = count($this->nameToCursor));
+        $this->names[$cursor] = $iri;
+        $this->values[$cursor] = $value;
+    }
+
+    /**
+     * Get a particular property
+     *
+     * @param \stdClass|string $iri IRI
+     * @return array Property values
+     * @throws OutOfBoundsException If the property name is unknown
+     */
+    public function &offsetGet($iri)
+    {
+        $iri = IriFactory::create($iri);
+        $cursor = ($iri->profile !== '') ?
+            $this->getProfiledPropertyCursor($iri) : $this->getPropertyCursor($iri->name);
+        return $this->values[$cursor];
     }
 }

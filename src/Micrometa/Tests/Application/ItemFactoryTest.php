@@ -5,7 +5,7 @@
  *
  * @category Jkphl
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Tests\Application
+ * @subpackage Jkphl\Micrometa\Tests
  * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -59,6 +59,7 @@ class ItemFactoryTest extends \PHPUnit_Framework_TestCase
         $item = $itemFactory($rawItem);
         $this->assertInstanceOf(Item::class, $item);
         $this->assertEquals([(object)['profile' => '', 'name' => 'test']], $item->getType());
+        $this->assertNull($item->getValue());
     }
 
     /**
@@ -75,6 +76,11 @@ class ItemFactoryTest extends \PHPUnit_Framework_TestCase
                     'profile' => MicroformatsFactory::MF2_PROFILE_URI,
                     'values' => ['value']
                 ]
+            ],
+            'children' => [
+                (object)[
+                    'type' => ['test']
+                ]
             ]
         ];
         $item = $itemFactory($rawItem);
@@ -89,6 +95,7 @@ class ItemFactoryTest extends \PHPUnit_Framework_TestCase
                 (object)['name' => 'alias-property', 'profile' => MicroformatsFactory::MF2_PROFILE_URI]
             )
         );
+        /** @noinspection PhpIllegalArrayKeyTypeInspection */
         $this->assertTrue(
             isset(
                 $propertyList[(object)['name' => 'alias-property', 'profile' => MicroformatsFactory::MF2_PROFILE_URI]]
@@ -99,6 +106,29 @@ class ItemFactoryTest extends \PHPUnit_Framework_TestCase
                 (object)['name' => 'aliasProperty', 'profile' => MicroformatsFactory::MF2_PROFILE_URI]
             )
         );
+        $this->assertTrue(
+            $propertyList->offsetExists('alias-property')
+        );
+        $this->assertFalse(
+            $propertyList->offsetExists('invalid-alias-property')
+        );
+        $this->assertEquals(
+            (object)[
+                'format' => 0,
+                'types' => ['test'],
+                'properties' => [
+                    MicroformatsFactory::MF2_PROFILE_URI.'alias-property' => ['value']
+                ],
+                'items' => [
+                    (object)[
+                        'format' => 0,
+                        'types' => ['test'],
+                        'properties' => [],
+                        'items' => []
+                    ]
+                ]
+            ], $item->export()
+        );
     }
 
     /**
@@ -108,6 +138,27 @@ class ItemFactoryTest extends \PHPUnit_Framework_TestCase
     {
         $itemFactory = new ItemFactory(0);
         $rawItem = (object)['type' => ['test'], 'properties' => ['test' => false]];
+        $item = $itemFactory($rawItem);
+        $this->assertInstanceOf(Item::class, $item);
+        $this->assertEquals([], $item->getProperties()->export());
+    }
+
+    /**
+     * Test an invalid item property value list
+     */
+    public function testInvalidItemPropertyValueList()
+    {
+        $itemFactory = new ItemFactory(0);
+        $rawItem = (object)[
+            'type' => ['test'],
+            'properties' => [
+                'test' => (object)[
+                    'profile' => MicroformatsFactory::MF2_PROFILE_URI,
+                    'name' => 'name',
+                    'values' => false
+                ]
+            ]
+        ];
         $item = $itemFactory($rawItem);
         $this->assertInstanceOf(Item::class, $item);
         $this->assertEquals([], $item->getProperties()->export());
