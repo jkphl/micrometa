@@ -45,4 +45,17 @@ namespace Jkphl\Micrometa\Ports\Rel;
 interface AlternateInterface extends RelInterface
 {
 
+    /**
+     * Return the alternate resource type
+     *
+     * @return string Alternate resource type
+     */
+    public function getType();
+
+    /**
+     * Alternate resource title
+     *
+     * @return string Alternate resource title
+     */
+    public function getTitle();
 }

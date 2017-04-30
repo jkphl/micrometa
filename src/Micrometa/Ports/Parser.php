@@ -94,6 +94,7 @@ class Parser
             Http::createFromString($uri)
         ) as $parser) {
             $results = $extractor->extract($dom, $parser);
+            print_r($results);
             $items += ItemFactory::createFromApplicationItems($results->getItems());
             $extra = $results->getExtra();
             if (!empty($extra['rels'])) {

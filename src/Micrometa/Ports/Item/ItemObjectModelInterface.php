@@ -72,13 +72,4 @@ interface ItemObjectModelInterface extends ItemListInterface
      * @api
      */
     public function alternates();
-
-    /**
-     * Return the alternate resource of a particular type
-     *
-     * @param string $type Alternate representation type
-     * @return AlternateInterface|null Alternate resource
-     * @api
-     */
-    public function alternate($type);
 }

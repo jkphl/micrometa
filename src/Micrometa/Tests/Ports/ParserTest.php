@@ -60,6 +60,17 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     const VALID_HTML_URL = 'http://localhost:1349/valid-test.html';
 
     /**
+     * Test the parser facade with a simple document without items
+     */
+//    public function testParserSimple()
+//    {
+//        $parser = new Parser(Microformats::FORMAT);
+//        $itemObjectModel = $parser(self::VALID_HTML_URL);
+//        $this->assertInstanceOf(ItemObjectModelInterface::class, $itemObjectModel);
+//        $this->assertEquals(0, count($itemObjectModel->getItems()));
+//    }
+
+    /**
      * Test the parser facade
      */
     public function testParser()

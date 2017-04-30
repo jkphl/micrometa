@@ -81,7 +81,7 @@ class ProfiledNamesFactory
      * @see Item::isOfType()
      * @see Item::firstOf()
      */
-    public static function createFromArguments($args)
+    public static function createFromArguments(array $args)
     {
         $profiledNames = [];
         $profile = false;

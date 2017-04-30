@@ -129,17 +129,6 @@ class ItemList implements ItemListInterface
     }
 
     /**
-     * Return a JSON representation of the item list
-     *
-     * @return string Item list JSON
-     * @api
-     */
-    public function toJson()
-    {
-        return json_encode($this->toObject(), JSON_PRETTY_PRINT);
-    }
-
-    /**
      * Return an object representation of the item list
      *
      * @return \stdClass Micro information items

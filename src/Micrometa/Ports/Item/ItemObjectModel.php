@@ -88,9 +88,6 @@ class ItemObjectModel extends ItemList implements ItemObjectModelInterface
      */
     public function rel($type, $index = null)
     {
-        if ($index === null) {
-            return $this->rels();
-        }
         // If the rel type is out of bounds
         if (!array_key_exists($type, $this->rels)) {
             throw new OutOfBoundsException(
@@ -98,6 +95,12 @@ class ItemObjectModel extends ItemList implements ItemObjectModelInterface
                 OutOfBoundsException::INVALID_REL_TYPE
             );
         }
+
+        // If all rel values should be returned
+        if ($index === null) {
+            return $this->rels[$type];
+        }
+
         // If the rel index is out of bounds
         if (!is_int($index) || !array_key_exists($index, $this->rels[$type])) {
             throw new OutOfBoundsException(
@@ -105,6 +108,7 @@ class ItemObjectModel extends ItemList implements ItemObjectModelInterface
                 OutOfBoundsException::INVALID_REL_INDEX
             );
         }
+
         return $this->rels[$type][$index];
     }
 
@@ -128,25 +132,5 @@ class ItemObjectModel extends ItemList implements ItemObjectModelInterface
     public function alternates()
     {
         return $this->alternates;
-    }
-
-    /**
-     * Return the alternate resource of a particular type
-     *
-     * @param string $type Alternate representation type
-     * @return AlternateInterface|null Alternate resource
-     * @throws OutOfBoundsException If the alternate type is out of bounds
-     * @api
-     */
-    public function alternate($type)
-    {
-        // If the alternate type is out of bounds
-        if (!array_key_exists($type, $this->alternates)) {
-            throw new OutOfBoundsException(
-                sprintf(OutOfBoundsException::INVALID_ALTERNATE_TYPE_STR, $type),
-                OutOfBoundsException::INVALID_ALTERNATE_TYPE
-            );
-        }
-        return $this->alternates[$type];
     }
 }

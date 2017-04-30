@@ -69,18 +69,6 @@ class OutOfBoundsException extends \OutOfBoundsException implements MicrometaExc
      */
     const INVALID_REL_INDEX = 1489268571;
     /**
-     * Invalid alternate type
-     *
-     * @var string
-     */
-    const INVALID_ALTERNATE_TYPE_STR = 'Alternate type "%s" is out of bounds';
-    /**
-     * Invalid alternate type
-     *
-     * @var int
-     */
-    const INVALID_ALTERNATE_TYPE = 1489268753;
-    /**
      * Invalid property value index
      *
      * @var string

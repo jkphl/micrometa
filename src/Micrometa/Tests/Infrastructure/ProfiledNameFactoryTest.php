@@ -116,4 +116,37 @@ class ProfiledNamesFactoryTest extends \PHPUnit_Framework_TestCase
             ],
         ];
     }
+
+    /**
+     * Test an invalid profiled name object
+     *
+     * @expectedException \Jkphl\Micrometa\Ports\Exceptions\InvalidArgumentException
+     * @expectedExceptionCode 1489528854
+     */
+    public function testInvalidObjectProfiledName()
+    {
+        ProfiledNamesFactory::createFromArguments([(object)['missing' => 'name']]);
+    }
+
+    /**
+     * Test an invalid profiled name array
+     *
+     * @expectedException \Jkphl\Micrometa\Ports\Exceptions\InvalidArgumentException
+     * @expectedExceptionCode 1491063221
+     */
+    public function testInvalidArrayProfiledName()
+    {
+        ProfiledNamesFactory::createFromArguments([['invalid' => 'array']]);
+    }
+
+    /**
+     * Test an invalid profiled name sting
+     *
+     * @expectedException \Jkphl\Micrometa\Ports\Exceptions\InvalidArgumentException
+     * @expectedExceptionCode 1489528854
+     */
+    public function testInvalidStringProfiledName()
+    {
+        ProfiledNamesFactory::createFromArguments(['']);
+    }
 }

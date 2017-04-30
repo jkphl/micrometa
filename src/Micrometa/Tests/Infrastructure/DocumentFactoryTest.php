@@ -51,7 +51,7 @@ namespace Jkphl\Micromoeta\Tests\Infrastructure {
          *
          * @var string
          */
-        const VALID_HTML_URL = 'http://localhost:1349/valid-test.html';
+        const VALID_HTML_URL = 'http://localhost:1349/valid-with-errors-test.html';
         /**
          * Invalid local test document
          *

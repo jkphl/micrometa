@@ -74,7 +74,7 @@ class RelFactory
      * @param string $relValue Rel declaration value
      * @return Rel Rel declaration
      */
-    protected function createRel($relValue)
+    protected static function createRel($relValue)
     {
         return new Rel($relValue);
     }

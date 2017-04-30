@@ -5,7 +5,7 @@
  *
  * @category Jkphl
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Infrastructure
+ * @subpackage Jkphl\Micrometa\Tests\Domain
  * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -34,37 +34,39 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Infrastructure\Factory;
+namespace Jkphl\Micrometa\Tests\Infrastructure;
 
-use Jkphl\Micrometa\Ports\Rel\Alternate;
+use Jkphl\Micrometa\Infrastructure\Factory\RelFactory;
+use Jkphl\Micrometa\Ports\Rel\Rel;
 
 /**
- * Alternate resource factory
+ * Rel factory tests
  *
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Infrastructure
+ * @subpackage Jkphl\Micrometa\Tests
  */
-class AlternateFactory
+class RelFactoryTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * Create alternate resource declaration from parser results
-     *
-     * @param array[] $rels Parser results
-     * @return Alternate[] Alternate resource declarations
+     * Test the rel factory
      */
-    public static function createFromParserResult(array $alternates)
+    public function testRelFactory()
     {
-        return array_map([static::class, 'createAlternate'], $alternates);
-    }
-
-    /**
-     * Create an alternate resource declaration
-     *
-     * @param array $alternate Alternate resource values
-     * @return Alternate Alternate resource
-     */
-    protected static function createAlternate($alternate)
-    {
-        return new Alternate($alternate['value'], $alternate['type'], $alternate['title']);
+        $rels = RelFactory::createFromParserResult(
+            [
+                'me' => ['https://twitter.com/example', 'https://github.com/example'],
+                'webmention' => ['https://example.com/webmention'],
+            ]
+        );
+        $this->assertTrue(is_array($rels));
+        $this->assertEquals(2, count($rels));
+        $this->assertEquals(['me', 'webmention'], array_keys($rels));
+        $this->assertTrue(is_array($rels['me']));
+        $this->assertEquals(2, count($rels['me']));
+        $this->assertInstanceOf(Rel::class, $rels['me'][0]);
+        $this->assertInstanceOf(Rel::class, $rels['me'][1]);
+        $this->assertTrue(is_array($rels['webmention']));
+        $this->assertEquals(1, count($rels['webmention']));
+        $this->assertInstanceOf(Rel::class, $rels['webmention'][0]);
     }
 }

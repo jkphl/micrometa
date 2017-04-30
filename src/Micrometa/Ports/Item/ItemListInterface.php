@@ -53,14 +53,6 @@ interface ItemListInterface extends \Iterator, \Countable
     public function toObject();
 
     /**
-     * Return a JSON representation of the item list
-     *
-     * @return string Item list JSON
-     * @api
-     */
-    public function toJson();
-
-    /**
      * Filter the items by item type(s)
      *
      * @param array ...$types Item types

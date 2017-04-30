@@ -5,7 +5,7 @@
  *
  * @category Jkphl
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Infrastructure
+ * @subpackage Jkphl\Micrometa\Tests\Domain
  * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -34,37 +34,33 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Infrastructure\Factory;
+namespace Jkphl\Micrometa\Tests\Infrastructure;
 
+use Jkphl\Micrometa\Infrastructure\Factory\AlternateFactory;
 use Jkphl\Micrometa\Ports\Rel\Alternate;
 
 /**
- * Alternate resource factory
+ * Alternate factory tests
  *
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Infrastructure
+ * @subpackage Jkphl\Micrometa\Tests
  */
-class AlternateFactory
+class AlternateFactoryTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * Create alternate resource declaration from parser results
-     *
-     * @param array[] $rels Parser results
-     * @return Alternate[] Alternate resource declarations
+     * Test the alternate factory
      */
-    public static function createFromParserResult(array $alternates)
+    public function testAlternateFactory()
     {
-        return array_map([static::class, 'createAlternate'], $alternates);
-    }
-
-    /**
-     * Create an alternate resource declaration
-     *
-     * @param array $alternate Alternate resource values
-     * @return Alternate Alternate resource
-     */
-    protected static function createAlternate($alternate)
-    {
-        return new Alternate($alternate['value'], $alternate['type'], $alternate['title']);
+        $alternates = AlternateFactory::createFromParserResult(
+            [
+                ['value' => 'http://example.com/blog.atom', 'type' => 'application/atom+xml', 'title' => 'Atom feed'],
+                ['value' => 'http://example.com/blog.rss', 'type' => 'application/rss+xml', 'title' => 'RSS feed'],
+            ]
+        );
+        $this->assertTrue(is_array($alternates));
+        $this->assertEquals(2, count($alternates));
+        $this->assertInstanceOf(Alternate::class, $alternates[0]);
+        $this->assertInstanceOf(Alternate::class, $alternates[1]);
     }
 }
