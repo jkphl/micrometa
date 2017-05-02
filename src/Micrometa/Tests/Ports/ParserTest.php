@@ -36,10 +36,8 @@
 
 namespace Jkphl\Micrometa\Tests\Ports;
 
-use Jkphl\Micrometa\Infrastructure\Parser\JsonLD;
-use Jkphl\Micrometa\Infrastructure\Parser\Microdata;
 use Jkphl\Micrometa\Infrastructure\Parser\Microformats;
-use Jkphl\Micrometa\Infrastructure\Parser\RdfaLite;
+use Jkphl\Micrometa\Ports\Format;
 use Jkphl\Micrometa\Ports\Item\Item;
 use Jkphl\Micrometa\Ports\Item\ItemObjectModelInterface;
 use Jkphl\Micrometa\Ports\Parser;
@@ -62,28 +60,27 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     /**
      * Test the parser facade with a simple document without items
      */
-//    public function testParserSimple()
-//    {
-//        $parser = new Parser(Microformats::FORMAT);
-//        $itemObjectModel = $parser(self::VALID_HTML_URL);
-//        $this->assertInstanceOf(ItemObjectModelInterface::class, $itemObjectModel);
-//        $this->assertEquals(0, count($itemObjectModel->getItems()));
-//    }
+    public function testLinkRelParser()
+    {
+        $parser = new Parser(Format::LINK_REL);
+        $itemObjectModel = $parser(self::VALID_HTML_URL);
+        $this->assertInstanceOf(ItemObjectModelInterface::class, $itemObjectModel);
+        $this->assertEquals(2, count($itemObjectModel->getItems()));
+    }
 
     /**
      * Test the parser facade
      */
-    public function testParser()
-    {
-        $microformatsHtml = \ComposerLocator::getPath('microformats/test').DIRECTORY_SEPARATOR.'tests'.
-            DIRECTORY_SEPARATOR.'microformats-v2'.DIRECTORY_SEPARATOR.'h-product'.DIRECTORY_SEPARATOR.'aggregate.html';
-        $formats = Microformats::FORMAT | Microdata::FORMAT | JsonLD::FORMAT | RdfaLite::FORMAT;
-        $parser = new Parser(Microformats::FORMAT);
-        $itemObjectModel = $parser(self::VALID_HTML_URL, file_get_contents($microformatsHtml), $formats);
-        $this->assertInstanceOf(ItemObjectModelInterface::class, $itemObjectModel);
-        $this->assertEquals(1, count($itemObjectModel->getItems()));
-        $item = $itemObjectModel->getFirstItem();
-        $this->assertInstanceOf(Item::class, $item);
-//        $this->assertTrue($item->isOfType('invalid', MicroformatsFactory::MF2_PROFILE_URI.'h-product'));
-    }
+//    public function testParser()
+//    {
+//        $microformatsHtml = \ComposerLocator::getPath('microformats/test').DIRECTORY_SEPARATOR.'tests'.
+//            DIRECTORY_SEPARATOR.'microformats-v2'.DIRECTORY_SEPARATOR.'h-product'.DIRECTORY_SEPARATOR.'aggregate.html';
+//        $parser = new Parser(Format::MICROFORMATS);
+//        $itemObjectModel = $parser(self::VALID_HTML_URL, file_get_contents($microformatsHtml), Format::ALL);
+//        $this->assertInstanceOf(ItemObjectModelInterface::class, $itemObjectModel);
+//        $this->assertEquals(1, count($itemObjectModel->getItems()));
+//        $item = $itemObjectModel->getFirstItem();
+//        $this->assertInstanceOf(Item::class, $item);
+////        $this->assertTrue($item->isOfType('invalid', MicroformatsFactory::MF2_PROFILE_URI.'h-product'));
+//    }
 }

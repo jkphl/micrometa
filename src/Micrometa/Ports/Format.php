@@ -68,4 +68,16 @@ class Format
      * @var int
      */
     const RDFA_LITE = 8;
+    /**
+     * Link rel
+     *
+     * @var int
+     */
+    const LINK_REL = 16;
+    /**
+     * All formats
+     *
+     * @var int
+     */
+    const ALL = self::MICROFORMATS | self::MICRODATA | self::JSON_LD | self::RDFA_LITE | self::LINK_REL;
 }

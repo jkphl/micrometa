@@ -37,6 +37,7 @@
 namespace Jkphl\Micrometa\Infrastructure\Factory;
 
 use Jkphl\Micrometa\Infrastructure\Parser\JsonLD;
+use Jkphl\Micrometa\Infrastructure\Parser\LinkRel;
 use Jkphl\Micrometa\Infrastructure\Parser\Microdata;
 use Jkphl\Micrometa\Infrastructure\Parser\Microformats;
 use Jkphl\Micrometa\Infrastructure\Parser\RdfaLite;
@@ -59,7 +60,8 @@ class ParserFactory
         Microformats::FORMAT => Microformats::class,
         Microdata::FORMAT => Microdata::class,
         JsonLD::FORMAT => JsonLD::class,
-        RdfaLite::FORMAT => RdfaLite::class
+        RdfaLite::FORMAT => RdfaLite::class,
+        LinkRel::FORMAT => LinkRel::class,
     ];
 
     /**

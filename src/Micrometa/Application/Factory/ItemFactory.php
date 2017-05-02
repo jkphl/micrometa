@@ -95,6 +95,38 @@ class ItemFactory
     /**
      * Create an item instance
      *
+     * The item object is expected to be layed out like this:
+     *
+     * {
+     *     format: 2, // Parser formag
+     *     type: 'type', // String / IRI object (see below) or list of strings / IRI objects
+     *     properties: [...], // List of item property objects (see below)
+     *     value: 'Item value', // Item value (optional)
+     *     id: 'item-1', // Item ID (optional)
+     *     children: [...] // Nested item objects (optional)
+     * }
+     *
+     * The item property objects are expected to be layed out like this:
+     *
+     * {
+     *      name: 'name', // Property name
+     *      profile: 'http://microformats.org/profile/', // Profile
+     *      values: [...] // List of property values
+     * }
+     *
+     * Item property values may be either
+     *
+     * - a string: Interpreted as simple value
+     * - an array: Interpreted as alternate simple values
+     * - an object: Interpreted as an object property (recursively processed)
+     *
+     * IRI objects are expected to be layed out like this:
+     *
+     * {
+     *      name: 'h-entry',
+     *      profile: 'http://microformats.org/profile/', // Profile (optional)
+     * }
+     *
      * @param \stdClass $item Raw item
      * @return ItemInterface Item instance
      */

@@ -37,6 +37,7 @@
 namespace Jkphl\Micrometa\Infrastructure\Parser;
 
 use Jkphl\Micrometa\Application\Contract\ParsingResultInterface;
+use Jkphl\Micrometa\Ports\Format;
 use Jkphl\RdfaLiteMicrodata\Ports\Parser\RdfaLite as RdfaLiteParser;
 use Psr\Http\Message\UriInterface;
 
@@ -53,7 +54,7 @@ class RdfaLite extends AbstractParser
      *
      * @var int
      */
-    const FORMAT = 8;
+    const FORMAT = Format::RDFA_LITE;
     /**
      * Parser
      *

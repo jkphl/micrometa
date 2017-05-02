@@ -38,6 +38,7 @@ namespace Jkphl\Micrometa\Infrastructure\Parser;
 
 use Jkphl\Micrometa\Application\Contract\ParsingResultInterface;
 use Jkphl\Micrometa\Infrastructure\Factory\MicroformatsFactory;
+use Jkphl\Micrometa\Ports\Format;
 use Psr\Http\Message\UriInterface;
 
 /**
@@ -53,7 +54,7 @@ class Microformats extends AbstractParser
      *
      * @var int
      */
-    const FORMAT = 1;
+    const FORMAT = Format::MICROFORMATS;
 
     /**
      * RdfaLite constructor

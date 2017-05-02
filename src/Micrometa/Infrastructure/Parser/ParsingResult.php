@@ -68,6 +68,7 @@ class ParsingResult implements ParsingResultInterface
      * @param int $format Parser format
      * @param \stdClass[] $items Extracted items
      * @param array[] $extra Extra results
+     * @see ItemFactory::__invoke() for the expected item layout
      */
     public function __construct($format, array $items, array $extra = [])
     {

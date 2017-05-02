@@ -40,19 +40,25 @@ use Jkphl\Micrometa\Application\Contract\ParsingResultInterface;
 use Jkphl\Micrometa\Ports\Format;
 
 /**
- * JsonLD parser
+ * Link rel parser
  *
  * @package Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Infrastructure
  */
-class JsonLD extends AbstractParser
+class LinkRel extends AbstractParser
 {
     /**
      * Format
      *
      * @var int
      */
-    const FORMAT = Format::JSON_LD;
+    const FORMAT = Format::LINK_REL;
+    /**
+     * HTML namespace
+     *
+     * @var string
+     */
+    const HTML_PROFILE_URI = 'http://www.w3.org/1999/xhtml';
 
     /**
      * Parse a DOM document
@@ -62,7 +68,60 @@ class JsonLD extends AbstractParser
      */
     public function parseDom(\DOMDocument $dom)
     {
-        // TODO: Implement parseDom() method.
-        return new ParsingResult(self::FORMAT, []);
+        $items = [];
+
+        // Resave to proper XML to get full namespace support
+        $dom2 = $dom->saveXML();
+        $dom = new \DOMDocument();
+        $dom->loadXML($dom2);
+
+        $xpath = new \DOMXPath($dom);
+        $xpath->registerNamespace('html', self::HTML_PROFILE_URI);
+
+        // Run through all <link> elements with a `rel` attribute
+        /** @var \DOMElement $linkRel */
+        foreach ($xpath->query('//html:link[@rel]') as $linkRel) {
+            $item = new \stdClass();
+            $item->type = (object)['name' => $linkRel->getAttribute('rel'), 'profile' => self::HTML_PROFILE_URI];
+
+            // Get the item ID (if any)
+            if ($linkRel->hasAttribute('id')) {
+                $item->id = $linkRel->getAttribute('id');
+            }
+
+            // Run through all item attributes
+            $item->properties = [];
+            /**
+             * @var string $attributeName Attribute name
+             * @var \DOMAttr $attribute Attribute
+             */
+            foreach ($linkRel->attributes as $attributeName => $attribute) {
+                if (!in_array($attributeName, ['rel', 'id'])) {
+                    $profile = $attribute->lookupNamespaceUri($attribute->prefix ?: null);
+                    $item->properties[] = (object)[
+                        'name' => $attributeName,
+                        'profile' => $profile,
+                        'values' => $this->parseAttributeValue($profile, $attributeName, $attribute->value),
+                    ];
+                }
+            }
+
+            $items[] = $item;
+        }
+
+        return new ParsingResult(self::FORMAT, $items);
+    }
+
+    /**
+     * Parse an attribute value
+     *
+     * @param string $profile Profile
+     * @param string $attribute Attribute name
+     * @param string $value Attribute value
+     * @return array Attribute values
+     */
+    protected function parseAttributeValue($profile, $attribute, $value)
+    {
+        return [$value];
     }
 }
