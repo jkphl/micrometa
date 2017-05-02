@@ -36,9 +36,6 @@
 
 namespace Jkphl\Micrometa\Ports\Item;
 
-use Jkphl\Micrometa\Ports\Rel\AlternateInterface;
-use Jkphl\Micrometa\Ports\Rel\RelInterface;
-
 /**
  * Item object model interface
  *
@@ -48,28 +45,12 @@ use Jkphl\Micrometa\Ports\Rel\RelInterface;
 interface ItemObjectModelInterface extends ItemListInterface
 {
     /**
-     * Return all rel=* declaration groups
-     *
-     * @return RelInterface[] Rel=* declaration groups
-     * @api
-     */
-    public function rels();
-
-    /**
      * Return all rel declarations of a particular type
      *
-     * @param string $rel Rel type
+     * @param string $type Rel type
      * @param int|null $index Optional: particular index
-     * @return RelInterface|RelInterface[] Single rel=* declaration or list of particular rel declarations
+     * @return ItemInterface|ItemInterface[] Single LinkRel item or list of LinkRel items
      * @api
      */
-    public function rel($rel, $index = null);
-
-    /**
-     * Return all alternate resources
-     *
-     * @return AlternateInterface[] Alternate resources
-     * @api
-     */
-    public function alternates();
+    public function rel($type, $index = null);
 }

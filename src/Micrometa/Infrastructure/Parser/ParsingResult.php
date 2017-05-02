@@ -55,25 +55,17 @@ class ParsingResult implements ParsingResultInterface
      * @var ItemInterface[]
      */
     protected $items;
-    /**
-     * Extra results
-     *
-     * @var array[]
-     */
-    protected $extra;
 
     /**
      * Parsing result constructor
      *
      * @param int $format Parser format
      * @param \stdClass[] $items Extracted items
-     * @param array[] $extra Extra results
      * @see ItemFactory::__invoke() for the expected item layout
      */
-    public function __construct($format, array $items, array $extra = [])
+    public function __construct($format, array $items)
     {
         $this->items = array_map(new ItemFactory($format), $items);
-        $this->extra = $extra;
     }
 
     /**
@@ -84,15 +76,5 @@ class ParsingResult implements ParsingResultInterface
     public function getItems()
     {
         return $this->items;
-    }
-
-    /**
-     * Return all extra results
-     *
-     * @return array[] Extra results
-     */
-    public function getExtra()
-    {
-        return $this->extra;
     }
 }

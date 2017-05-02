@@ -37,11 +37,9 @@
 namespace Jkphl\Micrometa\Ports;
 
 use Jkphl\Micrometa\Application\Service\ExtractorService;
-use Jkphl\Micrometa\Infrastructure\Factory\AlternateFactory;
 use Jkphl\Micrometa\Infrastructure\Factory\DocumentFactory;
 use Jkphl\Micrometa\Infrastructure\Factory\ItemFactory;
 use Jkphl\Micrometa\Infrastructure\Factory\ParserFactory;
-use Jkphl\Micrometa\Infrastructure\Factory\RelFactory;
 use Jkphl\Micrometa\Ports\Item\ItemObjectModel;
 use Jkphl\Micrometa\Ports\Item\ItemObjectModelInterface;
 use League\Uri\Schemes\Http;
@@ -96,15 +94,8 @@ class Parser
             $results = $extractor->extract($dom, $parser);
 //            print_r($results);
             $items += ItemFactory::createFromApplicationItems($results->getItems());
-            $extra = $results->getExtra();
-            if (!empty($extra['rels'])) {
-                $rels += RelFactory::createFromParserResult($extra['rels']);
-            }
-            if (!empty($extra['alternates'])) {
-                $alternates += AlternateFactory::createFromParserResult($extra['alternates']);
-            }
         }
 
-        return new ItemObjectModel($items, $rels, $alternates);
+        return new ItemObjectModel($items);
     }
 }

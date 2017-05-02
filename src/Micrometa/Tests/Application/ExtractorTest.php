@@ -110,7 +110,6 @@ class ExtractorTest extends \PHPUnit_Framework_TestCase
         $rdfaLiteItems = $extractorService->extract($rdfaLiteDom, $rdfaLiteParser);
         $this->assertInstanceOf(ParsingResultInterface::class, $rdfaLiteItems);
         $this->assertEquals(1, count($rdfaLiteItems->getItems()));
-        $this->assertEquals(0, count($rdfaLiteItems->getExtra()));
         $this->assertInstanceOf(Item::class, $rdfaLiteItems->getItems()[0]);
         $this->assertEquals(RdfaLite::FORMAT, $rdfaLiteItems->getItems()[0]->getFormat());
     }
@@ -137,7 +136,6 @@ class ExtractorTest extends \PHPUnit_Framework_TestCase
         $microdataItems = $extractorService->extract($microdataDom, $microdataParser);
         $this->assertInstanceOf(ParsingResultInterface::class, $microdataItems);
         $this->assertEquals(1, count($microdataItems->getItems()));
-        $this->assertEquals(0, count($microdataItems->getExtra()));
         $this->assertInstanceOf(Item::class, $microdataItems->getItems()[0]);
         $this->assertEquals(microdata::FORMAT, $microdataItems->getItems()[0]->getFormat());
     }
@@ -164,7 +162,6 @@ class ExtractorTest extends \PHPUnit_Framework_TestCase
         $microformatsItems = $extractorService->extract($microformatsDom, $microformatsParser);
         $this->assertInstanceOf(ParsingResultInterface::class, $microformatsItems);
         $this->assertEquals(1, count($microformatsItems->getItems()));
-        $this->assertEquals(1, count($microformatsItems->getExtra()));
         $this->assertInstanceOf(Item::class, $microformatsItems->getItems()[0]);
         $this->assertEquals(Microformats::FORMAT, $microformatsItems->getItems()[0]->getFormat());
     }
@@ -191,7 +188,6 @@ class ExtractorTest extends \PHPUnit_Framework_TestCase
         $microformatsItems = $extractorService->extract($microformatsDom, $microformatsParser);
         $this->assertInstanceOf(ParsingResultInterface::class, $microformatsItems);
         $this->assertEquals(1, count($microformatsItems->getItems()));
-        $this->assertEquals(1, count($microformatsItems->getExtra()));
         $this->assertInstanceOf(Item::class, $microformatsItems->getItems()[0]);
         $this->assertEquals(Microformats::FORMAT, $microformatsItems->getItems()[0]->getFormat());
         $this->assertEquals(2, count($microformatsItems->getItems()[0]->getChildren()));

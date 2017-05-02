@@ -52,11 +52,4 @@ interface ParsingResultInterface
      * @return ItemInterface[] Extracted items
      */
     public function getItems();
-
-    /**
-     * Return all extra results
-     *
-     * @return array[] Extra results
-     */
-    public function getExtra();
 }

@@ -37,8 +37,6 @@
 namespace Jkphl\Micrometa\Ports\Item;
 
 use Jkphl\Micrometa\Ports\Exceptions\OutOfBoundsException;
-use Jkphl\Micrometa\Ports\Rel\AlternateInterface;
-use Jkphl\Micrometa\Ports\Rel\RelInterface;
 
 /**
  * Item object model
@@ -49,39 +47,11 @@ use Jkphl\Micrometa\Ports\Rel\RelInterface;
 class ItemObjectModel extends ItemList implements ItemObjectModelInterface
 {
     /**
-     * Rel declarations
-     *
-     * @var RelInterface[]
-     */
-    protected $rels;
-
-    /**
-     * Alternate resources
-     *
-     * @var AlternateInterface[]
-     */
-    protected $alternates;
-
-    /**
-     * ItemList constructor
-     *
-     * @param ItemInterface[] $items Items
-     * @param RelInterface[] $rels Rel declarations
-     * @param AlternateInterface[] $alternates Alternate resources
-     */
-    public function __construct(array $items = [], array $rels = [], array $alternates = [])
-    {
-        parent::__construct($items);
-        $this->rels = $rels;
-        $this->alternates = $alternates;
-    }
-
-    /**
      * Return all rel declarations of a particular type
      *
      * @param string $type Rel type
      * @param int|null $index Optional: particular index
-     * @return RelInterface|RelInterface[] Single rel=* declaration or list of particular rel declarations
+     * @return ItemInterface|ItemInterface[] Single LinkRel item or list of LinkRel items
      * @throws OutOfBoundsException If the rel type is out of bounds
      * @throws OutOfBoundsException If the rel index is out of bounds
      * @api
@@ -110,27 +80,5 @@ class ItemObjectModel extends ItemList implements ItemObjectModelInterface
         }
 
         return $this->rels[$type][$index];
-    }
-
-    /**
-     * Return all rel=* declaration groups
-     *
-     * @return RelInterface[] Rel=* declaration groups
-     * @api
-     */
-    public function rels()
-    {
-        return $this->rels;
-    }
-
-    /**
-     * Return all alternate resources
-     *
-     * @return AlternateInterface[] Alternate resources
-     * @api
-     */
-    public function alternates()
-    {
-        return $this->alternates;
     }
 }
