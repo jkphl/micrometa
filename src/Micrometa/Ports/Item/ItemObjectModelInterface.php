@@ -47,10 +47,10 @@ interface ItemObjectModelInterface extends ItemListInterface
     /**
      * Return all rel declarations of a particular type
      *
-     * @param string $type Rel type
+     * @param string|null $type Rel type
      * @param int|null $index Optional: particular index
      * @return ItemInterface|ItemInterface[] Single LinkRel item or list of LinkRel items
      * @api
      */
-    public function rel($type, $index = null);
+    public function rel($type = null, $index = null);
 }

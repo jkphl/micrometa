@@ -36,11 +36,7 @@
 
 namespace Jkphl\Micrometa\Tests\Ports;
 
-use Jkphl\Micrometa\Application\Factory\PropertyListFactory;
-use Jkphl\Micrometa\Application\Item\Item as ApplicationItem;
-use Jkphl\Micrometa\Application\Value\StringValue;
 use Jkphl\Micrometa\Infrastructure\Factory\MicroformatsFactory;
-use Jkphl\Micrometa\Infrastructure\Parser\Microformats;
 use Jkphl\Micrometa\Ports\Item\Item;
 use Jkphl\Micrometa\Ports\Item\ItemInterface;
 use Jkphl\Micrometa\Ports\Item\ItemList;
@@ -51,7 +47,7 @@ use Jkphl\Micrometa\Ports\Item\ItemList;
  * @package Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Tests
  */
-class ItemTest extends \PHPUnit_Framework_TestCase
+class ItemTest extends AbstractItemListTest
 {
     /**
      * Test an item
@@ -65,92 +61,6 @@ class ItemTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($feedItem->isOfType('h-feed'));
         $this->assertTrue($feedItem->isOfType('h-feed', MicroformatsFactory::MF2_PROFILE_URI));
         $this->assertFalse($feedItem->isOfType('invalid', MicroformatsFactory::MF2_PROFILE_URI));
-    }
-
-    /**
-     * Create and return an h-feed Microformats item
-     *
-     * @return Item h-feed item
-     */
-    protected function getFeedItem()
-    {
-        $authorItem = new ApplicationItem(
-            Microformats::FORMAT,
-            new PropertyListFactory(),
-            (object)['profile' => MicroformatsFactory::MF2_PROFILE_URI, 'name' => 'h-card'],
-            [
-                (object)[
-                    'profile' => MicroformatsFactory::MF2_PROFILE_URI,
-                    'name' => 'name',
-                    'values' => [
-                        new StringValue('John Doe')
-                    ]
-                ],
-                (object)[
-                    'profile' => MicroformatsFactory::MF2_PROFILE_URI,
-                    'name' => 'email',
-                    'values' => [
-                        new StringValue('john@example.com')
-                    ]
-                ]
-            ]
-        );
-
-
-        $entryItem = new ApplicationItem(
-            Microformats::FORMAT,
-            new PropertyListFactory(),
-            (object)['profile' => MicroformatsFactory::MF2_PROFILE_URI, 'name' => 'h-entry'],
-            [
-                (object)[
-                    'profile' => MicroformatsFactory::MF2_PROFILE_URI,
-                    'name' => 'name',
-                    'values' => [
-                        new StringValue('Famous blog post')
-                    ]
-                ],
-                (object)[
-                    'profile' => MicroformatsFactory::MF2_PROFILE_URI,
-                    'name' => 'author',
-                    'values' => [
-                        $authorItem
-                    ]
-                ]
-            ]
-        );
-
-
-        $feedItem = new ApplicationItem(
-            Microformats::FORMAT,
-            new PropertyListFactory(),
-            (object)['profile' => MicroformatsFactory::MF2_PROFILE_URI, 'name' => 'h-feed'],
-            [
-                (object)[
-                    'profile' => MicroformatsFactory::MF2_PROFILE_URI,
-                    'name' => 'name',
-                    'values' => [
-                        new StringValue('John Doe\'s Blog')
-                    ]
-                ],
-                (object)[
-                    'profile' => MicroformatsFactory::MF2_PROFILE_URI,
-                    'name' => 'author',
-                    'values' => [
-                        $authorItem
-                    ]
-                ],
-                (object)[
-                    'profile' => MicroformatsFactory::MF2_PROFILE_URI,
-                    'name' => 'custom-property',
-                    'values' => [
-                        new StringValue('Property for alias testing')
-                    ]
-                ],
-            ],
-            [$entryItem, $entryItem]
-        );
-
-        return new Item($feedItem);
     }
 
     /**
@@ -193,7 +103,7 @@ class ItemTest extends \PHPUnit_Framework_TestCase
      * @expectedException \Jkphl\Micrometa\Ports\Exceptions\OutOfBoundsException
      * @expectedExceptionCode 1488315604
      */
-    public function testUnprofiledProperty()
+    public function testItemUnprofiledProperty()
     {
         $feedItem = $this->getFeedItem();
         $this->assertInstanceOf(Item::class, $feedItem);
@@ -220,7 +130,7 @@ class ItemTest extends \PHPUnit_Framework_TestCase
      * @expectedException \Jkphl\Micrometa\Ports\Exceptions\OutOfBoundsException
      * @expectedExceptionCode 1488315604
      */
-    public function testProfiledProperty()
+    public function testItemProfiledProperty()
     {
         $feedItem = $this->getFeedItem();
         $this->assertInstanceOf(Item::class, $feedItem);
@@ -247,7 +157,7 @@ class ItemTest extends \PHPUnit_Framework_TestCase
      * @expectedException \Jkphl\Micrometa\Ports\Exceptions\OutOfBoundsException
      * @expectedExceptionCode 1488315604
      */
-    public function testAliasedProperty()
+    public function testItemAliasedProperty()
     {
         $feedItem = $this->getFeedItem();
         $this->assertInstanceOf(Item::class, $feedItem);
@@ -279,7 +189,7 @@ class ItemTest extends \PHPUnit_Framework_TestCase
      * @expectedException \Jkphl\Micrometa\Ports\Exceptions\OutOfBoundsException
      * @expectedExceptionCode 1488315604
      */
-    public function testPropertyStack()
+    public function testItemPropertyStack()
     {
         $feedItem = $this->getFeedItem();
         $this->assertInstanceOf(Item::class, $feedItem);
@@ -295,7 +205,7 @@ class ItemTest extends \PHPUnit_Framework_TestCase
     /**
      * Test a property item
      */
-    public function testPropertyItem()
+    public function testItemPropertyItem()
     {
         $feedItem = $this->getFeedItem();
         $this->assertInstanceOf(Item::class, $feedItem);
@@ -318,7 +228,7 @@ class ItemTest extends \PHPUnit_Framework_TestCase
      * @expectedException \Jkphl\Micrometa\Ports\Exceptions\InvalidArgumentException
      * @expectedExceptionCode 1492418709
      */
-    public function testNestedItems()
+    public function testItemNestedItems()
     {
         $feedItem = $this->getFeedItem();
         $this->assertInstanceOf(Item::class, $feedItem);
@@ -354,7 +264,7 @@ class ItemTest extends \PHPUnit_Framework_TestCase
      * @expectedException \Jkphl\Micrometa\Ports\Exceptions\OutOfBoundsException
      * @expectedExceptionCode 1492418999
      */
-    public function testNonExistentNestedItems()
+    public function testItemNonExistentNestedItems()
     {
         $feedItem = $this->getFeedItem();
         /** @noinspection PhpUndefinedMethodInspection */

@@ -36,9 +36,7 @@
 
 namespace Jkphl\Micrometa\Tests\Ports;
 
-use Jkphl\Micrometa\Infrastructure\Parser\Microformats;
 use Jkphl\Micrometa\Ports\Format;
-use Jkphl\Micrometa\Ports\Item\Item;
 use Jkphl\Micrometa\Ports\Item\ItemObjectModelInterface;
 use Jkphl\Micrometa\Ports\Parser;
 

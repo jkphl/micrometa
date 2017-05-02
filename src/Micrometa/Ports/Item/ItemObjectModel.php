@@ -36,6 +36,7 @@
 
 namespace Jkphl\Micrometa\Ports\Item;
 
+use Jkphl\Micrometa\Infrastructure\Parser\LinkRel;
 use Jkphl\Micrometa\Ports\Exceptions\OutOfBoundsException;
 
 /**
@@ -47,38 +48,58 @@ use Jkphl\Micrometa\Ports\Exceptions\OutOfBoundsException;
 class ItemObjectModel extends ItemList implements ItemObjectModelInterface
 {
     /**
+     * LinkRel item cache
+     *
+     * @var ItemListInterface
+     */
+    protected $rels = null;
+
+    /**
      * Return all rel declarations of a particular type
      *
-     * @param string $type Rel type
+     * @param string|null $type Rel type
      * @param int|null $index Optional: particular index
      * @return ItemInterface|ItemInterface[] Single LinkRel item or list of LinkRel items
-     * @throws OutOfBoundsException If the rel type is out of bounds
      * @throws OutOfBoundsException If the rel index is out of bounds
      * @api
      */
-    public function rel($type, $index = null)
+    public function rel($type = null, $index = null)
     {
-        // If the rel type is out of bounds
-        if (!array_key_exists($type, $this->rels)) {
-            throw new OutOfBoundsException(
-                sprintf(OutOfBoundsException::INVALID_REL_TYPE_STR, $type),
-                OutOfBoundsException::INVALID_REL_TYPE
-            );
+        // One-time caching of rel elements
+        if ($this->rels === null) {
+            $this->cacheLinkRelItems();
         }
 
-        // If all rel values should be returned
+        // Find the matching LinkRel items
+        $rels = ($type === null) ? $this->rels->getItems() : $this->rels->getItems($type);
+
+        // If all LinkRels should be returned
         if ($index === null) {
-            return $this->rels[$type];
+            return $rels;
         }
 
         // If the rel index is out of bounds
-        if (!is_int($index) || !array_key_exists($index, $this->rels[$type])) {
+        if (!is_int($index) || !array_key_exists($index, $rels)) {
             throw new OutOfBoundsException(
                 sprintf(OutOfBoundsException::INVALID_REL_INDEX_STR, $index, $type),
                 OutOfBoundsException::INVALID_REL_INDEX
             );
         }
 
-        return $this->rels[$type][$index];
+        return $rels[$index];
+    }
+
+    /**
+     * One-time caching of LinkRel items
+     */
+    protected function cacheLinkRelItems()
+    {
+        $rels = [];
+        foreach ($this->items as $item) {
+            if ($item->getFormat() == LinkRel::FORMAT) {
+                $rels[] = $item;
+            }
+        }
+        $this->rels = new ItemList($rels);
     }
 }

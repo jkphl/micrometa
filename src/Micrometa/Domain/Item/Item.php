@@ -144,10 +144,9 @@ class Item implements ItemInterface
     /**
      * Return the item types
      *
-     * @return string[] Item types
+     * @return \stdClass[] Item types
      */
-    public
-    function getType()
+    public function getType()
     {
         return $this->type;
     }
@@ -157,8 +156,7 @@ class Item implements ItemInterface
      *
      * @return string|null Item id
      */
-    public
-    function getId()
+    public function getId()
     {
         return $this->itemId;
     }

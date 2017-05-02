@@ -85,6 +85,20 @@ interface ItemInterface extends ItemListInterface
     public function getFirstProperty($name, $profile = null);
 
     /**
+     * Get the item format
+     *
+     * @return int Item format
+     */
+    public function getFormat();
+
+    /**
+     * Get the item type
+     *
+     * @return \stdClass[] Item type
+     */
+    public function getType();
+
+    /**
      * Return all properties
      *
      * @return array[] Properties

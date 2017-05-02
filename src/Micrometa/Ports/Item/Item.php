@@ -237,4 +237,24 @@ class Item extends ItemList implements ItemInterface
     {
         return $this->item->export();
     }
+
+    /**
+     * Get the item type
+     *
+     * @return \stdClass[] Item type
+     */
+    public function getType()
+    {
+        return $this->item->getType();
+    }
+
+    /**
+     * Get the item format
+     *
+     * @return int Item format
+     */
+    public function getFormat()
+    {
+        return $this->item->getFormat();
+    }
 }

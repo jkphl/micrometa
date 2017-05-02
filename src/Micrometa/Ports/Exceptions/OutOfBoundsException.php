@@ -45,18 +45,6 @@ namespace Jkphl\Micrometa\Ports\Exceptions;
 class OutOfBoundsException extends \OutOfBoundsException implements MicrometaExceptionInterface
 {
     /**
-     * Invalid rel tyle
-     *
-     * @var string
-     */
-    const INVALID_REL_TYPE_STR = 'Rel type "%s" is out of bounds';
-    /**
-     * Invalid rel type
-     *
-     * @var int
-     */
-    const INVALID_REL_TYPE = 1489269267;
-    /**
      * Invalid rel type index
      *
      * @var string

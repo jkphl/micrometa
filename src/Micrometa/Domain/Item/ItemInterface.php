@@ -49,7 +49,7 @@ interface ItemInterface extends ValueInterface
     /**
      * Return the item types
      *
-     * @return string[] Item types
+     * @return \stdClass[] Item types
      */
     public function getType();
 
