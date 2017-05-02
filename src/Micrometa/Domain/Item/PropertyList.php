@@ -119,7 +119,7 @@ class PropertyList implements PropertyListInterface
     /**
      * Return the current IRI key
      *
-     * @return \stdClass IRI key
+     * @return string IRI key
      */
     public function key()
     {

@@ -47,18 +47,17 @@ interface ItemInterface extends ItemListInterface
     /**
      * Return whether the item is of a particular type (or contained in a list of types)
      *
-     * @param string $name Name
-     * @param string|null $profile Profile
+     * @param array ...$types Item types
      * @return bool Item type is contained in the list of types
      * @api
      */
-    public function isOfType($name, $profile = null);
+    public function isOfType(...$types);
 
     /**
      * Get the first value of an item property
      *
      * @param string $name Item property name
-     * @return string First value of an item property
+     * @return array|string|ItemInterface First value of an item property
      * @api
      */
     public function __get($name);
@@ -79,7 +78,7 @@ interface ItemInterface extends ItemListInterface
      *
      * @param string $name Name
      * @param string $profile Profile
-     * @return array Property values
+     * @return array|string|ItemInterface Property values
      * @api
      */
     public function getFirstProperty($name, $profile = null);

@@ -105,10 +105,8 @@ class Item implements ItemInterface
      * @return array Validated item types
      * @throws InvalidArgumentException If there are no valid types
      */
-    protected
-    function validateTypes(
-        array $types
-    ) {
+    protected function validateTypes(array $types)
+    {
         $nonEmptyTypes = array_filter(array_map([$this, 'validateType'], $types));
 
         // If there are no valid types
@@ -178,11 +176,8 @@ class Item implements ItemInterface
      * @param string|null $profile Property profile
      * @return array Item property values
      */
-    public
-    function getProperty(
-        $name,
-        $profile = null
-    ) {
+    public function getProperty($name, $profile = null)
+    {
         $iri = IriFactory::create(($profile === null) ? $name : (object)['profile' => $profile, 'name' => $name]);
         return $this->properties->offsetGet($iri);
     }
@@ -192,8 +187,7 @@ class Item implements ItemInterface
      *
      * @return boolean Value is empty
      */
-    public
-    function isEmpty()
+    public function isEmpty()
     {
         return false;
     }
@@ -204,10 +198,8 @@ class Item implements ItemInterface
      * @param \stdClass $property Property
      * @return \stdClass Validated property
      */
-    protected
-    function validateProperty(
-        $property
-    ) {
+    protected function validateProperty($property)
+    {
         // Validate the property structure
         $this->validatePropertyStructure($property);
 
@@ -234,10 +226,8 @@ class Item implements ItemInterface
      * @param \stdClass $property Property object
      * @throws InvalidArgumentException If the property object is invalid
      */
-    protected
-    function validatePropertyStructure(
-        $property
-    ) {
+    protected function validatePropertyStructure($property)
+    {
         // If the property object is invalid
         if (!is_object($property)
             || !isset($property->profile)
@@ -258,10 +248,8 @@ class Item implements ItemInterface
      * @param \stdClass $property Property
      * @return string Property name
      */
-    protected
-    function validatePropertyName(
-        $property
-    ) {
+    protected function validatePropertyName($property)
+    {
         $propertyName = trim($property->name);
 
         // If the property name is empty
@@ -282,10 +270,8 @@ class Item implements ItemInterface
      * @return array Validated property values
      * @throws InvalidArgumentException If the value is not a nested item
      */
-    protected
-    function validatePropertyValues(
-        array $values
-    ) {
+    protected function validatePropertyValues(array $values)
+    {
         $nonEmptyPropertyValues = [];
 
         // Run through all property values
@@ -314,10 +300,8 @@ class Item implements ItemInterface
      * @return \stdClass|null Validated item type
      * @throws InvalidArgumentException If the item type object is invalid
      */
-    protected
-    function validateType(
-        $type
-    ) {
+    protected function validateType($type)
+    {
         $type = IriFactory::create($type);
         return strlen($type->name) ? $type : null;
     }

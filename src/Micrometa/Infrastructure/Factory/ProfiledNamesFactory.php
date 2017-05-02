@@ -129,7 +129,7 @@ class ProfiledNamesFactory
      * Create a profiled name from an object argument
      *
      * @param \stdClass $arg Object argument
-     * @param string $profile Profile
+     * @param string|boolean|null $profile Profile
      * @return \stdClass Profiled name
      * @throws InvalidArgumentException If the name is missing
      */
@@ -154,7 +154,7 @@ class ProfiledNamesFactory
      * Create a profiled name from an array argument
      *
      * @param array $arg Array argument
-     * @param string $profile Profile
+     * @param string|boolean|null $profile Profile
      * @return \stdClass Profiled name
      * @throws InvalidArgumentException If the array definition is invalid
      */
@@ -182,7 +182,7 @@ class ProfiledNamesFactory
      * Create a profiled name from string arguments
      *
      * @param string $name Name
-     * @param string|null $profile Profile
+     * @param string|boolean|null $profile Profile
      * @return \stdClass Profiled name
      * @throws InvalidArgumentException If the name is invalid
      */

@@ -75,9 +75,10 @@ class Microformats extends AbstractParser
     public function parseDom(\DOMDocument $dom)
     {
         $microformats = \Mf2\parse($dom, strval($this->uri), false);
-        $items = isset($microformats['items']) ?
-            MicroformatsFactory::createFromParserResult($microformats['items']) : [];
-        unset($microformats['items']);
-        return new ParsingResult(self::FORMAT, $items, $microformats);
+        return new ParsingResult(
+            self::FORMAT,
+            isset($microformats['items']) ?
+                MicroformatsFactory::createFromParserResult((array)$microformats['items']) : []
+        );
     }
 }

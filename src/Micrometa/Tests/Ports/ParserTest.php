@@ -63,7 +63,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $parser = new Parser(Format::LINK_REL);
         $itemObjectModel = $parser(self::VALID_HTML_URL);
         $this->assertInstanceOf(ItemObjectModelInterface::class, $itemObjectModel);
-        $this->assertEquals(2, count($itemObjectModel->getItems()));
+        $this->assertEquals(3, count($itemObjectModel->getItems()));
     }
 
     /**

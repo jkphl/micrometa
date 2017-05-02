@@ -76,7 +76,7 @@ class Item extends ItemList implements ItemInterface
      * Get the first value of an item property
      *
      * @param string $name Item property name
-     * @return string First value of an item property
+     * @return array|string|ItemInterface First value of an item property
      * @api
      */
     public function __get($name)
@@ -136,22 +136,21 @@ class Item extends ItemList implements ItemInterface
      *
      * The item type(s) can be specified in a variety of ways, @see ProfiledNamesFactory::createFromArguments()
      *
-     * @param string $name Name
-     * @param string|null $profile Profile
+     * @param array ...$types Item types
      * @return boolean Item type is contained in the list of types
      * @api
      */
-    public function isOfType($name, $profile = null)
+    public function isOfType(...$types)
     {
-        /** @var ProfiledNamesList $types */
-        $types = ProfiledNamesFactory::createFromArguments(func_get_args());
+        /** @var ProfiledNamesList $profiledTypes */
+        $profiledTypes = ProfiledNamesFactory::createFromArguments($types);
         $aliasFactory = new AliasFactory();
 
         // Run through all item types
         /** @var \stdClass $itemType */
         foreach ($this->item->getType() as $itemType) {
             $itemTypeNames = $aliasFactory->createAliases($itemType->name);
-            if ($this->isOfProfiledTypes($itemType->profile, $itemTypeNames, $types)) {
+            if ($this->isOfProfiledTypes($itemType->profile, $itemTypeNames, $profiledTypes)) {
                 return true;
             }
         }
@@ -188,7 +187,7 @@ class Item extends ItemList implements ItemInterface
      *
      * @param string $name Name
      * @param string $profile Profile
-     * @return array Property values
+     * @return array|string|ItemInterface Property values
      * @throws InvalidArgumentException If no property name was given
      * @throws OutOfBoundsException If none of the requested properties is known
      * @api

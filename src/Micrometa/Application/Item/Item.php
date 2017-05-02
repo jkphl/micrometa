@@ -71,7 +71,7 @@ class Item extends \Jkphl\Micrometa\Domain\Item\Item implements ItemInterface
      *
      * @param int $format Parser format
      * @param PropertyListFactoryInterface $propertyListFactory Property list factory
-     * @param string|array $type Item type(s)
+     * @param string|\stdClass|\stdClass[] $type Item type(s)
      * @param array[] $properties Item properties
      * @param ItemInterface[] $children Nested items
      * @param string|null $itemId Item id

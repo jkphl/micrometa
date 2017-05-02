@@ -82,7 +82,12 @@ class LinkRel extends AbstractParser
         /** @var \DOMElement $linkRel */
         foreach ($xpath->query('//html:link[@rel]') as $linkRel) {
             $item = new \stdClass();
-            $item->type = (object)['name' => $linkRel->getAttribute('rel'), 'profile' => self::HTML_PROFILE_URI];
+
+            // Collect the item types
+            $item->type = [];
+            foreach (preg_split('/\040+/', $linkRel->getAttribute('rel')) as $rel) {
+                $item->type[] = (object)['name' => $rel, 'profile' => self::HTML_PROFILE_URI];
+            }
 
             // Get the item ID (if any)
             if ($linkRel->hasAttribute('id')) {
@@ -122,6 +127,20 @@ class LinkRel extends AbstractParser
      */
     protected function parseAttributeValue($profile, $attribute, $value)
     {
+        // If it's a HTML attribute
+        if ($profile == LinkRel::HTML_PROFILE_URI) {
+            switch ($attribute) {
+                // Space delimited lists
+                case 'sizes':
+                    return array_filter(preg_split('/\040+/', $value));
+                    break;
+                // Space or comma delimited lists
+                case 'charset':
+                    return array_filter(preg_split('/[,\040]+/', $value));
+                    break;
+            }
+        }
+
         return [$value];
     }
 }

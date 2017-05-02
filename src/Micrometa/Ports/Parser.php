@@ -85,14 +85,13 @@ class Parser
             DocumentFactory::createFromString($source) : DocumentFactory::createFromUri($uri);
 
         // Run through all format parsers
-        $items = $rels = $alternates = [];
+        $items = [];
         $extractor = new ExtractorService();
         foreach (ParserFactory::createParsersFromFormats(
             intval($formats ?: $this->formats),
             Http::createFromString($uri)
         ) as $parser) {
             $results = $extractor->extract($dom, $parser);
-//            print_r($results);
             $items += ItemFactory::createFromApplicationItems($results->getItems());
         }
 
