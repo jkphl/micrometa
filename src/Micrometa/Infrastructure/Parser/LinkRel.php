@@ -133,11 +133,9 @@ class LinkRel extends AbstractParser
                 // Space delimited lists
                 case 'sizes':
                     return array_filter(preg_split('/\040+/', $value));
-                    break;
                 // Space or comma delimited lists
                 case 'charset':
                     return array_filter(preg_split('/[,\040]+/', $value));
-                    break;
             }
         }
 

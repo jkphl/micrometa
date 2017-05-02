@@ -53,7 +53,7 @@ class Item implements ItemInterface
     /**
      * Item type(s)
      *
-     * @var string[]
+     * @var \stdClass[]
      */
     protected $type;
 
@@ -82,7 +82,7 @@ class Item implements ItemInterface
      * Item constructor
      *
      * @param string|\stdClass|\stdClass[] $type Item type(s)
-     * @param array[] $properties Item properties
+     * @param \stdClass[] $properties Item properties
      * @param string|null $itemId Item id
      * @param PropertyListFactoryInterface|null $propertyListFactory Property list factory
      */

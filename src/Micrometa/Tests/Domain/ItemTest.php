@@ -52,7 +52,7 @@ class ItemTest extends \PHPUnit_Framework_TestCase
     /**
      * Public function test the item creation
      *
-     * @param string|array $type Item type(s)
+     * @param string|\stdClass|\stdClass[] $type Item type(s)
      * @param array $properties Item properties
      * @param $itemId Item id
      * @param array $expectedTypes Expected item types
@@ -190,7 +190,7 @@ class ItemTest extends \PHPUnit_Framework_TestCase
      * @param string $n Property name
      * @param mixed $s Property value(s)
      * @param string $p Property profiles
-     * @return object Property object
+     * @return \stdClass Property object
      */
     protected function p($n, $s, $p = '')
     {
