@@ -115,7 +115,7 @@ class JsonLD
             foreach ($this->_dom->xpath()->query('//script[@type = "application/ld+json"]') as $jsonLD) {
                 $jsonLDInline = trim($jsonLD->textContent);
                 if (strlen($jsonLDInline)) {
-                    $this->_items = $this->_items + $this->parseBlock($jsonLDInline);
+                    $this->_items = array_merge($this->_items, $this->parseBlock($jsonLDInline));
                 }
             }
         }
