@@ -187,16 +187,12 @@ if (empty($params['parser'])) {
             <h1>Micrometa 2 demo page</h1>
             <p>This demo page is part of the <a href="https://github.com/jkphl/micrometa" target="_blank">micrometa
                     parser</a> package and can be used to fetch a remote document and parse it for embedded micro
-                information. You
-                can select between 2 output styles, 3 different parsers and whether you want to print all micro
-                information
-                embedded into the document or extract the document's author only(according to the Microformats2 <a
-                    href="http://indiewebcamp.com/authorship" target="_blank">authorship algorithm</a>).</p>
+                information in several formats.</p>
             <form method="post">
                 <fieldset>
                     <legend> Enter an URL to be fetched &amp; examined</legend>
                     <div>
-                        <label><span> URL</span><input type="url" name="url" value="https://jkphl.is"
+                        <label><span> URL</span><input type="url" name="url" value="<?= htmlspecialchars($url); ?>"
                                                        placeholder="http://" required="required"/></label>
                         <!--<label><span > Data</span ><select name = "data" >
                                 <option value = "all" > All</option >

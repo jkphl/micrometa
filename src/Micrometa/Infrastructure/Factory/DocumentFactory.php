@@ -52,11 +52,12 @@ use Jkphl\Micrometa\Ports\Exceptions\RuntimeException;
 class DocumentFactory
 {
     /**
-     * HTML5 elements
+     * Allowed elements
      *
      * @var array
      */
-    protected static $html5 = [
+    protected static $allowedElements = [
+        // HTML 5
         'a',
         'abbr',
         'acronym',
@@ -151,6 +152,7 @@ class DocumentFactory
         'output',
         'p',
         'param',
+        'picture',
         'plaintext',
         'pre',
         'progress',
@@ -192,7 +194,89 @@ class DocumentFactory
         'var',
         'video',
         'wbr',
-        'xmp'
+        'xmp',
+
+        // SVG
+        'a',
+        'altGlyph',
+        'altGlyphDef',
+        'altGlyphItem',
+        'animate',
+        'animateColor',
+        'animateMotion',
+        'animateTransform',
+        'circle',
+        'clipPath',
+        'color-profile',
+        'cursor',
+        'defs',
+        'desc',
+        'ellipse',
+        'feBlend',
+        'feColorMatrix',
+        'feComponentTransfer',
+        'feComposite',
+        'feConvolveMatrix',
+        'feDiffuseLighting',
+        'feDisplacementMap',
+        'feDistantLight',
+        'feFlood',
+        'feFuncA',
+        'feFuncB',
+        'feFuncG',
+        'feFuncR',
+        'feGaussianBlur',
+        'feImage',
+        'feMerge',
+        'feMergeNode',
+        'feMorphology',
+        'feOffset',
+        'fePointLight',
+        'feSpecularLighting',
+        'feSpotLight',
+        'feTile',
+        'feTurbulence',
+        'filter',
+        'font',
+        'font-face',
+        'font-face-format',
+        'font-face-name',
+        'font-face-src',
+        'font-face-uri',
+        'foreignObject',
+        'g',
+        'glyph',
+        'glyphRef',
+        'hkern',
+        'image',
+        'line',
+        'linearGradient',
+        'marker',
+        'mask',
+        'metadata',
+        'missing-glyph',
+        'mpath',
+        'path',
+        'pattern',
+        'polygon',
+        'polyline',
+        'radialGradient',
+        'rect',
+        'script',
+        'set',
+        'stop',
+        'style',
+        'svg',
+        'switch',
+        'symbol',
+        'text',
+        'textPath',
+        'title',
+        'tref',
+        'tspan',
+        'use',
+        'view',
+        'vkern',
     ];
 
     /**
@@ -306,7 +390,7 @@ class DocumentFactory
         // If it's an error based on an HTML5 element
         if (($error->code == 801) &&
             preg_match('/^tag\s+(\S+)\s+invalid$/', strtolower($error->message), $tag) &&
-            in_array($tag[1], self::$html5)
+            in_array($tag[1], self::$allowedElements)
         ) {
             return true;
         }
