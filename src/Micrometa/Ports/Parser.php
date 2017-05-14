@@ -92,7 +92,7 @@ class Parser
             Http::createFromString($uri)
         ) as $parser) {
             $results = $extractor->extract($dom, $parser);
-            $items += ItemFactory::createFromApplicationItems($results->getItems());
+            $items = array_merge($items, ItemFactory::createFromApplicationItems($results->getItems()));
         }
 
         return new ItemObjectModel($items);
