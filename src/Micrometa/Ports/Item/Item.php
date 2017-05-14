@@ -39,6 +39,7 @@ namespace Jkphl\Micrometa\Ports\Item;
 use Jkphl\Micrometa\Application\Contract\ValueInterface;
 use Jkphl\Micrometa\Application\Factory\AliasFactory;
 use Jkphl\Micrometa\Application\Item\ItemInterface as ApplicationItemInterface;
+use Jkphl\Micrometa\Application\Item\PropertyListInterface;
 use Jkphl\Micrometa\Domain\Exceptions\OutOfBoundsException as DomainOutOfBoundsException;
 use Jkphl\Micrometa\Infrastructure\Factory\ItemFactory;
 use Jkphl\Micrometa\Infrastructure\Factory\ProfiledNamesFactory;
@@ -218,12 +219,13 @@ class Item extends ItemList implements ItemInterface
     /**
      * Return all properties
      *
-     * @return array[] Properties
+     * @return PropertyListInterface Properties
      * @api
      */
     public function getProperties()
     {
-        return $this->item->getProperties()->export();
+        return $this->item->getProperties();
+//        return $this->item->getProperties()->export();
     }
 
     /**
@@ -255,5 +257,25 @@ class Item extends ItemList implements ItemInterface
     public function getFormat()
     {
         return $this->item->getFormat();
+    }
+
+    /**
+     * Get the item ID
+     *
+     * @return string Item ID
+     */
+    public function getId()
+    {
+        return $this->item->getId();
+    }
+
+    /**
+     * Return the item value
+     *
+     * @return string Item value
+     */
+    public function getValue()
+    {
+        return $this->item->getValue();
     }
 }

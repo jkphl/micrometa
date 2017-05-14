@@ -36,6 +36,8 @@
 
 namespace Jkphl\Micrometa\Ports\Item;
 
+use Jkphl\Micrometa\Application\Item\PropertyListInterface;
+
 /**
  * Item interface
  *
@@ -98,10 +100,24 @@ interface ItemInterface extends ItemListInterface
     public function getType();
 
     /**
+     * Get the item ID
+     *
+     * @return string Item ID
+     */
+    public function getId();
+
+    /**
      * Return all properties
      *
-     * @return array[] Properties
+     * @return PropertyListInterface Properties
      * @api
      */
     public function getProperties();
+
+    /**
+     * Return the item value
+     *
+     * @return string Item value
+     */
+    public function getValue();
 }
