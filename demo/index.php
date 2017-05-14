@@ -42,6 +42,7 @@ $parserSuffices = [
     Format::MICRODATA => 'microdata',
     Format::RDFA_LITE => 'rdfa-lite',
     Format::JSON_LD => 'json-ld',
+    Format::LINK_REL => 'link-rel',
 ];
 
 /**
@@ -163,10 +164,15 @@ $params = array_merge($_GET, $_POST);
 $url = empty($params['url']) ? '' : $params['url'];
 $data = empty($params['data']) ? '' : $params['data'];
 $output = empty($params['output']) ? 'tree' : $params['output'];
-$formats = empty($params['format']) ? '' : $params['format'];
-$formats = 0;
-foreach ((empty($params['parser']) ? [] : (array)$params['parser']) as $parser) {
-    $formats |= intval($parser);
+
+// Aggregate the parsers to use
+if (empty($params['parser'])) {
+    $formats= Format::MICROFORMATS | Format::MICRODATA | Format::RDFA_LITE | Format::LINK_REL;
+} else {
+    $formats = 0;
+    foreach ((empty($params['parser']) ? [] : (array)$params['parser']) as $parser) {
+        $formats |= intval($parser);
+    }
 }
 
 ?><!DOCTYPE html>
@@ -188,7 +194,7 @@ foreach ((empty($params['parser']) ? [] : (array)$params['parser']) as $parser) 
                     href="http://indiewebcamp.com/authorship" target="_blank">authorship algorithm</a>).</p>
             <form method="post">
                 <fieldset>
-                    <legend> Enter an URL to be fetched & amp; examined</legend>
+                    <legend> Enter an URL to be fetched &amp; examined</legend>
                     <div>
                         <label><span> URL</span><input type="url" name="url" value="https://jkphl.is"
                                                        placeholder="http://" required="required"/></label>
@@ -215,12 +221,16 @@ foreach ((empty($params['parser']) ? [] : (array)$params['parser']) as $parser) 
                         <label class="legend item-type-rdfa-lite"><input type="checkbox" name="parser[rdfalite]"
                                                                          value="<?= Format::RDFA_LITE; ?>"<?= ($formats & Format::RDFA_LITE) ? ' checked="checked"' : ''; ?>/>
                             RDFa Lite 1.1</label>
+                        <label class="legend item-type-link-rel"><input type="checkbox" name="parser[link-rel]"
+                                                                        value="<?= Format::LINK_REL; ?>"
+                                <?= ($formats & Format::LINK_REL) ? ' checked="checked"' : ''; ?>/>
+                            LinkRel</label>
                         <label class="legend item-type-json-ld disabled"><input type="checkbox" name="parser[json-ld]"
                                                                                 value="<?= Format::JSON_LD; ?>"
                                 <?= ($formats & Format::JSON_LD) ? ' checked="checked"' : ''; ?> disabled/>
                             JSON-LD</label>
-                        <input type="submit" name="microdata" value="Fetch &amp; parse URL"/>
                     </div>
+                    <div><input type="submit" name="microdata" value="Fetch &amp; parse URL"/></div>
                 </fieldset><?php
 
                 if (!empty($params['microdata']) && strlen($url)):
@@ -249,7 +259,39 @@ foreach ((empty($params['parser']) ? [] : (array)$params['parser']) as $parser) 
                     ); ?></pre><?php
                     else:
 
-                        echo renderItems($items);
+                        $micro = $rel = [];
+                        /** @var ItemInterface $item */
+                        foreach ($items as $item) {
+                            if ($item->getFormat() == Format::LINK_REL) {
+                                $rel[] = $item;
+                            } else {
+                                $micro[] = $item;
+                            }
+                        }
+
+                        // Micro information items
+                        if (count($micro)):
+
+                            ?><details class="items main" open="open">
+                            <summary><h2>Items</h2></summary><?php
+
+                            echo renderItems($micro);
+
+                            ?></details><?php
+
+                        endif;
+
+                        // LinkRel items
+                        if (count($rel)):
+
+                            ?><details class="items main" open="open">
+                            <summary><h2>LinkRel</h2></summary><?php
+
+                            echo renderItems($rel);
+
+                            ?></details><?php
+
+                        endif;
 
                     endif;
 
