@@ -242,54 +242,59 @@ if (empty($params['parser'])) {
 
                     flush();
 
-                    $micrometa = new Parser($formats);
-                    $itemObjectModel = $micrometa($url);
-                    $items = $itemObjectModel->getItems();
+                    try {
+                        $micrometa = new Parser($formats);
+                        $itemObjectModel = $micrometa($url);
+                        $items = $itemObjectModel->getItems();
 
-                    if (!count($items)):
-                        ?>The document doesn't seem to have embedded micro information.<?php
-                    elseif ($output == 'json'):
-                        ?>
-                        <pre><?= htmlspecialchars(
-                        json_encode($itemObjectModel->toObject(), JSON_PRETTY_PRINT)
-                    ); ?></pre><?php
-                    else:
+                        if (!count($items)):
+                            ?>The document doesn't seem to have embedded micro information.<?php
+                        elseif ($output == 'json'):
+                            ?>
+                            <pre><?= htmlspecialchars(
+                            json_encode($itemObjectModel->toObject(), JSON_PRETTY_PRINT)
+                        ); ?></pre><?php
+                        else:
 
-                        $micro = $rel = [];
-                        /** @var ItemInterface $item */
-                        foreach ($items as $item) {
-                            if ($item->getFormat() == Format::LINK_REL) {
-                                $rel[] = $item;
-                            } else {
-                                $micro[] = $item;
+                            $micro = $rel = [];
+                            /** @var ItemInterface $item */
+                            foreach ($items as $item) {
+                                if ($item->getFormat() == Format::LINK_REL) {
+                                    $rel[] = $item;
+                                } else {
+                                    $micro[] = $item;
+                                }
                             }
-                        }
 
-                        // Micro information items
-                        if (count($micro)):
+                            // Micro information items
+                            if (count($micro)):
 
-                            ?><details class="items main" open="open">
-                            <summary><h2>Items</h2></summary><?php
+                                ?><details class="items main" open="open">
+                                <summary><h2>Items</h2></summary><?php
 
-                            echo renderItems($micro);
+                                echo renderItems($micro);
 
-                            ?></details><?php
+                                ?></details><?php
+
+                            endif;
+
+                            // LinkRel items
+                            if (count($rel)):
+
+                                ?><details class="items main" open="open">
+                                <summary><h2>LinkRel</h2></summary><?php
+
+                                echo renderItems($rel);
+
+                                ?></details><?php
+
+                            endif;
 
                         endif;
-
-                        // LinkRel items
-                        if (count($rel)):
-
-                            ?><details class="items main" open="open">
-                            <summary><h2>LinkRel</h2></summary><?php
-
-                            echo renderItems($rel);
-
-                            ?></details><?php
-
-                        endif;
-
-                    endif;
+                    } catch(\Exception $e) {
+                        ?><h2 class="error" title="<?= htmlspecialchars(get_class($e).' ('.$e->getCode().')'); ?>"><?= htmlspecialchars($e->getMessage()); ?></h2>
+                        <div class="error"><pre><?= $e->getTraceAsString(); ?></pre></div><?php
+                    }
 
                     ?></fieldset><?php
 

@@ -34,6 +34,21 @@ details.main {
     margin-bottom: 1em;
 }
 
+div.error {
+    width: 100%;
+    display: table;
+    table-layout: fixed;
+}
+
+pre {
+    margin: 0;
+    padding: 1em;
+    border: 1px solid #fcc;
+    background-color: #fee;
+    overflow: auto;
+    display: table-cell;
+}
+
 summary {
     cursor: pointer;
     padding: 0.2em .5em;
@@ -117,10 +132,6 @@ article {
 footer, .hint {
     font-size: 80%;
     font-style: italic;
-}
-
-pre {
-    white-space: pre-wrap;
 }
 
 .hint {
@@ -251,4 +262,11 @@ li:last-child .item-properties .item-properties {
     background-size: contain;
     background-repeat: no-repeat;
     background-position: right center;
+}
+
+h2.error {
+    color: #f00;
+    margin-bottom: .3em;
+    display: block;
+    cursor: help;
 }
