@@ -36,10 +36,10 @@
 
 namespace Jkphl\Micrometa\Tests\Application;
 
+use Jkphl\Domfactory\Ports\Dom;
 use Jkphl\Micrometa\Application\Contract\ParsingResultInterface;
 use Jkphl\Micrometa\Application\Item\Item;
 use Jkphl\Micrometa\Application\Service\ExtractorService;
-use Jkphl\Micrometa\Infrastructure\Factory\DocumentFactory;
 use Jkphl\Micrometa\Infrastructure\Parser\Microdata;
 use Jkphl\Micrometa\Infrastructure\Parser\Microformats;
 use Jkphl\Micrometa\Infrastructure\Parser\RdfaLite;
@@ -97,7 +97,7 @@ class ExtractorTest extends \PHPUnit_Framework_TestCase
         $rdfaLite = file_get_contents(
             dirname(__DIR__).DIRECTORY_SEPARATOR.'Fixture'.DIRECTORY_SEPARATOR.'article-rdfa-lite.html'
         );
-        $rdfaLiteDom = DocumentFactory::createFromString($rdfaLite);
+        $rdfaLiteDom = Dom::createFromString($rdfaLite);
         $this->assertInstanceOf(\DOMDocument::class, $rdfaLiteDom);
 
         // Create an RDFa Lite 1.1 parser
@@ -123,7 +123,7 @@ class ExtractorTest extends \PHPUnit_Framework_TestCase
         $microdata = file_get_contents(
             dirname(__DIR__).DIRECTORY_SEPARATOR.'Fixture'.DIRECTORY_SEPARATOR.'article-microdata.html'
         );
-        $microdataDom = DocumentFactory::createFromString($microdata);
+        $microdataDom = Dom::createFromString($microdata);
         $this->assertInstanceOf(\DOMDocument::class, $microdataDom);
 
         // Create an RDFa Lite 1.1 parser
@@ -149,7 +149,7 @@ class ExtractorTest extends \PHPUnit_Framework_TestCase
         $microformats = file_get_contents(
             self::$microformatsTests.'h-product'.DIRECTORY_SEPARATOR.'aggregate.html'
         );
-        $microformatsDom = DocumentFactory::createFromString($microformats);
+        $microformatsDom = Dom::createFromString($microformats);
         $this->assertInstanceOf(\DOMDocument::class, $microformatsDom);
 
         // Create a Microformats 2 parser
@@ -175,7 +175,7 @@ class ExtractorTest extends \PHPUnit_Framework_TestCase
         $microformats = file_get_contents(
             dirname(__DIR__).DIRECTORY_SEPARATOR.'Fixture'.DIRECTORY_SEPARATOR.'nested-events.html'
         );
-        $microformatsDom = DocumentFactory::createFromString($microformats);
+        $microformatsDom = Dom::createFromString($microformats);
         $this->assertInstanceOf(\DOMDocument::class, $microformatsDom);
 
         // Create a Microformats 2 parser

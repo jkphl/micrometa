@@ -36,6 +36,7 @@
 
 namespace Jkphl\Micrometa\Tests\Ports;
 
+use Jkphl\Micrometa\Application\Item\PropertyList;
 use Jkphl\Micrometa\Infrastructure\Factory\MicroformatsFactory;
 use Jkphl\Micrometa\Ports\Item\Item;
 use Jkphl\Micrometa\Ports\Item\ItemInterface;
@@ -75,7 +76,7 @@ class ItemTest extends AbstractItemListTest
         $this->assertInstanceOf(Item::class, $feedItem);
 
         $properties = $feedItem->getProperties();
-        $this->assertTrue(is_array($properties));
+        $this->assertInstanceOf(PropertyList::class, $properties);
         $this->assertEquals(3, count($properties));
 
         // Get an unknown property

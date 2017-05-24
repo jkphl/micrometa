@@ -54,6 +54,12 @@ use League\Uri\Schemes\Http;
 class ParserFactoryTest extends \PHPUnit_Framework_TestCase
 {
     /**
+     * Valid local test HTML document
+     *
+     * @var string
+     */
+    const VALID_HTML_URL = 'http://localhost:1349/valid-with-errors-test.html';
+    /**
      * Test the parser factory
      */
     public function testParserFactory()
@@ -65,10 +71,10 @@ class ParserFactoryTest extends \PHPUnit_Framework_TestCase
          */
         foreach (ParserFactory::createParsersFromFormats(
             $formats,
-            Http::createFromString(DocumentFactoryTest::VALID_HTML_URL)
+            Http::createFromString(self::VALID_HTML_URL)
         ) as $parserFormat => $parser) {
             $this->assertInstanceOf(ParserFactory::$parsers[$parserFormat], $parser);
-            $this->assertEquals(DocumentFactoryTest::VALID_HTML_URL, $parser->getUri());
+            $this->assertEquals(self::VALID_HTML_URL, $parser->getUri());
             $formats &= ~$parserFormat;
         }
         $this->assertEquals(0, $formats);

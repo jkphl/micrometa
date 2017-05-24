@@ -42,7 +42,7 @@ namespace Jkphl\Micrometa\Ports\Exceptions;
  * @package Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Ports
  */
-class RuntimeException extends \InvalidArgumentException implements MicrometaExceptionInterface
+class RuntimeException extends \RuntimeException implements MicrometaExceptionInterface
 {
 
 }

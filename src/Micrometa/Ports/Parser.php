@@ -36,8 +36,8 @@
 
 namespace Jkphl\Micrometa\Ports;
 
+use Jkphl\Domfactory\Ports\Dom;
 use Jkphl\Micrometa\Application\Service\ExtractorService;
-use Jkphl\Micrometa\Infrastructure\Factory\DocumentFactory;
 use Jkphl\Micrometa\Infrastructure\Factory\ItemFactory;
 use Jkphl\Micrometa\Infrastructure\Factory\ParserFactory;
 use Jkphl\Micrometa\Ports\Item\ItemObjectModel;
@@ -82,7 +82,7 @@ class Parser
     {
         // If source code has been passed in
         $dom = (($source !== null) && strlen(trim($source))) ?
-            DocumentFactory::createFromString($source) : DocumentFactory::createFromUri($uri);
+            Dom::createFromString($source) : Dom::createFromUri($uri);
 
         // Run through all format parsers
         $items = [];

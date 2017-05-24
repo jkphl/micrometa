@@ -34,6 +34,7 @@
     "require": {
         "php": ">=5.5",
         "guzzlehttp/guzzle": "^6.2",
+        "jkphl/dom-factory": "^0.1.0",
         "jkphl/rdfa-lite-microdata": "^0.3.0",
         "league/uri": "4.*",
         "mf2/mf2": "^0.3.0",
