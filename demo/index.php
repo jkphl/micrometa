@@ -167,7 +167,7 @@ $output = empty($params['output']) ? 'tree' : $params['output'];
 
 // Aggregate the parsers to use
 if (empty($params['parser'])) {
-    $formats= Format::MICROFORMATS | Format::MICRODATA | Format::RDFA_LITE | Format::LINK_REL;
+    $formats= Format::ALL;
 } else {
     $formats = 0;
     foreach ((empty($params['parser']) ? [] : (array)$params['parser']) as $parser) {
@@ -221,9 +221,9 @@ if (empty($params['parser'])) {
                                                                         value="<?= Format::LINK_REL; ?>"
                                 <?= ($formats & Format::LINK_REL) ? ' checked="checked"' : ''; ?>/>
                             LinkRel</label>
-                        <label class="legend item-type-json-ld disabled"><input type="checkbox" name="parser[json-ld]"
+                        <label class="legend item-type-json-ld"><input type="checkbox" name="parser[json-ld]"
                                                                                 value="<?= Format::JSON_LD; ?>"
-                                <?= ($formats & Format::JSON_LD) ? ' checked="checked"' : ''; ?> disabled/>
+                                <?= ($formats & Format::JSON_LD) ? ' checked="checked"' : ''; ?>/>
                             JSON-LD</label>
                     </div>
                     <div><input type="submit" name="microdata" value="Fetch &amp; parse URL"/></div>

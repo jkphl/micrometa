@@ -37,6 +37,8 @@
 namespace Jkphl\Micrometa\Infrastructure\Parser;
 
 use Jkphl\Micrometa\Application\Contract\ParsingResultInterface;
+use Jkphl\Micrometa\Infrastructure\Parser\JsonLD\CachingContextLoader;
+use Jkphl\Micrometa\Infrastructure\Parser\JsonLD\VocabularyCache;
 use Jkphl\Micrometa\Ports\Format;
 use ML\JsonLD\Exception\JsonLdException;
 use ML\JsonLD\JsonLD as JsonLDParser;
@@ -44,15 +46,30 @@ use ML\JsonLD\Node;
 use ML\JsonLD\NodeInterface;
 use ML\JsonLD\TypedValue;
 use ML\JsonLD\Value;
+use Psr\Http\Message\UriInterface;
 
 /**
  * JsonLD parser
  *
  * @package Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Infrastructure
+ * @see https://jsonld-examples.com/
+ * @see http://www.dr-chuck.com/csev-blog/2016/04/json-ld-performance-sucks-for-api-specs/
  */
 class JsonLD extends AbstractParser
 {
+    /**
+     * Vocabulary cache
+     *
+     * @var VocabularyCache
+     */
+    protected $vocabularyCache;
+    /**
+     * Context loader
+     *
+     * @var CachingContextLoader
+     */
+    protected $contextLoader;
     /**
      * Format
      *
@@ -65,6 +82,18 @@ class JsonLD extends AbstractParser
      * @var string
      */
     const JSON_COMMENT_PATTERN = '#(/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+/)|([\s\t]//.*)|(^//.*)#';
+
+    /**
+     * Parser constructor
+     *
+     * @param UriInterface $uri Base URI
+     */
+    public function __construct(UriInterface $uri)
+    {
+        parent::__construct($uri);
+        $this->vocabularyCache = new VocabularyCache();
+        $this->contextLoader = new CachingContextLoader($this->vocabularyCache);
+    }
 
     /**
      * Parse a DOM document
@@ -81,7 +110,8 @@ class JsonLD extends AbstractParser
         $xpath->registerNamespace('html', self::HTML_PROFILE_URI);
         foreach ($xpath->query('//html:script[@type = "application/ld+json"]') as $jsonLDDoc) {
             $jsonLDDocSource = preg_replace(self::JSON_COMMENT_PATTERN, '', $jsonLDDoc->textContent);
-            $items = array_merge($items, $this->parseDocument($jsonLDDocSource));
+            $i = $this->parseDocument($jsonLDDocSource);
+            $items = array_merge($items, $i);
         }
 
         // TODO: Implement parseDom() method.
@@ -106,22 +136,23 @@ class JsonLD extends AbstractParser
     /**
      * Parse a JSON-LD root node
      *
-     * @param \stdClass $jsonDLRoot JSON-LD root node
+     * @param \stdClass $jsonLDRoot JSON-LD root node
      */
-    protected function parseRootNode($jsonDLRoot)
+    protected function parseRootNode($jsonLDRoot)
     {
         $item = null;
 
         try {
             // Run through all nodes to parse the first one
+            $jsonDLDocument = JsonLDParser::getDocument($jsonLDRoot, ['documentLoader' => $this->contextLoader]);
             /** @var Node $node */
-            foreach (JsonLDParser::getDocument($jsonDLRoot)->getGraph()->getNodes() as $node) {
+            foreach ($jsonDLDocument->getGraph()->getNodes() as $node) {
                 $item = $this->parseNode($node);
                 break;
             }
 
         } catch (JsonLdException $e) {
-            trigger_error($e->getMessage(), E_USER_WARNING);
+            trigger_error($e->getMessage().PHP_EOL.$e->getTraceAsString(), E_USER_WARNING);
         }
 
         return $item;
@@ -176,7 +207,7 @@ class JsonLD extends AbstractParser
     protected function parseNodeType(Node $node)
     {
         /** @var Node $itemType */
-        return ($itemType = $node->getType()) ? [$itemType->getId()] : [];
+        return ($itemType = $node->getType()) ? [$this->vocabularyCache->expandIRI($itemType->getId())] : [];
     }
 
     /**
@@ -198,11 +229,8 @@ class JsonLD extends AbstractParser
 
             // Initialize the property
             if (empty($properties[$name])) {
-                $properties[$name] = (object)[
-                    'name' => $name,
-                    'profile' => '',
-                    'values' => [],
-                ];
+                $properties[$name] = $this->vocabularyCache->expandIRI($name);
+                $properties[$name]->values = [];
             }
 
             // Parse the property value
@@ -226,8 +254,6 @@ class JsonLD extends AbstractParser
                 $properties[$name]->values[] = $value;
             }
         }
-
-//        print_r($properties);
 
         return $properties;
     }
