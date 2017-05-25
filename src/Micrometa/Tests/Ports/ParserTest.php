@@ -54,9 +54,15 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      * @var string
      */
     const VALID_HTML_URL = 'http://localhost:1349/valid-test.html';
+    /**
+     * Valid local test AMP HTML document with JSON-LD
+     *
+     * @var string
+     */
+    const VALID_JSONLD_URL = 'http://localhost:1349/article-json-ld.amp.html';
 
     /**
-     * Test the parser facade with a simple document without items
+     * Test the LinkRel parser
      */
     public function testLinkRelParser()
     {
@@ -64,6 +70,15 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $itemObjectModel = $parser(self::VALID_HTML_URL);
         $this->assertInstanceOf(ItemObjectModelInterface::class, $itemObjectModel);
         $this->assertEquals(3, count($itemObjectModel->getItems()));
+    }
+
+    /**
+     * Test the JSON-LD parser
+     */
+    public function testJsonLDParser() {
+        $parser = new Parser(Format::JSON_LD);
+        $itemObjectModel = $parser(self::VALID_JSONLD_URL, file_get_contents(dirname(__DIR__).'/Fixture/article-json-ld.amp.html'));
+//        print_r($itemObjectModel->toObject());
     }
 
     /**

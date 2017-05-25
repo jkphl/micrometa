@@ -38,6 +38,12 @@ namespace Jkphl\Micrometa\Infrastructure\Parser;
 
 use Jkphl\Micrometa\Application\Contract\ParsingResultInterface;
 use Jkphl\Micrometa\Ports\Format;
+use ML\JsonLD\Exception\JsonLdException;
+use ML\JsonLD\JsonLD as JsonLDParser;
+use ML\JsonLD\Node;
+use ML\JsonLD\NodeInterface;
+use ML\JsonLD\TypedValue;
+use ML\JsonLD\Value;
 
 /**
  * JsonLD parser
@@ -53,6 +59,12 @@ class JsonLD extends AbstractParser
      * @var int
      */
     const FORMAT = Format::JSON_LD;
+    /**
+     * Regex pattern for matching leading comments in a JSON string
+     *
+     * @var string
+     */
+    const JSON_COMMENT_PATTERN = '#(/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+/)|([\s\t]//.*)|(^//.*)#';
 
     /**
      * Parse a DOM document
@@ -62,7 +74,183 @@ class JsonLD extends AbstractParser
      */
     public function parseDom(\DOMDocument $dom)
     {
+        $items = [];
+
+        // Find and process all JSON-LD blocks
+        $xpath = new \DOMXPath($dom);
+        $xpath->registerNamespace('html', self::HTML_PROFILE_URI);
+        foreach ($xpath->query('//html:script[@type = "application/ld+json"]') as $jsonLDDoc) {
+            $jsonLDDocSource = preg_replace(self::JSON_COMMENT_PATTERN, '', $jsonLDDoc->textContent);
+            $items = array_merge($items, $this->parseDocument($jsonLDDocSource));
+        }
+
         // TODO: Implement parseDom() method.
-        return new ParsingResult(self::FORMAT, []);
+        return new ParsingResult(self::FORMAT, $items);
+    }
+
+    /**
+     * Parse a JSON-LD document
+     *
+     * @param string $jsonLDDocSource JSON-LD document
+     * @return array Items
+     */
+    protected function parseDocument($jsonLDDocSource)
+    {
+        $jsonLDDoc = @json_decode($jsonLDDocSource);
+        return array_filter(
+            is_array($jsonLDDoc) ?
+                array_map([$this, 'parseRootNode'], $jsonLDDoc) : [$this->parseRootNode($jsonLDDoc)]
+        );
+    }
+
+    /**
+     * Parse a JSON-LD root node
+     *
+     * @param \stdClass $jsonDLRoot JSON-LD root node
+     */
+    protected function parseRootNode($jsonDLRoot)
+    {
+        $item = null;
+
+        try {
+            // Run through all nodes to parse the first one
+            /** @var Node $node */
+            foreach (JsonLDParser::getDocument($jsonDLRoot)->getGraph()->getNodes() as $node) {
+                $item = $this->parseNode($node);
+                break;
+            }
+
+        } catch (JsonLdException $e) {
+            trigger_error($e->getMessage(), E_USER_WARNING);
+        }
+
+        return $item;
+    }
+
+    /**
+     * Parse a JSON-LD fragment
+     *
+     * @param Node|TypedValue|array $jsonLD JSON-LD fragment
+     * @return mixed Parsed fragment
+     */
+    protected function parse($jsonLD)
+    {
+        // If it's a node object
+        if ($jsonLD instanceof NodeInterface) {
+            return $this->parseNode($jsonLD);
+
+            // Else if it's a value
+        } elseif ($jsonLD instanceof Value) {
+            return $this->parseValue($jsonLD);
+
+            // Else if it's a list of items
+        } elseif (is_array($jsonLD)) {
+            return array_map([$this, 'parse'], $jsonLD);
+        }
+
+        trigger_error('Unknown JSON-LD item: '.gettype($jsonLD), E_USER_NOTICE);
+        return null;
+    }
+
+    /**
+     * Parse a JSON-LD node
+     *
+     * @param Node $node Node
+     * @return \stdClass Item
+     */
+    protected function parseNode(Node $node)
+    {
+        return (object)[
+            'type' => $this->parseNodeType($node),
+            'id' => $node->getId() ?: null,
+            'properties' => $this->parseNodeProperties($node),
+        ];
+    }
+
+    /**
+     * Parse the type of a JSON-LD node
+     *
+     * @param Node $node Node
+     * @return array Item type
+     */
+    protected function parseNodeType(Node $node)
+    {
+        /** @var Node $itemType */
+        return ($itemType = $node->getType()) ? [$itemType->getId()] : [];
+    }
+
+    /**
+     * Parse the properties of a JSON-LD node
+     *
+     * @param Node $node Node
+     * @return array Item properties
+     */
+    protected function parseNodeProperties(Node $node)
+    {
+        $properties = [];
+
+        // Run through all node properties
+        foreach ($node->getProperties() as $name => $property) {
+            // Skip the node type
+            if ($name === Node::TYPE) {
+                continue;
+            }
+
+            // Initialize the property
+            if (empty($properties[$name])) {
+                $properties[$name] = (object)[
+                    'name' => $name,
+                    'profile' => '',
+                    'values' => [],
+                ];
+            }
+
+            // Parse the property value
+            $value = $this->parse($property);
+
+            // If this is a nested item
+            if (is_object($value)) {
+                if (!empty($value->type)) {
+                    $properties[$name]->values[] = $value;
+
+                    // @type = @id
+                } else {
+                    $properties[$name]->values[] = $value->id;
+                }
+
+            } elseif (is_array($value)) {
+                $properties[$name]->values = array_merge($properties[$name]->values, $value);
+
+                // Else
+            } elseif ($value) {
+                $properties[$name]->values[] = $value;
+            }
+        }
+
+//        print_r($properties);
+
+        return $properties;
+    }
+
+    /**
+     * Parse a typed value
+     *
+     * @param TypedValue $value Typed value
+     * @return string Value
+     */
+    protected function parseValue(TypedValue $value)
+    {
+        return $value->getValue();
+    }
+
+    /**
+     * Filter empty values
+     *
+     * @param array|string $value Value
+     * @return bool Value is not empty
+     */
+    protected function filter($value)
+    {
+        return is_array($value) ? !!count($value) : strlen($value);
     }
 }

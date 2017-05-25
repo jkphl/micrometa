@@ -54,6 +54,12 @@ abstract class AbstractParser implements ParserInterface
      */
     const FORMAT = 0;
     /**
+     * HTML namespace
+     *
+     * @var string
+     */
+    const HTML_PROFILE_URI = 'http://www.w3.org/1999/xhtml';
+    /**
      * Base URI
      *
      * @var UriInterface

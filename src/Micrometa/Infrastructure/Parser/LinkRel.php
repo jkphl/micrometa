@@ -53,12 +53,6 @@ class LinkRel extends AbstractParser
      * @var int
      */
     const FORMAT = Format::LINK_REL;
-    /**
-     * HTML namespace
-     *
-     * @var string
-     */
-    const HTML_PROFILE_URI = 'http://www.w3.org/1999/xhtml';
 
     /**
      * Parse a DOM document
