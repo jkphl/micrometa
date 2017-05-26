@@ -60,11 +60,14 @@ class MicroformatsFactory
      */
     protected static function createItem(array $item)
     {
-        $microformatItem = ['type' => self::createTypes($item['type'])];
+        $microformatItem = [
+            'type' => self::createTypes($item['type']),
+            'lang' => null,
+        ];
 
         // Create the properties (if any)
         if (isset($item['properties']) && is_array($item['properties'])) {
-            $microformatItem['properties'] = self::createProperties($item['properties']);
+            $microformatItem['properties'] = self::createProperties($item['properties'], $microformatItem['lang']);
         }
 
         // Create the value (if any)
@@ -99,17 +102,27 @@ class MicroformatsFactory
      * Refine the item properties
      *
      * @param array $properties Properties
+     * @param string $lang Item language
      * @return array Refined properties
      */
-    protected static function createProperties(array $properties)
+    protected static function createProperties(array $properties, &$lang)
     {
         $microformatProperties = [];
         foreach ($properties as $propertyName => $propertyValues) {
-            $microformatProperties[] = (object)[
-                'profile' => self::MF2_PROFILE_URI,
-                'name' => $propertyName,
-                'values' => self::createProperty($propertyValues)
-            ];
+            // If this is the item language
+            if (($propertyName == 'html-lang') && is_string($propertyValues)) {
+                $lang = $propertyValues;
+                continue;
+            }
+
+            // Process property values
+            if (is_array($propertyValues)) {
+                $microformatProperties[] = (object)[
+                    'profile' => self::MF2_PROFILE_URI,
+                    'name' => $propertyName,
+                    'values' => self::createProperty($propertyValues)
+                ];
+            }
         }
         return $microformatProperties;
     }

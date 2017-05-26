@@ -72,6 +72,13 @@ class Item implements ItemInterface
     protected $itemId;
 
     /**
+     * Item language
+     *
+     * @var string
+     */
+    protected $itemLanguage;
+
+    /**
      * Property list factory
      *
      * @var PropertyListFactoryInterface
@@ -84,18 +91,21 @@ class Item implements ItemInterface
      * @param string|\stdClass|\stdClass[] $type Item type(s)
      * @param \stdClass[] $properties Item properties
      * @param string|null $itemId Item id
+     * @param string|null $itemLanguage Item language
      * @param PropertyListFactoryInterface|null $propertyListFactory Property list factory
      */
     public function __construct(
         $type,
         array $properties = [],
         $itemId = null,
+        $itemLanguage = null,
         PropertyListFactoryInterface $propertyListFactory = null
     ) {
         $this->propertyListFactory = $propertyListFactory ?: new PropertyListFactory();
         $this->type = $this->validateTypes(is_array($type) ? $type : [$type]);
         $this->properties = $this->validateProperties($properties);
         $this->itemId = trim($itemId) ?: null;
+        $this->itemLanguage = trim($itemLanguage) ?: null;
     }
 
     /**
@@ -157,6 +167,15 @@ class Item implements ItemInterface
     public function getId()
     {
         return $this->itemId;
+    }
+
+    /**
+     * Return the item language (if any)
+     *
+     * @return string|null Item language
+     */
+    public function getLanguage() {
+        return $this->itemLanguage;
     }
 
     /**

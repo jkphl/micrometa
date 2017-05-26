@@ -55,24 +55,29 @@ class ItemTest extends \PHPUnit_Framework_TestCase
      * @param string|\stdClass|\stdClass[] $type Item type(s)
      * @param array $properties Item properties
      * @param $itemId Item id
+     * @param $itemLanguage Item language
      * @param array $expectedTypes Expected item types
      * @param array $expectedProperties Expected item properties
      * @param string $expectedId Expected item id
+     * @param string $expectedLanguage Expected language
      * @dataProvider creationArgumentProvider
      */
     public function testItemCreation(
         $type,
         array $properties,
         $itemId,
+        $itemLanguage,
         array $expectedTypes,
         array $expectedProperties,
-        $expectedId
+        $expectedId,
+        $expectedLanguage = null
     ) {
-        $item = new Item($type, $properties, $itemId);
+        $item = new Item($type, $properties, $itemId, $itemLanguage);
         $this->assertInstanceOf(Item::class, $item);
         $this->assertEquals($expectedTypes, $item->getType());
         $this->assertEquals($expectedProperties, $this->convertPropertyListToArray($item->getProperties()));
         $this->assertEquals($expectedId, $item->getId());
+        $this->assertEquals($expectedLanguage, $item->getLanguage());
     }
 
     /**
@@ -99,14 +104,15 @@ class ItemTest extends \PHPUnit_Framework_TestCase
     {
         $item = new Item('test');
         return [
-            ['test', [], null, [$this->t('test')], [], null],
-            [$this->t('test', 'a'), [], null, [$this->t('test', 'a')], [], null],
-            [['test'], [], null, [$this->t('test')], [], null],
-            [['test', 'lorem'], [], null, [$this->t('test'), $this->t('lorem')], [], null],
-            [['test', '', 'lorem'], [], null, [$this->t('test'), $this->t('lorem')], [], null],
+            ['test', [], null, null, [$this->t('test')], [], null],
+            [$this->t('test', 'a'), [], null, null, [$this->t('test', 'a')], [], null],
+            [['test'], [], null, null, [$this->t('test')], [], null],
+            [['test', 'lorem'], [], null, null, [$this->t('test'), $this->t('lorem')], [], null],
+            [['test', '', 'lorem'], [], null, null, [$this->t('test'), $this->t('lorem')], [], null],
             [
                 'test',
                 [$this->p('name1', 'value1')],
+                null,
                 null,
                 [$this->t('test')],
                 ['name1' => [$this->s('value1')]],
@@ -116,6 +122,7 @@ class ItemTest extends \PHPUnit_Framework_TestCase
                 'test',
                 [$this->p('name1', '')],
                 null,
+                null,
                 [$this->t('test')],
                 [],
                 null
@@ -123,6 +130,7 @@ class ItemTest extends \PHPUnit_Framework_TestCase
             [
                 'test',
                 [$this->p('name1', [])],
+                null,
                 null,
                 [$this->t('test')],
                 [],
@@ -132,6 +140,7 @@ class ItemTest extends \PHPUnit_Framework_TestCase
                 'test',
                 [$this->p('name1', 'value1', 'profile1/')],
                 null,
+                null,
                 [$this->t('test')],
                 ['profile1/name1' => [$this->s('value1')]],
                 null
@@ -139,6 +148,7 @@ class ItemTest extends \PHPUnit_Framework_TestCase
             [
                 'test',
                 [$this->p('name1', 'value1')],
+                null,
                 null,
                 [$this->t('test')],
                 ['name1' => [$this->s('value1')]],
@@ -148,6 +158,7 @@ class ItemTest extends \PHPUnit_Framework_TestCase
                 'test',
                 [$this->p('name1', 'value1'), $this->p('name1', 'value2')],
                 null,
+                null,
                 [$this->t('test')],
                 ['name1' => [$this->s('value1'), $this->s('value2')]],
                 null
@@ -155,6 +166,7 @@ class ItemTest extends \PHPUnit_Framework_TestCase
             [
                 'test',
                 [$this->p('name1', 'value1'), $this->p('name2', 'value2')],
+                null,
                 null,
                 [$this->t('test')],
                 ['name1' => [$this->s('value1')], 'name2' => [$this->s('value2')]],
@@ -164,11 +176,13 @@ class ItemTest extends \PHPUnit_Framework_TestCase
                 'test',
                 [$this->p('name', [$item])],
                 null,
+                null,
                 [$this->t('test')],
                 ['name' => [$item]],
                 null
             ],
-            ['test', [], 'id', [$this->t('test')], [], 'id'],
+            ['test', [], 'id', null, [$this->t('test')], [], 'id'],
+            ['test', [], null, 'en', [$this->t('test')], [], null, 'en'],
         ];
     }
 

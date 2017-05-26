@@ -70,7 +70,7 @@ class LinkRel extends AbstractParser
 
         // Run through all <link> elements with a `rel` attribute
         /** @var \DOMElement $linkRel */
-        foreach ($xpath->query('//*[local-name(.) = "link"][@rel]') as $linkRel) {
+        foreach ($xpath->query('//*[local-name(.) = "link" or local-name(.) = "a"][@rel]') as $linkRel) {
             $item = new \stdClass();
 
             // Collect the item types

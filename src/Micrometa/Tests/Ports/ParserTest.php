@@ -76,8 +76,8 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      * Test the JSON-LD parser
      */
     public function testJsonLDParser() {
-//        $parser = new Parser(Format::JSON_LD);
-//        $itemObjectModel = $parser(self::VALID_JSONLD_URL, file_get_contents(dirname(__DIR__).'/Fixture/jsonld-examples.html'));
+        $parser = new Parser(Format::JSON_LD);
+        $itemObjectModel = $parser(self::VALID_HTML_URL, file_get_contents(dirname(__DIR__).'/Fixture/valid-test.html'));
 //        print_r($itemObjectModel->toObject());
     }
 

@@ -42,10 +42,10 @@ use Jkphl\Micrometa\Infrastructure\Parser\JsonLD\VocabularyCache;
 use Jkphl\Micrometa\Ports\Format;
 use ML\JsonLD\Exception\JsonLdException;
 use ML\JsonLD\JsonLD as JsonLDParser;
+use ML\JsonLD\LanguageTaggedString;
 use ML\JsonLD\Node;
 use ML\JsonLD\NodeInterface;
 use ML\JsonLD\TypedValue;
-use ML\JsonLD\Value;
 use Psr\Http\Message\UriInterface;
 use Psr\Log\LoggerInterface;
 
@@ -185,16 +185,20 @@ class JsonLD extends AbstractParser
         if ($jsonLD instanceof NodeInterface) {
             return $this->parseNode($jsonLD);
 
-            // Else if it's a value
-        } elseif ($jsonLD instanceof Value) {
-            return $this->parseValue($jsonLD);
+            // Else if it's a language tagged string
+        } elseif ($jsonLD instanceof LanguageTaggedString) {
+            return $this->parseLanguageTaggedString($jsonLD);
+
+            // Else if it's a typed value
+        } elseif ($jsonLD instanceof TypedValue) {
+            return $this->parseTypedValue($jsonLD);
 
             // Else if it's a list of items
         } elseif (is_array($jsonLD)) {
             return array_map([$this, 'parse'], $jsonLD);
         }
 
-        trigger_error('Unknown JSON-LD item: '.gettype($jsonLD), E_USER_NOTICE);
+        $this->logger->warning('Unknown JSON-LD item: '.gettype($jsonLD));
         return null;
     }
 
@@ -274,12 +278,24 @@ class JsonLD extends AbstractParser
     }
 
     /**
+     * Parse a language tagged string
+     *
+     * @param LanguageTaggedString $value Language tagged string
+     * @return string Value
+     */
+    protected function parseLanguageTaggedString(LanguageTaggedString $value)
+    {
+        // TODO: Language support?
+        return $value->getValue();
+    }
+
+    /**
      * Parse a typed value
      *
      * @param TypedValue $value Typed value
      * @return string Value
      */
-    protected function parseValue(TypedValue $value)
+    protected function parseTypedValue(TypedValue $value)
     {
         return $value->getValue();
     }

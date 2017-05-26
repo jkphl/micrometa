@@ -115,6 +115,8 @@ class ItemFactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(
             (object)[
                 'format' => 0,
+                'id' => null,
+                'lang' => null,
                 'types' => ['test'],
                 'properties' => [
                     MicroformatsFactory::MF2_PROFILE_URI.'alias-property' => ['value']
@@ -122,6 +124,8 @@ class ItemFactoryTest extends \PHPUnit_Framework_TestCase
                 'items' => [
                     (object)[
                         'format' => 0,
+                        'id' => null,
+                        'lang' => null,
                         'types' => ['test'],
                         'properties' => [],
                         'items' => []

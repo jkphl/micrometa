@@ -270,6 +270,15 @@ class Item extends ItemList implements ItemInterface
     }
 
     /**
+     * Get the item language
+     *
+     * @return string Item language
+     */
+    public function getLanguage() {
+        return $this->item->getLanguage();
+    }
+
+    /**
      * Return the item value
      *
      * @return string Item value

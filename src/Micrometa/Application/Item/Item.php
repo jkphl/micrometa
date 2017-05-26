@@ -75,6 +75,7 @@ class Item extends \Jkphl\Micrometa\Domain\Item\Item implements ItemInterface
      * @param array[] $properties Item properties
      * @param ItemInterface[] $children Nested items
      * @param string|null $itemId Item id
+     * @param string|null $itemLanguage Item language
      * @param string|null $value Item value
      */
     public function __construct(
@@ -84,10 +85,11 @@ class Item extends \Jkphl\Micrometa\Domain\Item\Item implements ItemInterface
         array $properties = [],
         array $children = [],
         $itemId = null,
+        $itemLanguage = null,
         $value = null
     ) {
         $this->format = $format;
-        parent::__construct($type, $properties, $itemId, $propertyListFactory);
+        parent::__construct($type, $properties, $itemId, $itemLanguage, $propertyListFactory);
         $this->children = $children;
         $this->value = $value;
     }
@@ -111,6 +113,8 @@ class Item extends \Jkphl\Micrometa\Domain\Item\Item implements ItemInterface
     {
         return (object)[
             'format' => $this->getFormat(),
+            'id' => $this->getId(),
+            'lang' => $this->getLanguage(),
             'types' => array_map(
                 function ($type) {
                     return $type->profile.$type->name;

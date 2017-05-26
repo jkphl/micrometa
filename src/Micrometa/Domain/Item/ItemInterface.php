@@ -61,6 +61,13 @@ interface ItemInterface extends ValueInterface
     public function getId();
 
     /**
+     * Return the item language (if any)
+     *
+     * @return string|null Item language
+     */
+    public function getLanguage();
+
+    /**
      * Return all item properties
      *
      * @return PropertyListInterface Item properties list

@@ -40,8 +40,15 @@ div.error {
     table-layout: fixed;
 }
 
+
 pre {
     margin: 0;
+    overflow: auto;
+    overflow-wrap: normal;
+    word-wrap: normal;
+    white-space: pre;
+    width: calc(58rem - 4px);
+    max-height: 50vh;
 }
 
 pre.error {
@@ -49,7 +56,6 @@ pre.error {
     border: 1px solid #fcc;
     background-color: #fee;
     overflow: auto;
-    display: table-cell;
 }
 
 summary {
@@ -112,6 +118,7 @@ fieldset {
     padding: 1em;
     margin: 3em 0;
     background-color: #fff;
+    box-sizing: border-box;
 }
 
 fieldset div + div {
@@ -129,7 +136,7 @@ legend a {
 }
 
 article {
-    width: 60em;
+    width: 60rem;
 }
 
 footer, .hint {

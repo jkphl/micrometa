@@ -134,10 +134,11 @@ class ItemFactory
     {
         $type = isset($item->type) ? $item->type : null;
         $itemId = isset($item->id) ? $item->id : null;
+        $itemLanguage = isset($item->lang) ? $item->lang : null;
         $value = isset($item->value) ? $item->value : null;
         $children = isset($item->children) ? array_map([$this, __METHOD__], $item->children) : [];
         $properties = $this->getProperties($item);
-        return new Item($this->format, $this->propertyListFactory, $type, $properties, $children, $itemId, $value);
+        return new Item($this->format, $this->propertyListFactory, $type, $properties, $children, $itemId, $itemLanguage, $value);
     }
 
     /**

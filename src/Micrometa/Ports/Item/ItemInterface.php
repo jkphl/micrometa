@@ -107,6 +107,13 @@ interface ItemInterface extends ItemListInterface
     public function getId();
 
     /**
+     * Get the item language
+     *
+     * @return string Item language
+     */
+    public function getLanguage();
+
+    /**
      * Return all properties
      *
      * @return PropertyListInterface Properties

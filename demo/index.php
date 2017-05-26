@@ -33,12 +33,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-use Jkphl\Micrometa\Ports\Format;
-use Jkphl\Micrometa\Ports\Item\ItemInterface;
-use Jkphl\Micrometa\Ports\Parser;
-use Monolog\Logger;
-use Monolog\Handler\TestHandler;
-use Monolog\Formatter\LineFormatter;
+use Jkphl\Micrometa\Ports\Format;use Jkphl\Micrometa\Ports\Item\ItemInterface;use Jkphl\Micrometa\Ports\Parser;use Monolog\Formatter\LineFormatter;use Monolog\Handler\TestHandler;use Monolog\Logger;
 
 require_once dirname(__DIR__).DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'autoload.php';
 
@@ -83,7 +78,8 @@ function renderItem(ItemInterface $item)
     $html = '<li><details>';
     $html .= '<summary class="item-type-'.$GLOBALS['parserSuffices'][$item->getFormat()].'">';
     $html .= '<h3><span class="item-type">'.implode('</span> + <span class="item-type">', $types).'</span>';
-    $html .= '<span class="item-id">[ID = '.htmlspecialchars($item->getId() ?: 'NULL').']</span></h3>';
+    $html .= '<span class="item-id">[ID = '.htmlspecialchars($item->getId() ?: 'NULL');
+    $html .= ' | LANGUAGE = '.htmlspecialchars(strtoupper($item->getLanguage()) ?: 'NULL').']</span></h3>';
     $html .= '</summary>';
 
 
@@ -236,86 +232,87 @@ if (empty($params['parser'])) {
 
                 if (!empty($params['microdata']) && strlen($url)):
 
-                    ?>
-                    <fieldset>
-                    <legend>Micro information embedded into <a href="<?= htmlspecialchars($url); ?>"
-                                                               target="_blank"><?= htmlspecialchars($url); ?></a>
-                    </legend><?php
-                    if (version_compare(PHP_VERSION, '5.4', '<')):
-                        ?><p class="hint">Unfortunately JSON pretty-printing is only available with PHP 5.4+.</p><?php
-                    endif;
-
-                    flush();
-                    $logHandler = new TestHandler();
-                    $logHandler->setFormatter(new LineFormatter("%datetime% > %level_name% > %message%\n"));
-                    $logger = new Logger('DEMO', [$logHandler]);
-
-                    try {
-                        $micrometa = new Parser($formats, $logger);
-                        $itemObjectModel = $micrometa($url);
-                        $items = $itemObjectModel->getItems();
-
-                        if (!count($items)):
-                            ?>The document doesn't seem to have embedded micro information.<?php
-                        elseif ($output == 'json'):
-                            ?>
-                            <pre><?= htmlspecialchars(
-                            json_encode($itemObjectModel->toObject(), JSON_PRETTY_PRINT)
-                        ); ?></pre><?php
-                        else:
-
-                            $micro = $rel = [];
-                            /** @var ItemInterface $item */
-                            foreach ($items as $item) {
-                                if ($item->getFormat() == Format::LINK_REL) {
-                                    $rel[] = $item;
-                                } else {
-                                    $micro[] = $item;
-                                }
-                            }
-
-                            // Micro information items
-                            if (count($micro)):
-
-                                ?>
-                                <details class="items main" open="open">
-                                <summary><h2>Items</h2></summary><?php
-
-                                echo renderItems($micro);
-
-                                ?></details><?php
-
-                            endif;
-
-                            // LinkRel items
-                            if (count($rel)):
-
-                                ?>
-                                <details class="items main" open="open">
-                                <summary><h2>LinkRel</h2></summary><?php
-
-                                echo renderItems($rel);
-
-                                ?></details><?php
-
-                            endif;
-
+                    ?><fieldset>
+                        <legend>Micro information embedded into <a href="<?= htmlspecialchars($url); ?>"
+                                                                   target="_blank"><?= htmlspecialchars($url); ?></a>
+                        </legend><?php
+                        if (version_compare(PHP_VERSION, '5.4', '<')):
+                            ?><p class="hint">Unfortunately JSON pretty-printing is only available with PHP
+                            5.4+.</p><?php
                         endif;
-                    } catch (\Exception $e) {
-                        ?><h2 class="error"
-                              title="<?= htmlspecialchars(get_class($e).' ('.$e->getCode().')'); ?>"><?= htmlspecialchars($e->getMessage()); ?></h2>
-                        <div class="error">
-                        <pre class="error"><?= $e->getTraceAsString(); ?></pre></div><?php
-                    }
 
-                    ?></fieldset>
+                        flush();
+                        $logHandler = new TestHandler();
+                        $logHandler->setFormatter(new LineFormatter("%datetime% > %level_name% > %message%\n"));
+                        $logger = new Logger('DEMO', [$logHandler]);
+
+                        try {
+                            $micrometa = new Parser($formats, $logger);
+                            $itemObjectModel = $micrometa($url);
+                            $items = $itemObjectModel->getItems();
+
+                            if (!count($items)):
+                                ?>The document doesn't seem to have embedded micro information.<?php
+                            elseif ($output == 'json'):
+                                ?>
+                                <pre><?= htmlspecialchars(
+                                json_encode($itemObjectModel->toObject(), JSON_PRETTY_PRINT)
+                            ); ?></pre><?php
+                            else:
+
+                                $micro = $rel = [];
+                                /** @var ItemInterface $item */
+                                foreach ($items as $item) {
+                                    if ($item->getFormat() == Format::LINK_REL) {
+                                        $rel[] = $item;
+                                    } else {
+                                        $micro[] = $item;
+                                    }
+                                }
+
+                                // Micro information items
+                                if (count($micro)):
+
+                                    ?>
+                                    <details class="items main" open="open">
+                                    <summary><h2>Items</h2></summary><?php
+
+                                    echo renderItems($micro);
+
+                                    ?></details><?php
+
+                                endif;
+
+                                // LinkRel items
+                                if (count($rel)):
+
+                                    ?>
+                                    <details class="items main" open="open">
+                                    <summary><h2>LinkRel</h2></summary><?php
+
+                                    echo renderItems($rel);
+
+                                    ?></details><?php
+
+                                endif;
+
+                            endif;
+                        } catch (\Exception $e) {
+                            ?><h2 class="error"
+                                  title="<?= htmlspecialchars(get_class($e).' ('.$e->getCode().')'); ?>"><?= htmlspecialchars($e->getMessage()); ?></h2>
+                            <div class="error">
+                            <pre class="error"><?= $e->getTraceAsString(); ?></pre></div><?php
+                        }
+
+                        ?></fieldset>
                     <fieldset>
-                        <legend>Parsing &amp; processing log</legend>
-                        <pre><?= htmlspecialchars($logHandler->getFormatter()->formatBatch($logHandler->getRecords())); ?></pre>
+                    <legend>Parsing &amp; processing log</legend>
+                    <pre><?= htmlspecialchars($logHandler->getFormatter()
+                            ->formatBatch($logHandler->getRecords())); ?></pre>
                     </fieldset><?php
 
                 endif;
-             ?></form>
+                ?></form>
         </article>
         <footer>
             <p>
