@@ -38,6 +38,7 @@ use Jkphl\Micrometa\Ports\Item\ItemInterface;
 use Jkphl\Micrometa\Ports\Parser;
 use Monolog\Logger;
 use Monolog\Handler\TestHandler;
+use Monolog\Formatter\LineFormatter;
 
 require_once dirname(__DIR__).DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'autoload.php';
 
@@ -246,6 +247,7 @@ if (empty($params['parser'])) {
 
                     flush();
                     $logHandler = new TestHandler();
+                    $logHandler->setFormatter(new LineFormatter("%datetime% > %level_name% > %message%\n"));
                     $logger = new Logger('DEMO', [$logHandler]);
 
                     try {

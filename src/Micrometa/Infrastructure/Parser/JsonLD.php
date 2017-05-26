@@ -108,16 +108,18 @@ class JsonLD extends AbstractParser
         $this->logger->info('Running parser: '.(new \ReflectionClass(__CLASS__))->getShortName());
         $items = [];
 
-        // Find and process all JSON-LD blocks
+        // Find and process all JSON-LD documents
         $xpath = new \DOMXPath($dom);
-        $xpath->registerNamespace('html', self::HTML_PROFILE_URI);
-        foreach ($xpath->query('//html:script[@type = "application/ld+json"]') as $jsonLDDoc) {
+        $jsonLDDocs = $xpath->query('//*[local-name(.) = "script"][@type = "application/ld+json"]');
+        $this->logger->debug('Processing '.$jsonLDDocs->length.' JSON-LD documents');
+
+        // Run through all JSON-LD documents
+        foreach ($jsonLDDocs as $jsonLDDoc) {
             $jsonLDDocSource = preg_replace(self::JSON_COMMENT_PATTERN, '', $jsonLDDoc->textContent);
             $i = $this->parseDocument($jsonLDDocSource);
             $items = array_merge($items, $i);
         }
 
-        // TODO: Implement parseDom() method.
         return new ParsingResult(self::FORMAT, $items);
     }
 
@@ -129,7 +131,16 @@ class JsonLD extends AbstractParser
      */
     protected function parseDocument($jsonLDDocSource)
     {
-        $jsonLDDoc = json_decode($jsonLDDocSource);
+        // Unserialize the JSON-LD document
+        $jsonLDDoc = @json_decode($jsonLDDocSource);
+
+        // If this is not a valid JSON document: Return
+        if (!is_object($jsonLDDoc) && !is_array($jsonLDDoc)) {
+            $this->logger->error('Skipping invalid JSON-LD document');
+            return [];
+        }
+
+        // Parse the document
         return array_filter(
             is_array($jsonLDDoc) ?
                 array_map([$this, 'parseRootNode'], $jsonLDDoc) : [$this->parseRootNode($jsonLDDoc)]
@@ -145,7 +156,7 @@ class JsonLD extends AbstractParser
     {
         $item = null;
 
-//        try {
+        try {
             $jsonDLDocument = JsonLDParser::getDocument($jsonLDRoot, ['documentLoader' => $this->contextLoader]);
 
             // Run through all nodes to parse the first one
@@ -155,10 +166,9 @@ class JsonLD extends AbstractParser
                 break;
             }
 
-//        } catch (JsonLdException $e) {
-//            trigger_error($e->getMessage().PHP_EOL.$e->getTraceAsString(), E_USER_WARNING);
-//            echo gettype($e->getPrevious());
-//        }
+        } catch (JsonLdException $e) {
+            $this->logger->error($e->getMessage(), ['exception' => $e]);
+        }
 
         return $item;
     }
