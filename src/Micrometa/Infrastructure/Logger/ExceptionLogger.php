@@ -5,9 +5,9 @@
  *
  * @category Jkphl
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Infrastructure\Parser
- * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @subpackage Jkphl\Micrometa\Infrastructure
+ * @author Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @copyright Copyright © 2017 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
@@ -34,39 +34,36 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Application\Contract;
+namespace Jkphl\Micrometa\Infrastructure\Logger;
 
-use Psr\Http\Message\UriInterface;
-use Psr\Log\LoggerInterface;
+use Jkphl\Micrometa\Ports\Exceptions\RuntimeException;
+use Psr\Log\AbstractLogger;
 
 /**
- * Parser interface
+ * Exception logger
  *
  * @package Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Infrastructure
  */
-interface ParserInterface
+class ExceptionLogger extends AbstractLogger
 {
     /**
-     * Parser constructor
+     * Throws an exception for all messages with error level or higher
      *
-     * @param UriInterface $uri Base URI
-     * @param LoggerInterface|null $logger Logger
+     * @param mixed $level Level
+     * @param string $message Message
+     * @param array $context Context
+     * @throws \Exception Exception that occured
+     * @throws \RuntimeException Log message as exception
      */
-    public function __construct(UriInterface $uri, LoggerInterface $logger = null);
+    public function log($level, $message, array $context = [])
+    {
+        if ($level >= LOG_ERR) {
+            if (isset($context['exception']) && ($context['exception'] instanceof \Exception)) {
+                throw $context['exception'];
+            }
 
-    /**
-     * Return the base URI
-     *
-     * @return UriInterface Base URI
-     */
-    public function getUri();
-
-    /**
-     * Parse a DOM document
-     *
-     * @param \DOMDocument $dom DOM Document
-     * @return ParsingResultInterface Parsing results
-     */
-    public function parseDom(\DOMDocument $dom);
+            throw new RuntimeException($message, $level);
+        }
+    }
 }

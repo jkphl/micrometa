@@ -62,12 +62,8 @@ class LinkRel extends AbstractParser
      */
     public function parseDom(\DOMDocument $dom)
     {
+        $this->logger->info('Running parser: '.(new \ReflectionClass(__CLASS__))->getShortName());
         $items = [];
-
-        // Resave to proper XML to get full namespace support
-        $dom2 = $dom->saveXML();
-        $dom = new \DOMDocument();
-        $dom->loadXML($dom2);
 
         $xpath = new \DOMXPath($dom);
         $xpath->registerNamespace('html', self::HTML_PROFILE_URI);

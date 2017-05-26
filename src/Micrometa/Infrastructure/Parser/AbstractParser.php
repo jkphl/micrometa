@@ -38,6 +38,7 @@ namespace Jkphl\Micrometa\Infrastructure\Parser;
 
 use Jkphl\Micrometa\Application\Contract\ParserInterface;
 use Psr\Http\Message\UriInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Abstract parser base class
@@ -65,15 +66,23 @@ abstract class AbstractParser implements ParserInterface
      * @var UriInterface
      */
     protected $uri;
+    /**
+     * Logger
+     *
+     * @var LoggerInterface
+     */
+    protected $logger;
 
     /**
      * Parser constructor
      *
      * @param UriInterface $uri Base URI
+     * @param LoggerInterface|null $logger Logger
      */
-    public function __construct(UriInterface $uri)
+    public function __construct(UriInterface $uri, LoggerInterface $logger = null)
     {
         $this->uri = $uri;
+        $this->logger = $logger;
     }
 
     /**

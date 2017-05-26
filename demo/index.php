@@ -33,7 +33,11 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-use Jkphl\Micrometa\Ports\Format;use Jkphl\Micrometa\Ports\Item\ItemInterface;use Jkphl\Micrometa\Ports\Parser;
+use Jkphl\Micrometa\Ports\Format;
+use Jkphl\Micrometa\Ports\Item\ItemInterface;
+use Jkphl\Micrometa\Ports\Parser;
+use Monolog\Logger;
+use Monolog\Handler\TestHandler;
 
 require_once dirname(__DIR__).DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'autoload.php';
 
@@ -167,7 +171,7 @@ $output = empty($params['output']) ? 'tree' : $params['output'];
 
 // Aggregate the parsers to use
 if (empty($params['parser'])) {
-    $formats= Format::ALL;
+    $formats = Format::ALL;
 } else {
     $formats = 0;
     foreach ((empty($params['parser']) ? [] : (array)$params['parser']) as $parser) {
@@ -222,7 +226,7 @@ if (empty($params['parser'])) {
                                 <?= ($formats & Format::LINK_REL) ? ' checked="checked"' : ''; ?>/>
                             LinkRel</label>
                         <label class="legend item-type-json-ld"><input type="checkbox" name="parser[json-ld]"
-                                                                                value="<?= Format::JSON_LD; ?>"
+                                                                       value="<?= Format::JSON_LD; ?>"
                                 <?= ($formats & Format::JSON_LD) ? ' checked="checked"' : ''; ?>/>
                             JSON-LD</label>
                     </div>
@@ -241,9 +245,11 @@ if (empty($params['parser'])) {
                     endif;
 
                     flush();
+                    $logHandler = new TestHandler();
+                    $logger = new Logger('DEMO', [$logHandler]);
 
                     try {
-                        $micrometa = new Parser($formats);
+                        $micrometa = new Parser($formats, $logger);
                         $itemObjectModel = $micrometa($url);
                         $items = $itemObjectModel->getItems();
 
@@ -269,7 +275,8 @@ if (empty($params['parser'])) {
                             // Micro information items
                             if (count($micro)):
 
-                                ?><details class="items main" open="open">
+                                ?>
+                                <details class="items main" open="open">
                                 <summary><h2>Items</h2></summary><?php
 
                                 echo renderItems($micro);
@@ -281,7 +288,8 @@ if (empty($params['parser'])) {
                             // LinkRel items
                             if (count($rel)):
 
-                                ?><details class="items main" open="open">
+                                ?>
+                                <details class="items main" open="open">
                                 <summary><h2>LinkRel</h2></summary><?php
 
                                 echo renderItems($rel);
@@ -291,17 +299,21 @@ if (empty($params['parser'])) {
                             endif;
 
                         endif;
-                    } catch(\Exception $e) {
-                        ?><h2 class="error" title="<?= htmlspecialchars(get_class($e).' ('.$e->getCode().')'); ?>"><?= htmlspecialchars($e->getMessage()); ?></h2>
-                        <div class="error"><pre><?= $e->getTraceAsString(); ?></pre></div><?php
+                    } catch (\Exception $e) {
+                        ?><h2 class="error"
+                              title="<?= htmlspecialchars(get_class($e).' ('.$e->getCode().')'); ?>"><?= htmlspecialchars($e->getMessage()); ?></h2>
+                        <div class="error">
+                        <pre class="error"><?= $e->getTraceAsString(); ?></pre></div><?php
                     }
 
-                    ?></fieldset><?php
+                    ?></fieldset>
+                    <fieldset>
+                        <legend>Parsing &amp; processing log</legend>
+                        <pre><?= htmlspecialchars($logHandler->getFormatter()->formatBatch($logHandler->getRecords())); ?></pre>
+                    </fieldset><?php
 
                 endif;
-
-                ?>
-            </form>
+             ?></form>
         </article>
         <footer>
             <p>

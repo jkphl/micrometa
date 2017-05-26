@@ -40,6 +40,7 @@ use Jkphl\Domfactory\Ports\Dom;
 use Jkphl\Micrometa\Application\Contract\ParsingResultInterface;
 use Jkphl\Micrometa\Application\Item\Item;
 use Jkphl\Micrometa\Application\Service\ExtractorService;
+use Jkphl\Micrometa\Infrastructure\Logger\ExceptionLogger;
 use Jkphl\Micrometa\Infrastructure\Parser\Microdata;
 use Jkphl\Micrometa\Infrastructure\Parser\Microformats;
 use Jkphl\Micrometa\Infrastructure\Parser\RdfaLite;
@@ -102,7 +103,7 @@ class ExtractorTest extends \PHPUnit_Framework_TestCase
 
         // Create an RDFa Lite 1.1 parser
         $rdfaLiteUri = Http::createFromString(self::RDFA_LITE_HTML_URL);
-        $rdfaLiteParser = new RdfaLite($rdfaLiteUri);
+        $rdfaLiteParser = new RdfaLite($rdfaLiteUri, new ExceptionLogger());
         $this->assertEquals($rdfaLiteUri, $rdfaLiteParser->getUri());
 
         // Create an extractor service
@@ -128,7 +129,7 @@ class ExtractorTest extends \PHPUnit_Framework_TestCase
 
         // Create an RDFa Lite 1.1 parser
         $microdataUri = Http::createFromString(self::MICRODATA_HTML_URL);
-        $microdataParser = new Microdata($microdataUri);
+        $microdataParser = new Microdata($microdataUri, new ExceptionLogger());
         $this->assertEquals($microdataUri, $microdataParser->getUri());
 
         // Create an extractor service
@@ -154,7 +155,7 @@ class ExtractorTest extends \PHPUnit_Framework_TestCase
 
         // Create a Microformats 2 parser
         $microformatsUri = Http::createFromString(self::MICROFORMATS_HTML_URL);
-        $microformatsParser = new Microformats($microformatsUri);
+        $microformatsParser = new Microformats($microformatsUri, new ExceptionLogger());
         $this->assertEquals($microformatsUri, $microformatsParser->getUri());
 
         // Create an extractor service
@@ -180,7 +181,7 @@ class ExtractorTest extends \PHPUnit_Framework_TestCase
 
         // Create a Microformats 2 parser
         $microformatsUri = Http::createFromString(self::MICROFORMATS_HTML_URL);
-        $microformatsParser = new Microformats($microformatsUri);
+        $microformatsParser = new Microformats($microformatsUri, new ExceptionLogger());
         $this->assertEquals($microformatsUri, $microformatsParser->getUri());
 
         // Create an extractor service

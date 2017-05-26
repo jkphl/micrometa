@@ -40,6 +40,7 @@ use Jkphl\Micrometa\Application\Contract\ParsingResultInterface;
 use Jkphl\Micrometa\Infrastructure\Factory\MicroformatsFactory;
 use Jkphl\Micrometa\Ports\Format;
 use Psr\Http\Message\UriInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Microformats parsere
@@ -57,16 +58,6 @@ class Microformats extends AbstractParser
     const FORMAT = Format::MICROFORMATS;
 
     /**
-     * RdfaLite constructor
-     *
-     * @param UriInterface $uri
-     */
-    public function __construct(UriInterface $uri)
-    {
-        parent::__construct($uri);
-    }
-
-    /**
      * Parse a DOM document
      *
      * @param \DOMDocument $dom DOM Document
@@ -74,6 +65,7 @@ class Microformats extends AbstractParser
      */
     public function parseDom(\DOMDocument $dom)
     {
+        $this->logger->info('Running parser: '.(new \ReflectionClass(__CLASS__))->getShortName());
         $microformats = \Mf2\parse($dom, strval($this->uri), false);
         return new ParsingResult(
             self::FORMAT,

@@ -47,6 +47,7 @@ use ML\JsonLD\NodeInterface;
 use ML\JsonLD\TypedValue;
 use ML\JsonLD\Value;
 use Psr\Http\Message\UriInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * JsonLD parser
@@ -84,13 +85,14 @@ class JsonLD extends AbstractParser
     const JSON_COMMENT_PATTERN = '#(/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+/)|([\s\t]//.*)|(^//.*)#';
 
     /**
-     * Parser constructor
+     * JSON-LD parser constructor
      *
      * @param UriInterface $uri Base URI
+     * @param LoggerInterface|null $logger Logger
      */
-    public function __construct(UriInterface $uri)
+    public function __construct(UriInterface $uri, LoggerInterface $logger = null)
     {
-        parent::__construct($uri);
+        parent::__construct($uri, $logger);
         $this->vocabularyCache = new VocabularyCache();
         $this->contextLoader = new CachingContextLoader($this->vocabularyCache);
     }
@@ -103,6 +105,7 @@ class JsonLD extends AbstractParser
      */
     public function parseDom(\DOMDocument $dom)
     {
+        $this->logger->info('Running parser: '.(new \ReflectionClass(__CLASS__))->getShortName());
         $items = [];
 
         // Find and process all JSON-LD blocks
@@ -126,7 +129,7 @@ class JsonLD extends AbstractParser
      */
     protected function parseDocument($jsonLDDocSource)
     {
-        $jsonLDDoc = @json_decode($jsonLDDocSource);
+        $jsonLDDoc = json_decode($jsonLDDocSource);
         return array_filter(
             is_array($jsonLDDoc) ?
                 array_map([$this, 'parseRootNode'], $jsonLDDoc) : [$this->parseRootNode($jsonLDDoc)]
@@ -142,18 +145,20 @@ class JsonLD extends AbstractParser
     {
         $item = null;
 
-        try {
-            // Run through all nodes to parse the first one
+//        try {
             $jsonDLDocument = JsonLDParser::getDocument($jsonLDRoot, ['documentLoader' => $this->contextLoader]);
+
+            // Run through all nodes to parse the first one
             /** @var Node $node */
             foreach ($jsonDLDocument->getGraph()->getNodes() as $node) {
                 $item = $this->parseNode($node);
                 break;
             }
 
-        } catch (JsonLdException $e) {
-            trigger_error($e->getMessage().PHP_EOL.$e->getTraceAsString(), E_USER_WARNING);
-        }
+//        } catch (JsonLdException $e) {
+//            trigger_error($e->getMessage().PHP_EOL.$e->getTraceAsString(), E_USER_WARNING);
+//            echo gettype($e->getPrevious());
+//        }
 
         return $item;
     }

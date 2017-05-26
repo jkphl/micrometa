@@ -40,9 +40,11 @@ use Jkphl\Domfactory\Ports\Dom;
 use Jkphl\Micrometa\Application\Service\ExtractorService;
 use Jkphl\Micrometa\Infrastructure\Factory\ItemFactory;
 use Jkphl\Micrometa\Infrastructure\Factory\ParserFactory;
+use Jkphl\Micrometa\Infrastructure\Logger\ExceptionLogger;
 use Jkphl\Micrometa\Ports\Item\ItemObjectModel;
 use Jkphl\Micrometa\Ports\Item\ItemObjectModelInterface;
 use League\Uri\Schemes\Http;
+use Psr\Log\LoggerInterface;
 
 /**
  * Parser
@@ -58,16 +60,24 @@ class Parser
      * @var int
      */
     protected $formats;
+    /**
+     * Logger
+     *
+     * @var LoggerInterface
+     */
+    protected $logger;
 
     /**
      * Parser constructor
      *
      * @param int $formats Micro information formats to extract
+     * @param LoggerInterface|null $logger PSR-3 compatible logger
      * @api
      */
-    public function __construct($formats = null)
+    public function __construct($formats = null, LoggerInterface $logger = null)
     {
         $this->formats = $formats;
+        $this->logger = $logger ?: new ExceptionLogger();
     }
 
     /**
@@ -80,19 +90,27 @@ class Parser
      */
     public function __invoke($uri, $source = null, $formats = null)
     {
-        // If source code has been passed in
-        $dom = (($source !== null) && strlen(trim($source))) ?
-            Dom::createFromString($source) : Dom::createFromUri($uri);
-
-        // Run through all format parsers
         $items = [];
-        $extractor = new ExtractorService();
-        foreach (ParserFactory::createParsersFromFormats(
-            intval($formats ?: $this->formats),
-            Http::createFromString($uri)
-        ) as $parser) {
-            $results = $extractor->extract($dom, $parser);
-            $items = array_merge($items, ItemFactory::createFromApplicationItems($results->getItems()));
+
+        try {
+            // If source code has been passed in
+            $dom = (($source !== null) && strlen(trim($source))) ?
+                Dom::createFromString($source) : Dom::createFromUri($uri);
+
+            // Run through all format parsers
+            $extractor = new ExtractorService();
+            foreach (ParserFactory::createParsersFromFormats(
+                intval($formats ?: $this->formats),
+                Http::createFromString($uri),
+                $this->logger
+            ) as $parser) {
+                $results = $extractor->extract($dom, $parser);
+                $items = array_merge($items, ItemFactory::createFromApplicationItems($results->getItems()));
+            }
+
+            // In case of exceptions: Log if possible
+        } catch (\Exception $e) {
+            $this->logger->critical($e->getMessage(), ['exception' => $e]);
         }
 
         return new ItemObjectModel($items);

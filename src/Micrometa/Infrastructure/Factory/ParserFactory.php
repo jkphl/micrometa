@@ -42,6 +42,7 @@ use Jkphl\Micrometa\Infrastructure\Parser\Microdata;
 use Jkphl\Micrometa\Infrastructure\Parser\Microformats;
 use Jkphl\Micrometa\Infrastructure\Parser\RdfaLite;
 use Psr\Http\Message\UriInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Parser factory
@@ -69,16 +70,17 @@ class ParserFactory
      *
      * @param int $formats Parser format bitmask
      * @param UriInterface $uri Base Uri
+     * @param LoggerInterface|null $logger Logger
      * @return \Generator Parser generator
      */
-    public static function createParsersFromFormats($formats, UriInterface $uri)
+    public static function createParsersFromFormats($formats, UriInterface $uri, LoggerInterface $logger = null)
     {
         $formatBits = intval($formats);
 
         // Run through all registered parsers and yield the requested instances
         foreach (self::$parsers as $parserFormat => $parserClass) {
             if ($parserFormat & $formatBits) {
-                yield $parserFormat => new $parserClass($uri);
+                yield $parserFormat => new $parserClass($uri, $logger);
             }
         }
     }

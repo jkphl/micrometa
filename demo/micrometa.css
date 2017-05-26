@@ -42,6 +42,9 @@ div.error {
 
 pre {
     margin: 0;
+}
+
+pre.error {
     padding: 1em;
     border: 1px solid #fcc;
     background-color: #fee;

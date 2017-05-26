@@ -40,6 +40,7 @@ use Jkphl\Micrometa\Application\Contract\ParsingResultInterface;
 use Jkphl\Micrometa\Ports\Format;
 use Jkphl\RdfaLiteMicrodata\Ports\Parser\RdfaLite as RdfaLiteParser;
 use Psr\Http\Message\UriInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Rdfa Lite 1.1 parser
@@ -63,13 +64,14 @@ class RdfaLite extends AbstractParser
     protected $parser;
 
     /**
-     * RdfaLite constructor
+     * RDFa Lite 1.1 parser constructor
      *
-     * @param UriInterface $uri
+     * @param UriInterface $uri Base URI
+     * @param LoggerInterface|null $logger Logger
      */
-    public function __construct(UriInterface $uri)
+    public function __construct(UriInterface $uri, LoggerInterface $logger = null)
     {
-        parent::__construct($uri);
+        parent::__construct($uri, $logger);
         $this->parser = new RdfaLiteParser(true);
     }
 
@@ -81,6 +83,7 @@ class RdfaLite extends AbstractParser
      */
     public function parseDom(\DOMDocument $dom)
     {
+        $this->logger->info('Running parser: '.(new \ReflectionClass(__CLASS__))->getShortName());
         $rdfaItems = $this->parser->parseDom($dom);
         return new ParsingResult(self::FORMAT, $rdfaItems->items);
     }

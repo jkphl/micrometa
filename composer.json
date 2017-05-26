@@ -37,7 +37,9 @@
         "jkphl/rdfa-lite-microdata": "^0.4.0",
         "league/uri": "4.*",
         "mf2/mf2": "^0.3.1",
-        "ml/json-ld": "^1.0"
+        "ml/json-ld": "^1.0",
+        "monolog/monolog": "^1.22",
+        "psr/log": "^1.0"
     },
     "autoload": {
         "psr-4": {
