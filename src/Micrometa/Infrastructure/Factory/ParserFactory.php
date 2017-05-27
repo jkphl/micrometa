@@ -70,10 +70,10 @@ class ParserFactory
      *
      * @param int $formats Parser format bitmask
      * @param UriInterface $uri Base Uri
-     * @param LoggerInterface|null $logger Logger
+     * @param LoggerInterface $logger Logger
      * @return \Generator Parser generator
      */
-    public static function createParsersFromFormats($formats, UriInterface $uri, LoggerInterface $logger = null)
+    public static function createParsersFromFormats($formats, UriInterface $uri, LoggerInterface $logger)
     {
         $formatBits = intval($formats);
 

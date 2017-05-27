@@ -43,6 +43,7 @@ use Jkphl\Micrometa\Infrastructure\Parser\LinkRel;
 use Jkphl\Micrometa\Infrastructure\Parser\Microdata;
 use Jkphl\Micrometa\Infrastructure\Parser\Microformats;
 use Jkphl\Micrometa\Infrastructure\Parser\RdfaLite;
+use Jkphl\Micrometa\Tests\AbstractTestBase;
 use League\Uri\Schemes\Http;
 
 /**
@@ -51,32 +52,27 @@ use League\Uri\Schemes\Http;
  * @package Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Tests
  */
-class ParserFactoryTest extends \PHPUnit_Framework_TestCase
+class ParserFactoryTest extends AbstractTestBase
 {
-    /**
-     * Valid local test HTML document
-     *
-     * @var string
-     */
-    const VALID_HTML_URL = 'http://localhost:1349/valid-with-errors-test.html';
     /**
      * Test the parser factory
      */
     public function testParserFactory()
     {
         $formats = Microformats::FORMAT | Microdata::FORMAT | JsonLD::FORMAT | RdfaLite::FORMAT | LinkRel::FORMAT;
+        $uri = 'http://localhost/example.html';
+        $parsers = ParserFactory::createParsersFromFormats($formats, Http::createFromString($uri), self::$logger);
+
         /**
          * @var int $parserFormat
          * @var AbstractParser $parser
          */
-        foreach (ParserFactory::createParsersFromFormats(
-            $formats,
-            Http::createFromString(self::VALID_HTML_URL)
-        ) as $parserFormat => $parser) {
+        foreach ($parsers as $parserFormat => $parser) {
             $this->assertInstanceOf(ParserFactory::$parsers[$parserFormat], $parser);
-            $this->assertEquals(self::VALID_HTML_URL, $parser->getUri());
+            $this->assertEquals($uri, $parser->getUri());
             $formats &= ~$parserFormat;
         }
+
         $this->assertEquals(0, $formats);
     }
 }

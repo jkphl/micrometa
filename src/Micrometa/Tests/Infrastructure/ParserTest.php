@@ -5,7 +5,7 @@
  *
  * @category Jkphl
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Infrastructure\Parser
+ * @subpackage Jkphl\Micrometa\Tests\Domain
  * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -34,39 +34,32 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Application\Contract;
+namespace Jkphl\Micrometa\Tests\Infrastructure;
 
-use Psr\Http\Message\UriInterface;
-use Psr\Log\LoggerInterface;
+use Jkphl\Micrometa\Application\Item\Item;
+use Jkphl\Micrometa\Infrastructure\Parser\JsonLD;
+use Jkphl\Micrometa\Tests\AbstractTestBase;
 
 /**
- * Parser interface
+ * Parser tests
  *
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Infrastructure
+ * @subpackage Jkphl\Micrometa\Tests
  */
-interface ParserInterface
+class ParserTest extends AbstractTestBase
 {
     /**
-     * Parser constructor
-     *
-     * @param UriInterface $uri Base URI
-     * @param LoggerInterface $logger Logger
+     * Test the JSON-LD parser
      */
-    public function __construct(UriInterface $uri, LoggerInterface $logger);
-
-    /**
-     * Return the base URI
-     *
-     * @return UriInterface Base URI
-     */
-    public function getUri();
-
-    /**
-     * Parse a DOM document
-     *
-     * @param \DOMDocument $dom DOM Document
-     * @return ParsingResultInterface Parsing results
-     */
-    public function parseDom(\DOMDocument $dom);
+    public function testJsonLDParser()
+    {
+        list($uri, $dom) = $this->getUriFixture('json-ld/jsonld-languages.html');
+        $parser = new JsonLD($uri, self::$logger);
+        $items = $parser->parseDom($dom)->getItems();
+        $this->assertTrue(is_array($items));
+        $this->assertEquals(1, count($items));
+        $this->assertInstanceOf(Item::class, $items[0]);
+        $this->assertEquals(JsonLD::FORMAT, $items[0]->getFormat());
+        $this->assertEquals('http://example.com/id1', $items[0]->getId());
+    }
 }

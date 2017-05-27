@@ -44,6 +44,7 @@ use Jkphl\Micrometa\Infrastructure\Parser\LinkRel;
 use Jkphl\Micrometa\Ports\Item\Item;
 use Jkphl\Micrometa\Ports\Item\ItemInterface;
 use Jkphl\Micrometa\Ports\Item\ItemObjectModel;
+use Jkphl\Micrometa\Tests\AbstractTestBase;
 
 /**
  * Item object model tests
@@ -51,8 +52,13 @@ use Jkphl\Micrometa\Ports\Item\ItemObjectModel;
  * @package Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Tests
  */
-class ItemObjectModelTest extends AbstractItemListTest
+class ItemObjectModelTest extends AbstractTestBase
 {
+    /**
+     * Use the Microformats feed method
+     */
+    use MicroformatsFeedTrait;
+
     /**
      * Test the item object model
      *

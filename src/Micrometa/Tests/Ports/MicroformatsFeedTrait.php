@@ -5,9 +5,9 @@
  *
  * @category Jkphl
  * @package Jkphl\Micrometa
- * @subpackage Infrastructure
- * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @subpackage Jkphl\Micrometa\Tests
+ * @author Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @copyright Copyright © 2017 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
@@ -44,12 +44,12 @@ use Jkphl\Micrometa\Infrastructure\Parser\Microformats;
 use Jkphl\Micrometa\Ports\Item\Item;
 
 /**
- * Abstract item list test base
+ * Trait MicroformatsFeedTrait
  *
  * @package Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Tests
  */
-abstract class AbstractItemListTest extends \PHPUnit_Framework_TestCase
+trait MicroformatsFeedTrait
 {
     /**
      * Create and return an h-feed Microformats item
@@ -80,7 +80,6 @@ abstract class AbstractItemListTest extends \PHPUnit_Framework_TestCase
             ]
         );
 
-
         $entryItem = new ApplicationItem(
             Microformats::FORMAT,
             new PropertyListFactory(),
@@ -102,7 +101,6 @@ abstract class AbstractItemListTest extends \PHPUnit_Framework_TestCase
                 ]
             ]
         );
-
 
         $feedItem = new ApplicationItem(
             Microformats::FORMAT,

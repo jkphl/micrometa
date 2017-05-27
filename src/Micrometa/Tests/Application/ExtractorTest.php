@@ -44,6 +44,7 @@ use Jkphl\Micrometa\Infrastructure\Logger\ExceptionLogger;
 use Jkphl\Micrometa\Infrastructure\Parser\Microdata;
 use Jkphl\Micrometa\Infrastructure\Parser\Microformats;
 use Jkphl\Micrometa\Infrastructure\Parser\RdfaLite;
+use Jkphl\Micrometa\Tests\AbstractTestBase;
 use League\Uri\Schemes\Http;
 
 /**
@@ -52,26 +53,8 @@ use League\Uri\Schemes\Http;
  * @package Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Tests
  */
-class ExtractorTest extends \PHPUnit_Framework_TestCase
+class ExtractorTest extends AbstractTestBase
 {
-    /**
-     * RDFa Lite 1.1 HTML document
-     *
-     * @var string
-     */
-    const RDFA_LITE_HTML_URL = 'http://localhost:1349/article-rdfa-lite.html';
-    /**
-     * Microdata HTML document
-     *
-     * @var string
-     */
-    const MICRODATA_HTML_URL = 'http://localhost:1349/article-microdata.html';
-    /**
-     * Microformats HTML document
-     *
-     * @var string
-     */
-    const MICROFORMATS_HTML_URL = 'http://localhost:1349/aggregate.html';
     /**
      * Microformats tests root path
      *
@@ -85,7 +68,7 @@ class ExtractorTest extends \PHPUnit_Framework_TestCase
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
-        self::$microformatsTests = \ComposerLocator::getPath('microformats/test').DIRECTORY_SEPARATOR.'tests'.
+        self::$microformatsTests = \ComposerLocator::getPath('mf2/tests').DIRECTORY_SEPARATOR.'tests'.
             DIRECTORY_SEPARATOR.'microformats-v2'.DIRECTORY_SEPARATOR;
     }
 
@@ -95,15 +78,11 @@ class ExtractorTest extends \PHPUnit_Framework_TestCase
     public function testRdfaLiteExtraction()
     {
         // Create a DOM with RDFa Lite 1.1 markup
-        $rdfaLite = file_get_contents(
-            dirname(__DIR__).DIRECTORY_SEPARATOR.'Fixture'.DIRECTORY_SEPARATOR.'article-rdfa-lite.html'
-        );
-        $rdfaLiteDom = Dom::createFromString($rdfaLite);
+        list($rdfaLiteUri, $rdfaLiteDom) = $this->getUriFixture('rdfa-lite/article-rdfa-lite.html');
         $this->assertInstanceOf(\DOMDocument::class, $rdfaLiteDom);
 
         // Create an RDFa Lite 1.1 parser
-        $rdfaLiteUri = Http::createFromString(self::RDFA_LITE_HTML_URL);
-        $rdfaLiteParser = new RdfaLite($rdfaLiteUri, new ExceptionLogger());
+        $rdfaLiteParser = new RdfaLite($rdfaLiteUri, self::$logger);
         $this->assertEquals($rdfaLiteUri, $rdfaLiteParser->getUri());
 
         // Create an extractor service
@@ -121,14 +100,10 @@ class ExtractorTest extends \PHPUnit_Framework_TestCase
     public function testMicrodataExtraction()
     {
         // Create a DOM with HTML Microdata markup
-        $microdata = file_get_contents(
-            dirname(__DIR__).DIRECTORY_SEPARATOR.'Fixture'.DIRECTORY_SEPARATOR.'article-microdata.html'
-        );
-        $microdataDom = Dom::createFromString($microdata);
+        list($microdataUri, $microdataDom) = $this->getUriFixture('html-microdata/article-microdata.html');
         $this->assertInstanceOf(\DOMDocument::class, $microdataDom);
 
-        // Create an RDFa Lite 1.1 parser
-        $microdataUri = Http::createFromString(self::MICRODATA_HTML_URL);
+        // Create an HTML microdata parser
         $microdataParser = new Microdata($microdataUri, new ExceptionLogger());
         $this->assertEquals($microdataUri, $microdataParser->getUri());
 
@@ -146,25 +121,9 @@ class ExtractorTest extends \PHPUnit_Framework_TestCase
      */
     public function testMicroformatsExtraction()
     {
-        // Create a DOM with Microformats markup
-        $microformats = file_get_contents(
+        $this->getAndTestMicroformatsExtractionBase(
             self::$microformatsTests.'h-product'.DIRECTORY_SEPARATOR.'aggregate.html'
         );
-        $microformatsDom = Dom::createFromString($microformats);
-        $this->assertInstanceOf(\DOMDocument::class, $microformatsDom);
-
-        // Create a Microformats 2 parser
-        $microformatsUri = Http::createFromString(self::MICROFORMATS_HTML_URL);
-        $microformatsParser = new Microformats($microformatsUri, new ExceptionLogger());
-        $this->assertEquals($microformatsUri, $microformatsParser->getUri());
-
-        // Create an extractor service
-        $extractorService = new ExtractorService();
-        $microformatsItems = $extractorService->extract($microformatsDom, $microformatsParser);
-        $this->assertInstanceOf(ParsingResultInterface::class, $microformatsItems);
-        $this->assertEquals(1, count($microformatsItems->getItems()));
-        $this->assertInstanceOf(Item::class, $microformatsItems->getItems()[0]);
-        $this->assertEquals(Microformats::FORMAT, $microformatsItems->getItems()[0]->getFormat());
     }
 
     /**
@@ -172,25 +131,39 @@ class ExtractorTest extends \PHPUnit_Framework_TestCase
      */
     public function testNestedMicroformatsExtraction()
     {
-        // Create a DOM with Microformats markup
-        $microformats = file_get_contents(
-            dirname(__DIR__).DIRECTORY_SEPARATOR.'Fixture'.DIRECTORY_SEPARATOR.'nested-events.html'
+        $microformatsItems = $this->getAndTestMicroformatsExtractionBase(
+            dirname(__DIR__).DIRECTORY_SEPARATOR.'Fixture'.DIRECTORY_SEPARATOR.
+            'microformats'.DIRECTORY_SEPARATOR.'nested-events.html'
         );
+        $this->assertEquals(2, count($microformatsItems->getItems()[0]->getChildren()));
+    }
+
+    /**
+     * Run a microformats base test on a file and return the items
+     *
+     * @param string $file File name
+     * @return ParsingResultInterface
+     */
+    protected function getAndTestMicroformatsExtractionBase($file)
+    {
+        // Create a DOM with Microformats markup
+        $microformats = file_get_contents($file);
         $microformatsDom = Dom::createFromString($microformats);
         $this->assertInstanceOf(\DOMDocument::class, $microformatsDom);
 
         // Create a Microformats 2 parser
-        $microformatsUri = Http::createFromString(self::MICROFORMATS_HTML_URL);
+        $microformatsUri = Http::createFromString('http://localhost:1349/aggregate.html');
         $microformatsParser = new Microformats($microformatsUri, new ExceptionLogger());
         $this->assertEquals($microformatsUri, $microformatsParser->getUri());
 
-        // Create an extractor service
+        // Create and run an extractor service
         $extractorService = new ExtractorService();
         $microformatsItems = $extractorService->extract($microformatsDom, $microformatsParser);
         $this->assertInstanceOf(ParsingResultInterface::class, $microformatsItems);
         $this->assertEquals(1, count($microformatsItems->getItems()));
         $this->assertInstanceOf(Item::class, $microformatsItems->getItems()[0]);
         $this->assertEquals(Microformats::FORMAT, $microformatsItems->getItems()[0]->getFormat());
-        $this->assertEquals(2, count($microformatsItems->getItems()[0]->getChildren()));
+
+        return $microformatsItems;
     }
 }

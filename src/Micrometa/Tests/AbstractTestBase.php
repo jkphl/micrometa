@@ -5,9 +5,9 @@
  *
  * @category Jkphl
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Infrastructure\Parser
- * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @subpackage Jkphl\Micrometa\Tests
+ * @author Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @copyright Copyright © 2017 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
@@ -34,39 +34,69 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Application\Contract;
+namespace Jkphl\Micrometa\Tests;
 
-use Psr\Http\Message\UriInterface;
+use Jkphl\Domfactory\Ports\Dom;
+use Jkphl\Micrometa\Infrastructure\Logger\ExceptionLogger;
+use League\Uri\Schemes\Http;
 use Psr\Log\LoggerInterface;
 
 /**
- * Parser interface
+ * Abstract test base
  *
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Infrastructure
+ * @subpackage Jkphl\Micrometa\Tests
  */
-interface ParserInterface
+abstract class AbstractTestBase extends \PHPUnit_Framework_TestCase
 {
     /**
-     * Parser constructor
+     * Fixture base path
      *
-     * @param UriInterface $uri Base URI
-     * @param LoggerInterface $logger Logger
+     * @var string
      */
-    public function __construct(UriInterface $uri, LoggerInterface $logger);
+    protected static $fixture;
+    /**
+     * Logger
+     *
+     * @var LoggerInterface
+     */
+    protected static $logger;
 
     /**
-     * Return the base URI
-     *
-     * @return UriInterface Base URI
+     * Setup
      */
-    public function getUri();
+    public static function setUpBeforeClass()
+    {
+        self::$fixture = __DIR__.DIRECTORY_SEPARATOR.'Fixture'.DIRECTORY_SEPARATOR;
+        self::$logger = new ExceptionLogger();
+    }
 
     /**
-     * Parse a DOM document
+     * Read and return a particular fixture file
      *
-     * @param \DOMDocument $dom DOM Document
-     * @return ParsingResultInterface Parsing results
+     * @param string $file File name
+     * @return array URI and DOM document
      */
-    public function parseDom(\DOMDocument $dom);
+    protected function getUriFixture($file)
+    {
+        return [
+            Http::createFromString('http://localhost:1349/'.$file),
+            Dom::createFromString($this->getFixture($file))
+        ];
+    }
+
+    /**
+     * Return the contents of a fixture file
+     *
+     * @param string $file File name relative to fixtures directory
+     * @return string Fixture content
+     */
+    protected function getFixture($file)
+    {
+        $file = strtr($file, ['/' => DIRECTORY_SEPARATOR]);
+        if (!file_exists($file)) {
+            $file = self::$fixture.$file;
+        }
+        return strval(file_get_contents($file));
+    }
 }

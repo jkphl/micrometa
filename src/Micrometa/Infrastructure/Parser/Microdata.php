@@ -67,9 +67,9 @@ class Microdata extends AbstractParser
      * HTML Microdata parser constructor
      *
      * @param UriInterface $uri Base URI
-     * @param LoggerInterface|null $logger Logger
+     * @param LoggerInterface $logger Logger
      */
-    public function __construct(UriInterface $uri, LoggerInterface $logger = null)
+    public function __construct(UriInterface $uri, LoggerInterface $logger)
     {
         parent::__construct($uri, $logger);
         $this->parser = new MicrodataParser(true);

@@ -77,9 +77,9 @@ abstract class AbstractParser implements ParserInterface
      * Parser constructor
      *
      * @param UriInterface $uri Base URI
-     * @param LoggerInterface|null $logger Logger
+     * @param LoggerInterface $logger Logger
      */
-    public function __construct(UriInterface $uri, LoggerInterface $logger = null)
+    public function __construct(UriInterface $uri, LoggerInterface $logger)
     {
         $this->uri = $uri;
         $this->logger = $logger;

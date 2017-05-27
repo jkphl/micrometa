@@ -39,6 +39,7 @@ namespace Jkphl\Micrometa\Tests\Ports;
 use Jkphl\Micrometa\Ports\Format;
 use Jkphl\Micrometa\Ports\Item\ItemObjectModelInterface;
 use Jkphl\Micrometa\Ports\Parser;
+use Jkphl\Micrometa\Tests\AbstractTestBase;
 
 /**
  * Parser tests
@@ -46,39 +47,28 @@ use Jkphl\Micrometa\Ports\Parser;
  * @package Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Tests
  */
-class ParserTest extends \PHPUnit_Framework_TestCase
+class ParserTest extends AbstractTestBase
 {
-    /**
-     * Valid local test HTML document
-     *
-     * @var string
-     */
-    const VALID_HTML_URL = 'http://localhost:1349/valid-test.html';
-    /**
-     * Valid local test AMP HTML document with JSON-LD
-     *
-     * @var string
-     */
-    const VALID_JSONLD_URL = 'http://localhost:1349/article-json-ld.amp.html';
-
     /**
      * Test the LinkRel parser
      */
     public function testLinkRelParser()
     {
         $parser = new Parser(Format::LINK_REL);
-        $itemObjectModel = $parser(self::VALID_HTML_URL);
+        $itemObjectModel = $parser('http://localhost:1349/link-rel/valid-test.html');
         $this->assertInstanceOf(ItemObjectModelInterface::class, $itemObjectModel);
-        $this->assertEquals(3, count($itemObjectModel->getItems()));
+        $this->assertEquals(4, count($itemObjectModel->getItems()));
     }
 
     /**
      * Test the JSON-LD parser
      */
-    public function testJsonLDParser() {
+    public function testJsonLDParser()
+    {
         $parser = new Parser(Format::JSON_LD);
-        $itemObjectModel = $parser(self::VALID_HTML_URL, file_get_contents(dirname(__DIR__).'/Fixture/valid-test.html'));
-//        print_r($itemObjectModel->toObject());
+        $itemObjectModel = $parser('http://localhost:1349/json-ld/jsonld-languages.html');
+        $this->assertInstanceOf(ItemObjectModelInterface::class, $itemObjectModel);
+        $this->assertEquals(1, count($itemObjectModel->getItems()));
     }
 
     /**

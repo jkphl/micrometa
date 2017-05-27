@@ -41,6 +41,7 @@ use Jkphl\Micrometa\Infrastructure\Factory\MicroformatsFactory;
 use Jkphl\Micrometa\Ports\Item\Item;
 use Jkphl\Micrometa\Ports\Item\ItemInterface;
 use Jkphl\Micrometa\Ports\Item\ItemList;
+use Jkphl\Micrometa\Tests\AbstractTestBase;
 
 /**
  * Parser factory tests
@@ -48,8 +49,13 @@ use Jkphl\Micrometa\Ports\Item\ItemList;
  * @package Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Tests
  */
-class ItemTest extends AbstractItemListTest
+class ItemTest extends AbstractTestBase
 {
+    /**
+     * Use the Microformats feed method
+     */
+    use MicroformatsFeedTrait;
+
     /**
      * Test an item
      */
