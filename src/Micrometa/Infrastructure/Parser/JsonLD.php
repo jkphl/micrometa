@@ -257,11 +257,11 @@ class JsonLD extends AbstractParser
 
             // If this is a nested item
             if (is_object($value)) {
-                if (!empty($value->type)) {
+                if (isset($value->type) || isset($value->lang)) {
                     $properties[$name]->values[] = $value;
 
                     // @type = @id
-                } else {
+                } elseif (isset($value->id)) {
                     $properties[$name]->values[] = $value->id;
                 }
 
@@ -285,8 +285,7 @@ class JsonLD extends AbstractParser
      */
     protected function parseLanguageTaggedString(LanguageTaggedString $value)
     {
-        // TODO: Language support?
-        return $value->getValue();
+        return (object)['value' => $value->getValue(), 'lang' => $value->getLanguage()];
     }
 
     /**

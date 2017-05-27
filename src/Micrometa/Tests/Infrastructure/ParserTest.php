@@ -37,6 +37,7 @@
 namespace Jkphl\Micrometa\Tests\Infrastructure;
 
 use Jkphl\Micrometa\Application\Item\Item;
+use Jkphl\Micrometa\Application\Value\StringValue;
 use Jkphl\Micrometa\Infrastructure\Parser\JsonLD;
 use Jkphl\Micrometa\Tests\AbstractTestBase;
 
@@ -61,5 +62,14 @@ class ParserTest extends AbstractTestBase
         $this->assertInstanceOf(Item::class, $items[0]);
         $this->assertEquals(JsonLD::FORMAT, $items[0]->getFormat());
         $this->assertEquals('http://example.com/id1', $items[0]->getId());
+
+        /** @var StringValue[] $propertyValues */
+        $propertyValues = $items[0]->getProperty('http://example.com/term6');
+        $this->assertTrue(is_array($propertyValues));
+        foreach ([null, null, 'en', 'de'] as $index => $language) {
+            $this->assertInstanceOf(StringValue::class, $propertyValues[$index]);
+            $this->assertEquals(strval($index + 1), strval($propertyValues[$index]));
+            $this->assertEquals($language, $propertyValues[$index]->getLanguage());
+        }
     }
 }
