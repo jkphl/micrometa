@@ -61,29 +61,16 @@ class ParserTest extends AbstractTestBase
     }
 
     /**
-     * Test the JSON-LD parser
+     * Test the JSON-LD parser with an invalid JSON-LD document
+     *
+     * @expectedException \Jkphl\Micrometa\Ports\Exceptions\RuntimeException
+     * @expectedExceptionCode 400
      */
     public function testJsonLDParser()
     {
         $parser = new Parser(Format::JSON_LD);
-        $itemObjectModel = $parser('http://localhost:1349/json-ld/jsonld-languages.html');
+        $itemObjectModel = $parser('http://localhost:1349/json-ld/jsonld-invalid.html');
         $this->assertInstanceOf(ItemObjectModelInterface::class, $itemObjectModel);
         $this->assertEquals(1, count($itemObjectModel->getItems()));
     }
-
-    /**
-     * Test the parser facade
-     */
-//    public function testParser()
-//    {
-//        $microformatsHtml = \ComposerLocator::getPath('microformats/test').DIRECTORY_SEPARATOR.'tests'.
-//            DIRECTORY_SEPARATOR.'microformats-v2'.DIRECTORY_SEPARATOR.'h-product'.DIRECTORY_SEPARATOR.'aggregate.html';
-//        $parser = new Parser(Format::MICROFORMATS);
-//        $itemObjectModel = $parser(self::VALID_HTML_URL, file_get_contents($microformatsHtml), Format::ALL);
-//        $this->assertInstanceOf(ItemObjectModelInterface::class, $itemObjectModel);
-//        $this->assertEquals(1, count($itemObjectModel->getItems()));
-//        $item = $itemObjectModel->getFirstItem();
-//        $this->assertInstanceOf(Item::class, $item);
-////        $this->assertTrue($item->isOfType('invalid', MicroformatsFactory::MF2_PROFILE_URI.'h-product'));
-//    }
 }

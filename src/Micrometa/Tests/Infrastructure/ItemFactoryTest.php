@@ -4,8 +4,8 @@
  * micrometa
  *
  * @category Jkphl
- * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Infrastructure
+ * @package Jkphl\Rdfalite
+ * @subpackage Jkphl\Micrometa\Tests\Infrastructure
  * @author Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @copyright Copyright © 2017 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -34,56 +34,39 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Infrastructure\Logger;
+namespace Jkphl\Micrometa\Tests\Infrastructure;
 
-use Jkphl\Micrometa\Ports\Exceptions\RuntimeException;
-use Monolog\Handler\NullHandler;
-use Monolog\Logger;
+use Jkphl\Micrometa\Ports\Item\Item;
+use Jkphl\Micrometa\Infrastructure\Factory\ItemFactory;
+use Jkphl\Micrometa\Tests\AbstractTestBase;
+use Jkphl\Micrometa\Tests\MicroformatsFeedTrait;
 
 /**
- * Exception logger
+ * Item factory test
  *
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Infrastructure
+ * @subpackage Jkphl\Micrometa\Tests
  */
-class ExceptionLogger extends Logger
+class ItemFactoryTest extends AbstractTestBase
 {
     /**
-     * Exception threshold
-     *
-     * @var int
+     * Use the Microformats feed method
      */
-    protected $threshold;
+    use MicroformatsFeedTrait;
 
     /**
-     * Constructor
+     * Test the item factory
      */
-    public function __construct($threshold = Logger::ERROR)
-    {
-        $this->threshold = $threshold;
-        parent::__construct('exception', [new NullHandler()]);
-    }
-
-    /**
-     * Throws an exception for all messages with error level or higher
-     *
-     * @param  mixed $level The log level
-     * @param  string $message The log message
-     * @param  array $context The log context
-     * @return Boolean Whether the record has been processed
-     * @throws \Exception Exception that occured
-     * @throws \RuntimeException Log message as exception
-     */
-    public function addRecord($level, $message, array $context = [])
-    {
-        if ($this->threshold && ($level >= $this->threshold)) {
-            if (isset($context['exception']) && ($context['exception'] instanceof \Exception)) {
-                throw $context['exception'];
-            }
-
-            throw new RuntimeException($message, $level);
+    public function testItemFactory() {
+        $feedItem = $this->getApplicationFeedItem();
+        $items = ItemFactory::createFromApplicationItems([$feedItem]);
+        $this->assertTrue(is_array($items));
+        $this->assertEquals(1, count($items));
+        $this->assertInstanceOf(Item::class, $items[0]);
+        $this->assertTrue(is_array($items[0]->getItems()));
+        $this->assertEquals(2, count($items[0]->getItems()));
+        foreach ($items[0]->getItems() as $childItem) {
+            $this->assertInstanceOf(Item::class, $childItem);
         }
-
-        return parent::addRecord($level, $message, $context);
     }
 }

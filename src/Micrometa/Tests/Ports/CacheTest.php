@@ -5,7 +5,7 @@
  *
  * @category Jkphl
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Infrastructure
+ * @subpackage Jkphl\Micrometa\Tests
  * @author Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @copyright Copyright © 2017 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -34,20 +34,29 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Infrastructure\Factory;
+namespace Jkphl\Micrometa\Tests\Ports;
 
-use Jkphl\Micrometa\Domain\Item\Iri;
+use Jkphl\Micrometa\Ports\Cache;
+use Jkphl\Micrometa\Tests\AbstractTestBase;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
+use Symfony\Component\Cache\Adapter\NullAdapter;
 
 /**
- * Factory for immutable IRIs
+ * Cache controller test
  *
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Infrastructure
+ * @subpackage Jkphl\Micrometa\Tests
  */
-class IriFactory
+class CacheTest extends AbstractTestBase
 {
-    public static function createFromIri(Iri $iri)
+    /**
+     * Test the cache controller
+     */
+    public function testCache()
     {
-
+        $this->assertInstanceOf(ArrayAdapter::class, Cache::getAdapter());
+        $cache = new NullAdapter();
+        Cache::setAdapter($cache);
+        $this->assertEquals($cache, Cache::getAdapter());
     }
 }

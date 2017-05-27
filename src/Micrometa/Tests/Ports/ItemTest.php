@@ -43,6 +43,7 @@ use Jkphl\Micrometa\Ports\Item\Item;
 use Jkphl\Micrometa\Ports\Item\ItemInterface;
 use Jkphl\Micrometa\Ports\Item\ItemList;
 use Jkphl\Micrometa\Tests\AbstractTestBase;
+use Jkphl\Micrometa\Tests\MicroformatsFeedTrait;
 
 /**
  * Parser factory tests
@@ -69,6 +70,11 @@ class ItemTest extends AbstractTestBase
         $this->assertTrue($feedItem->isOfType('h-feed'));
         $this->assertTrue($feedItem->isOfType('h-feed', MicroformatsFactory::MF2_PROFILE_URI));
         $this->assertFalse($feedItem->isOfType('invalid', MicroformatsFactory::MF2_PROFILE_URI));
+
+        // Test other item properties
+        $this->assertEquals('feed-id', $feedItem->getId());
+        $this->assertEquals('feed-language', $feedItem->getLanguage());
+        $this->assertEquals('feed-value', $feedItem->getValue());
     }
 
     /**

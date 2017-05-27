@@ -34,7 +34,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Tests\Ports;
+namespace Jkphl\Micrometa\Tests;
 
 use Jkphl\Micrometa\Application\Factory\PropertyListFactory;
 use Jkphl\Micrometa\Application\Item\Item as ApplicationItem;
@@ -52,11 +52,11 @@ use Jkphl\Micrometa\Ports\Item\Item;
 trait MicroformatsFeedTrait
 {
     /**
-     * Create and return an h-feed Microformats item
+     * Create and return an h-feed Microformats applocation item
      *
-     * @return Item h-feed item
+     * @return ApplicationItem h-feed application item
      */
-    protected function getFeedItem()
+    protected function getApplicationFeedItem()
     {
         $authorItem = new ApplicationItem(
             Microformats::FORMAT,
@@ -129,9 +129,22 @@ trait MicroformatsFeedTrait
                     ]
                 ],
             ],
-            [$entryItem, $entryItem]
+            [$entryItem, $entryItem],
+            'feed-id',
+            'feed-language',
+            'feed-value'
         );
 
-        return new Item($feedItem);
+        return $feedItem;
+    }
+
+    /**
+     * Create and return an h-feed Microformats item
+     *
+     * @return Item h-feed item
+     */
+    protected function getFeedItem()
+    {
+        return new Item($this->getApplicationFeedItem());
     }
 }

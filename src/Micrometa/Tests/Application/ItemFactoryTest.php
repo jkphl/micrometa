@@ -168,4 +168,26 @@ class ItemFactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf(Item::class, $item);
         $this->assertEquals([], $item->getProperties()->export());
     }
+
+    /**
+     * Test an invalid language tagged property value
+     *
+     * @expectedException \Jkphl\Micrometa\Ports\Exceptions\RuntimeException
+     * @expectedExceptionCode 1495906369
+     */
+    public function testInvalidLanguageTaggedPropertyValue()
+    {
+        $itemFactory = new ItemFactory(0);
+        $rawItem = (object)[
+            'type' => ['test'],
+            'properties' => [
+                'test' => (object)[
+                    'profile' => MicroformatsFactory::MF2_PROFILE_URI,
+                    'name' => 'name',
+                    'values' => [(object)['invalid' => true]]
+                ]
+            ]
+        ];
+        $itemFactory($rawItem);
+    }
 }

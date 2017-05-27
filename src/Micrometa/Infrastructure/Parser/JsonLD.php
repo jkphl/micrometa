@@ -176,8 +176,8 @@ class JsonLD extends AbstractParser
     /**
      * Parse a JSON-LD fragment
      *
-     * @param Node|TypedValue|array $jsonLD JSON-LD fragment
-     * @return mixed Parsed fragment
+     * @param NodeInterface|LanguageTaggedString|TypedValue|array $jsonLD JSON-LD fragment
+     * @return \stdClass|string|array Parsed fragment
      */
     protected function parse($jsonLD)
     {
@@ -192,23 +192,21 @@ class JsonLD extends AbstractParser
             // Else if it's a typed value
         } elseif ($jsonLD instanceof TypedValue) {
             return $this->parseTypedValue($jsonLD);
-
-            // Else if it's a list of items
-        } elseif (is_array($jsonLD)) {
-            return array_map([$this, 'parse'], $jsonLD);
         }
 
-        $this->logger->warning('Unknown JSON-LD item: '.gettype($jsonLD));
-        return null;
+        // Else if it's a list of items
+        //elseif (is_array($jsonLD)) {
+        return array_map([$this, 'parse'], $jsonLD);
+//      }
     }
 
     /**
      * Parse a JSON-LD node
      *
-     * @param Node $node Node
+     * @param NodeInterface $node Node
      * @return \stdClass Item
      */
-    protected function parseNode(Node $node)
+    protected function parseNode(NodeInterface $node)
     {
         return (object)[
             'type' => $this->parseNodeType($node),
@@ -220,10 +218,10 @@ class JsonLD extends AbstractParser
     /**
      * Parse the type of a JSON-LD node
      *
-     * @param Node $node Node
+     * @param NodeInterface $node Node
      * @return array Item type
      */
-    protected function parseNodeType(Node $node)
+    protected function parseNodeType(NodeInterface $node)
     {
         /** @var Node $itemType */
         return ($itemType = $node->getType()) ? [$this->vocabularyCache->expandIRI($itemType->getId())] : [];
@@ -232,10 +230,10 @@ class JsonLD extends AbstractParser
     /**
      * Parse the properties of a JSON-LD node
      *
-     * @param Node $node Node
+     * @param NodeInterface $node Node
      * @return array Item properties
      */
-    protected function parseNodeProperties(Node $node)
+    protected function parseNodeProperties(NodeInterface $node)
     {
         $properties = [];
 
@@ -257,11 +255,11 @@ class JsonLD extends AbstractParser
 
             // If this is a nested item
             if (is_object($value)) {
-                if (isset($value->type) || isset($value->lang)) {
+                if (!empty($value->type) || !empty($value->lang)) {
                     $properties[$name]->values[] = $value;
 
                     // @type = @id
-                } elseif (isset($value->id)) {
+                } elseif (!empty($value->id)) {
                     $properties[$name]->values[] = $value->id;
                 }
 
@@ -281,7 +279,7 @@ class JsonLD extends AbstractParser
      * Parse a language tagged string
      *
      * @param LanguageTaggedString $value Language tagged string
-     * @return string Value
+     * @return \stdClass Value
      */
     protected function parseLanguageTaggedString(LanguageTaggedString $value)
     {
@@ -297,16 +295,5 @@ class JsonLD extends AbstractParser
     protected function parseTypedValue(TypedValue $value)
     {
         return $value->getValue();
-    }
-
-    /**
-     * Filter empty values
-     *
-     * @param array|string $value Value
-     * @return bool Value is not empty
-     */
-    protected function filter($value)
-    {
-        return is_array($value) ? !!count($value) : strlen($value);
     }
 }

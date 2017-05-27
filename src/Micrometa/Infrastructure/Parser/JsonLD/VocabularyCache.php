@@ -90,7 +90,6 @@ class VocabularyCache
 
         // Try to retrieve the document from the cache
         if (Cache::getAdapter()->hasItem($urlHash)) {
-            echo 'JSON-LD document cache hit';
             return Cache::getAdapter()->getItem($urlHash)->get();
         }
 

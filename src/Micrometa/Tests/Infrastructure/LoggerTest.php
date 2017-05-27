@@ -5,7 +5,7 @@
  *
  * @category Jkphl
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Infrastructure
+ * @subpackage Jkphl\Micrometa\Tests
  * @author Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @copyright Copyright © 2017 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -34,56 +34,52 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Infrastructure\Logger;
+namespace Jkphl\Micrometa\Tests\Infrastructure;
 
-use Jkphl\Micrometa\Ports\Exceptions\RuntimeException;
-use Monolog\Handler\NullHandler;
-use Monolog\Logger;
+use Jkphl\Micrometa\Infrastructure\Logger\ExceptionLogger;
+use Jkphl\Micrometa\Tests\AbstractTestBase;
 
 /**
- * Exception logger
+ * Logger tests
  *
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Infrastructure
+ * @subpackage Jkphl\Micrometa\Tests
  */
-class ExceptionLogger extends Logger
+class LoggerTest extends AbstractTestBase
 {
     /**
-     * Exception threshold
-     *
-     * @var int
+     * Test the exception logger
      */
-    protected $threshold;
-
-    /**
-     * Constructor
-     */
-    public function __construct($threshold = Logger::ERROR)
+    public function testExceptionLogger()
     {
-        $this->threshold = $threshold;
-        parent::__construct('exception', [new NullHandler()]);
+        $logger = new ExceptionLogger();
+        $this->assertTrue($logger->debug('DEBUG'));
     }
 
     /**
-     * Throws an exception for all messages with error level or higher
+     * Test the exception logger
      *
-     * @param  mixed $level The log level
-     * @param  string $message The log message
-     * @param  array $context The log context
-     * @return Boolean Whether the record has been processed
-     * @throws \Exception Exception that occured
-     * @throws \RuntimeException Log message as exception
+     * @expectedException \Jkphl\Micrometa\Ports\Exceptions\RuntimeException
+     * @expectedExceptionMessage CRITICAL
+     * @expectedExceptionCode 500
      */
-    public function addRecord($level, $message, array $context = [])
+    public function testNoContextExceptionLogger()
     {
-        if ($this->threshold && ($level >= $this->threshold)) {
-            if (isset($context['exception']) && ($context['exception'] instanceof \Exception)) {
-                throw $context['exception'];
-            }
+        $logger = new ExceptionLogger();
+        $logger->critical('CRITICAL');
+    }
 
-            throw new RuntimeException($message, $level);
-        }
-
-        return parent::addRecord($level, $message, $context);
+    /**
+     * Test the exception logger with a context
+     *
+     * @expectedException \ErrorException
+     * @expectedExceptionMessage ERROR
+     * @expectedExceptionCode 1234
+     */
+    public function testContextExceptionLogger()
+    {
+        $exception = new \ErrorException('ERROR', 1234);
+        $logger = new ExceptionLogger();
+        $logger->critical('CRITICAL', ['exception' => $exception]);
     }
 }

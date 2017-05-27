@@ -46,6 +46,7 @@ use Jkphl\Micrometa\Ports\Item\Item;
 use Jkphl\Micrometa\Ports\Item\ItemInterface;
 use Jkphl\Micrometa\Ports\Item\ItemObjectModel;
 use Jkphl\Micrometa\Tests\AbstractTestBase;
+use Jkphl\Micrometa\Tests\MicroformatsFeedTrait;
 
 /**
  * Item object model tests
