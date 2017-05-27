@@ -37,6 +37,7 @@
 namespace Jkphl\Micrometa\Tests\Domain;
 
 use Jkphl\Micrometa\Application\Value\StringValue;
+use Jkphl\Micrometa\Domain\Item\Iri;
 use Jkphl\Micrometa\Domain\Item\Item;
 use Jkphl\Micrometa\Domain\Item\PropertyListInterface;
 use Jkphl\Micrometa\Domain\Value\ValueInterface;
@@ -195,7 +196,7 @@ class ItemTest extends \PHPUnit_Framework_TestCase
      */
     protected function t($n, $p = '')
     {
-        return (object)['profile' => $p, 'name' => $n];
+        return new Iri($p, $n);
     }
 
     /**

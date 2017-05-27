@@ -37,6 +37,7 @@
 namespace Jkphl\Micrometa\Tests\Domain;
 
 use Jkphl\Micrometa\Application\Value\StringValue;
+use Jkphl\Micrometa\Domain\Item\Iri;
 use Jkphl\Micrometa\Domain\Item\PropertyList;
 use Jkphl\Micrometa\Infrastructure\Factory\MicroformatsFactory;
 
@@ -72,7 +73,7 @@ class PropertyListTest extends \PHPUnit_Framework_TestCase
 
         // Iterate over all properties
         foreach ($propertyList as $propertyName => $propertyValues) {
-            $this->assertInstanceOf(\stdClass::class, $propertyName);
+            $this->assertInstanceOf(Iri::class, $propertyName);
             $this->assertTrue(is_array($propertyValues));
             $this->assertEquals(2, count($propertyValues));
         }

@@ -6,8 +6,8 @@
  * @category Jkphl
  * @package Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Domain
- * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @author Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @copyright Copyright © 2017 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
@@ -34,41 +34,49 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Domain\Factory;
-
-use Jkphl\Micrometa\Domain\Exceptions\InvalidArgumentException;
-use Jkphl\Micrometa\Domain\Item\Iri;
+namespace Jkphl\Micrometa\Domain\Item;
 
 /**
- * IRI factory
+ * IRI
  *
  * @package Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Domain
+ * @see https://tools.ietf.org/html/rfc3987
  */
-class IriFactory
+class Iri
 {
     /**
-     * Validate and sanitize an IRI
+     * Profile
      *
-     * @param string|\stdClass $iri IRI
-     * @return \stdClass Sanitized IRI
-     * @throws InvalidArgumentException If the IRI is invalid
+     * @var string
      */
-    public static function create($iri)
+    public $profile;
+    /**
+     * Name
+     *
+     * @var string
+     */
+    public $name;
+
+    /**
+     * Constructor
+     *
+     * @param string $profile Profile
+     * @param string $name Name
+     */
+    public function __construct($profile, $name)
     {
-        // Cast as item type object if only a string is given
-        if (is_string($iri)) {
-            $iri = (object)['profile' => '', 'name' => $iri];
-        }
+        $this->profile = $profile;
+        $this->name = $name;
+    }
 
-        // If the IRI is invalid
-        if (!is_object($iri) || !isset($iri->profile) || !isset($iri->name)) {
-            throw new InvalidArgumentException(
-                InvalidArgumentException::INVALID_IRI_STR,
-                InvalidArgumentException::INVALID_IRI
-            );
-        }
-
-        return new Iri($iri->profile, $iri->name);
+    /**
+     * Serialize the IRI
+     *
+     * @return string Serialized IRI
+     */
+    function __toString()
+    {
+        return $this->profile.$this->name;
     }
 }
