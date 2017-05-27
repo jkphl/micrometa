@@ -33,7 +33,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-use Jkphl\Micrometa\Ports\Format;use Jkphl\Micrometa\Ports\Item\ItemInterface;use Jkphl\Micrometa\Ports\Parser;use Monolog\Formatter\LineFormatter;use Monolog\Handler\TestHandler;use Monolog\Logger;
+use Jkphl\Micrometa\Ports\Cache;use Jkphl\Micrometa\Ports\Format;use Jkphl\Micrometa\Ports\Item\ItemInterface;use Jkphl\Micrometa\Ports\Parser;use Monolog\Formatter\LineFormatter;use Monolog\Handler\TestHandler;use Monolog\Logger;use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
 require_once dirname(__DIR__).DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'autoload.php';
 
@@ -176,6 +176,10 @@ if (empty($params['parser'])) {
     }
 }
 
+// Prepare the cache adapter
+$cacheAdapter = new FilesystemAdapter('micrometa', 0, __DIR__.DIRECTORY_SEPARATOR.'cache');
+Cache::setAdapter($cacheAdapter);
+
 ?><!DOCTYPE html>
 <html lang="en">
     <head>
@@ -189,16 +193,15 @@ if (empty($params['parser'])) {
             <p>This demo page is part of the <a href="https://github.com/jkphl/micrometa" target="_blank">micrometa
                     parser</a> package and can be used to fetch a remote document and parse it for embedded micro
                 information in several formats.</p>
+            <p>JSON-LD parsing turns out to be rather time consuming, so a session
+                persistent file cache is used to avoid fetching the involved contexts over and over again. Feel free to
+                clear the cache in case of vocabulary updates.</p>
             <form method="post">
                 <fieldset>
                     <legend> Enter an URL to be fetched &amp; examined</legend>
                     <div>
                         <label><span> URL</span><input type="url" name="url" value="<?= htmlspecialchars($url); ?>"
-                                                       placeholder="http://" required="required"/></label>
-                        <!--<label><span > Data</span ><select name = "data" >
-                                <option value = "all" > All</option >
-                                <option value = "author" > Author</option >
-                            </select ></label > -->
+                                                       placeholder="https://"/></label>
                         <label><span> Format</span><select name="output">
                                 <option value="tree" <?= ($output == 'tree') ? ' selected="selected"' : ''; ?>>Tree
                                 </option>
@@ -207,7 +210,7 @@ if (empty($params['parser'])) {
                             </select></label>
                     </div>
                     <div>
-                        Parsers
+                        <span>Parsers</span>
                         <label class="legend item-type-mf2"><input type="checkbox" name="parser[mf2]"
                                                                    value="<?= Format::MICROFORMATS ?>"
                                 <?= ($formats & Format::MICROFORMATS) ? ' checked="checked"' : ''; ?>/> Microformats 1+2</label>
@@ -227,12 +230,16 @@ if (empty($params['parser'])) {
                                 <?= ($formats & Format::JSON_LD) ? ' checked="checked"' : ''; ?>/>
                             JSON-LD</label>
                     </div>
-                    <div><input type="submit" name="microdata" value="Fetch &amp; parse URL"/></div>
+                    <div>
+                        <input type="submit" name="microdata" value="Fetch &amp; parse URL" class="parse"/>
+                        <input type="submit" name="clearcache" value="Clear JSON-LD vocabulary cache"/>
+                    </div>
                 </fieldset><?php
 
                 if (!empty($params['microdata']) && strlen($url)):
 
-                    ?><fieldset>
+                    ?>
+                    <fieldset>
                         <legend>Micro information embedded into <a href="<?= htmlspecialchars($url); ?>"
                                                                    target="_blank"><?= htmlspecialchars($url); ?></a>
                         </legend><?php
@@ -242,11 +249,14 @@ if (empty($params['parser'])) {
                         endif;
 
                         flush();
+
+                        // Prepare the logger
                         $logHandler = new TestHandler();
                         $logHandler->setFormatter(new LineFormatter("%datetime% > %level_name% > %message%\n"));
                         $logger = new Logger('DEMO', [$logHandler]);
 
                         try {
+                            // Create the parser
                             $micrometa = new Parser($formats, $logger);
                             $itemObjectModel = $micrometa($url);
                             $items = $itemObjectModel->getItems();
@@ -309,6 +319,14 @@ if (empty($params['parser'])) {
                     <legend>Parsing &amp; processing log</legend>
                     <pre><?= htmlspecialchars($logHandler->getFormatter()
                             ->formatBatch($logHandler->getRecords())); ?></pre>
+                    </fieldset><?php
+
+                elseif (!empty($params['clearcache'])):
+
+                    ?>
+                    <fieldset>
+                    <legend>Cache management</legend>
+                    <p><?= $cacheAdapter->clear() ? 'The JSON-LD vocabulary cache has successfully been cleared.' : 'The JSON-LD vocabulary cache could not be cleared.'; ?></p>
                     </fieldset><?php
 
                 endif;

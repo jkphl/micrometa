@@ -36,6 +36,7 @@
 
 namespace Jkphl\Micrometa\Infrastructure\Parser\JsonLD;
 
+use Jkphl\Micrometa\Ports\Cache;
 use ML\JsonLD\RemoteDocument;
 
 /**
@@ -64,6 +65,18 @@ class VocabularyCache
      * @var array
      */
     protected $prefices = [];
+    /**
+     * Document cache slot
+     *
+     * @var string
+     */
+    const SLOT_DOC = 'jsonld.doc';
+    /**
+     * Vocabulary cache slot
+     *
+     * @var string
+     */
+    const SLOT_VOCABS = 'jsonld.vocabs';
 
     /**
      * Return a cached document
@@ -73,7 +86,15 @@ class VocabularyCache
      */
     public function getDocument($url)
     {
-        return isset($this->documents[$url]) ? $this->documents[$url] : null;
+        $urlHash = $this->getCacheHash($url, self::SLOT_DOC);
+
+        // Try to retrieve the document from the cache
+        if (Cache::getAdapter()->hasItem($urlHash)) {
+            echo 'JSON-LD document cache hit';
+            return Cache::getAdapter()->getItem($urlHash)->get();
+        }
+
+        return null;
     }
 
     /**
@@ -92,7 +113,14 @@ class VocabularyCache
             }
         }
 
-        return $this->documents[$url] = $document;
+        // Save the document to the cache
+        $docUrlHash = $this->getCacheHash($url, self::SLOT_DOC);
+        $cachedDocument = Cache::getAdapter()->getItem($docUrlHash);
+        $cachedDocument->set($document);
+        Cache::getAdapter()->save($cachedDocument);
+
+        // Return the document
+        return $document;
     }
 
     /**
@@ -102,6 +130,10 @@ class VocabularyCache
      */
     protected function processContext(array $context)
     {
+        $prefices = [];
+        $vocabularyCache = Cache::getAdapter()->getItem(self::SLOT_VOCABS);
+        $vocabularies = $vocabularyCache->isHit() ? $vocabularyCache->get() : [];
+
         // Run through all vocabulary terms
         foreach ($context as $name => $definition) {
             // Skip JSON-LD reserved terms
@@ -109,21 +141,28 @@ class VocabularyCache
                 continue;
             }
 
-            // Register vocabularies
-            if (is_string($definition) && !isset($this->vocabularies[$definition])) {
-                $this->prefices[$name] = $definition;
-                $this->vocabularies[$definition] = [];
+            // Register a prefix (and vocabulary)
+            if (is_string($definition) && !isset($prefices[$name])) {
+                $prefices[$name] = $definition;
+
+                // Register the vocabulary
+                if (!isset($vocabularies[$definition])) {
+                    $vocabularies[$definition] = [];
+                }
 
                 // Else: Register vocabulary term
             } elseif (is_object($definition) && isset($definition->{'@id'})) {
                 $prefixName = explode(':', $definition->{'@id'}, 2);
                 if (count($prefixName) == 2) {
-                    if (isset($this->prefices[$prefixName[0]])) {
-                        $this->vocabularies[$this->prefices[$prefixName[0]]][$prefixName[1]] = true;
+                    if (isset($prefices[$prefixName[0]])) {
+                        $vocabularies[$prefices[$prefixName[0]]][$prefixName[1]] = true;
                     }
                 }
             }
         }
+
+        $vocabularyCache->set($vocabularies);
+        Cache::getAdapter()->save($vocabularyCache);
     }
 
     /**
@@ -135,16 +174,31 @@ class VocabularyCache
     public function expandIRI($name)
     {
         $iri = (object)['name' => $name, 'profile' => ''];
+        $vocabularies = Cache::getAdapter()->getItem(self::SLOT_VOCABS);
 
         // Run through all vocabularies
-        foreach ($this->vocabularies as $profile => $terms) {
-            $profileLength = strlen($profile);
-            if (!strncasecmp($profile, $name, $profileLength) && !empty($terms[substr($name, $profileLength)])) {
-                $iri->profile = $profile;
-                $iri->name = substr($name, $profileLength);
+        if ($vocabularies->isHit()) {
+            foreach ($vocabularies->get() as $profile => $terms) {
+                $profileLength = strlen($profile);
+                if (!strncasecmp($profile, $name, $profileLength) && !empty($terms[substr($name, $profileLength)])) {
+                    $iri->profile = $profile;
+                    $iri->name = substr($name, $profileLength);
+                }
             }
         }
 
         return $iri;
+    }
+
+    /**
+     * Create a cache hash
+     *
+     * @param string $str String
+     * @param string $slot Slot
+     * @return string URL hash
+     */
+    protected function getCacheHash($str, $slot)
+    {
+        return $slot.'.'.md5($str);
     }
 }

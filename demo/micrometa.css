@@ -40,6 +40,10 @@ div.error {
     table-layout: fixed;
 }
 
+pre,
+details.main {
+    width: calc(58rem - 4px);
+}
 
 pre {
     margin: 0;
@@ -47,7 +51,6 @@ pre {
     overflow-wrap: normal;
     word-wrap: normal;
     white-space: pre;
-    width: calc(58rem - 4px);
     max-height: 50vh;
 }
 
@@ -103,10 +106,19 @@ input[type=submit], label {
 }
 
 input[type=submit] {
-    background-color: #090;
-    color: #fff;
     padding: .5em 1em;
     border: none;
+    border: 1px solid #ccc;
+}
+
+input[type=submit].parse {
+    background-color: #090;
+    border-color: #070;
+    color: #fff;
+}
+
+input[type=submit]:hover {
+    border-color: #000;
 }
 
 label, label span {

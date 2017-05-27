@@ -40,7 +40,8 @@
         "ml/json-ld": "^1.0",
         "monolog/monolog": "^1.22",
         "psr/cache": "^1.0",
-        "psr/log": "^1.0"
+        "psr/log": "^1.0",
+        "symfony/cache": "^3.2"
     },
     "autoload": {
         "psr-4": {
@@ -61,7 +62,6 @@
         "mindplay/composer-locator": "^2.1",
         "phpunit/phpunit": "^4.8",
         "satooshi/php-coveralls": "^1.0",
-        "squizlabs/php_codesniffer": "^2.8",
-        "symfony/cache": "^3.2"
+        "squizlabs/php_codesniffer": "^2.8"
     }
 }
