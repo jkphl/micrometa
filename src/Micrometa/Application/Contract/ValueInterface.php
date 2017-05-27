@@ -46,5 +46,4 @@ interface ValueInterface extends
     \Jkphl\Micrometa\Domain\Value\ValueInterface,
     ExportableInterface
 {
-
 }

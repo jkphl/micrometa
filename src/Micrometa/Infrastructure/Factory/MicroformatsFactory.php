@@ -107,14 +107,11 @@ class MicroformatsFactory
      */
     protected static function createProperties(array $properties, &$lang)
     {
+        // Extract the language (if present)
+        $properties = self::createLanguage($properties, $lang);
+
         $microformatProperties = [];
         foreach ($properties as $propertyName => $propertyValues) {
-            // If this is the item language
-            if (($propertyName == 'html-lang') && is_string($propertyValues)) {
-                $lang = $propertyValues;
-                continue;
-            }
-
             // Process property values
             if (is_array($propertyValues)) {
                 $microformatProperties[] = (object)[
@@ -128,6 +125,41 @@ class MicroformatsFactory
     }
 
     /**
+     * Extract a language value from a value list
+     *
+     * @param array $values Value list
+     * @param string $lang Language
+     * @return array Remaining values
+     */
+    protected static function createLanguage(array $values, &$lang)
+    {
+        // If this is an alternate values list
+        if (isset($values['html-lang'])) {
+            if (is_string($values['html-lang'])) {
+                $lang = trim($values['html-lang']) ?: null;
+            }
+            unset($values['html-lang']);
+        }
+
+        return $values;
+    }
+
+    /**
+     * Tag values with a language (if possible)
+     *
+     * @param array $values Values
+     * @return array Language tagged values
+     */
+    protected static function tagLanguage(array $values)
+    {
+        $lang = null;
+        $values = self::createLanguage($values, $lang);
+        return $lang ? array_map(function ($value) use ($lang) {
+            return (object)['value' => $value, 'lang' => $lang];
+        }, $values) : $values;
+    }
+
+    /**
      * Refine the item property values
      *
      * @param array $propertyValues Property values
@@ -138,10 +170,12 @@ class MicroformatsFactory
         return array_map(
             function ($propertyValue) {
                 if (is_array($propertyValue)) {
-                    return isset($propertyValue['type']) ? self::createItem($propertyValue) : $propertyValue;
+                    return isset($propertyValue['type']) ?
+                        self::createItem($propertyValue) : self::tagLanguage($propertyValue);
                 }
                 return $propertyValue;
-            }, $propertyValues
+            },
+            $propertyValues
         );
     }
 

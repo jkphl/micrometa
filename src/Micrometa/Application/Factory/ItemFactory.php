@@ -42,6 +42,7 @@ use Jkphl\Micrometa\Application\Item\Item;
 use Jkphl\Micrometa\Application\Item\ItemInterface;
 use Jkphl\Micrometa\Application\Value\AlternateValues;
 use Jkphl\Micrometa\Application\Value\StringValue;
+use Jkphl\Micrometa\Ports\Exceptions\RuntimeException;
 
 /**
  * Item factory
@@ -83,13 +84,42 @@ class ItemFactory
      */
     protected function processPropertyValue($propertyValue)
     {
-        if (is_object($propertyValue)) {
+        // If this is an item value
+        if (is_object($propertyValue) && isset($propertyValue->type)) {
             return $this->__invoke($propertyValue);
-        }
-        if (is_array($propertyValue)) {
+
+            // Else these are alternate values
+        } elseif (is_array($propertyValue)) {
             return new AlternateValues(array_map([$this, __METHOD__], $propertyValue));
         }
-        return new StringValue($propertyValue);
+
+        list($propertyValue, $language) = $this->processLanguageTaggedPropertyValue($propertyValue);
+        return new StringValue($propertyValue, $language);
+    }
+
+    /**
+     * Process a language tagged property value
+     *
+     * @param string|\stdClass $propertyValue Property value
+     * @return array Language and property value
+     * @throws RuntimeException If this is an invalid language tagged value
+     */
+    protected function processLanguageTaggedPropertyValue($propertyValue)
+    {
+        $language = null;
+        if (is_object($propertyValue)) {
+            // If this is an invalid language tagged object
+            if (!isset($propertyValue->lang) || !isset($propertyValue->value)) {
+                throw new RuntimeException(
+                    RuntimeException::INVALID_LANGUAGE_TAGGED_VALUE_STR,
+                    RuntimeException::INVALID_LANGUAGE_TAGGED_VALUE
+                );
+            }
+
+            $language = $propertyValue->lang;
+            $propertyValue = $propertyValue->value;
+        }
+        return [$propertyValue, $language];
     }
 
     /**
@@ -138,7 +168,8 @@ class ItemFactory
         $value = isset($item->value) ? $item->value : null;
         $children = isset($item->children) ? array_map([$this, __METHOD__], $item->children) : [];
         $properties = $this->getProperties($item);
-        return new Item($this->format, $this->propertyListFactory, $type, $properties, $children, $itemId, $itemLanguage, $value);
+        return new Item($this->format, $this->propertyListFactory, $type, $properties, $children, $itemId,
+            $itemLanguage, $value);
     }
 
     /**

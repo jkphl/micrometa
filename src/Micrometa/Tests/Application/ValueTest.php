@@ -53,11 +53,12 @@ class ValueTest extends \PHPUnit_Framework_TestCase
     public function testStringValue()
     {
         $string = md5(rand());
-        $stringValue = new StringValue($string);
+        $stringValue = new StringValue($string, 'en');
         $this->assertInstanceOf(StringValue::class, $stringValue);
         $this->assertFalse($stringValue->isEmpty());
         $this->assertEquals($string, strval($stringValue));
         $this->assertEquals($string, $stringValue->export());
+        $this->assertEquals('en', $stringValue->getLanguage());
     }
 
     /**

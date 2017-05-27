@@ -33,7 +33,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-use Jkphl\Micrometa\Ports\Cache;use Jkphl\Micrometa\Ports\Format;use Jkphl\Micrometa\Ports\Item\ItemInterface;use Jkphl\Micrometa\Ports\Parser;use Monolog\Formatter\LineFormatter;use Monolog\Handler\TestHandler;use Monolog\Logger;use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Jkphl\Micrometa\Application\Value\StringValue;use Jkphl\Micrometa\Ports\Cache;use Jkphl\Micrometa\Ports\Format;use Jkphl\Micrometa\Ports\Item\ItemInterface;use Jkphl\Micrometa\Ports\Parser;use Monolog\Formatter\LineFormatter;use Monolog\Handler\TestHandler;use Monolog\Logger;use Symfony\Component\Cache\Adapter\FilesystemAdapter; use Jkphl\Micrometa\Application\Value\AlternateValues;
 
 require_once dirname(__DIR__).DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'autoload.php';
 
@@ -78,8 +78,11 @@ function renderItem(ItemInterface $item)
     $html = '<li><details>';
     $html .= '<summary class="item-type-'.$GLOBALS['parserSuffices'][$item->getFormat()].'">';
     $html .= '<h3><span class="item-type">'.implode('</span> + <span class="item-type">', $types).'</span>';
-    $html .= '<span class="item-id">[ID = '.htmlspecialchars($item->getId() ?: 'NULL');
-    $html .= ' | LANGUAGE = '.htmlspecialchars(strtoupper($item->getLanguage()) ?: 'NULL').']</span></h3>';
+    $html .= '<span class="item-id">[ ID = '.htmlspecialchars($item->getId() ?: 'NULL');
+    if ($item->getLanguage()) {
+        $html .= ' | LANG = '.htmlspecialchars(strtoupper($item->getLanguage()) ?: 'NULL');
+    }
+    $html .= ' ]</span></h3>';
     $html .= '</summary>';
 
 
@@ -135,22 +138,33 @@ function renderPropertyValues(array $values)
  */
 function renderPropertyValue($value)
 {
+    // If the value is a nested item
     if ($value instanceof ItemInterface) {
         return renderItem($value);
-    } elseif (is_string($value)) {
+
+        // Else: If the value is a string
+    } elseif ($value instanceof StringValue) {
+        $language = $value->getLanguage() ?
+            '<span class="item-id">[ LANG = '.htmlspecialchars(strtoupper($value->getLanguage()) ?: 'NULL').' ]</span> ' : '';
         if ((strpos($value, '://') !== false) && filter_var($value, FILTER_VALIDATE_URL)) {
-            return '<li><a href="'.htmlspecialchars($value).'" target="_blank">'.htmlspecialchars($value).'</a></li>';
+            return '<li>'.$language.'<a href="'.htmlspecialchars($value).'" target="_blank">'.htmlspecialchars($value).'</a></li>';
         }
 
-        return '<li>'.htmlspecialchars($value).'</li>';
-    } elseif (is_array($value)) {
+        return '<li>'.$language.htmlspecialchars($value).'</li>';
+
+        // Else: If the value is alternating
+    } elseif ($value instanceof AlternateValues) {
         $html = '<li><dt>';
         foreach ($value as $key => $alternateValue) {
+            $language = $alternateValue->getLanguage() ?
+                '<span class="item-id">[ LANG = '.htmlspecialchars(strtoupper($alternateValue->getLanguage()) ?: 'NULL').' ]</span> ' : '';
             $html .= '<dt>'.htmlspecialchars($key).'</dt>';
-            $html .= '<dd>'.htmlspecialchars($alternateValue).'</dd>';
+            $html .= '<dd>'.$language.htmlspecialchars($alternateValue).'</dd>';
         }
         $html .= '</dt></ul>';
         return $html;
+
+        // Else: Empty value
     } else {
         return '';
     }

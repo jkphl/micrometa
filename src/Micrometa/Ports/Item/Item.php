@@ -108,7 +108,7 @@ class Item extends ItemList implements ItemInterface
 
         // If all property values should be returned
         if ($index === null) {
-            return array_map([$this, 'exportPropertyValue'], $propertyValues);
+            return array_map([$this, 'getPropertyValue'], $propertyValues);
         }
 
         // If the property value index is out of bounds
@@ -119,7 +119,7 @@ class Item extends ItemList implements ItemInterface
             );
         }
 
-        return $this->exportPropertyValue($propertyValues[$index]);
+        return $this->getPropertyValue($propertyValues[$index]);
     }
 
     /**
@@ -128,10 +128,10 @@ class Item extends ItemList implements ItemInterface
      * @param ValueInterface $value Property value
      * @return Item|mixed Returnable property value
      */
-    protected function exportPropertyValue(ValueInterface $value)
+    protected function getPropertyValue(ValueInterface $value)
     {
         return ($value instanceof ApplicationItemInterface) ?
-            ItemFactory::createFromApplicationItem($value) : $value->export();
+            ItemFactory::createFromApplicationItem($value) : $value;
     }
 
     /**
@@ -228,7 +228,7 @@ class Item extends ItemList implements ItemInterface
     {
         $propertyList = (new PropertyListFactory())->create();
         foreach ($this->item->getProperties() as $propertyName => $propertyValues) {
-            $propertyList[$propertyName] = array_map([$this, 'exportPropertyValue'], $propertyValues);
+            $propertyList[$propertyName] = array_map([$this, 'getPropertyValue'], $propertyValues);
         }
         return $propertyList;
     }

@@ -52,15 +52,23 @@ class StringValue implements ValueInterface
      * @var string
      */
     protected $value;
+    /**
+     * Language
+     *
+     * @var string|null
+     */
+    protected $language;
 
     /**
      * String value constructor
      *
      * @param string $value String value
+     * @param string|null $language Language
      */
-    public function __construct($value)
+    public function __construct($value, $language = null)
     {
         $this->value = $value;
+        $this->language = $language;
     }
 
     /**
@@ -91,5 +99,15 @@ class StringValue implements ValueInterface
     public function export()
     {
         return strval($this);
+    }
+
+    /**
+     * Return the language of this value
+     *
+     * @return string Language
+     */
+    public function getLanguage()
+    {
+        return $this->language;
     }
 }

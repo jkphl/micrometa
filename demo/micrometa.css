@@ -107,7 +107,6 @@ input[type=submit], label {
 
 input[type=submit] {
     padding: .5em 1em;
-    border: none;
     border: 1px solid #ccc;
 }
 
@@ -256,8 +255,11 @@ li:last-child .item-properties .item-properties {
 .item-id {
     color: #aaa;
     font-weight: normal;
-    margin-left: .5em;
     font-size: x-small;
+}
+
+.item-type + .item-id {
+    margin-left: .5em;
 }
 
 .item-value {

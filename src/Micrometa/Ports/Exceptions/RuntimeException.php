@@ -44,5 +44,16 @@ namespace Jkphl\Micrometa\Ports\Exceptions;
  */
 class RuntimeException extends \RuntimeException implements MicrometaExceptionInterface
 {
-
+    /**
+     * Invalid language tagged value
+     *
+     * @var string
+     */
+    const INVALID_LANGUAGE_TAGGED_VALUE_STR = 'Invalid language tagged value';
+    /**
+     * Invalid language tagged value
+     *
+     * @var int
+     */
+    const INVALID_LANGUAGE_TAGGED_VALUE = 1495906369;
 }
