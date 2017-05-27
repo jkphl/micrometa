@@ -39,6 +39,7 @@ namespace Jkphl\Micrometa\Infrastructure\Parser;
 use Jkphl\Micrometa\Application\Contract\ParsingResultInterface;
 use Jkphl\Micrometa\Infrastructure\Factory\MicroformatsFactory;
 use Jkphl\Micrometa\Ports\Format;
+use Mf2\Parser;
 
 /**
  * Microformats parsere
@@ -64,7 +65,9 @@ class Microformats extends AbstractParser
     public function parseDom(\DOMDocument $dom)
     {
         $this->logger->info('Running parser: '.(new \ReflectionClass(__CLASS__))->getShortName());
-        $microformats = \Mf2\parse($dom, strval($this->uri), false);
+        $parser = new Parser($dom, strval($this->uri));
+        $parser->lang = true; // Enable experimental language parsing
+        $microformats = $parser->parse();
         return new ParsingResult(
             self::FORMAT,
             isset($microformats['items']) ?
