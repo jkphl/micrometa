@@ -84,10 +84,16 @@ class PropertyListTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf(StringValue::class, $unprofiledProperty[0]);
         $this->assertEquals('John Doe', $unprofiledProperty[0]);
 
-        // Get an profiled property
+        // Get a profiled property via object
         $unprofiledProperty = $propertyList->offsetGet(
             (object)['name' => 'name', 'profile' => MicroformatsFactory::MF2_PROFILE_URI]
         );
+        $this->assertTrue(is_array($unprofiledProperty));
+        $this->assertInstanceOf(StringValue::class, $unprofiledProperty[1]);
+        $this->assertEquals('John Doe', $unprofiledProperty[1]);
+
+        // Get a profiled property via IRI
+        $unprofiledProperty = $propertyList->offsetGet(new Iri(MicroformatsFactory::MF2_PROFILE_URI, 'name'));
         $this->assertTrue(is_array($unprofiledProperty));
         $this->assertInstanceOf(StringValue::class, $unprofiledProperty[1]);
         $this->assertEquals('John Doe', $unprofiledProperty[1]);

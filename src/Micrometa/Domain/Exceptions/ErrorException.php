@@ -56,4 +56,16 @@ class ErrorException extends \ErrorException
      * @var string
      */
     const CANNOT_UNSET_PROPERTY = 1489784392;
+    /**
+     * IRIs are immutable
+     *
+     * @var string
+     */
+    const IMMUTABLE_IRI_STR = 'IRIs are immutable';
+    /**
+     * IRIs are immutable
+     *
+     * @var string
+     */
+    const IMMUTABLE_IRI = 1495895278;
 }

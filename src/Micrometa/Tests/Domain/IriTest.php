@@ -5,9 +5,9 @@
  *
  * @category Jkphl
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Domain\Item
- * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @subpackage Jkphl\Micrometa\Tests
+ * @author Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @copyright Copyright © 2017 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
@@ -34,52 +34,47 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Domain\Item;
+namespace Jkphl\Micrometa\Tests\Domain;
 
-use Jkphl\Micrometa\Domain\Value\ValueInterface;
+use Jkphl\Micrometa\Domain\Item\Iri;
 
 /**
- * Item interface
+ * IRI tests
  *
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Domain
+ * @subpackage Jkphl\Micrometa\Tests
  */
-interface ItemInterface extends ValueInterface
+class IriTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * Return the item types
+     * Test IRIs
      *
-     * @return \stdClass[] Item types
+     * @expectedException \Jkphl\Micrometa\Domain\Exceptions\OutOfBoundsException
+     * @expectedExceptionCode 1495895152
      */
-    public function getType();
+    public function testIri()
+    {
+        $profile = md5(rand());
+        $name = md5(rand());
+        $iri = new Iri($profile, $name);
+        $this->assertInstanceOf(Iri::class, $iri);
+        $this->assertTrue(isset($iri->profile));
+        $this->assertTrue(isset($iri->name));
+        $this->assertFalse(isset($iri->invalid));
+        $this->assertEquals($profile, $iri->profile);
+        $this->assertEquals($name, $iri->name);
+        $this->assertEquals($profile.$name, strval($iri));
+        $iri->invalid;
+    }
 
     /**
-     * Return the item ID (if any)
+     * Test IRI immutability
      *
-     * @return string|null Item id
+     * @expectedException \Jkphl\Micrometa\Domain\Exceptions\ErrorException
+     * @expectedExceptionCode 1495895278
      */
-    public function getId();
-
-    /**
-     * Return the item language (if any)
-     *
-     * @return string|null Item language
-     */
-    public function getLanguage();
-
-    /**
-     * Return all item properties
-     *
-     * @return PropertyListInterface Item properties list
-     */
-    public function getProperties();
-
-    /**
-     * Return the values of a particular property
-     *
-     * @param string|\stdClass|Iri $name Property name
-     * @param string|null $profile Property profile
-     * @return array Item property values
-     */
-    public function getProperty($name, $profile = null);
+    public function testIriImmutability() {
+        $iri = new Iri('', '');
+        $iri->profile = 'abc';
+    }
 }

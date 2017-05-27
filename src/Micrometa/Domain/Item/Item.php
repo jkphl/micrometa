@@ -174,7 +174,8 @@ class Item implements ItemInterface
      *
      * @return string|null Item language
      */
-    public function getLanguage() {
+    public function getLanguage()
+    {
         return $this->itemLanguage;
     }
 
@@ -191,13 +192,20 @@ class Item implements ItemInterface
     /**
      * Return the values of a particular property
      *
-     * @param string $name Property name
+     * @param string|\stdClass|Iri $name Property name
      * @param string|null $profile Property profile
      * @return array Item property values
      */
     public function getProperty($name, $profile = null)
     {
-        $iri = IriFactory::create(($profile === null) ? $name : (object)['profile' => $profile, 'name' => $name]);
+        $iri = IriFactory::create(
+            (($profile === null) || is_object($name)) ?
+                $name :
+                (object)[
+                    'profile' => $profile,
+                    'name' => $name
+                ]
+        );
         return $this->properties->offsetGet($iri);
     }
 
@@ -315,8 +323,8 @@ class Item implements ItemInterface
     /**
      * Validate a single item type
      *
-     * @param \stdClass|string $type Item type
-     * @return \stdClass|null Validated item type
+     * @param \stdClass|Iri|string $type Item type
+     * @return Iri|null Validated item type
      * @throws InvalidArgumentException If the item type object is invalid
      */
     protected function validateType($type)

@@ -204,7 +204,7 @@ class ItemTest extends \PHPUnit_Framework_TestCase
      *
      * @param string $n Property name
      * @param mixed $s Property value(s)
-     * @param string $p Property profiles
+     * @param string $p Property profile
      * @return \stdClass Property object
      */
     protected function p($n, $s, $p = '')
@@ -292,11 +292,24 @@ class ItemTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test the item property getter
+     * Test the item property getter with an unprofiled property
      */
-    public function testItemPropertyGetter()
+    public function testItemUnprofiledProperty()
     {
         $item = new Item('type', [$this->p('name', 123)]);
         $this->assertEquals([new StringValue('123')], $item->getProperty('name'));
+    }
+
+    /**
+     * Test the item property getter with a profiled property
+     */
+    public function testItemProfiledProperty()
+    {
+        $item = new Item('type', [$this->p('name', 123, 'profile')]);
+        $value = [new StringValue('123')];
+        $this->assertEquals($value, $item->getProperty('name'));
+        $this->assertEquals($value, $item->getProperty('name', 'profile'));
+        $this->assertEquals($value, $item->getProperty((object)['name' => 'name', 'profile' => 'profile']));
+        $this->assertEquals($value, $item->getProperty(new Iri('profile', 'name')));
     }
 }

@@ -94,12 +94,7 @@ function renderItem(ItemInterface $item)
     if (count($properties)) {
         $html .= '<dl class="item-properties">';
         foreach ($properties as $property => $values) {
-
-            // TODO: Clunky! Values of getProperties() and getProperty() should be identical (IRI object > Ports item / string / array)
-            $values = $item->getProperty($property);
-            $html .= '<dt><abbr title="'.htmlspecialchars($property->profile.$property->name).'">'.htmlspecialchars(
-                    $property->name
-                ).'</abbr></dt>';
+            $html .= '<dt><abbr title="'.htmlspecialchars($property).'">'.htmlspecialchars($property->name).'</abbr></dt>';
             $html .= '<dd>'.renderPropertyValues($values).'</dd>';
         }
         $html .= '</dl>';

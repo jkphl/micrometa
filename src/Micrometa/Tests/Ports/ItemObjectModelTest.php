@@ -39,6 +39,7 @@ namespace Jkphl\Micrometa\Tests\Ports;
 use Jkphl\Micrometa\Application\Factory\PropertyListFactory;
 use Jkphl\Micrometa\Application\Item\Item as ApplicationItem;
 use Jkphl\Micrometa\Application\Value\StringValue;
+use Jkphl\Micrometa\Domain\Item\Iri;
 use Jkphl\Micrometa\Infrastructure\Factory\ItemFactory;
 use Jkphl\Micrometa\Infrastructure\Parser\LinkRel;
 use Jkphl\Micrometa\Ports\Item\Item;
@@ -81,12 +82,7 @@ class ItemObjectModelTest extends AbstractTestBase
         $secondRel = $itemObjectModel->rel(null, 1);
         $this->assertInstanceOf(Item::class, $secondRel);
         $this->assertEquals(
-            [
-                (object)[
-                    'name' => 'alternate',
-                    'profile' => LinkRel::HTML_PROFILE_URI
-                ]
-            ],
+            [new Iri(LinkRel::HTML_PROFILE_URI, 'alternate')],
             $secondRel->getType()
         );
 
@@ -96,12 +92,7 @@ class ItemObjectModelTest extends AbstractTestBase
         $this->assertEquals(1, count($stylesheetRels));
         $this->assertInstanceOf(Item::class, $stylesheetRels[0]);
         $this->assertEquals(
-            [
-                (object)[
-                    'name' => 'stylesheet',
-                    'profile' => LinkRel::HTML_PROFILE_URI
-                ]
-            ],
+            [new Iri(LinkRel::HTML_PROFILE_URI, 'stylesheet')],
             $stylesheetRels[0]->getType()
         );
 
@@ -109,12 +100,7 @@ class ItemObjectModelTest extends AbstractTestBase
         $firstStylesheetRel = $itemObjectModel->rel('stylesheet', 0);
         $this->assertInstanceOf(Item::class, $firstStylesheetRel);
         $this->assertEquals(
-            [
-                (object)[
-                    'name' => 'stylesheet',
-                    'profile' => LinkRel::HTML_PROFILE_URI
-                ]
-            ],
+            [new Iri(LinkRel::HTML_PROFILE_URI, 'stylesheet')],
             $firstStylesheetRel->getType()
         );
 

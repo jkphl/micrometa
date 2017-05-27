@@ -56,4 +56,16 @@ class OutOfBoundsException extends \InvalidArgumentException implements Micromet
      * @var int
      */
     const UNKNOWN_PROPERTY_NAME = 1488315604;
+    /**
+     * Unknown IRI property name
+     *
+     * @var string
+     */
+    const UNKNOWN_IRI_PROPERTY_NAME_STR = 'Unknown IRI property name "%s"';
+    /**
+     * Unknown property name
+     *
+     * @var int
+     */
+    const UNKNOWN_IRI_PROPERTY_NAME = 1495895152;
 }

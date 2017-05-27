@@ -39,6 +39,7 @@ namespace Jkphl\Micrometa\Tests\Application;
 use Jkphl\Micrometa\Application\Factory\ItemFactory;
 use Jkphl\Micrometa\Application\Item\Item;
 use Jkphl\Micrometa\Application\Value\StringValue;
+use Jkphl\Micrometa\Domain\Item\Iri;
 use Jkphl\Micrometa\Infrastructure\Factory\MicroformatsFactory;
 
 /**
@@ -58,7 +59,7 @@ class ItemFactoryTest extends \PHPUnit_Framework_TestCase
         $rawItem = (object)['type' => ['test']];
         $item = $itemFactory($rawItem);
         $this->assertInstanceOf(Item::class, $item);
-        $this->assertEquals([(object)['profile' => '', 'name' => 'test']], $item->getType());
+        $this->assertEquals([new Iri('', 'test')], $item->getType());
         $this->assertNull($item->getValue());
     }
 

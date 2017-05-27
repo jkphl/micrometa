@@ -147,7 +147,7 @@ class PropertyList implements PropertyListInterface
     /**
      * Add a property
      *
-     * @param \stdClass $property Property
+     * @param \stdClass|Iri $property Property
      */
     public function add($property)
     {
@@ -167,7 +167,7 @@ class PropertyList implements PropertyListInterface
     /**
      * Return whether a property exists
      *
-     * @param \stdClass|string $iri IRI
+     * @param \stdClass|Iri|string $iri IRI
      * @return boolean Property exists
      */
     public function offsetExists($iri)
@@ -185,13 +185,13 @@ class PropertyList implements PropertyListInterface
     /**
      * Get a particular property cursor by its profiled name
      *
-     * @param \stdClass $iri IRI
+     * @param Iri $iri IRI
      * @return int Property cursor
      * @throws OutOfBoundsException If the property name is unknown
      */
     protected function getProfiledPropertyCursor($iri)
     {
-        $iriStr = $iri->profile.$iri->name;
+        $iriStr = strval($iri);
 
         // If the property name is unknown
         if (!isset($this->nameToCursor[$iriStr])) {
@@ -236,13 +236,13 @@ class PropertyList implements PropertyListInterface
     /**
      * Set a particular property
      *
-     * @param \stdClass|string $iri IRI
+     * @param \stdClass|Iri|string $iri IRI
      * @param array $value Property values
      */
     public function offsetSet($iri, $value)
     {
         $iri = IriFactory::create($iri);
-        $iriStr = $iri->profile.$iri->name;
+        $iriStr = strval($iri);
         $cursor = array_key_exists($iriStr, $this->nameToCursor) ?
             $this->nameToCursor[$iriStr] : ($this->nameToCursor[$iriStr] = count($this->nameToCursor));
         $this->names[$cursor] = $iri;
@@ -252,7 +252,7 @@ class PropertyList implements PropertyListInterface
     /**
      * Get a particular property
      *
-     * @param \stdClass|string $iri IRI
+     * @param \stdClass|Iri|string $iri IRI
      * @return array Property values
      * @throws OutOfBoundsException If the property name is unknown
      */

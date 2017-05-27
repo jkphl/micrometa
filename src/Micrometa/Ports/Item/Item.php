@@ -38,9 +38,11 @@ namespace Jkphl\Micrometa\Ports\Item;
 
 use Jkphl\Micrometa\Application\Contract\ValueInterface;
 use Jkphl\Micrometa\Application\Factory\AliasFactory;
+use Jkphl\Micrometa\Application\Factory\PropertyListFactory;
 use Jkphl\Micrometa\Application\Item\ItemInterface as ApplicationItemInterface;
 use Jkphl\Micrometa\Application\Item\PropertyListInterface;
 use Jkphl\Micrometa\Domain\Exceptions\OutOfBoundsException as DomainOutOfBoundsException;
+use Jkphl\Micrometa\Domain\Item\Iri;
 use Jkphl\Micrometa\Infrastructure\Factory\ItemFactory;
 use Jkphl\Micrometa\Infrastructure\Factory\ProfiledNamesFactory;
 use Jkphl\Micrometa\Infrastructure\Parser\ProfiledNamesList;
@@ -88,7 +90,7 @@ class Item extends ItemList implements ItemInterface
     /**
      * Get a single property (value)
      *
-     * @param string $name Property name
+     * @param string|\stdClass|Iri $name Property name
      * @param string $profile Property profile
      * @param int $index Property value index
      * @return array|string|ItemInterface Property value(s)
@@ -224,8 +226,11 @@ class Item extends ItemList implements ItemInterface
      */
     public function getProperties()
     {
-        return $this->item->getProperties();
-//        return $this->item->getProperties()->export();
+        $propertyList = (new PropertyListFactory())->create();
+        foreach ($this->item->getProperties() as $propertyName => $propertyValues) {
+            $propertyList[$propertyName] = array_map([$this, 'exportPropertyValue'], $propertyValues);
+        }
+        return $propertyList;
     }
 
     /**
@@ -274,7 +279,8 @@ class Item extends ItemList implements ItemInterface
      *
      * @return string Item language
      */
-    public function getLanguage() {
+    public function getLanguage()
+    {
         return $this->item->getLanguage();
     }
 

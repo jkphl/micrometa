@@ -80,7 +80,7 @@ class PropertyList extends \Jkphl\Micrometa\Domain\Item\PropertyList implements 
     public function offsetSet($iri, $value)
     {
         $iri = IriFactory::create($iri);
-        $iriStr = $iri->profile.$iri->name;
+        $iriStr = strval($iri);
         $cursor = array_key_exists($iriStr, $this->nameToCursor) ? $this->nameToCursor[$iriStr] : count($this->values);
         $this->aliases[$iriStr] = [];
 
@@ -103,7 +103,7 @@ class PropertyList extends \Jkphl\Micrometa\Domain\Item\PropertyList implements 
     {
         $propertyList = [];
         foreach ($this->names as $iri) {
-            $profiledName = $iri->profile.$iri->name;
+            $profiledName = strval($iri);
             $cursor = $this->nameToCursor[$profiledName];
             $propertyList[$profiledName] = array_map(
                 function (ExportableInterface $value) {
@@ -124,7 +124,7 @@ class PropertyList extends \Jkphl\Micrometa\Domain\Item\PropertyList implements 
     {
         // Run through all property names
         foreach ($this->names as $cursor => $iri) {
-            foreach ($this->aliases[$iri->profile.$iri->name] as $alias) {
+            foreach ($this->aliases[strval($iri)] as $alias) {
                 if ($name === $alias) {
                     return $cursor;
                 }

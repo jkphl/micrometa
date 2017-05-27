@@ -5,9 +5,9 @@
  *
  * @category Jkphl
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Domain\Item
- * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @subpackage Jkphl\Micrometa\Infrastructure
+ * @author Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @copyright Copyright © 2017 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @license http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
@@ -34,52 +34,20 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Domain\Item;
+namespace Jkphl\Micrometa\Infrastructure\Factory;
 
-use Jkphl\Micrometa\Domain\Value\ValueInterface;
+use Jkphl\Micrometa\Domain\Item\Iri;
 
 /**
- * Item interface
+ * Factory for immutable IRIs
  *
  * @package Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Domain
+ * @subpackage Jkphl\Micrometa\Infrastructure
  */
-interface ItemInterface extends ValueInterface
+class IriFactory
 {
-    /**
-     * Return the item types
-     *
-     * @return \stdClass[] Item types
-     */
-    public function getType();
+    public static function createFromIri(Iri $iri)
+    {
 
-    /**
-     * Return the item ID (if any)
-     *
-     * @return string|null Item id
-     */
-    public function getId();
-
-    /**
-     * Return the item language (if any)
-     *
-     * @return string|null Item language
-     */
-    public function getLanguage();
-
-    /**
-     * Return all item properties
-     *
-     * @return PropertyListInterface Item properties list
-     */
-    public function getProperties();
-
-    /**
-     * Return the values of a particular property
-     *
-     * @param string|\stdClass|Iri $name Property name
-     * @param string|null $profile Property profile
-     * @return array Item property values
-     */
-    public function getProperty($name, $profile = null);
+    }
 }

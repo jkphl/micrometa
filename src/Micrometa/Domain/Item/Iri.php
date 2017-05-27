@@ -36,12 +36,17 @@
 
 namespace Jkphl\Micrometa\Domain\Item;
 
+use Jkphl\Micrometa\Domain\Exceptions\ErrorException;
+use Jkphl\Micrometa\Domain\Exceptions\OutOfBoundsException;
+
 /**
  * IRI
  *
  * @package Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Domain
  * @see https://tools.ietf.org/html/rfc3987
+ * @property string $profile Profile
+ * @property string $name Name
  */
 class Iri
 {
@@ -50,13 +55,13 @@ class Iri
      *
      * @var string
      */
-    public $profile;
+    protected $immutableProfile;
     /**
      * Name
      *
      * @var string
      */
-    public $name;
+    protected $immutableName;
 
     /**
      * Constructor
@@ -66,8 +71,53 @@ class Iri
      */
     public function __construct($profile, $name)
     {
-        $this->profile = $profile;
-        $this->name = $name;
+        $this->immutableProfile = strval($profile);
+        $this->immutableName = strval($name);
+    }
+
+    /**
+     * Property getter
+     *
+     * @param string $name Property name
+     * @return string Property value
+     * @throws OutOfBoundsException If the requested IRI property is unknown
+     */
+    public function __get($name)
+    {
+        if ($name == 'profile') {
+            return $this->immutableProfile;
+        }
+        if ($name == 'name') {
+            return $this->immutableName;
+        }
+
+        throw new OutOfBoundsException(
+            sprintf(OutOfBoundsException::UNKNOWN_IRI_PROPERTY_NAME_STR, $name),
+            OutOfBoundsException::UNKNOWN_IRI_PROPERTY_NAME
+        );
+    }
+
+    /**
+     * Check the existence of a property
+     *
+     * @param string $name Property name
+     * @return bool Property exists
+     */
+    public function __isset($name)
+    {
+        return ($name == 'profile') || ($name == 'name');
+    }
+
+    /**
+     * Property setter
+     *
+     * @param string $name Property name
+     * @param mixed $value Property value
+     * @throws ErrorException If a property should be set
+     */
+    function __set($name, $value)
+    {
+        throw new ErrorException(ErrorException::IMMUTABLE_IRI_STR, ErrorException::IMMUTABLE_IRI);
     }
 
     /**
