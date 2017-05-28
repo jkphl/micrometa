@@ -39,6 +39,7 @@ namespace Jkphl\Micrometa\Tests;
 use Jkphl\Micrometa\Application\Factory\PropertyListFactory;
 use Jkphl\Micrometa\Application\Item\Item as ApplicationItem;
 use Jkphl\Micrometa\Application\Value\StringValue;
+use Jkphl\Micrometa\Domain\Value\ValueInterface;
 use Jkphl\Micrometa\Infrastructure\Factory\MicroformatsFactory;
 use Jkphl\Micrometa\Infrastructure\Parser\Microformats;
 use Jkphl\Micrometa\Ports\Item\Item;
@@ -65,27 +66,9 @@ trait MicroformatsFeedTrait
             new PropertyListFactory(),
             (object)['profile' => MicroformatsFactory::MF2_PROFILE_URI, 'name' => 'h-feed'],
             [
-                (object)[
-                    'profile' => MicroformatsFactory::MF2_PROFILE_URI,
-                    'name' => 'name',
-                    'values' => [
-                        new StringValue('John Doe\'s Blog')
-                    ]
-                ],
-                (object)[
-                    'profile' => MicroformatsFactory::MF2_PROFILE_URI,
-                    'name' => 'author',
-                    'values' => [
-                        $authorItem
-                    ]
-                ],
-                (object)[
-                    'profile' => MicroformatsFactory::MF2_PROFILE_URI,
-                    'name' => 'custom-property',
-                    'values' => [
-                        new StringValue('Property for alias testing')
-                    ]
-                ],
+                $this->getPropertyObject('name', new StringValue('John Doe\'s Blog')),
+                $this->getPropertyObject('author', $authorItem),
+                $this->getPropertyObject('custom-property', new StringValue('Property for alias testing')),
             ],
             [$entryItem, $entryItem],
             'feed-id',
@@ -94,6 +77,22 @@ trait MicroformatsFeedTrait
         );
 
         return $feedItem;
+    }
+
+    /**
+     * Return a property object
+     *
+     * @param string $name Name
+     * @param ValueInterface $value Value
+     * @return object Property object
+     */
+    protected function getPropertyObject($name, ValueInterface $value)
+    {
+        return (object)[
+            'profile' => MicroformatsFactory::MF2_PROFILE_URI,
+            'name' => $name,
+            'values' => [$value]
+        ];
     }
 
     /**

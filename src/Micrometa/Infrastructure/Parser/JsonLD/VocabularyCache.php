@@ -170,11 +170,11 @@ class VocabularyCache
     {
         // Register a prefix (and vocabulary)
         if ($this->isPrefix($name, $definition, $prefices)) {
-            $this->processPrefix($name, $definition, $prefices, $vocabularies);
+            $this->processPrefix($name, strval($definition), $prefices, $vocabularies);
 
             // Else: Register vocabulary term
         } elseif ($this->isTerm($definition)) {
-            $this->processVocabularyTerm($definition, $prefices, $vocabularies);
+            $this->processVocabularyTerm((object)$definition, $prefices, $vocabularies);
         }
     }
 

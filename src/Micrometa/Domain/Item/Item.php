@@ -113,14 +113,14 @@ class Item implements ItemInterface
     /**
      * Setup the item
      *
-     * @param PropertyListFactory $propertyListFactory Property list factory
+     * @param PropertyListFactoryInterface $propertyListFactory Property list factory
      * @param string[]|\stdClass[] $type Item type(s)
      * @param \stdClass[] $properties Item properties
      * @param string $itemId Item ID
      * @param string $itemLanguage Item language
      */
     protected function setup(
-        PropertyListFactory $propertyListFactory,
+        PropertyListFactoryInterface $propertyListFactory,
         array $type,
         array $properties,
         $itemId,
@@ -136,7 +136,7 @@ class Item implements ItemInterface
     /**
      * Validate and sanitize the item types
      *
-     * @param \stdClass[] $types Item types
+     * @param string[]|\stdClass[] $types Item types
      * @return array Validated item types
      * @throws InvalidArgumentException If there are no valid types
      */
