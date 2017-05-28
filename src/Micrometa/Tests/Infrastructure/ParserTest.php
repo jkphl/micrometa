@@ -41,7 +41,7 @@ use Jkphl\Micrometa\Application\Value\StringValue;
 use Jkphl\Micrometa\Domain\Item\Iri;
 use Jkphl\Micrometa\Infrastructure\Logger\ExceptionLogger;
 use Jkphl\Micrometa\Infrastructure\Parser\JsonLD;
-use Jkphl\Micrometa\Infrastructure\Parser\LinkRel;
+use Jkphl\Micrometa\Infrastructure\Parser\LinkType;
 use Jkphl\Micrometa\Infrastructure\Parser\Microdata;
 use Jkphl\Micrometa\Infrastructure\Parser\Microformats;
 use Jkphl\Micrometa\Infrastructure\Parser\RdfaLite;
@@ -166,17 +166,17 @@ class ParserTest extends AbstractTestBase
     }
 
     /**
-     * Test the LinkRel parser
+     * Test the LinkType parser
      */
-    public function testLinkRelParser()
+    public function testLinkTypeParser()
     {
-        list($uri, $dom) = $this->getUriFixture('link-rel/valid-test.html');
-        $parser = new LinkRel($uri, self::$logger);
+        list($uri, $dom) = $this->getUriFixture('link-type/valid-test.html');
+        $parser = new LinkType($uri, self::$logger);
         $items = $parser->parseDom($dom)->getItems();
         $this->assertTrue(is_array($items));
         $this->assertEquals(4, count($items));
         $this->assertInstanceOf(Item::class, $items[0]);
-        $this->assertEquals(LinkRel::FORMAT, $items[0]->getFormat());
-        $this->assertEquals([new Iri(LinkRel::HTML_PROFILE_URI, 'icon')], $items[0]->getType());
+        $this->assertEquals(LinkType::FORMAT, $items[0]->getFormat());
+        $this->assertEquals([new Iri(LinkType::HTML_PROFILE_URI, 'icon')], $items[0]->getType());
     }
 }

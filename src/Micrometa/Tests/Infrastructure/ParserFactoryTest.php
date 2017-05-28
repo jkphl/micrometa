@@ -39,7 +39,7 @@ namespace Jkphl\Micrometa\Tests\Infrastructure;
 use Jkphl\Micrometa\Infrastructure\Factory\ParserFactory;
 use Jkphl\Micrometa\Infrastructure\Parser\AbstractParser;
 use Jkphl\Micrometa\Infrastructure\Parser\JsonLD;
-use Jkphl\Micrometa\Infrastructure\Parser\LinkRel;
+use Jkphl\Micrometa\Infrastructure\Parser\LinkType;
 use Jkphl\Micrometa\Infrastructure\Parser\Microdata;
 use Jkphl\Micrometa\Infrastructure\Parser\Microformats;
 use Jkphl\Micrometa\Infrastructure\Parser\RdfaLite;
@@ -59,7 +59,7 @@ class ParserFactoryTest extends AbstractTestBase
      */
     public function testParserFactory()
     {
-        $formats = Microformats::FORMAT | Microdata::FORMAT | JsonLD::FORMAT | RdfaLite::FORMAT | LinkRel::FORMAT;
+        $formats = Microformats::FORMAT | Microdata::FORMAT | JsonLD::FORMAT | RdfaLite::FORMAT | LinkType::FORMAT;
         $uri = 'http://localhost/example.html';
         $parsers = ParserFactory::createParsersFromFormats($formats, Http::createFromString($uri), self::$logger);
 

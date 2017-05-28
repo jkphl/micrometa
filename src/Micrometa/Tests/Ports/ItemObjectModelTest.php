@@ -41,7 +41,7 @@ use Jkphl\Micrometa\Application\Item\Item as ApplicationItem;
 use Jkphl\Micrometa\Application\Value\StringValue;
 use Jkphl\Micrometa\Domain\Item\Iri;
 use Jkphl\Micrometa\Infrastructure\Factory\ItemFactory;
-use Jkphl\Micrometa\Infrastructure\Parser\LinkRel;
+use Jkphl\Micrometa\Infrastructure\Parser\LinkType;
 use Jkphl\Micrometa\Ports\Item\Item;
 use Jkphl\Micrometa\Ports\Item\ItemInterface;
 use Jkphl\Micrometa\Ports\Item\ItemObjectModel;
@@ -72,19 +72,19 @@ class ItemObjectModelTest extends AbstractTestBase
         $itemObjectModel = new ItemObjectModel($this->getItems());
         $this->assertInstanceOf(ItemObjectModel::class, $itemObjectModel);
 
-        // Test all LinkRel items
-        $rels = $itemObjectModel->rel();
-        $this->assertEquals(2, count($rels));
-        foreach ($rels as $rel) {
-            $this->assertInstanceOf(ItemInterface::class, $rel);
+        // Test all LinkType items
+        $links = $itemObjectModel->link();
+        $this->assertEquals(2, count($links));
+        foreach ($links as $link) {
+            $this->assertInstanceOf(ItemInterface::class, $link);
         }
 
-        // Test the second LinkRel item
-        $secondRel = $itemObjectModel->rel(null, 1);
-        $this->assertInstanceOf(Item::class, $secondRel);
+        // Test the second LinkType item
+        $secondLink = $itemObjectModel->link(null, 1);
+        $this->assertInstanceOf(Item::class, $secondLink);
         $this->assertEquals(
-            [new Iri(LinkRel::HTML_PROFILE_URI, 'alternate')],
-            $secondRel->getType()
+            [new Iri(LinkType::HTML_PROFILE_URI, 'alternate')],
+            $secondLink->getType()
         );
 
         $this->runStylesheetTests($itemObjectModel);
@@ -96,26 +96,26 @@ class ItemObjectModelTest extends AbstractTestBase
      * @param ItemObjectModel $itemObjectModel Item object model
      */
     protected function runStylesheetTests(ItemObjectModel $itemObjectModel) {
-        // Test all stylesheet LinkRel items
-        $stylesheetRels = $itemObjectModel->rel('stylesheet');
-        $this->assertTrue(is_array($stylesheetRels));
-        $this->assertEquals(1, count($stylesheetRels));
-        $this->assertInstanceOf(Item::class, $stylesheetRels[0]);
+        // Test all stylesheet LinkType items
+        $stylesheetLinks = $itemObjectModel->link('stylesheet');
+        $this->assertTrue(is_array($stylesheetLinks));
+        $this->assertEquals(1, count($stylesheetLinks));
+        $this->assertInstanceOf(Item::class, $stylesheetLinks[0]);
         $this->assertEquals(
-            [new Iri(LinkRel::HTML_PROFILE_URI, 'stylesheet')],
-            $stylesheetRels[0]->getType()
+            [new Iri(LinkType::HTML_PROFILE_URI, 'stylesheet')],
+            $stylesheetLinks[0]->getType()
         );
 
-        // Test the first stylesheet LinkRel item
-        $firstStylesheetRel = $itemObjectModel->rel('stylesheet', 0);
-        $this->assertInstanceOf(Item::class, $firstStylesheetRel);
+        // Test the first stylesheet LinkType item
+        $firstStylesheetLink = $itemObjectModel->link('stylesheet', 0);
+        $this->assertInstanceOf(Item::class, $firstStylesheetLink);
         $this->assertEquals(
-            [new Iri(LinkRel::HTML_PROFILE_URI, 'stylesheet')],
-            $firstStylesheetRel->getType()
+            [new Iri(LinkType::HTML_PROFILE_URI, 'stylesheet')],
+            $firstStylesheetLink->getType()
         );
 
         // Test an invalid item index
-        $itemObjectModel->rel('stylesheet', 1);
+        $itemObjectModel->link('stylesheet', 1);
     }
 
     /**
@@ -127,21 +127,21 @@ class ItemObjectModelTest extends AbstractTestBase
     {
         $items = ItemFactory::createFromApplicationItems(
             [
-                // Stylesheet rel item
+                // Stylesheet link item
                 new ApplicationItem(
-                    LinkRel::FORMAT,
+                    LinkType::FORMAT,
                     new PropertyListFactory(),
-                    (object)['profile' => LinkRel::HTML_PROFILE_URI, 'name' => 'stylesheet'],
+                    (object)['profile' => LinkType::HTML_PROFILE_URI, 'name' => 'stylesheet'],
                     [
                         (object)[
-                            'profile' => LinkRel::HTML_PROFILE_URI,
+                            'profile' => LinkType::HTML_PROFILE_URI,
                             'name' => 'type',
                             'values' => [
                                 new StringValue('text/css')
                             ]
                         ],
                         (object)[
-                            'profile' => LinkRel::HTML_PROFILE_URI,
+                            'profile' => LinkType::HTML_PROFILE_URI,
                             'name' => 'href',
                             'values' => [
                                 new StringValue('style.css')
@@ -152,28 +152,28 @@ class ItemObjectModelTest extends AbstractTestBase
                     'main-stylesheet'
                 ),
 
-                // Atom feed rel item
+                // Atom feed link item
                 new ApplicationItem(
-                    LinkRel::FORMAT,
+                    LinkType::FORMAT,
                     new PropertyListFactory(),
-                    (object)['profile' => LinkRel::HTML_PROFILE_URI, 'name' => 'alternate'],
+                    (object)['profile' => LinkType::HTML_PROFILE_URI, 'name' => 'alternate'],
                     [
                         (object)[
-                            'profile' => LinkRel::HTML_PROFILE_URI,
+                            'profile' => LinkType::HTML_PROFILE_URI,
                             'name' => 'type',
                             'values' => [
                                 new StringValue('application/atom+xml')
                             ]
                         ],
                         (object)[
-                            'profile' => LinkRel::HTML_PROFILE_URI,
+                            'profile' => LinkType::HTML_PROFILE_URI,
                             'name' => 'href',
                             'values' => [
                                 new StringValue('http://example.com/blog.atom')
                             ]
                         ],
                         (object)[
-                            'profile' => LinkRel::HTML_PROFILE_URI,
+                            'profile' => LinkType::HTML_PROFILE_URI,
                             'name' => 'title',
                             'values' => [
                                 new StringValue('Atom feed')

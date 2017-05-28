@@ -45,17 +45,17 @@ namespace Jkphl\Micrometa\Ports\Exceptions;
 class OutOfBoundsException extends \OutOfBoundsException implements MicrometaExceptionInterface
 {
     /**
-     * Invalid rel type index
+     * Invalid link type index
      *
      * @var string
      */
-    const INVALID_REL_INDEX_STR = 'Index "%s" for rel type "%s" is out of bounds';
+    const INVALID_LINK_TYPE_INDEX_STR = 'Index "%s" for link type "%s" is out of bounds';
     /**
-     * Invalid rel type index
+     * Invalid link type index
      *
      * @var int
      */
-    const INVALID_REL_INDEX = 1489268571;
+    const INVALID_LINK_TYPE_INDEX = 1489268571;
     /**
      * Invalid property value index
      *

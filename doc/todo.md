@@ -2,4 +2,3 @@
 
 * [ ] Documentation
 * [ ] Fix HHVM tests
-* [ ] Improve code climate

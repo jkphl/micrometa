@@ -45,12 +45,12 @@ namespace Jkphl\Micrometa\Ports\Item;
 interface ItemObjectModelInterface extends ItemListInterface
 {
     /**
-     * Return all rel declarations of a particular type
+     * Return all link declarations of a particular type
      *
-     * @param string|null $type Rel type
+     * @param string|null $type Link type
      * @param int|null $index Optional: particular index
-     * @return ItemInterface|ItemInterface[] Single LinkRel item or list of LinkRel items
+     * @return ItemInterface|ItemInterface[] Single LinkType item or list of LinkType items
      * @api
      */
-    public function rel($type = null, $index = null);
+    public function link($type = null, $index = null);
 }

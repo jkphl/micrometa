@@ -45,14 +45,14 @@ use Jkphl\Micrometa\Ports\Format;
  * @package Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Infrastructure
  */
-class LinkRel extends AbstractParser
+class LinkType extends AbstractParser
 {
     /**
      * Format
      *
      * @var int
      */
-    const FORMAT = Format::LINK_REL;
+    const FORMAT = Format::LINK_TYPE;
 
     /**
      * Parse a DOM document
@@ -69,12 +69,12 @@ class LinkRel extends AbstractParser
         $xpath->registerNamespace('html', self::HTML_PROFILE_URI);
 
         // Run through all <link> elements with a `rel` attribute
-        /** @var \DOMElement $linkRel */
-        foreach ($xpath->query('//*[local-name(.) = "link" or local-name(.) = "a"][@rel]') as $linkRel) {
+        /** @var \DOMElement $linkType */
+        foreach ($xpath->query('//*[local-name(.) = "link" or local-name(.) = "a"][@rel]') as $linkType) {
             $item = [
-                'type' => $this->parseRelType($linkRel->getAttribute('rel')),
-                'id' => $linkRel->getAttribute('id') ?: null,
-                'properties' => $this->parseProperties($linkRel),
+                'type' => $this->parseLinkType($linkType->getAttribute('rel')),
+                'id' => $linkType->getAttribute('id') ?: null,
+                'properties' => $this->parseProperties($linkType),
             ];
             $items[] = (object)$item;
         }
@@ -88,7 +88,7 @@ class LinkRel extends AbstractParser
      * @param string $relAttr rel attribute value
      * @return array Item types
      */
-    protected function parseRelType($relAttr)
+    protected function parseLinkType($relAttr)
     {
         $type = [];
         foreach (preg_split('/\040+/', $relAttr) as $rel) {
@@ -98,19 +98,19 @@ class LinkRel extends AbstractParser
     }
 
     /**
-     * Parse the LinkRel attributes
+     * Parse the LinkType attributes
      *
-     * @param \DOMElement $linkRel LinkRel element
+     * @param \DOMElement $linkType LinkType element
      * @return array Properties
      */
-    protected function parseProperties(\DOMElement $linkRel)
+    protected function parseProperties(\DOMElement $linkType)
     {
         $properties = [];
         /**
          * @var string $attributeName Attribute name
          * @var \DOMAttr $attribute Attribute
          */
-        foreach ($linkRel->attributes as $attributeName => $attribute) {
+        foreach ($linkType->attributes as $attributeName => $attribute) {
             if (!in_array($attributeName, ['rel', 'id'])) {
                 $profile = $attribute->lookupNamespaceUri($attribute->prefix ?: null);
                 $property = (object)[
@@ -135,7 +135,7 @@ class LinkRel extends AbstractParser
     protected function parseAttributeValue($profile, $attribute, $value)
     {
         // If it's a HTML attribute
-        if ($profile == LinkRel::HTML_PROFILE_URI) {
+        if ($profile == LinkType::HTML_PROFILE_URI) {
             switch ($attribute) {
                 // Space delimited lists
                 case 'sizes':

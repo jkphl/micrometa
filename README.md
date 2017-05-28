@@ -10,7 +10,13 @@ Please find the [project documentation](doc/index.md) in the `doc` directory. We
 
 ## Installation
 
-This library requires PHP >=5.5 or later. I recommend using the latest available version of PHP as a matter of principle. It has no userland dependencies.
+This library requires PHP >=5.6 or later. I recommend using the latest available version of PHP as a matter of principle. It has no userland dependencies. It's installable and autoloadable via [Composer](https://getcomposer.org/) as [jkphl/micrometa](https://packagist.org/packages/jkphl/micrometa).
+        
+```bash
+composer require jkphl/micrometa
+```
+
+Alternatively, [download a release](https://github.com/jkphl/micrometa/releases) or clone this repository, then require or include its [`autoload.php`](autoload.php) file.
 
 ## Dependencies
 

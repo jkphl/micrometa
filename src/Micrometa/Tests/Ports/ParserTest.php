@@ -50,12 +50,12 @@ use Jkphl\Micrometa\Tests\AbstractTestBase;
 class ParserTest extends AbstractTestBase
 {
     /**
-     * Test the LinkRel parser
+     * Test the LinkType parser
      */
-    public function testLinkRelParser()
+    public function testLinkTypeParser()
     {
-        $parser = new Parser(Format::LINK_REL);
-        $itemObjectModel = $parser('http://localhost:1349/link-rel/valid-test.html');
+        $parser = new Parser(Format::LINK_TYPE);
+        $itemObjectModel = $parser('http://localhost:1349/link-type/valid-test.html');
         $this->assertInstanceOf(ItemObjectModelInterface::class, $itemObjectModel);
         $this->assertEquals(4, count($itemObjectModel->getItems()));
     }

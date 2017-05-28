@@ -36,7 +36,7 @@
 
 namespace Jkphl\Micrometa\Ports\Item;
 
-use Jkphl\Micrometa\Infrastructure\Parser\LinkRel;
+use Jkphl\Micrometa\Infrastructure\Parser\LinkType;
 use Jkphl\Micrometa\Ports\Exceptions\OutOfBoundsException;
 
 /**
@@ -48,67 +48,67 @@ use Jkphl\Micrometa\Ports\Exceptions\OutOfBoundsException;
 class ItemObjectModel extends ItemList implements ItemObjectModelInterface
 {
     /**
-     * LinkRel item cache
+     * LinkType item cache
      *
      * @var ItemListInterface
      */
-    protected $rels = null;
+    protected $links = null;
 
     /**
-     * Return all rel declarations of a particular type
+     * Return all link declarations of a particular type
      *
-     * @param string|null $type Rel type
+     * @param string|null $type Link type
      * @param int|null $index Optional: particular index
-     * @return ItemInterface|ItemInterface[] Single LinkRel item or list of LinkRel items
+     * @return ItemInterface|ItemInterface[] Single LinkType item or list of LinkType items
      * @api
      */
-    public function rel($type = null, $index = null)
+    public function link($type = null, $index = null)
     {
-        // One-time caching of rel elements
-        if ($this->rels === null) {
-            $this->cacheLinkRelItems();
+        // One-time caching of link elements
+        if ($this->links === null) {
+            $this->cacheLinkTypeItems();
         }
 
-        // Find the matching LinkRel items
-        $rels = ($type === null) ? $this->rels->getItems() : $this->rels->getItems($type);
+        // Find the matching LinkType items
+        $links = ($type === null) ? $this->links->getItems() : $this->links->getItems($type);
 
-        // Return rel item(s)
-        return ($index === null) ? $rels : $this->getRelIndex($rels, $type, $index);
+        // Return link item(s)
+        return ($index === null) ? $links : $this->getLinkIndex($links, $type, $index);
     }
 
     /**
-     * Return a particular rel item by index
+     * Return a particular link item by index
      *
-     * @param ItemInterface[] $rels Rel items
-     * @param string|null $type Rel type
-     * @param int $index Rel item index
-     * @return ItemInterface Rel item
-     * @throws OutOfBoundsException If the rel index is out of bounds
+     * @param ItemInterface[] $links Link items
+     * @param string|null $type Link type
+     * @param int $index Link item index
+     * @return ItemInterface Link item
+     * @throws OutOfBoundsException If the link index is out of bounds
      */
-    protected function getRelIndex(array $rels, $type, $index)
+    protected function getLinkIndex(array $links, $type, $index)
     {
-        // If the rel index is out of bounds
-        if (!is_int($index) || !array_key_exists($index, $rels)) {
+        // If the link index is out of bounds
+        if (!is_int($index) || !array_key_exists($index, $links)) {
             throw new OutOfBoundsException(
-                sprintf(OutOfBoundsException::INVALID_REL_INDEX_STR, $index, $type),
-                OutOfBoundsException::INVALID_REL_INDEX
+                sprintf(OutOfBoundsException::INVALID_LINK_TYPE_INDEX_STR, $index, $type),
+                OutOfBoundsException::INVALID_LINK_TYPE_INDEX
             );
         }
 
-        return $rels[$index];
+        return $links[$index];
     }
 
     /**
-     * One-time caching of LinkRel items
+     * One-time caching of LinkType items
      */
-    protected function cacheLinkRelItems()
+    protected function cacheLinkTypeItems()
     {
-        $rels = [];
+        $links = [];
         foreach ($this->items as $item) {
-            if ($item->getFormat() == LinkRel::FORMAT) {
-                $rels[] = $item;
+            if ($item->getFormat() == LinkType::FORMAT) {
+                $links[] = $item;
             }
         }
-        $this->rels = new ItemList($rels);
+        $this->links = new ItemList($links);
     }
 }
