@@ -58,6 +58,7 @@ class Cache
      * Return the active cache adapter
      *
      * @return CacheItemPoolInterface Cache adapter
+     * @api
      */
     public static function getAdapter()
     {
@@ -73,6 +74,7 @@ class Cache
      * Set the active cache adapter
      *
      * @param CacheItemPoolInterface $adapter Cache adapter
+     * @api
      */
     public static function setAdapter(CacheItemPoolInterface $adapter)
     {

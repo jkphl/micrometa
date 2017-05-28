@@ -39,6 +39,7 @@ namespace Jkphl\Micrometa\Infrastructure\Factory;
 use Jkphl\Micrometa\Infrastructure\Parser\ProfiledNamesList;
 use Jkphl\Micrometa\Ports\Exceptions\InvalidArgumentException;
 use Jkphl\Micrometa\Ports\Item\Item;
+use Jkphl\Micrometa\Ports\Item\ItemList;
 
 /**
  * Profiled name factory
@@ -49,7 +50,7 @@ use Jkphl\Micrometa\Ports\Item\Item;
 class ProfiledNamesFactory
 {
     /**
-     * Create a list of profiled names from function arguments
+     * Create a list of profiled names from method arguments
      *
      * The method takes an arbitrary number of arguments and tries to parse them as profiled names. Arguments
      * may be strings, arrays or objects.
@@ -79,7 +80,9 @@ class ProfiledNamesFactory
      * @param array $args Arguments
      * @return ProfiledNamesList Profiled names
      * @see Item::isOfType()
-     * @see Item::firstOf()
+     * @see Item::getFirstProperty()
+     * @see ItemList::getFirstItem()
+     * @see ItemList::getItems()
      */
     public static function createFromArguments(array $args)
     {

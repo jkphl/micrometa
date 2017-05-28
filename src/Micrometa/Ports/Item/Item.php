@@ -209,14 +209,13 @@ class Item extends ItemList implements ItemInterface
      *
      * The property stack can be specified in a variety of ways, @see ProfiledNamesFactory::createFromArguments()
      *
-     * @param string $name Name
-     * @param string $profile Profile
+     * @param array $properties Properties
      * @return ValueInterface[]|array Property values
      * @throws InvalidArgumentException If no property name was given
      * @throws OutOfBoundsException If none of the requested properties is known
      * @api
      */
-    public function getFirstProperty($name, $profile = null)
+    public function getFirstProperty(...$properties)
     {
         /** @var ProfiledNamesList $properties */
         $properties = ProfiledNamesFactory::createFromArguments(func_get_args());
@@ -269,6 +268,7 @@ class Item extends ItemList implements ItemInterface
      * Get the item type
      *
      * @return \stdClass[] Item type
+     * @api
      */
     public function getType()
     {
@@ -279,6 +279,7 @@ class Item extends ItemList implements ItemInterface
      * Get the item format
      *
      * @return int Item format
+     * @api
      */
     public function getFormat()
     {
@@ -289,6 +290,7 @@ class Item extends ItemList implements ItemInterface
      * Get the item ID
      *
      * @return string Item ID
+     * @api
      */
     public function getId()
     {
@@ -299,6 +301,7 @@ class Item extends ItemList implements ItemInterface
      * Get the item language
      *
      * @return string Item language
+     * @api
      */
     public function getLanguage()
     {
@@ -309,6 +312,7 @@ class Item extends ItemList implements ItemInterface
      * Return the item value
      *
      * @return string Item value
+     * @api
      */
     public function getValue()
     {

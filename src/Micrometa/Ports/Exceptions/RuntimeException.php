@@ -56,4 +56,16 @@ class RuntimeException extends \RuntimeException implements MicrometaExceptionIn
      * @var int
      */
     const INVALID_LANGUAGE_TAGGED_VALUE = 1495906369;
+    /**
+     * Item lists are immutable
+     *
+     * @var string
+     */
+    const IMMUTABLE_ITEM_LIST_STR = 'Item lists are immutable';
+    /**
+     * Item lists are immutable
+     *
+     * @var int
+     */
+    const IMMUTABLE_ITEM_LIST = 1495988721;
 }

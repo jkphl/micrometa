@@ -54,34 +54,6 @@ class Item implements ItemInterface
     use ItemSetupTrait;
 
     /**
-     * Item type(s)
-     *
-     * @var \stdClass[]
-     */
-    protected $type;
-
-    /**
-     * Item properties
-     *
-     * @var PropertyListInterface
-     */
-    protected $properties;
-
-    /**
-     * Item ID
-     *
-     * @var string
-     */
-    protected $itemId;
-
-    /**
-     * Item language
-     *
-     * @var string
-     */
-    protected $itemLanguage;
-
-    /**
      * Item constructor
      *
      * @param string|\stdClass|\stdClass[] $type Item type(s)

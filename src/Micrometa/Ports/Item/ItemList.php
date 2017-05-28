@@ -38,6 +38,7 @@ namespace Jkphl\Micrometa\Ports\Item;
 
 use Jkphl\Micrometa\Ports\Exceptions\InvalidArgumentException;
 use Jkphl\Micrometa\Ports\Exceptions\OutOfBoundsException;
+use Jkphl\Micrometa\Ports\Exceptions\RuntimeException;
 
 /**
  * Abstract item list
@@ -126,6 +127,49 @@ class ItemList implements ItemListInterface
     public function rewind()
     {
         $this->pointer = 0;
+    }
+
+    /**
+     * Test if an offset exists
+     *
+     * @param int $offset Offset
+     */
+    public function offsetExists($offset)
+    {
+        return isset($this->items[$offset]);
+    }
+
+    /**
+     * Return the item at a particular offset
+     *
+     * @param int $offset Offset
+     * @return ItemInterface Item
+     */
+    public function offsetGet($offset)
+    {
+        return $this->items[$offset];
+    }
+
+    /**
+     * Set an item at a particular offset
+     *
+     * @param int $offset Offset
+     * @param ItemInterface $value Item
+     */
+    public function offsetSet($offset, $value)
+    {
+        throw new RuntimeException(RuntimeException::IMMUTABLE_ITEM_LIST_STR, RuntimeException::IMMUTABLE_ITEM_LIST);
+    }
+
+    /**
+     * Delete an item at a particular offset
+     *
+     * @param int $offset Offset
+     * @param ItemInterface $value Item
+     */
+    public function offsetUnset($offset)
+    {
+        throw new RuntimeException(RuntimeException::IMMUTABLE_ITEM_LIST_STR, RuntimeException::IMMUTABLE_ITEM_LIST);
     }
 
     /**
@@ -239,7 +283,6 @@ class ItemList implements ItemListInterface
      */
     protected function getItemByTypeAndIndex($type, $index)
     {
-
         $typeItems = $this->getItems($type);
 
         // If the item index is out of bounds

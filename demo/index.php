@@ -42,7 +42,7 @@ $parserSuffices = [
     Format::MICRODATA => 'microdata',
     Format::RDFA_LITE => 'rdfa-lite',
     Format::JSON_LD => 'json-ld',
-    Format::LINK_REL => 'link-rel',
+    Format::LINK_TYPE => 'link-type',
 ];
 
 /**
@@ -230,9 +230,9 @@ Cache::setAdapter($cacheAdapter);
                         <label class="legend item-type-rdfa-lite"><input type="checkbox" name="parser[rdfalite]"
                                                                          value="<?= Format::RDFA_LITE; ?>"<?= ($formats & Format::RDFA_LITE) ? ' checked="checked"' : ''; ?>/>
                             RDFa Lite 1.1</label>
-                        <label class="legend item-type-link-rel"><input type="checkbox" name="parser[link-rel]"
-                                                                        value="<?= Format::LINK_REL; ?>"
-                                <?= ($formats & Format::LINK_REL) ? ' checked="checked"' : ''; ?>/>
+                        <label class="legend item-type-link-type"><input type="checkbox" name="parser[link-type]"
+                                                                        value="<?= Format::LINK_TYPE; ?>"
+                                <?= ($formats & Format::LINK_TYPE) ? ' checked="checked"' : ''; ?>/>
                             LinkRel</label>
                         <label class="legend item-type-json-ld"><input type="checkbox" name="parser[json-ld]"
                                                                        value="<?= Format::JSON_LD; ?>"
@@ -279,11 +279,11 @@ Cache::setAdapter($cacheAdapter);
                             ); ?></pre><?php
                             else:
 
-                                $micro = $rel = [];
+                                $micro = $link = [];
                                 /** @var ItemInterface $item */
                                 foreach ($items as $item) {
-                                    if ($item->getFormat() == Format::LINK_REL) {
-                                        $rel[] = $item;
+                                    if ($item->getFormat() == Format::LINK_TYPE) {
+                                        $link[] = $item;
                                     } else {
                                         $micro[] = $item;
                                     }
@@ -303,13 +303,13 @@ Cache::setAdapter($cacheAdapter);
                                 endif;
 
                                 // LinkRel items
-                                if (count($rel)):
+                                if (count($link)):
 
                                     ?>
                                     <details class="items main" open="open">
                                     <summary><h2>LinkRel</h2></summary><?php
 
-                                    echo renderItems($rel);
+                                    echo renderItems($link);
 
                                     ?></details><?php
 

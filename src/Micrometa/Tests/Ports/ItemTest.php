@@ -188,7 +188,8 @@ class ItemTest extends AbstractTestBase
      *
      * @param Item $feedItem Feed item
      */
-    protected function runCustomItemPropertyTests(Item $feedItem) {
+    protected function runCustomItemPropertyTests(Item $feedItem)
+    {
         // Test the custom item property as an unprofiled property value list
         $feedCustomPropList = $feedItem->getProperty('custom-property');
         $this->assertTrue(is_array($feedCustomPropList));
@@ -325,5 +326,35 @@ class ItemTest extends AbstractTestBase
         $this->assertEquals($feedItem->toObject(), current($export->items));
 
         $itemList->getFirstItem('invalid');
+    }
+
+    /**
+     * Test the item list immutability
+     *
+     * @expectedException \Jkphl\Micrometa\Ports\Exceptions\RuntimeException
+     * @expectedExceptionCode 1495988721
+     */
+    public function testItemListImmutabilitySet()
+    {
+        $feedItem = $this->getFeedItem();
+        $itemList = new ItemList([$feedItem]);
+        $this->assertInstanceOf(ItemList::class, $itemList);
+        $this->assertEquals($feedItem, $itemList[0]);
+        $itemList[1] = $feedItem;
+    }
+
+    /**
+     * Test the item list immutability
+     *
+     * @expectedException \Jkphl\Micrometa\Ports\Exceptions\RuntimeException
+     * @expectedExceptionCode 1495988721
+     */
+    public function testItemListImmutabilityUnset()
+    {
+        $feedItem = $this->getFeedItem();
+        $itemList = new ItemList([$feedItem]);
+        $this->assertInstanceOf(ItemList::class, $itemList);
+        $this->assertEquals($feedItem, $itemList[0]);
+        unset($itemList[0]);
     }
 }

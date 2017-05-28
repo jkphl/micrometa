@@ -57,6 +57,34 @@ trait ItemSetupTrait
     protected $propertyListFactory;
 
     /**
+     * Item type(s)
+     *
+     * @var \stdClass[]
+     */
+    protected $type;
+
+    /**
+     * Item properties
+     *
+     * @var PropertyListInterface
+     */
+    protected $properties;
+
+    /**
+     * Item ID
+     *
+     * @var string
+     */
+    protected $itemId;
+
+    /**
+     * Item language
+     *
+     * @var string
+     */
+    protected $itemLanguage;
+
+    /**
      * Setup the item
      *
      * @param PropertyListFactoryInterface $propertyListFactory Property list factory

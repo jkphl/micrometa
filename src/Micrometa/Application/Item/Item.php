@@ -114,7 +114,8 @@ class Item extends \Jkphl\Micrometa\Domain\Item\Item implements ItemInterface
         return (object)[
             'format' => $this->getFormat(),
             'id' => $this->getId(),
-            'lang' => $this->getLanguage(),
+            'language' => $this->getLanguage(),
+            'value' => $this->getValue(),
             'types' => array_map(
                 function ($type) {
                     return $type->profile.$type->name;

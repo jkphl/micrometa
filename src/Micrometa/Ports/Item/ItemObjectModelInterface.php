@@ -49,7 +49,7 @@ interface ItemObjectModelInterface extends ItemListInterface
      *
      * @param string|null $type Link type
      * @param int|null $index Optional: particular index
-     * @return ItemInterface|ItemInterface[] Single LinkType item or list of LinkType items
+     * @return ItemInterface|ItemListInterface Single LinkType item or list of LinkType items
      * @api
      */
     public function link($type = null, $index = null);

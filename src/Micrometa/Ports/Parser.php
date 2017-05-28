@@ -75,7 +75,7 @@ class Parser
      * @param LoggerInterface|null $logger PSR-3 compatible logger
      * @api
      */
-    public function __construct($formats = null, LoggerInterface $logger = null)
+    public function __construct($formats = Format::ALL, LoggerInterface $logger = null)
     {
         $this->formats = $formats;
         $this->logger = $logger ?: new ExceptionLogger();
@@ -88,6 +88,7 @@ class Parser
      * @param string|null $source Source code
      * @param int $formats Micro information formats to extract
      * @return ItemObjectModelInterface Item object model
+     * @api
      */
     public function __invoke($uri, $source = null, $formats = null)
     {

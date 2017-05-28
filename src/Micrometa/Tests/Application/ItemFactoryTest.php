@@ -117,7 +117,7 @@ class ItemFactoryTest extends \PHPUnit_Framework_TestCase
             (object)[
                 'format' => 0,
                 'id' => null,
-                'lang' => null,
+                'language' => null,
                 'types' => ['test'],
                 'properties' => [
                     MicroformatsFactory::MF2_PROFILE_URI.'alias-property' => ['value']
@@ -126,12 +126,14 @@ class ItemFactoryTest extends \PHPUnit_Framework_TestCase
                     (object)[
                         'format' => 0,
                         'id' => null,
-                        'lang' => null,
+                        'language' => null,
                         'types' => ['test'],
                         'properties' => [],
-                        'items' => []
+                        'items' => [],
+                        'value' => null
                     ]
-                ]
+                ],
+                'value' => null
             ], $item->export()
         );
     }

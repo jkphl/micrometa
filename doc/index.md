@@ -14,18 +14,524 @@
 4. [RDFa Lite 1.1](https://www.w3.org/TR/rdfa-lite/) and
 5. [Link Types](https://developer.mozilla.org/en-US/docs/Web/HTML/Link_types).
 
-*micrometa* is vocabulary agnostic and processes e.g. Microformats, [schema.org](http://schema.org) as well as all known RDFa ontologies.  
+It is vocabulary agnostic and processes everything including e.g. Microformats, [schema.org](http://schema.org) and all known RDFa ontologies. The items found will be returned in a universal format.
 
 ### Usage
 
+#### Parser creation & invocation
+
+To extract micro information out of a web document you have to create and invoke a meta parser object:
+
+```php
+use Jkphl\Micrometa\Ports\Parser;
+
+$micrometa = new Parser();
+$items = $micrometa('http://example.com');
+```
+
+By default, the meta parser utilizes all known subparsers (i.e. formats) to find items in the document. You can change the default selection of subparsers by passing a `$format` bitmask to constructor:
+ 
+ ```php
+ use Jkphl\Micrometa\Ports\Parser;
+ use Jkphl\Micrometa\Ports\Format;
+ 
+// Format::MICROFORMATS = 1
+// Format::MICRODATA = 2
+// Format::JSON_LD = 4
+// Format::RDFA_LITE = 8
+// Format::LINK_TYPE = 16
+// Format::ALL = 31
+ 
+ $micrometa = new Parser(Format::MICROFORMATS | Format::MICRODATA);
+```
+
+You might also pick the formats per invocation:
+
+```php
+use Jkphl\Micrometa\Ports\Parser;
+
+$micrometa = new Parser();
+$items = $micrometa('http://example.com', null, Format::RDFA_LITE);
+```
+
+*micrometa* is both able to fetch a document from the web as well as parse source code you directly pass in. But even in this case you need to provide a URL for relative link resolution:
+
+```php
+use Jkphl\Micrometa\Ports\Parser;
+
+$micrometa = new Parser();
+$items = $micrometa('http://example.com', '<html>...</html>');
+```
+
+The sum of all found [items](#items) are returned as an [item object model](#item-object-model).
+
+#### Items
+
+Items are the main entity constructed by the parser. Regardless of their original format they share a common structure (JSON notation):
+
+```json
+{
+    "format": 0, // Original item format, see format constants
+    "id": null, // Unique item ID
+    "language": null, // Item language
+    "value": null, // The overall value of the item
+    "types": [], // Item type(s)
+    "properties": {}, // Item properties
+    "items": [] // Nested sub-items
+}
+```
+
+Support for the different aspects depends on the format:
+
+| Format         | `format` | `id` | `lang` | `value` | `types` | `properties` | `items` |
+|:---------------|:--------:|:----:|:------:|:-------:|:-------:|:------------:|:-------:|
+| Microformats   |    ✓     |  –   |   ✓    |    ✓    |    ✓    |      ✓       |    ✓    |
+| HTML Microdata |    ✓     |  ✓   |   –    |    –    |    ✓    |      ✓       |    –    |
+| RDFa Lite 1.1  |    ✓     |  ✓   |   –    |    –    |    ✓    |      ✓       |    –    |
+| JSON-LD        |    ✓     |  ✓   |   ✓    |    –    |    ✓    |      ✓       |    –    |
+| Link Type      |    ✓     |  –   |   –    |    –    |    ✓    |      ✓       |    –    |
+
+##### Format, ID, language and value
+
+These simple getters return `null` if no value is set.
+
+```php
+$format = $item->getFormat();
+$id = $item->getId();
+$language = $item->getLanguage();
+$value = $item->getValue();
+```
+
+##### Item types
+
+An item has one more **types**. Item types can be represented as strings but are in fact [IRI](#iris) objects consisting of a name and a profile strings (denoting the vocabulary they belong to):
+
+```php
+use Jkphl\Micrometa\Ports\Item\Item;
+use Jkphl\Micrometa\Domain\Item\Iri;
+
+/**
+ * @var Item $item
+ * @var array $types
+ */
+$types = $item->getType();
+
+/**
+ * @var Iri $type
+ */
+$type = $types[0];
+
+/**
+ * @var string $typeName
+ * @var string $typeProfile
+ * @var string $typeStr
+ */
+$typeName = $type->name; // e.g. "h-entry"
+$typeProfile = $type->profile; // e.g. "http://microformats.org/profile/"
+$typeStr = "$type"; // e.g. "http://microformats.org/profile/h-entry"
+```
+
+The string representation of an item type does neither have to be a valid URL nor point to an existing resource on the web. It's more like a [namespace](https://en.wikipedia.org/wiki/Namespace) kind of feature to disginguish between like-named types from different vocabularies. You can test whether an item is of a particular type (or in a type list):
+
+```
+$isAnHEntry = $item->isOfType('h-entry');
+$isAnHEntry = $item->isOfType('h-entry', 'http://microformats.org/profile/');
+$isAnHEntry = $item->isOfType(new Iri('http://microformats.org/profile/', 'h-entry'));
+$isAnHEntry = $item->isOfType((object)['profile' => 'http://microformats.org/profile/', 'name' => 'h-entry']);
+```
+
+In fact, you can also pass multiple types to `isOfType()` using the [profiled names syntax](#profiled-names-syntax) described below. The method will return true as soon as the item is of one of the given types. This way you can easily determine if an item is e.g. a Microformats `h-card` or a schema.org `Person` item (which are roughly equivalent). 
+
+##### Item properties
+
+An item may have zero or more **properties** with each property being multi-valued (i.e. it can have zero or more values). The **property list** behaves much like an array but is in fact an array-like object that uses [IRIs](#iris) as keys for the properties, so you can do things like this:
+ 
+```php
+use Jkphl\Micrometa\Ports\Item\Item;
+use Jkphl\Micrometa\Application\Item\PropertyList;
+use Jkphl\Micrometa\Domain\Item\Iri;
+
+/**
+ * @var Item $item
+ * @var PropertyList $properties
+ * @var Iri $propertyName
+ * @var array $propertyValues
+ */
+$properties = $item->getProperties();
+foreach ($properties as $propertyName => $propertyValues) {
+    echo $propertyName->profile; // --> "http://microformats.org/profile/"
+    echo $propertyName->name; // --> "description"
+    echo $propertyName; // --> "http://microformats.org/profile/description"
+}
+
+// Find the first property in the list with name "description" (regardless of profile)
+$description = $properties['description'];
+
+// Find the property with name "description" and profile "http://microformats.org/profile/"
+$description = $properties['http://microformats.org/profile/description'];
+$description = $properties[new Iri('http://microformats.org/profile/', 'description')];
+$description = $properties[(object)['profile' => 'http://microformats.org/profile/', 'name' => 'description']];
+
+// Find property by lowerCamelCased alias
+$customProperty = $properties['custom-property'];
+$customProperty = $properties['customProperty'];
+```
+
+The single **property values** may be either **string values**, lists of **alternate string values** or **nested items**. A string value may be language tagged:
+ 
+```php
+use Jkphl\Micrometa\Application\Value\StringValue;
+use Jkphl\Micrometa\Application\Value\AlternateValues;
+
+/** @var StringValue $stringValue */
+$stringValue = $properties['description'][0];
+echo $stringValue; // --> "Lorem ipsum ..."
+echo $stringValue->getLanguage(); // --> "de"
+
+/** @var AlternateValues $alternateValue */
+$alternateValue = $properties['content'][0];
+echo $alternateValue['html']; // --> "<p>Lorem ipsum ...</p>"
+echo $alternateValue['value']; // --> "Lorem ipsum ..."
+echo $alternateValue['value']->getLanguage(); // --> "de"
+```
+
+Items provide several methods of retrieving a particular property:
+
+```php
+// Get all values for a particular property (with and without profile)
+/** @var array $propertyValues */
+$propertyValues = $item->getProperty('description', 'http://microformats.org/profile/');
+$propertyValues = $item->getProperty('description');
+
+// Get the second value of a particular property (by index in the value list)
+$propertyValues = $item->getProperty('description', null, 1);
+
+// Get the first value for the first property named "description" (no profile)
+$firstPropertyValue = $item->description;
+```
+
+Similar to the `isOfType()` method for item types there's a method to find and return the first property matching a prioritized list (also using the [profiled names syntax](#profiled-names-syntax) described below):
+ 
+```php
+// Get the start date of an event, preferring Microformats over schema.org
+$nameProperty = $item->getFirstProperty(
+    new Iri('http://microformats.org/profile/', 'start'),  
+    new Iri('http://schema.org/', 'startDate')  
+);
+```
+
+#### Item lists
+
+Depending on the format, an item may have nested child `items`, thus being an **item list** itself. You can directly iterate over an item to get it's children or you can explicitly use the getter to return a list of its children:
+
+```php
+use Jkphl\Micrometa\Ports\Item\Item;
+use Jkphl\Micrometa\Ports\Item\ItemList;
+
+/**
+ * @var Item $item
+ * @var Item $child
+ */
+foreach ($item as $child) {
+    // ...
+}
+
+/** @var ItemList $children */
+$children = $item->getItems();
+```
+
+Item lists feature some convenience methods for quickly finding children of particular types:
+
+```php
+use Jkphl\Micrometa\Ports\Item\Item;
+/** @var Item $item */
+
+// Get all nested h-event Microformats 
+$events = $item->getItems('h-event', 'http://microformats.org/profile/');
+
+// Get the first nested h-event Microformat
+$event = $item->getFirstItem('h-event', 'http://microformats.org/profile/');
+$event = $item->hEvent(); // lowerCamelCased item type name (without profile)
+$event = $item->hEvent(0);
+
+// Get the second nested h-event Microformat
+$event = $item->hEvent(1);
+
+// Get the first nested h-event Microformat OR schema.org Event (whichever comes first)
+$event = $item->getFirstItem(
+    new Iri('http://microformats.org/profile/', 'h-event'),
+    new Iri('http://schema.org/', 'Event')
+);
+````
+
+#### Item object model
+
+The parser returns an **item object model** which is a special item list featuring a convenience method for link type items (only useful if you enable the [Link Types](https://developer.mozilla.org/en-US/docs/Web/HTML/Link_types) parser):
+ 
+```php
+ use Jkphl\Micrometa\Ports\Parser;
+ use Jkphl\Micrometa\Ports\Format;
+ use Jkphl\Micrometa\Ports\Item\ItemObjectModel;
+ use Jkphl\Micrometa\Ports\Item\ItemList;
+ use Jkphl\Micrometa\Ports\Item\Item;
+ 
+/** @var Parser $micrometa */
+$micrometa = new Parser(Format::LINK_TYPE);
+
+/** @var ItemObjectModel $items */
+$items = $micrometa('http://example.com');
+
+// Get all Link Type items
+/** @var ItemList $allLinks */
+$allLinks = $items->link();
+
+// Get all Link Type items with rel="alternate"
+/** @var ItemList $alternateLinks */
+$alternateLinks = $items->link('alternate');
+
+// Get the second alternate Link Type item (by index)
+/** @var Item $firstAlternateLink */
+$firstAlternateLink = $item->link('alternate', 1);
+```
+
+#### Object export
+
+All **item lists**, including **items** and the **item object model** itself, support being exported to a [POPO](http://www.javaleaks.org/open-source/php/plain-old-php-object.html) that can be JSON encoded. During export,
+
+* [IRIs](#iris) will be stringified (loosing separation of profile and name),
+* property lists will be arrayified (loosing their IRI keys),
+* property string values will be stringified (loosing the language tag), 
+* property alternate values will be arrayified.
+
+```
+$itemObject = $items->toObject();
+echo json_encode($itemObject, JSON_PRETTY_PRINT);
+```
+
+The JSON output should look something like this:
+
+```json
+{
+    "items": [
+        {
+            "format": 1,
+            "id": null,
+            "language": "en",
+            "value": null,
+            "types": [
+                "http://microformats.org/profile/h-event"
+            ],
+            "properties": {
+                "http://microformats.org/profile/location": [
+                    {
+                        "format": 1,
+                        "id": null,
+                        "language": "en",
+                        "value": "Contentful",
+                        "types": [
+                            "http://microformats.org/profile/h-card"
+                        ],
+                        "properties": {
+                            "http://microformats.org/profile/adr": [
+                                {
+                                    "format": 1,
+                                    "id": null,
+                                    "language": "en",
+                                    "value": "Ritterstra\u00dfe 12 10969 Berlin , Germany 52.5020786 13.4089942 Berlin",
+                                    "types": [
+                                        "http://microformats.org/profile/h-adr"
+                                    ],
+                                    "properties": {
+                                        "http://microformats.org/profile/street-address": [
+                                            "Ritterstra\u00dfe 12"
+                                        ],
+                                        "http://microformats.org/profile/postal-code": [
+                                            "10969"
+                                        ],
+                                        "http://microformats.org/profile/locality": [
+                                            "Berlin"
+                                        ],
+                                        "http://microformats.org/profile/country": [
+                                            "Germany"
+                                        ],
+                                        "http://microformats.org/profile/latitude": [
+                                            "52.5020786"
+                                        ],
+                                        "http://microformats.org/profile/longitude": [
+                                            "13.4089942"
+                                        ],
+                                        "http://microformats.org/profile/region": [
+                                            "Berlin"
+                                        ],
+                                        "http://microformats.org/profile/name": [
+                                            "Ritterstra\u00dfe 12 10969 Berlin , Germany 52.5020786 13.4089942 Berlin"
+                                        ]
+                                    },
+                                    "items": []
+                                }
+                            ],
+                            "http://microformats.org/profile/name": [
+                                "Contentful"
+                            ],
+                            "http://microformats.org/profile/label": [
+                                "Contentful"
+                            ],
+                            "http://microformats.org/profile/org": [
+                                "Contentful"
+                            ]
+                        },
+                        "items": []
+                    },
+                    {
+                        "format": 1,
+                        "id": null,
+                        "language": "en",
+                        "value": "tollwerk",
+                        "types": [
+                            "http://microformats.org/profile/h-card"
+                        ],
+                        "properties": {
+                            "http://microformats.org/profile/adr": [
+                                {
+                                    "format": 1,
+                                    "id": null,
+                                    "language": "en",
+                                    "value": "Klingenhofstra\u00dfe 5 90411 N\u00fcrnberg , Germany 49.4751594 11.1067807 Bavaria",
+                                    "types": [
+                                        "http://microformats.org/profile/h-adr"
+                                    ],
+                                    "properties": {
+                                        "http://microformats.org/profile/street-address": [
+                                            "Klingenhofstra\u00dfe 5"
+                                        ],
+                                        "http://microformats.org/profile/postal-code": [
+                                            "90411"
+                                        ],
+                                        "http://microformats.org/profile/locality": [
+                                            "N\u00fcrnberg"
+                                        ],
+                                        "http://microformats.org/profile/country": [
+                                            "Germany"
+                                        ],
+                                        "http://microformats.org/profile/latitude": [
+                                            "49.4751594"
+                                        ],
+                                        "http://microformats.org/profile/longitude": [
+                                            "11.1067807"
+                                        ],
+                                        "http://microformats.org/profile/region": [
+                                            "Bavaria"
+                                        ],
+                                        "http://microformats.org/profile/name": [
+                                            "Klingenhofstra\u00dfe 5 90411 N\u00fcrnberg , Germany 49.4751594 11.1067807 Bavaria"
+                                        ]
+                                    },
+                                    "items": []
+                                }
+                            ],
+                            "http://microformats.org/profile/name": [
+                                "tollwerk"
+                            ],
+                            "http://microformats.org/profile/label": [
+                                "tollwerk"
+                            ],
+                            "http://microformats.org/profile/org": [
+                                "tollwerk"
+                            ]
+                        },
+                        "items": []
+                    }
+                ],
+                "http://microformats.org/profile/name": [
+                    "Accessibility Club"
+                ],
+                "http://microformats.org/profile/summary": [
+                    "Hands-on meetup for web developers and designers about all things web accessibility and assistive technology"
+                ],
+                "http://microformats.org/profile/url": [
+                    "https://accessibility-club.org"
+                ],
+                "http://microformats.org/profile/start": [
+                    "2016-11-07T12:00+02:00"
+                ],
+                "http://microformats.org/profile/end": [
+                    "2016-11-07T17:00+02:00"
+                ]
+            },
+            "items": []
+        }
+    ]
+}
+```
+
+#### IRIs
+
+[Internationalized Resource Identifiers](https://tools.ietf.org/html/rfc3987) (IRIs) are used e.g. by RDFa to uniquely identify concepts like types and properties when making up an ontology. The `Iri` objects used by *micrometa* simply serve the purpose to have the short name stored separately from its base IRI ("profile") so that you can e.g. reference properties by their short name only as well. When you stringify an `Iri` object (explicitly with `strval()` or implicitly by `echo`ing or concatenating it), you will get the concatenated identifier:
+
+```php
+use \Jkphl\Micrometa\Domain\Item\Iri;
+
+$iri = new Iri('http://example.com/', 'name');
+echo $iri->profile; // --> "http://example.com/"
+echo $iri->name; // --> "name"
+echo $iri; // --> "http://example.com/name"
+```
+
+#### Profiled names syntax
+
+Several methods of *micrometa* classes support an arbitrary number of input parameters in order to make up a list of **profiled names** (i.e. type or property names associated with a profile; see [IRIs](#iris)). Please read the method documentation of [`ProfiledNamesFactory::createFromArguments()`](../src/Micrometa/Infrastructure/Factory/ProfiledNamesFactory.php#L51) to learn about the syntax.
+
 ### Logging
+
+*micrometa* makes slight use of logging (basically for debugging purposes) and lets you pass in a custom [PSR-3](http://www.php-fig.org/psr/psr-3/) compatible logger. It comes bundled with [monolog](https://github.com/Seldaek/monolog), so you can e.g. build upon any of its 
+handlers, processors and formatters.
+
+```php
+use Jkphl\Micrometa\Ports\Format;
+use Jkphl\Micrometa\Ports\Parser;
+use Monolog\Handler\TestHandler;
+use Monolog\Logger;
+
+$logHandler = new TestHandler();
+$logger = new Logger('DEMO', [$logHandler]);
+$micrometa = new Parser(Format::ALL, $logger);
+```
+
+By default, *micrometa* uses a custom log handler (`ExceptionLogger`) that swallows messages below a certain threshold log level (`ERROR` by default) and throws them as exceptions otherwise. You can override this behaviour:
+
+```php
+use Jkphl\Micrometa\Ports\Format;
+use Jkphl\Micrometa\Ports\Parser;
+use Jkphl\Micrometa\Infrastructure\Logger\ExceptionLogger;
+use Monolog\Logger;
+
+$exceptionLogHandler = new ExceptionLogger(Logger::INFO); // 0 for all messages as exceptions
+$micrometa = new Parser(Format::ALL, $exceptionLogHandler);
+```
 
 ### Cache
 
-* [PSR-3](http://www.php-fig.org/psr/psr-3/) compatible logger
-* [PSR-6](http://www.php-fig.org/psr/psr-6/) compatible caching backend for JSON-LD parsing
+It turns out that JSON-LD parsing is rather time consuming as the [underlying parser](https://github.com/lanthaler/JsonLD) fetches and processes contexts from the web. For that reason *micrometa* can use a [PSR-6](http://www.php-fig.org/psr/psr-6/) compatible caching backend for storing contexts and vocabularies that have already been fetched. It comes bundled with [Symfony Cache](https://github.com/symfony/cache) so you can easily build upon that:
+
+```php
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Jkphl\Micrometa\Ports\Cache;
+use Jkphl\Micrometa\Ports\Parser;
+
+$cacheAdapter = new FilesystemAdapter('micrometa', 0, __DIR__.DIRECTORY_SEPARATOR.'cache');
+Cache::setAdapter($cacheAdapter);
+$micrometa = new Parser();
+
+$cacheAdapter = Cache::getAdapter();
+// ...
+```
 
 ### Backwards compatibility
+
+Originally I had the intention to keep the second generation of *micrometa* as close to the first version as possible. For several reasons, however, I had to break backwards compatibility almost completely:
+
+* The first version of *micrometa* was very [Microformats](http://microformats.org/wiki)-centric and supported a couple of features that aren't inherent to other formats. And vice versa, some of the other formats bring in additional features which I had to find a good common ground for. The new generation focuses on a lean unified output and syntax for all of them. If there's enough interest, I'll bring back some of these features (e.g. the [IndieWeb authorship algorithm](http://indiewebcamp.com/authorship)) as plugins / accompanying libraries. Let me know!
+* Several of the supported formats have the concept of contexts / vocabularies that are associated with namespace-like URIs / IRIs, which also comes in handy when combining the formats. To support the distinct storage of profiles and names, most of the old public methods had to be changed significantly, making backwards compatibility close to impossible.
 
 ## Installation
 

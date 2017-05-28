@@ -79,17 +79,17 @@ interface ItemInterface extends ItemListInterface
     /**
      * Get all values of the first available property in a stack
      *
-     * @param string $name Name
-     * @param string $profile Profile
+     * @param array $properties Properties
      * @return ValueInterface[]|array Property values
      * @api
      */
-    public function getFirstProperty($name, $profile = null);
+    public function getFirstProperty(...$properties);
 
     /**
      * Get the item format
      *
      * @return int Item format
+     * @api
      */
     public function getFormat();
 
@@ -97,6 +97,7 @@ interface ItemInterface extends ItemListInterface
      * Get the item type
      *
      * @return \stdClass[] Item type
+     * @api
      */
     public function getType();
 
@@ -104,6 +105,7 @@ interface ItemInterface extends ItemListInterface
      * Get the item ID
      *
      * @return string Item ID
+     * @api
      */
     public function getId();
 
@@ -111,6 +113,7 @@ interface ItemInterface extends ItemListInterface
      * Get the item language
      *
      * @return string Item language
+     * @api
      */
     public function getLanguage();
 
@@ -126,6 +129,7 @@ interface ItemInterface extends ItemListInterface
      * Return the item value
      *
      * @return string Item value
+     * @api
      */
     public function getValue();
 }

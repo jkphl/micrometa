@@ -68,13 +68,17 @@ class ValueTest extends \PHPUnit_Framework_TestCase
     {
         $alternate1 = md5(rand());
         $alternate2 = md5(rand());
-        $alternates = [$alternate1, $alternate2];
+        $alternates = ['one' => $alternate1, 'two' => $alternate2];
+        $keys = ['one', 'two'];
         $alternateValue = new AlternateValues($alternates);
         $this->assertInstanceOf(AlternateValues::class, $alternateValue);
         $this->assertFalse($alternateValue->isEmpty());
         foreach ($alternateValue as $index => $value) {
+            $this->assertEquals($index, array_shift($keys));
             $this->assertEquals($alternates[$index], $value);
         }
-        $this->assertEquals([$alternate1, $alternate2], $alternateValue->export());
+        $this->assertEquals($alternates, $alternateValue->export());
+        $this->assertEquals($alternate1, $alternates['one']);
+        $this->assertEquals($alternate2, $alternates['two']);
     }
 }

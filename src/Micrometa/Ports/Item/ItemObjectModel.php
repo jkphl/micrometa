@@ -59,7 +59,7 @@ class ItemObjectModel extends ItemList implements ItemObjectModelInterface
      *
      * @param string|null $type Link type
      * @param int|null $index Optional: particular index
-     * @return ItemInterface|ItemInterface[] Single LinkType item or list of LinkType items
+     * @return ItemInterface|ItemListInterface Single LinkType item or list of LinkType items
      * @api
      */
     public function link($type = null, $index = null)
@@ -73,7 +73,7 @@ class ItemObjectModel extends ItemList implements ItemObjectModelInterface
         $links = ($type === null) ? $this->links->getItems() : $this->links->getItems($type);
 
         // Return link item(s)
-        return ($index === null) ? $links : $this->getLinkIndex($links, $type, $index);
+        return ($index === null) ? new ItemList($links) : $this->getLinkIndex($links, $type, $index);
     }
 
     /**

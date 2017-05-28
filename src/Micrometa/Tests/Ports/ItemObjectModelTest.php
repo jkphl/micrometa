@@ -44,6 +44,7 @@ use Jkphl\Micrometa\Infrastructure\Factory\ItemFactory;
 use Jkphl\Micrometa\Infrastructure\Parser\LinkType;
 use Jkphl\Micrometa\Ports\Item\Item;
 use Jkphl\Micrometa\Ports\Item\ItemInterface;
+use Jkphl\Micrometa\Ports\Item\ItemList;
 use Jkphl\Micrometa\Ports\Item\ItemObjectModel;
 use Jkphl\Micrometa\Tests\AbstractTestBase;
 use Jkphl\Micrometa\Tests\MicroformatsFeedTrait;
@@ -98,7 +99,7 @@ class ItemObjectModelTest extends AbstractTestBase
     protected function runStylesheetTests(ItemObjectModel $itemObjectModel) {
         // Test all stylesheet LinkType items
         $stylesheetLinks = $itemObjectModel->link('stylesheet');
-        $this->assertTrue(is_array($stylesheetLinks));
+        $this->assertInstanceOf(ItemList::class, $stylesheetLinks);
         $this->assertEquals(1, count($stylesheetLinks));
         $this->assertInstanceOf(Item::class, $stylesheetLinks[0]);
         $this->assertEquals(
