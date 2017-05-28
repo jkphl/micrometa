@@ -107,20 +107,8 @@ trait MicroformatsFeedTrait
             new PropertyListFactory(),
             (object)['profile' => MicroformatsFactory::MF2_PROFILE_URI, 'name' => 'h-card'],
             [
-                (object)[
-                    'profile' => MicroformatsFactory::MF2_PROFILE_URI,
-                    'name' => 'name',
-                    'values' => [
-                        new StringValue('John Doe')
-                    ]
-                ],
-                (object)[
-                    'profile' => MicroformatsFactory::MF2_PROFILE_URI,
-                    'name' => 'email',
-                    'values' => [
-                        new StringValue('john@example.com')
-                    ]
-                ]
+                $this->getPropertyObject('name', new StringValue('John Doe')),
+                $this->getPropertyObject('email', new StringValue('john@example.com')),
             ]
         );
     }
@@ -138,20 +126,8 @@ trait MicroformatsFeedTrait
             new PropertyListFactory(),
             (object)['profile' => MicroformatsFactory::MF2_PROFILE_URI, 'name' => 'h-entry'],
             [
-                (object)[
-                    'profile' => MicroformatsFactory::MF2_PROFILE_URI,
-                    'name' => 'name',
-                    'values' => [
-                        new StringValue('Famous blog post')
-                    ]
-                ],
-                (object)[
-                    'profile' => MicroformatsFactory::MF2_PROFILE_URI,
-                    'name' => 'author',
-                    'values' => [
-                        $authorItem
-                    ]
-                ]
+                $this->getPropertyObject('name', new StringValue('Famous blog post')),
+                $this->getPropertyObject('author', $authorItem),
             ]
         );
     }
