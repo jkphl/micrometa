@@ -225,7 +225,7 @@ class PropertyList implements PropertyListInterface
     {
         // Run through all property names
         foreach ($this->names as $cursor => $iri) {
-            if ($name === $iri->name) {
+            if (in_array($name, [$iri->name, strval($iri)])) {
                 return $cursor;
             }
         }

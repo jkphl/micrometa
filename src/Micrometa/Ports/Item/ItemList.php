@@ -133,6 +133,8 @@ class ItemList implements ItemListInterface
      * Test if an offset exists
      *
      * @param int $offset Offset
+     * @return boolean Offset exists
+     * @api
      */
     public function offsetExists($offset)
     {
@@ -144,6 +146,7 @@ class ItemList implements ItemListInterface
      *
      * @param int $offset Offset
      * @return ItemInterface Item
+     * @api
      */
     public function offsetGet($offset)
     {
@@ -155,6 +158,7 @@ class ItemList implements ItemListInterface
      *
      * @param int $offset Offset
      * @param ItemInterface $value Item
+     * @api
      */
     public function offsetSet($offset, $value)
     {
@@ -165,7 +169,6 @@ class ItemList implements ItemListInterface
      * Delete an item at a particular offset
      *
      * @param int $offset Offset
-     * @param ItemInterface $value Item
      */
     public function offsetUnset($offset)
     {
@@ -176,7 +179,6 @@ class ItemList implements ItemListInterface
      * Return an object representation of the item list
      *
      * @return \stdClass Micro information items
-     * @api
      */
     public function toObject()
     {
