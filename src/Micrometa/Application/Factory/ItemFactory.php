@@ -199,11 +199,7 @@ class ItemFactory
     protected function processProperty(array &$properties, $property)
     {
         try {
-            if (is_object($property)
-                && isset($property->profile)
-                && isset($property->name)
-                && isset($property->values)
-            ) {
+            if ($this->validatePropertyStructure($property)) {
                 $property->values = $this->getPropertyValues($property->values);
                 if (count($property->values)) {
                     $properties[] = $property;
@@ -212,6 +208,17 @@ class ItemFactory
         } catch (InvalidArgumentException $e) {
             // Skip this property
         }
+    }
+
+    /**
+     * Validate if an object is a valid property
+     *
+     * @param \stdClass $property Property
+     * @return bool Is a valid property
+     */
+    protected function validatePropertyStructure($property)
+    {
+        return is_object($property) && isset($property->profile) && isset($property->name) && isset($property->values);
     }
 
     /**

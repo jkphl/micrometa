@@ -109,20 +109,33 @@ class ProfiledNamesFactory
         // Get the first argument
         $arg = array_shift($args);
 
-        // If it's an object argument
-        if (is_object($arg)) {
-            return self::createProfiledNameFromObject($arg, $profile);
-        }
-
-        // If it's an array argument
-        if (is_array($arg)) {
-            return self::createProfiledNameFromArray($arg, $profile);
+        // If it's not a scalar argument
+        if (!is_scalar($arg)) {
+            return self::consumeNonScalarProfiledName($arg, $profile);
         }
 
         if (($profile === false) && is_string(current($args))) {
             $profile = array_shift($args);
         }
         return self::createProfiledNameFromString(strval($arg), $profile);
+    }
+
+    /**
+     * Create a profiled name by consuming a non-scalar argument
+     *
+     * @param \stdClass|array $arg Argument
+     * @param string|boolean|null $profile Profile
+     * @return \stdClass Profiled name
+     */
+    protected static function consumeNonScalarProfiledName($arg, &$profile)
+    {
+        // If it's an object argument
+        if (is_object($arg)) {
+            return self::createProfiledNameFromObject($arg, $profile);
+        }
+
+        // Else: It must be an array
+        return self::createProfiledNameFromArray($arg, $profile);
     }
 
     /**

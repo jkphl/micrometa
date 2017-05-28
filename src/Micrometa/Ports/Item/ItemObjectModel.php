@@ -60,7 +60,6 @@ class ItemObjectModel extends ItemList implements ItemObjectModelInterface
      * @param string|null $type Rel type
      * @param int|null $index Optional: particular index
      * @return ItemInterface|ItemInterface[] Single LinkRel item or list of LinkRel items
-     * @throws OutOfBoundsException If the rel index is out of bounds
      * @api
      */
     public function rel($type = null, $index = null)
@@ -73,11 +72,21 @@ class ItemObjectModel extends ItemList implements ItemObjectModelInterface
         // Find the matching LinkRel items
         $rels = ($type === null) ? $this->rels->getItems() : $this->rels->getItems($type);
 
-        // If all LinkRels should be returned
-        if ($index === null) {
-            return $rels;
-        }
+        // Return rel item(s)
+        return ($index === null) ? $rels : $this->getRelIndex($rels, $type, $index);
+    }
 
+    /**
+     * Return a particular rel item by index
+     *
+     * @param ItemInterface[] $rels Rel items
+     * @param string|null $type Rel type
+     * @param int $index Rel item index
+     * @return ItemInterface Rel item
+     * @throws OutOfBoundsException If the rel index is out of bounds
+     */
+    protected function getRelIndex(array $rels, $type, $index)
+    {
         // If the rel index is out of bounds
         if (!is_int($index) || !array_key_exists($index, $rels)) {
             throw new OutOfBoundsException(

@@ -79,7 +79,7 @@ class Item extends ItemList implements ItemInterface
      * Get the first value of an item property
      *
      * @param string $name Item property name
-     * @return array|string|ItemInterface First value of an item property
+     * @return ValueInterface|ValueInterface[]|array|ItemInterface First value of an item property
      * @api
      */
     public function __get($name)
@@ -93,7 +93,7 @@ class Item extends ItemList implements ItemInterface
      * @param string|\stdClass|Iri $name Property name
      * @param string $profile Property profile
      * @param int $index Property value index
-     * @return ValueInterface|ValueInterface[]|ItemInterface Property value(s)
+     * @return ValueInterface|ValueInterface[]|array|ItemInterface Property value(s)
      * @throws OutOfBoundsException If the property name is unknown
      * @throws OutOfBoundsException If the property value index is out of bounds
      * @api
@@ -190,7 +190,7 @@ class Item extends ItemList implements ItemInterface
      *
      * @param string $name Name
      * @param string $profile Profile
-     * @return ValueInterface[] Property values
+     * @return ValueInterface[]|array Property values
      * @throws InvalidArgumentException If no property name was given
      * @throws OutOfBoundsException If none of the requested properties is known
      * @api
@@ -209,7 +209,7 @@ class Item extends ItemList implements ItemInterface
         // Run through all properties
         foreach ($properties as $property) {
             try {
-                return $this->getProperty($property->name, $property->profile);
+                return (array)$this->getProperty($property->name, $property->profile);
             } catch (OutOfBoundsException $e) {
                 continue;
             }

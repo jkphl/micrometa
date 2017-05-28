@@ -60,7 +60,7 @@ interface ItemInterface extends ItemListInterface
      * Get the first value of an item property
      *
      * @param string $name Item property name
-     * @return array|string|ItemInterface First value of an item property
+     * @return ValueInterface|ValueInterface[]|array|ItemInterface First value of an item property
      * @api
      */
     public function __get($name);
@@ -71,7 +71,7 @@ interface ItemInterface extends ItemListInterface
      * @param string $name Property name
      * @param string $profile Property profile
      * @param int $index Property value index
-     * @return ValueInterface|ValueInterface[]|ItemInterface Property value(s)
+     * @return ValueInterface|ValueInterface[]|array|ItemInterface Property value(s)
      * @api
      */
     public function getProperty($name, $profile = null, $index = null);
@@ -81,7 +81,7 @@ interface ItemInterface extends ItemListInterface
      *
      * @param string $name Name
      * @param string $profile Profile
-     * @return ValueInterface[] Property values
+     * @return ValueInterface[]|array Property values
      * @api
      */
     public function getFirstProperty($name, $profile = null);

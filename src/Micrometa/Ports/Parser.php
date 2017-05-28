@@ -41,6 +41,7 @@ use Jkphl\Micrometa\Application\Service\ExtractorService;
 use Jkphl\Micrometa\Infrastructure\Factory\ItemFactory;
 use Jkphl\Micrometa\Infrastructure\Factory\ParserFactory;
 use Jkphl\Micrometa\Infrastructure\Logger\ExceptionLogger;
+use Jkphl\Micrometa\Ports\Item\ItemInterface;
 use Jkphl\Micrometa\Ports\Item\ItemObjectModel;
 use Jkphl\Micrometa\Ports\Item\ItemObjectModelInterface;
 use League\Uri\Schemes\Http;
@@ -96,17 +97,12 @@ class Parser
             // If source code has been passed in
             $dom = (($source !== null) && strlen(trim($source))) ?
                 Dom::createFromString($source) : Dom::createFromUri($uri);
-
-            // Run through all format parsers
-            $extractor = new ExtractorService();
-            foreach (ParserFactory::createParsersFromFormats(
+            $parsers = ParserFactory::createParsersFromFormats(
                 intval($formats ?: $this->formats),
                 Http::createFromString($uri),
                 $this->logger
-            ) as $parser) {
-                $results = $extractor->extract($dom, $parser);
-                $items = array_merge($items, ItemFactory::createFromApplicationItems($results->getItems()));
-            }
+            );
+            $items = $this->extractItems($dom, $parsers);
 
             // In case of exceptions: Log if possible
         } catch (\Exception $e) {
@@ -114,5 +110,23 @@ class Parser
         }
 
         return new ItemObjectModel($items);
+    }
+
+    /**
+     * Extract all items from a DOM using particular parsers
+     *
+     * @param \DOMDocument $dom DOM document
+     * @param \Generator $parsers Parsers
+     * @return ItemInterface[] Items
+     */
+    protected function extractItems(\DOMDocument $dom, \Generator $parsers)
+    {
+        $items = [];
+        $extractor = new ExtractorService();
+        foreach ($parsers as $parser) {
+            $results = $extractor->extract($dom, $parser);
+            $items = array_merge($items, ItemFactory::createFromApplicationItems($results->getItems()));
+        }
+        return $items;
     }
 }

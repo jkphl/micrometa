@@ -243,11 +243,8 @@ class JsonLD extends AbstractParser
                 continue;
             }
 
-            // Initialize the property
-            if (empty($properties[$name])) {
-                $properties[$name] = $this->vocabularyCache->expandIRI($name);
-                $properties[$name]->values = [];
-            }
+            // Initialize the property (if necessary)
+            $this->initializeNodeProperty($name, $properties);
 
             // Parse and process the property value
             $this->processNodeProperty($name, $this->parse($property), $properties);
@@ -257,29 +254,56 @@ class JsonLD extends AbstractParser
     }
 
     /**
+     * Initialize a JSON-LD node property (if necessary)
+     *
+     * @param string $name Property name
+     * @param array $properties Item properties
+     */
+    protected function initializeNodeProperty($name, array &$properties)
+    {
+        if (empty($properties[$name])) {
+            $properties[$name] = $this->vocabularyCache->expandIRI($name);
+            $properties[$name]->values = [];
+        }
+    }
+
+    /**
      * Process a property value
      *
      * @param string $name Property name
      * @param \stdClass|array|string $value Property value
-     * @param array $properties Properties
+     * @param array $properties Item properties
      */
     protected function processNodeProperty($name, $value, array &$properties)
     {
         // If this is a nested item
         if (is_object($value)) {
-            if (!empty($value->type) || !empty($value->lang)) {
-                $properties[$name]->values[] = $value;
+            $this->processNodePropertyObject($name, $value, $properties);
 
-                // @type = @id
-            } elseif (!empty($value->id)) {
-                $properties[$name]->values[] = $value->id;
-            }
         } elseif (is_array($value)) {
             $properties[$name]->values = array_merge($properties[$name]->values, $value);
 
             // Else
         } elseif ($value) {
             $properties[$name]->values[] = $value;
+        }
+    }
+
+    /**
+     * Process a property value object
+     *
+     * @param string $name Property name
+     * @param \stdClass $value Property value
+     * @param array $properties Properties
+     */
+    protected function processNodePropertyObject($name, $value, array &$properties)
+    {
+        if (!empty($value->type) || !empty($value->lang)) {
+            $properties[$name]->values[] = $value;
+
+            // @type = @id
+        } elseif (!empty($value->id)) {
+            $properties[$name]->values[] = $value->id;
         }
     }
 

@@ -56,31 +56,55 @@ class MicroformatsFactory
      * Refine an item
      *
      * @param array $item Item
-     * @return \stdClass Refined item
+     * @return \stdClass Refined Microformats item
      */
     protected static function createItem(array $item)
     {
-        $microformatItem = [
-            'type' => self::createTypes($item['type']),
-            'lang' => null,
-        ];
+        $microformatItem = ['type' => self::createTypes($item['type']), 'lang' => null];
+        self::processProperties($item, $microformatItem);
+        self::processValue($item, $microformatItem);
+        self::processChildren($item, $microformatItem);
+        return (object)$microformatItem;
+    }
 
+    /**
+     * Process the item properties
+     *
+     * @param array $item Item
+     * @param array $microformatItem Refined Microformats item
+     */
+    protected static function processProperties(array $item, array &$microformatItem)
+    {
         // Create the properties (if any)
         if (isset($item['properties']) && is_array($item['properties'])) {
             $microformatItem['properties'] = self::createProperties($item['properties'], $microformatItem['lang']);
         }
+    }
 
-        // Create the value (if any)
+    /**
+     * Process the item value
+     *
+     * @param array $item Item
+     * @param array $microformatItem Refined Microformats item
+     */
+    protected static function processValue(array $item, array &$microformatItem)
+    {
         if (isset($item['value'])) {
             $microformatItem['value'] = self::createValue($item['value']);
         }
+    }
 
-        // Create the nested children (if any)
+    /**
+     * Process the nested item children
+     *
+     * @param array $item Item
+     * @param array $microformatItem Refined Microformats item
+     */
+    protected static function processChildren(array $item, array &$microformatItem)
+    {
         if (isset($item['children']) && is_array($item['children'])) {
             $microformatItem['children'] = self::createFromParserResult($item['children']);
         }
-
-        return (object)$microformatItem;
     }
 
     /**

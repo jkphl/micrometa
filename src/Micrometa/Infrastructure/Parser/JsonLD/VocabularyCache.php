@@ -160,20 +160,45 @@ class VocabularyCache
     {
         // Register a prefix (and vocabulary)
         if (is_string($definition) && !isset($prefices[$name])) {
-            $prefices[$name] = $definition;
-
-            // Register the vocabulary
-            if (!isset($vocabularies[$definition])) {
-                $vocabularies[$definition] = [];
-            }
+            $this->processPrefix($name, $definition, $prefices, $vocabularies);
 
             // Else: Register vocabulary term
         } elseif (is_object($definition) && isset($definition->{'@id'})) {
-            $prefixName = explode(':', $definition->{'@id'}, 2);
-            if (count($prefixName) == 2) {
-                if (isset($prefices[$prefixName[0]])) {
-                    $vocabularies[$prefices[$prefixName[0]]][$prefixName[1]] = true;
-                }
+            $this->processVocabularyTerm($definition, $prefices, $vocabularies);
+        }
+    }
+
+    /**
+     * Process a vocabulary prefix
+     *
+     * @param string $name Prefix name
+     * @param string $definition Prefix definition
+     * @param array $prefices Prefix register
+     * @param array $vocabularies Vocabulary register
+     */
+    protected function processPrefix($name, $definition, array &$prefices, array &$vocabularies)
+    {
+        $prefices[$name] = $definition;
+
+        // Register the vocabulary
+        if (!isset($vocabularies[$definition])) {
+            $vocabularies[$definition] = [];
+        }
+    }
+
+    /**
+     * Process a vocabulary term
+     *
+     * @param \stdClass $definition Term definition
+     * @param array $prefices Prefix register
+     * @param array $vocabularies Vocabulary register
+     */
+    protected function processVocabularyTerm($definition, array &$prefices, array &$vocabularies)
+    {
+        $prefixName = explode(':', $definition->{'@id'}, 2);
+        if (count($prefixName) == 2) {
+            if (isset($prefices[$prefixName[0]])) {
+                $vocabularies[$prefices[$prefixName[0]]][$prefixName[1]] = true;
             }
         }
     }

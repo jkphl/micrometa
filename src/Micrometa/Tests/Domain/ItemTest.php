@@ -104,86 +104,48 @@ class ItemTest extends \PHPUnit_Framework_TestCase
     public function creationArgumentProvider()
     {
         $item = new Item('test');
+        $testT = $this->t('test');
+        $nvP = $this->p('name1', 'value1');
         return [
-            ['test', [], null, null, [$this->t('test')], [], null],
+            ['test', [], null, null, [$testT], [], null],
             [$this->t('test', 'a'), [], null, null, [$this->t('test', 'a')], [], null],
-            [['test'], [], null, null, [$this->t('test')], [], null],
-            [['test', 'lorem'], [], null, null, [$this->t('test'), $this->t('lorem')], [], null],
-            [['test', '', 'lorem'], [], null, null, [$this->t('test'), $this->t('lorem')], [], null],
-            [
-                'test',
-                [$this->p('name1', 'value1')],
-                null,
-                null,
-                [$this->t('test')],
-                ['name1' => [$this->s('value1')]],
-                null
-            ],
-            [
-                'test',
-                [$this->p('name1', '')],
-                null,
-                null,
-                [$this->t('test')],
-                [],
-                null
-            ],
-            [
-                'test',
-                [$this->p('name1', [])],
-                null,
-                null,
-                [$this->t('test')],
-                [],
-                null
-            ],
+            [['test'], [], null, null, [$testT], [], null],
+            [['test', 'lorem'], [], null, null, [$testT, $this->t('lorem')], [], null],
+            [['test', '', 'lorem'], [], null, null, [$testT, $this->t('lorem')], [], null],
+            ['test', [$nvP], null, null, [$testT], ['name1' => [$this->s('value1')]], null],
+            ['test', [$this->p('name1', '')], null, null, [$testT], [], null],
+            ['test', [$this->p('name1', [])], null, null, [$testT], [], null],
             [
                 'test',
                 [$this->p('name1', 'value1', 'profile1/')],
                 null,
                 null,
-                [$this->t('test')],
+                [$testT],
                 ['profile1/name1' => [$this->s('value1')]],
                 null
             ],
+            ['test', [$nvP], null, null, [$testT], ['name1' => [$this->s('value1')]], null],
             [
                 'test',
-                [$this->p('name1', 'value1')],
+                [$nvP, $this->p('name1', 'value2')],
                 null,
                 null,
-                [$this->t('test')],
-                ['name1' => [$this->s('value1')]],
-                null
-            ],
-            [
-                'test',
-                [$this->p('name1', 'value1'), $this->p('name1', 'value2')],
-                null,
-                null,
-                [$this->t('test')],
+                [$testT],
                 ['name1' => [$this->s('value1'), $this->s('value2')]],
                 null
             ],
             [
                 'test',
-                [$this->p('name1', 'value1'), $this->p('name2', 'value2')],
+                [$nvP, $this->p('name2', 'value2')],
                 null,
                 null,
-                [$this->t('test')],
+                [$testT],
                 ['name1' => [$this->s('value1')], 'name2' => [$this->s('value2')]],
                 null
             ],
-            [
-                'test',
-                [$this->p('name', [$item])],
-                null,
-                null,
-                [$this->t('test')],
-                ['name' => [$item]],
-                null
-            ],
-            ['test', [], 'id', null, [$this->t('test')], [], 'id'],
-            ['test', [], null, 'en', [$this->t('test')], [], null, 'en'],
+            ['test', [$this->p('name', [$item])], null, null, [$testT], ['name' => [$item]], null],
+            ['test', [], 'id', null, [$testT], [], 'id'],
+            ['test', [], null, 'en', [$testT], [], null, 'en'],
         ];
     }
 
