@@ -58,50 +58,8 @@ trait MicroformatsFeedTrait
      */
     protected function getApplicationFeedItem()
     {
-        $authorItem = new ApplicationItem(
-            Microformats::FORMAT,
-            new PropertyListFactory(),
-            (object)['profile' => MicroformatsFactory::MF2_PROFILE_URI, 'name' => 'h-card'],
-            [
-                (object)[
-                    'profile' => MicroformatsFactory::MF2_PROFILE_URI,
-                    'name' => 'name',
-                    'values' => [
-                        new StringValue('John Doe')
-                    ]
-                ],
-                (object)[
-                    'profile' => MicroformatsFactory::MF2_PROFILE_URI,
-                    'name' => 'email',
-                    'values' => [
-                        new StringValue('john@example.com')
-                    ]
-                ]
-            ]
-        );
-
-        $entryItem = new ApplicationItem(
-            Microformats::FORMAT,
-            new PropertyListFactory(),
-            (object)['profile' => MicroformatsFactory::MF2_PROFILE_URI, 'name' => 'h-entry'],
-            [
-                (object)[
-                    'profile' => MicroformatsFactory::MF2_PROFILE_URI,
-                    'name' => 'name',
-                    'values' => [
-                        new StringValue('Famous blog post')
-                    ]
-                ],
-                (object)[
-                    'profile' => MicroformatsFactory::MF2_PROFILE_URI,
-                    'name' => 'author',
-                    'values' => [
-                        $authorItem
-                    ]
-                ]
-            ]
-        );
-
+        $authorItem = $this->getAuthorApplicationItem();
+        $entryItem = $this->getEntryApplicationItem($authorItem);
         $feedItem = new ApplicationItem(
             Microformats::FORMAT,
             new PropertyListFactory(),
@@ -136,6 +94,67 @@ trait MicroformatsFeedTrait
         );
 
         return $feedItem;
+    }
+
+    /**
+     * Return an author application item
+     *
+     * @return ApplicationItem Author application item
+     */
+    protected function getAuthorApplicationItem()
+    {
+        return new ApplicationItem(
+            Microformats::FORMAT,
+            new PropertyListFactory(),
+            (object)['profile' => MicroformatsFactory::MF2_PROFILE_URI, 'name' => 'h-card'],
+            [
+                (object)[
+                    'profile' => MicroformatsFactory::MF2_PROFILE_URI,
+                    'name' => 'name',
+                    'values' => [
+                        new StringValue('John Doe')
+                    ]
+                ],
+                (object)[
+                    'profile' => MicroformatsFactory::MF2_PROFILE_URI,
+                    'name' => 'email',
+                    'values' => [
+                        new StringValue('john@example.com')
+                    ]
+                ]
+            ]
+        );
+    }
+
+    /**
+     * Return an entry application item
+     *
+     * @param ApplicationItem $authorItem Author application item
+     * @return ApplicationItem Entry application item
+     */
+    protected function getEntryApplicationItem(ApplicationItem $authorItem)
+    {
+        return new ApplicationItem(
+            Microformats::FORMAT,
+            new PropertyListFactory(),
+            (object)['profile' => MicroformatsFactory::MF2_PROFILE_URI, 'name' => 'h-entry'],
+            [
+                (object)[
+                    'profile' => MicroformatsFactory::MF2_PROFILE_URI,
+                    'name' => 'name',
+                    'values' => [
+                        new StringValue('Famous blog post')
+                    ]
+                ],
+                (object)[
+                    'profile' => MicroformatsFactory::MF2_PROFILE_URI,
+                    'name' => 'author',
+                    'values' => [
+                        $authorItem
+                    ]
+                ]
+            ]
+        );
     }
 
     /**

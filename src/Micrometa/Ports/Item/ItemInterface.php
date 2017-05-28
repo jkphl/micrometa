@@ -70,7 +70,7 @@ interface ItemInterface extends ItemListInterface
      *
      * @param string $name Property name
      * @param string $profile Property profile
-     * @param int $index Property value index
+     * @param int|null $index Property value index
      * @return ValueInterface|ValueInterface[]|array|ItemInterface Property value(s)
      * @api
      */

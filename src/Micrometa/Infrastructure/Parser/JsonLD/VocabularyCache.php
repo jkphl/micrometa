@@ -106,10 +106,8 @@ class VocabularyCache
     public function setDocument($url, RemoteDocument $document)
     {
         // Process the context
-        if (isset($document->document) && is_object($document->document)) {
-            if (isset($document->document->{'@context'}) && is_object($document->document->{'@context'})) {
-                $this->processContext((array)$document->document->{'@context'});
-            }
+        if (isset($document->document->{'@context'}) && is_object($document->document->{'@context'})) {
+            $this->processContext((array)$document->document->{'@context'});
         }
 
         // Save the document to the cache
@@ -136,7 +134,7 @@ class VocabularyCache
         // Run through all vocabulary terms
         foreach ($context as $name => $definition) {
             // Skip JSON-LD reserved terms
-            if (!strncmp('@', $name, 1) || (is_string($definition) && !strncmp('@', $definition, 1))) {
+            if ($this->isReservedTokens($name, $definition)) {
                 continue;
             }
 
@@ -146,6 +144,18 @@ class VocabularyCache
 
         $vocabularyCache->set($vocabularies);
         Cache::getAdapter()->save($vocabularyCache);
+    }
+
+    /**
+     * Test if a vocabulary name or definition is a reserved term
+     *
+     * @param string $name Name
+     * @param string $definition Definition
+     * @return boolean Is reserved term
+     */
+    protected function isReservedTokens($name, $definition)
+    {
+        return !strncmp('@', $name, 1) || (is_string($definition) && !strncmp('@', $definition, 1));
     }
 
     /**
@@ -159,13 +169,37 @@ class VocabularyCache
     protected function processPrefixVocabularyTerm($name, $definition, array &$prefices, array &$vocabularies)
     {
         // Register a prefix (and vocabulary)
-        if (is_string($definition) && !isset($prefices[$name])) {
+        if ($this->isPrefix($name, $definition, $prefices)) {
             $this->processPrefix($name, $definition, $prefices, $vocabularies);
 
             // Else: Register vocabulary term
-        } elseif (is_object($definition) && isset($definition->{'@id'})) {
+        } elseif ($this->isTerm($definition)) {
             $this->processVocabularyTerm($definition, $prefices, $vocabularies);
         }
+    }
+
+    /**
+     * Test whether this is a prefix and vocabulary definition
+     *
+     * @param string $name Prefix name
+     * @param string|\stdClass $definition Definition
+     * @param array $prefices Prefix register
+     * @return bool Is a prefix and vocabulary definition
+     */
+    protected function isPrefix($name, $definition, array &$prefices)
+    {
+        return is_string($definition) && !isset($prefices[$name]);
+    }
+
+    /**
+     * Test whether this is a term definition
+     *
+     * @param string|\stdClass $definition Definition
+     * @return bool Is a term definition
+     */
+    protected function isTerm($definition)
+    {
+        return is_object($definition) && isset($definition->{'@id'});
     }
 
     /**
@@ -216,16 +250,32 @@ class VocabularyCache
 
         // Run through all vocabularies
         if ($vocabularies->isHit()) {
-            foreach ($vocabularies->get() as $profile => $terms) {
-                $profileLength = strlen($profile);
-                if (!strncasecmp($profile, $name, $profileLength) && !empty($terms[substr($name, $profileLength)])) {
-                    $iri->profile = $profile;
-                    $iri->name = substr($name, $profileLength);
-                }
-            }
+            $this->matchVocabularies($name, $vocabularies->get(), $iri);
         }
 
         return $iri;
+    }
+
+    /**
+     * Match a name with the known vocabularies
+     *
+     * @param string $name Name
+     * @param array $vocabularies Vocabularies
+     * @param \stdClass $iri IRI
+     */
+    protected function matchVocabularies($name, array $vocabularies, &$iri)
+    {
+        // Run through all vocabularies
+        foreach ($vocabularies as $profile => $terms) {
+            $profileLength = strlen($profile);
+
+            // If the name matches the profile and the remaining string is a registered term
+            if (!strncasecmp($profile, $name, $profileLength) && !empty($terms[substr($name, $profileLength)])) {
+                $iri->profile = $profile;
+                $iri->name = substr($name, $profileLength);
+                return;
+            }
+        }
     }
 
     /**

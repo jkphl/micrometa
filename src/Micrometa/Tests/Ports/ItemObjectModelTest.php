@@ -87,6 +87,15 @@ class ItemObjectModelTest extends AbstractTestBase
             $secondRel->getType()
         );
 
+        $this->runStylesheetTests($itemObjectModel);
+    }
+
+    /**
+     * Test the stylesheet items
+     *
+     * @param ItemObjectModel $itemObjectModel Item object model
+     */
+    protected function runStylesheetTests(ItemObjectModel $itemObjectModel) {
         // Test all stylesheet LinkRel items
         $stylesheetRels = $itemObjectModel->rel('stylesheet');
         $this->assertTrue(is_array($stylesheetRels));

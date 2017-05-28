@@ -61,6 +61,18 @@ class PropertyListTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf(PropertyList::class, $propertyList);
         $this->assertEquals(0, count($propertyList));
 
+        $this->runPropertyListAdditionTests($propertyList);
+        $this->runProfiledPropertyTests($propertyList);
+        $this->runUnprofiledPropertyTests($propertyList);
+    }
+
+    /**
+     * Test adding properties
+     *
+     * @param PropertyList $propertyList Property list
+     */
+    protected function runPropertyListAdditionTests(PropertyList $propertyList)
+    {
         // Test adding a property
         $property = (object)[
             'name' => 'name',
@@ -77,13 +89,15 @@ class PropertyListTest extends \PHPUnit_Framework_TestCase
             $this->assertTrue(is_array($propertyValues));
             $this->assertEquals(2, count($propertyValues));
         }
+    }
 
-        // Get an unprofiled property
-        $unprofiledProperty = $propertyList->offsetGet('name');
-        $this->assertTrue(is_array($unprofiledProperty));
-        $this->assertInstanceOf(StringValue::class, $unprofiledProperty[0]);
-        $this->assertEquals('John Doe', $unprofiledProperty[0]);
-
+    /**
+     * Test profiled properties
+     *
+     * @param PropertyList $propertyList Property list
+     */
+    protected function runProfiledPropertyTests(PropertyList $propertyList)
+    {
         // Get a profiled property via object
         $unprofiledProperty = $propertyList->offsetGet(
             (object)['name' => 'name', 'profile' => MicroformatsFactory::MF2_PROFILE_URI]
@@ -97,6 +111,20 @@ class PropertyListTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(is_array($unprofiledProperty));
         $this->assertInstanceOf(StringValue::class, $unprofiledProperty[1]);
         $this->assertEquals('John Doe', $unprofiledProperty[1]);
+    }
+
+    /**
+     * Test unprofiled properties
+     *
+     * @param PropertyList $propertyList Property list
+     */
+    protected function runUnprofiledPropertyTests(PropertyList $propertyList)
+    {
+        // Get an unprofiled property
+        $unprofiledProperty = $propertyList->offsetGet('name');
+        $this->assertTrue(is_array($unprofiledProperty));
+        $this->assertInstanceOf(StringValue::class, $unprofiledProperty[0]);
+        $this->assertEquals('John Doe', $unprofiledProperty[0]);
 
         // Test unprofiled invalid property
         unset($propertyList['forbidden']);

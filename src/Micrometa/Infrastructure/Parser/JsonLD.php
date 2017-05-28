@@ -280,10 +280,11 @@ class JsonLD extends AbstractParser
         if (is_object($value)) {
             $this->processNodePropertyObject($name, $value, $properties);
 
+            // Else: If this is a value list
         } elseif (is_array($value)) {
             $properties[$name]->values = array_merge($properties[$name]->values, $value);
 
-            // Else
+            // Else: If the value is not empty
         } elseif ($value) {
             $properties[$name]->values[] = $value;
         }

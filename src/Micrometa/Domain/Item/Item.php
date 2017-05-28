@@ -101,11 +101,36 @@ class Item implements ItemInterface
         $itemLanguage = null,
         PropertyListFactoryInterface $propertyListFactory = null
     ) {
-        $this->propertyListFactory = $propertyListFactory ?: new PropertyListFactory();
-        $this->type = $this->validateTypes(is_array($type) ? $type : [$type]);
+        $this->setup(
+            $propertyListFactory ?: new PropertyListFactory(),
+            is_array($type) ? $type : [$type],
+            $properties,
+            trim($itemId),
+            trim($itemLanguage)
+        );
+    }
+
+    /**
+     * Setup the item
+     *
+     * @param PropertyListFactory $propertyListFactory Property list factory
+     * @param string[]|\stdClass[] $type Item type(s)
+     * @param \stdClass[] $properties Item properties
+     * @param string $itemId Item ID
+     * @param string $itemLanguage Item language
+     */
+    protected function setup(
+        PropertyListFactory $propertyListFactory,
+        array $type,
+        array $properties,
+        $itemId,
+        $itemLanguage
+    ) {
+        $this->propertyListFactory = $propertyListFactory;
+        $this->type = $this->validateTypes($type);
         $this->properties = $this->validateProperties($properties);
-        $this->itemId = trim($itemId) ?: null;
-        $this->itemLanguage = trim($itemLanguage) ?: null;
+        $this->itemId = $itemId ?: null;
+        $this->itemLanguage = $itemLanguage ?: null;
     }
 
     /**
@@ -256,17 +281,26 @@ class Item implements ItemInterface
     protected function validatePropertyStructure($property)
     {
         // If the property object is invalid
-        if (!is_object($property)
-            || !isset($property->profile)
-            || !isset($property->name)
-            || !isset($property->values)
-            || !is_array($property->values)
-        ) {
+        if (!is_object($property) || !$this->validatePropertyProperties($property)) {
             throw new InvalidArgumentException(
                 InvalidArgumentException::INVALID_PROPERTY_STR,
                 InvalidArgumentException::INVALID_PROPERTY
             );
         }
+    }
+
+    /**
+     * Validate the properties of a property
+     *
+     * @param \stdClass $property Property
+     * @return bool Property properties are valid
+     */
+    protected function validatePropertyProperties($property)
+    {
+        return isset($property->profile)
+            && isset($property->name)
+            && isset($property->values)
+            && is_array($property->values);
     }
 
     /**
@@ -304,20 +338,32 @@ class Item implements ItemInterface
         // Run through all property values
         /** @var ValueInterface $value */
         foreach ($values as $value) {
-            // If the value is not a nested item
-            if (!($value instanceof ValueInterface)) {
-                throw new InvalidArgumentException(
-                    sprintf(InvalidArgumentException::INVALID_PROPERTY_VALUE_STR, gettype($value)),
-                    InvalidArgumentException::INVALID_PROPERTY_VALUE
-                );
-            }
-
-            if (!$value->isEmpty()) {
-                $nonEmptyPropertyValues[] = $value;
-            }
+            $this->processPropertyValue($value, $nonEmptyPropertyValues);
         }
 
         return $nonEmptyPropertyValues;
+    }
+
+    /**
+     * Process a (non-empty) property value
+     *
+     * @param ValueInterface $value Property value
+     * @param array $nonEmptyPropertyValues Non-empty property values
+     */
+    protected function processPropertyValue($value, array &$nonEmptyPropertyValues)
+    {
+        // If the value is not a nested item
+        if (!($value instanceof ValueInterface)) {
+            throw new InvalidArgumentException(
+                sprintf(InvalidArgumentException::INVALID_PROPERTY_VALUE_STR, gettype($value)),
+                InvalidArgumentException::INVALID_PROPERTY_VALUE
+            );
+        }
+
+        // If the value isn't empty
+        if (!$value->isEmpty()) {
+            $nonEmptyPropertyValues[] = $value;
+        }
     }
 
     /**

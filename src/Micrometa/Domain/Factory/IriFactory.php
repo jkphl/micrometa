@@ -62,7 +62,7 @@ class IriFactory
         }
 
         // If the IRI is invalid
-        if (!is_object($iri) || !isset($iri->profile) || !isset($iri->name)) {
+        if (!self::validateIriStructure($iri)) {
             throw new InvalidArgumentException(
                 InvalidArgumentException::INVALID_IRI_STR,
                 InvalidArgumentException::INVALID_IRI
@@ -70,5 +70,16 @@ class IriFactory
         }
 
         return new Iri($iri->profile, $iri->name);
+    }
+
+    /**
+     * Test if an object has a valid IRI structure
+     *
+     * @param \stdClass $iri IRI
+     * @return bool Is a valid IRI
+     */
+    protected static function validateIriStructure($iri)
+    {
+        return is_object($iri) && isset($iri->profile) && isset($iri->name);
     }
 }

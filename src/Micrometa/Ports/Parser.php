@@ -85,7 +85,7 @@ class Parser
      * Extract micro information items out of a URI or piece of source
      *
      * @param string $uri URI
-     * @param string $source Source code
+     * @param string|null $source Source code
      * @param int $formats Micro information formats to extract
      * @return ItemObjectModelInterface Item object model
      */
@@ -94,15 +94,12 @@ class Parser
         $items = [];
 
         try {
-            // If source code has been passed in
-            $dom = (($source !== null) && strlen(trim($source))) ?
-                Dom::createFromString($source) : Dom::createFromUri($uri);
             $parsers = ParserFactory::createParsersFromFormats(
                 intval($formats ?: $this->formats),
                 Http::createFromString($uri),
                 $this->logger
             );
-            $items = $this->extractItems($dom, $parsers);
+            $items = $this->extractItems($this->createDom($uri, $source), $parsers);
 
             // In case of exceptions: Log if possible
         } catch (\Exception $e) {
@@ -110,6 +107,19 @@ class Parser
         }
 
         return new ItemObjectModel($items);
+    }
+
+    /**
+     * Create the DOM document to parse
+     *
+     * @param string $uri URI
+     * @param string|null $source Source code
+     * @return \DOMDocument DOM document
+     */
+    protected function createDom($uri, $source = null)
+    {
+        return (($source !== null) && strlen(trim($source))) ?
+            Dom::createFromString($source) : Dom::createFromUri($uri);
     }
 
     /**

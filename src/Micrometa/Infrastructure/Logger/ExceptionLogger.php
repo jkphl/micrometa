@@ -76,14 +76,33 @@ class ExceptionLogger extends Logger
      */
     public function addRecord($level, $message, array $context = [])
     {
-        if ($this->threshold && ($level >= $this->threshold)) {
-            if (isset($context['exception']) && ($context['exception'] instanceof \Exception)) {
-                throw $context['exception'];
-            }
-
-            throw new RuntimeException($message, $level);
+        if ($this->isTriggered($level)) {
+            throw $this->getContextException($context) ?: new RuntimeException($message, $level);
         }
 
         return parent::addRecord($level, $message, $context);
+    }
+
+    /**
+     * Return whether an exception should be triggered
+     *
+     * @param int $level Log level
+     * @return bool Exception should be triggered
+     */
+    protected function isTriggered($level)
+    {
+        return $this->threshold && ($level >= $this->threshold);
+    }
+
+    /**
+     * Return the context exception (if any)
+     *
+     * @param array $context Context
+     * @return \Exception|null Context exception
+     */
+    protected function getContextException(array $context)
+    {
+        return (isset($context['exception']) && ($context['exception'] instanceof \Exception)) ?
+            $context['exception'] : null;
     }
 }

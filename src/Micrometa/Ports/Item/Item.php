@@ -92,7 +92,7 @@ class Item extends ItemList implements ItemInterface
      *
      * @param string|\stdClass|Iri $name Property name
      * @param string $profile Property profile
-     * @param int $index Property value index
+     * @param int|null $index Property value index
      * @return ValueInterface|ValueInterface[]|array|ItemInterface Property value(s)
      * @throws OutOfBoundsException If the property name is unknown
      * @throws OutOfBoundsException If the property value index is out of bounds
@@ -106,11 +106,20 @@ class Item extends ItemList implements ItemInterface
             throw new OutOfBoundsException($e->getMessage(), $e->getCode());
         }
 
-        // If all property values should be returned
-        if ($index === null) {
-            return array_map([$this, 'getPropertyValue'], $propertyValues);
-        }
+        // Return the value(s)
+        return ($index === null) ?
+            array_map([$this, 'getPropertyValue'], $propertyValues) : $this->getPropertyIndex($propertyValues, $index);
+    }
 
+    /**
+     * Return a particular property index
+     *
+     * @param ValueInterface[] $propertyValues Property values
+     * @param int $index Property value index
+     * @return ValueInterface|ItemInterface
+     */
+    protected function getPropertyIndex(array $propertyValues, $index)
+    {
         // If the property value index is out of bounds
         if (!isset($propertyValues[$index])) {
             throw new OutOfBoundsException(
@@ -162,7 +171,7 @@ class Item extends ItemList implements ItemInterface
     }
 
     /**
-     * Return whether an aliased item type in contained in a set of query types
+     * Return whether an aliased item type is contained in a set of query types
      *
      * @param string $profile Type profile
      * @param array $names Aliased type names
@@ -174,13 +183,25 @@ class Item extends ItemList implements ItemInterface
         // Run through all query types
         /** @var \stdClass $queryType */
         foreach ($types as $queryType) {
-            if (in_array($queryType->name, $names) &&
-                (($queryType->profile === null) ? true : ($queryType->profile == $profile))
-            ) {
+            if ($this->isTypeInNames($queryType, $profile, $names)) {
                 return true;
             }
         }
         return false;
+    }
+
+    /**
+     * Test whether a type is contained in a list of names
+     *
+     * @param \stdClass $type Type
+     * @param string $profile Type profile
+     * @param array $names Aliased type names
+     * @return bool Type is contained in names list
+     */
+    protected function isTypeInNames($type, $profile, array $names)
+    {
+        return in_array($type->name, $names) &&
+            (($type->profile === null) ? true : ($type->profile == $profile));
     }
 
     /**

@@ -176,6 +176,19 @@ class ItemTest extends AbstractTestBase
         $feedItem = $this->getFeedItem();
         $this->assertInstanceOf(Item::class, $feedItem);
 
+        // Run the custom item property tests
+        $this->runCustomItemPropertyTests($feedItem);
+
+        // Test an invalid property
+        $feedItem->invalidProperty;
+    }
+
+    /**
+     * Run the custom item property tests
+     *
+     * @param Item $feedItem Feed item
+     */
+    protected function runCustomItemPropertyTests(Item $feedItem) {
         // Test the custom item property as an unprofiled property value list
         $feedCustomPropList = $feedItem->getProperty('custom-property');
         $this->assertTrue(is_array($feedCustomPropList));
@@ -192,9 +205,6 @@ class ItemTest extends AbstractTestBase
         $feedCustomProp = $feedItem->customProperty;
         $this->assertInstanceOf(StringValue::class, $feedCustomProp);
         $this->assertEquals('Property for alias testing', strval($feedCustomProp));
-
-        // Test an invalid property
-        $feedItem->invalidProperty;
     }
 
     /**
@@ -260,7 +270,16 @@ class ItemTest extends AbstractTestBase
         );
 
         // Test the second entry item
-        /** @var Item $entryItem */
+        $this->runFeedNestedEntryItemTest($feedItem);
+    }
+
+    /**
+     * Test a nested entry item
+     *
+     * @param ItemInterface $feedItem Feed item
+     */
+    protected function runFeedNestedEntryItemTest(ItemInterface $feedItem)
+    {
         $entryItem = $feedItem->getItems('h-entry')[1];
         $this->assertInstanceOf(ItemInterface::class, $entryItem);
 
