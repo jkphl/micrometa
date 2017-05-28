@@ -50,7 +50,7 @@ class IriFactory
     /**
      * Validate and sanitize an IRI
      *
-     * @param string|\stdClass $iri IRI
+     * @param Iri|\stdClass|string $iri IRI
      * @return Iri Sanitized IRI
      * @throws InvalidArgumentException If the IRI is invalid
      */

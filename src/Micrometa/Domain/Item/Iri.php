@@ -115,7 +115,7 @@ class Iri
      * @param mixed $value Property value
      * @throws ErrorException If a property should be set
      */
-    function __set($name, $value)
+    public function __set($name, $value)
     {
         throw new ErrorException(ErrorException::IMMUTABLE_IRI_STR, ErrorException::IMMUTABLE_IRI);
     }
@@ -125,7 +125,7 @@ class Iri
      *
      * @return string Serialized IRI
      */
-    function __toString()
+    public function __toString()
     {
         return $this->profile.$this->name;
     }

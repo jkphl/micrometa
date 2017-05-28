@@ -71,40 +71,57 @@ class LinkRel extends AbstractParser
         // Run through all <link> elements with a `rel` attribute
         /** @var \DOMElement $linkRel */
         foreach ($xpath->query('//*[local-name(.) = "link" or local-name(.) = "a"][@rel]') as $linkRel) {
-            $item = new \stdClass();
-
-            // Collect the item types
-            $item->type = [];
-            foreach (preg_split('/\040+/', $linkRel->getAttribute('rel')) as $rel) {
-                $item->type[] = (object)['name' => $rel, 'profile' => self::HTML_PROFILE_URI];
-            }
-
-            // Get the item ID (if any)
-            if ($linkRel->hasAttribute('id')) {
-                $item->id = $linkRel->getAttribute('id');
-            }
-
-            // Run through all item attributes
-            $item->properties = [];
-            /**
-             * @var string $attributeName Attribute name
-             * @var \DOMAttr $attribute Attribute
-             */
-            foreach ($linkRel->attributes as $attributeName => $attribute) {
-                if (!in_array($attributeName, ['rel', 'id'])) {
-                    $profile = $attribute->lookupNamespaceUri($attribute->prefix ?: null);
-                    $item->properties[] = (object)[
-                        'name' => $attributeName,
-                        'profile' => $profile,
-                        'values' => $this->parseAttributeValue($profile, $attributeName, $attribute->value),
-                    ];
-                }
-            }
-
-            $items[] = $item;
+            $item = [
+                'type' => $this->parseRelType($linkRel->getAttribute('rel')),
+                'id' => $linkRel->getAttribute('id') ?: null,
+                'properties' => $this->parseProperties($linkRel),
+            ];
+            $items[] = (object)$item;
         }
 
         return new ParsingResult(self::FORMAT, $items);
+    }
+
+    /**
+     * Process the item types
+     *
+     * @param string $relAttr rel attribute value
+     * @return array Item types
+     */
+    protected function parseRelType($relAttr)
+    {
+        $type = [];
+        foreach (preg_split('/\040+/', $relAttr) as $rel) {
+            $type[] = (object)['name' => $rel, 'profile' => self::HTML_PROFILE_URI];
+        }
+        return $type;
+    }
+
+    /**
+     * Parse the LinkRel attributes
+     *
+     * @param \DOMElement $linkRel LinkRel element
+     * @return array Properties
+     */
+    protected function parseProperties(\DOMElement $linkRel)
+    {
+        $properties = [];
+        /**
+         * @var string $attributeName Attribute name
+         * @var \DOMAttr $attribute Attribute
+         */
+        foreach ($linkRel->attributes as $attributeName => $attribute) {
+            if (!in_array($attributeName, ['rel', 'id'])) {
+                $profile = $attribute->lookupNamespaceUri($attribute->prefix ?: null);
+                $property = (object)[
+                    'name' => $attributeName,
+                    'profile' => $profile,
+                    'values' => $this->parseAttributeValue($profile, $attributeName, $attribute->value),
+                ];
+                $properties[] = $property;
+            }
+        }
+        return $properties;
     }
 
     /**

@@ -140,28 +140,42 @@ class VocabularyCache
                 continue;
             }
 
-            // Register a prefix (and vocabulary)
-            if (is_string($definition) && !isset($prefices[$name])) {
-                $prefices[$name] = $definition;
-
-                // Register the vocabulary
-                if (!isset($vocabularies[$definition])) {
-                    $vocabularies[$definition] = [];
-                }
-
-                // Else: Register vocabulary term
-            } elseif (is_object($definition) && isset($definition->{'@id'})) {
-                $prefixName = explode(':', $definition->{'@id'}, 2);
-                if (count($prefixName) == 2) {
-                    if (isset($prefices[$prefixName[0]])) {
-                        $vocabularies[$prefices[$prefixName[0]]][$prefixName[1]] = true;
-                    }
-                }
-            }
+            // Process this prefix / vocabulary term
+            $this->processPrefixVocabularyTerm($name, $definition, $prefices, $vocabularies);
         }
 
         $vocabularyCache->set($vocabularies);
         Cache::getAdapter()->save($vocabularyCache);
+    }
+
+    /**
+     * Process a prefix / vocabulary term
+     *
+     * @param string $name Prefix name
+     * @param string|\stdClass $definition Definition
+     * @param array $prefices Prefix register
+     * @param array $vocabularies Vocabulary register
+     */
+    protected function processPrefixVocabularyTerm($name, $definition, array &$prefices, array &$vocabularies)
+    {
+        // Register a prefix (and vocabulary)
+        if (is_string($definition) && !isset($prefices[$name])) {
+            $prefices[$name] = $definition;
+
+            // Register the vocabulary
+            if (!isset($vocabularies[$definition])) {
+                $vocabularies[$definition] = [];
+            }
+
+            // Else: Register vocabulary term
+        } elseif (is_object($definition) && isset($definition->{'@id'})) {
+            $prefixName = explode(':', $definition->{'@id'}, 2);
+            if (count($prefixName) == 2) {
+                if (isset($prefices[$prefixName[0]])) {
+                    $vocabularies[$prefices[$prefixName[0]]][$prefixName[1]] = true;
+                }
+            }
+        }
     }
 
     /**

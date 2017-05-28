@@ -165,7 +165,6 @@ class JsonLD extends AbstractParser
                 $item = $this->parseNode($node);
                 break;
             }
-
         } catch (JsonLdException $e) {
             $this->logger->error($e->getMessage(), ['exception' => $e]);
         }
@@ -250,29 +249,38 @@ class JsonLD extends AbstractParser
                 $properties[$name]->values = [];
             }
 
-            // Parse the property value
-            $value = $this->parse($property);
-
-            // If this is a nested item
-            if (is_object($value)) {
-                if (!empty($value->type) || !empty($value->lang)) {
-                    $properties[$name]->values[] = $value;
-
-                    // @type = @id
-                } elseif (!empty($value->id)) {
-                    $properties[$name]->values[] = $value->id;
-                }
-
-            } elseif (is_array($value)) {
-                $properties[$name]->values = array_merge($properties[$name]->values, $value);
-
-                // Else
-            } elseif ($value) {
-                $properties[$name]->values[] = $value;
-            }
+            // Parse and process the property value
+            $this->processNodeProperty($name, $this->parse($property), $properties);
         }
 
         return $properties;
+    }
+
+    /**
+     * Process a property value
+     *
+     * @param string $name Property name
+     * @param \stdClass|array|string $value Property value
+     * @param array $properties Properties
+     */
+    protected function processNodeProperty($name, $value, array &$properties)
+    {
+        // If this is a nested item
+        if (is_object($value)) {
+            if (!empty($value->type) || !empty($value->lang)) {
+                $properties[$name]->values[] = $value;
+
+                // @type = @id
+            } elseif (!empty($value->id)) {
+                $properties[$name]->values[] = $value->id;
+            }
+        } elseif (is_array($value)) {
+            $properties[$name]->values = array_merge($properties[$name]->values, $value);
+
+            // Else
+        } elseif ($value) {
+            $properties[$name]->values[] = $value;
+        }
     }
 
     /**

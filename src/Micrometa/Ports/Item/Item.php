@@ -93,7 +93,7 @@ class Item extends ItemList implements ItemInterface
      * @param string|\stdClass|Iri $name Property name
      * @param string $profile Property profile
      * @param int $index Property value index
-     * @return array|string|ItemInterface Property value(s)
+     * @return ValueInterface|ValueInterface[]|ItemInterface Property value(s)
      * @throws OutOfBoundsException If the property name is unknown
      * @throws OutOfBoundsException If the property value index is out of bounds
      * @api
@@ -126,7 +126,7 @@ class Item extends ItemList implements ItemInterface
      * Prepare a property value for returning it
      *
      * @param ValueInterface $value Property value
-     * @return Item|mixed Returnable property value
+     * @return ValueInterface|ItemInterface Returnable property value
      */
     protected function getPropertyValue(ValueInterface $value)
     {
@@ -190,7 +190,7 @@ class Item extends ItemList implements ItemInterface
      *
      * @param string $name Name
      * @param string $profile Profile
-     * @return array|string|ItemInterface Property values
+     * @return ValueInterface[] Property values
      * @throws InvalidArgumentException If no property name was given
      * @throws OutOfBoundsException If none of the requested properties is known
      * @api

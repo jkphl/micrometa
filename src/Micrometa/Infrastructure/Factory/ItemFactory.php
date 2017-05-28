@@ -63,7 +63,7 @@ class ItemFactory
      * Create an application item decorator
      *
      * @param ApplicationItemInterface $applicationItem
-     * @return Item Item
+     * @return ItemInterface Item
      */
     public static function createFromApplicationItem(ApplicationItemInterface $applicationItem)
     {

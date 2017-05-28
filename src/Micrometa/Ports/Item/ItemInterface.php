@@ -36,6 +36,7 @@
 
 namespace Jkphl\Micrometa\Ports\Item;
 
+use Jkphl\Micrometa\Application\Contract\ValueInterface;
 use Jkphl\Micrometa\Application\Item\PropertyListInterface;
 
 /**
@@ -70,7 +71,7 @@ interface ItemInterface extends ItemListInterface
      * @param string $name Property name
      * @param string $profile Property profile
      * @param int $index Property value index
-     * @return array|string|ItemInterface Property value(s)
+     * @return ValueInterface|ValueInterface[]|ItemInterface Property value(s)
      * @api
      */
     public function getProperty($name, $profile = null, $index = null);
@@ -80,7 +81,7 @@ interface ItemInterface extends ItemListInterface
      *
      * @param string $name Name
      * @param string $profile Profile
-     * @return array|string|ItemInterface Property values
+     * @return ValueInterface[] Property values
      * @api
      */
     public function getFirstProperty($name, $profile = null);
