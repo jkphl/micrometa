@@ -1,13 +1,26 @@
 <phpunit bootstrap="./phpunit.php">
     <testsuites>
         <testsuite>
-            <directory>./tests</directory>
+            <directory>./src/Micrometa/Tests</directory>
         </testsuite>
     </testsuites>
+
+    <php>
+        <const name="WEB_SERVER_HOST" value="localhost" />
+        <const name="WEB_SERVER_PORT" value="1349" />
+        <const name="WEB_SERVER_DOCROOT" value="./src/Micrometa/Tests/Fixture" />
+    </php>
+
+    <logging>
+        <log type="coverage-xml" target="build/coverage"/>
+    </logging>
 
     <filter>
         <whitelist addUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">src</directory>
+            <exclude>
+                <directory suffix=".php">src/Micrometa/Tests</directory>
+            </exclude>
         </whitelist>
     </filter>
 </phpunit>

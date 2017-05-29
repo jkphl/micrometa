@@ -1,3 +1,24 @@
+# Changelog
+
+All Notable changes to *jkphl/micrometa* will be documented in this file.
+
+Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
+
+## [2.0.0] - Next generation release 2017-05-29
+
+## Changed
+
+* Complete rewrite using the [Clear Architecture](https://github.com/jkphl/clear-architecture)
+* Improved JSON-LD parsing (#10)
+
+## Added
+
+* Support for nested Microformats (#15)
+* Support for RDFa Lite 1.1 (#11)
+* Support for logging & caching
+* Tests for all formats (#7)
+___
+
 ## v1.0.2: Feature release (2017-02-10)
 1. Added support for JSON-LD value lists ([#10](https://github.com/jkphl/micrometa/issues/10))
 

@@ -1,27 +1,21 @@
 <?php
 
-/***********************************************************************************
- *  The MIT License (MIT)
- *
- *  Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
- *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy of
- *  this software and associated documentation files (the "Software"), to deal in
- *  the Software without restriction, including without limitation the rights to
- *  use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
- *  the Software, and to permit persons to whom the Software is furnished to do so,
- *  subject to the following conditions:
- *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
- *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
- *  FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
- *  COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
- *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
- *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- ***********************************************************************************/
+// Start the built-in web server
+chdir(__DIR__);
+$server = defined('HHVM_VERSION') ?
+    'hhvm -m server -d hhvm.server.host=%s -d hhvm.server.type=fastcgi -d hhvm.server.port=%d -d hhvm.server.source_root=%s' :
+    'php -S %s:%d -t %s';
+$command = sprintf($server, WEB_SERVER_HOST, WEB_SERVER_PORT, WEB_SERVER_DOCROOT);
+$process = proc_open($command, [['pipe', 'r']], $pipes);
+$pstatus = proc_get_status($process);
+$pid = $pstatus['pid'];
+echo sprintf('%s - Web server started on %s:%d with PID %d', date('r'), WEB_SERVER_HOST, WEB_SERVER_PORT, $pid).PHP_EOL;
+
+// Register shutdown function to stop the built-in webserver
+register_shutdown_function(function () use ($pid) {
+    echo sprintf('%s - Killing process with ID %d', date('r'), $pid).PHP_EOL;
+    (stripos(php_uname('s'), 'win') > -1) ? exec("taskkill /F /T /PID $pid") : exec("kill -9 $pid");
+});
 
 error_reporting(E_ALL);
 $autoloader = __DIR__.'/vendor/autoload.php';

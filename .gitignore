@@ -1,7 +1,5 @@
 /.idea
-/vendor/*
+/build
 /composer.lock
-/node_modules
-/test.php
-/demo/logos
-/demo/test.html
+/vendor
+.env
