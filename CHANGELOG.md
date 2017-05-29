@@ -9,11 +9,14 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 ## Changed
 
 * Complete rewrite using the [Clear Architecture](https://github.com/jkphl/clear-architecture)
+* Improved JSON-LD parsing (#10)
 
 ## Added
 
-* Support for RDFa Lite 1.1
+* Support for nested Microformats (#15)
+* Support for RDFa Lite 1.1 (#11)
 * Support for logging & caching
+* Tests for all formats (#7)
 ___
 
 ## v1.0.2: Feature release (2017-02-10)
