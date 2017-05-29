@@ -29,7 +29,7 @@
     },
     "require": {
         "php": ">=5.5",
-        "jkphl/dom-factory": "^0.1.0",
+        "jkphl/dom-factory": "^0.1.1",
         "jkphl/rdfa-lite-microdata": "^0.4.2",
         "league/uri": "4.*",
         "mf2/mf2": "^0.3.1",
