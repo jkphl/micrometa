@@ -6,7 +6,7 @@
 
 ## About
 
-*micrometa* is a **meta parser** for extracting micro information out of web documents (HTML, XML, SVG etc.), currently supporting the formats
+*micrometa* is a **meta parser** for extracting micro information out of web documents (HTML, XML, SVG etc.), currently supporting
 
 1. [Microformats](http://microformats.org/wiki) and [Microformats 2](http://microformats.org/wiki/microformats2),
 2. W3C [HTML Microdata](https://www.w3.org/TR/microdata/),
@@ -14,13 +14,13 @@
 4. [RDFa Lite 1.1](https://www.w3.org/TR/rdfa-lite/) and
 5. [Link Types](https://developer.mozilla.org/en-US/docs/Web/HTML/Link_types).
 
-It is vocabulary agnostic and processes everything including e.g. Microformats, [schema.org](http://schema.org) and all known RDFa ontologies. The items found will be returned in a universal format.
+The parser is vocabulary agnostic and processes a wide range of expressions like Microformats, [schema.org](http://schema.org) and the various RDFa ontologies. Extracted items are returned in a unified / universal format.
 
 ### Usage
 
 #### Parser creation & invocation
 
-To extract micro information out of a web document you have to create and invoke a meta parser object:
+In order to extract micro information out of a web document you have to create and invoke a meta parser instance:
 
 ```php
 use Jkphl\Micrometa\Ports\Parser;
@@ -29,7 +29,7 @@ $micrometa = new Parser();
 $items = $micrometa('http://example.com');
 ```
 
-By default, the meta parser utilizes all known subparsers (i.e. formats) to find items in the document. You can change the default selection of subparsers by passing a `$format` bitmask to constructor:
+By default, the meta parser utilizes all known subparsers (i.e. formats) to find items in the document. You can change the default selection of subparsers by passing a `$format` bitmask to the parser constructor:
  
  ```php
  use Jkphl\Micrometa\Ports\Parser;
@@ -45,7 +45,7 @@ By default, the meta parser utilizes all known subparsers (i.e. formats) to find
  $micrometa = new Parser(Format::MICROFORMATS | Format::MICRODATA);
 ```
 
-You might also pick the formats per invocation:
+... or pick the formats per invocation:
 
 ```php
 use Jkphl\Micrometa\Ports\Parser;
@@ -54,7 +54,7 @@ $micrometa = new Parser();
 $items = $micrometa('http://example.com', null, Format::RDFA_LITE);
 ```
 
-*micrometa* is both able to fetch a document from the web as well as parse source code you directly pass in. But even in this case you need to provide a URL for relative link resolution:
+*micrometa* is both able to fetch a document from the web as well as parse piped in source code. In any case you need to provide a URL for relative link resolution:
 
 ```php
 use Jkphl\Micrometa\Ports\Parser;
@@ -63,25 +63,36 @@ $micrometa = new Parser();
 $items = $micrometa('http://example.com', '<html>...</html>');
 ```
 
-The sum of all found [items](#items) are returned as an [item object model](#item-object-model).
+When fetching a remote document, you may specify an array with `$option`s for the HTTP client (please [read the section about URIs](https://github.com/jkphl/dom-factory/blob/master/doc/index.md#uris) in the *jkphl/dom-factory* documentation for more details):
+
+```php
+// With HTTP client / request options
+$options = [
+    'client' => ['timeout' => 30],
+    'request' => ['verify' => false],
+];
+$items = $micrometa('http://example.com', null, Format::ALL, $options);
+```
+
+All [items](#items) found are returned as an [item object model](#item-object-model).
 
 #### Items
 
 Items are the main entity constructed by the parser. Regardless of their original format they share a common structure (JSON notation):
 
-```json
+```js
 {
     "format": 0, // Original item format, see format constants
     "id": null, // Unique item ID
     "language": null, // Item language
     "value": null, // The overall value of the item
-    "types": [], // Item type(s)
-    "properties": {}, // Item properties
+    "types": [], // The item's type(s)
+    "properties": {}, // The item's properties
     "items": [] // Nested sub-items
 }
 ```
 
-Support for the different aspects depends on the format:
+Support for the different aspects varies depending on the format:
 
 | Format         | `format` | `id` | `lang` | `value` | `types` | `properties` | `items` |
 |:---------------|:--------:|:----:|:------:|:-------:|:-------:|:------------:|:-------:|
@@ -93,8 +104,6 @@ Support for the different aspects depends on the format:
 
 ##### Format, ID, language and value
 
-These simple getters return `null` if no value is set.
-
 ```php
 $format = $item->getFormat();
 $id = $item->getId();
@@ -102,9 +111,11 @@ $language = $item->getLanguage();
 $value = $item->getValue();
 ```
 
+Unavailable aspects return `null` as their value. 
+
 ##### Item types
 
-An item has one more **types**. Item types can be represented as strings but are in fact [IRI](#iris) objects consisting of a name and a profile strings (denoting the vocabulary they belong to):
+An item has one more **types**. Item types can be represented as strings, but are in fact [IRI](#iris) objects made up of a name and a profile string (denoting the vocabulary they belong to):
 
 ```php
 use Jkphl\Micrometa\Ports\Item\Item;
@@ -131,7 +142,7 @@ $typeProfile = $type->profile; // e.g. "http://microformats.org/profile/"
 $typeStr = "$type"; // e.g. "http://microformats.org/profile/h-entry"
 ```
 
-The string representation of an item type does neither have to be a valid URL nor point to an existing resource on the web. It's more like a [namespace](https://en.wikipedia.org/wiki/Namespace) kind of feature to disginguish between like-named types from different vocabularies. You can test whether an item is of a particular type (or in a type list):
+The string representation of an item type does neither have to be a valid URL nor point to an existing resource on the web. It's rather a [namespace](https://en.wikipedia.org/wiki/Namespace)-like feature to disginguish between like-named types from different vocabularies. You can test whether an item is of a particular type (or contained in list of types):
 
 ```
 $isAnHEntry = $item->isOfType('h-entry');
@@ -140,11 +151,11 @@ $isAnHEntry = $item->isOfType(new Iri('http://microformats.org/profile/', 'h-ent
 $isAnHEntry = $item->isOfType((object)['profile' => 'http://microformats.org/profile/', 'name' => 'h-entry']);
 ```
 
-In fact, you can also pass multiple types to `isOfType()` using the [profiled names syntax](#profiled-names-syntax) described below. The method will return true as soon as the item is of one of the given types. This way you can easily determine if an item is e.g. a Microformats `h-card` or a schema.org `Person` item (which are roughly equivalent). 
+You can also pass multiple types to `isOfType()` using the [profiled names syntax](#profiled-names-syntax) described below. The method will return `true` as soon as one of the given types matches. This way you can easily determine if an item is e.g. a Microformats `h-card` or a schema.org `Person` (which are roughly equivalent). 
 
 ##### Item properties
 
-An item may have zero or more **properties** with each property being multi-valued (i.e. it can have zero or more values). The **property list** behaves much like an array but is in fact an array-like object that uses [IRIs](#iris) as keys for the properties, so you can do things like this:
+Each item has a **property list** with zero or more multi-valued **properties** (i.e. they can each have zero or more values). The property list behaves much like an array but is in fact an array-like object that uses [IRIs](#iris) as property keys, so you can do things like this with it:
  
 ```php
 use Jkphl\Micrometa\Ports\Item\Item;
@@ -177,7 +188,13 @@ $customProperty = $properties['custom-property'];
 $customProperty = $properties['customProperty'];
 ```
 
-The single **property values** may be either **string values**, lists of **alternate string values** or **nested items**. A string value may be language tagged:
+The values of a property may either be
+
+* **string values**,
+* lists of **alternate string values** or
+* **nested items**.
+
+A string value may be language tagged while alternate values have an accessible key each:
  
 ```php
 use Jkphl\Micrometa\Application\Value\StringValue;
@@ -195,7 +212,7 @@ echo $alternateValue['value']; // --> "Lorem ipsum ..."
 echo $alternateValue['value']->getLanguage(); // --> "de"
 ```
 
-Items provide several methods of retrieving a particular property:
+There are several methods of retrieving a particular property:
 
 ```php
 // Get all values for a particular property (with and without profile)
@@ -210,7 +227,7 @@ $propertyValues = $item->getProperty('description', null, 1);
 $firstPropertyValue = $item->description;
 ```
 
-Similar to the `isOfType()` method for item types there's a method to find and return the first property matching a prioritized list (also using the [profiled names syntax](#profiled-names-syntax) described below):
+Similar to the `isOfType()` method for item types there's a way to find and return the first property matching a prioritized list (again using the [profiled names syntax](#profiled-names-syntax) described below):
  
 ```php
 // Get the start date of an event, preferring Microformats over schema.org
@@ -222,7 +239,7 @@ $nameProperty = $item->getFirstProperty(
 
 #### Item lists
 
-Depending on the format, an item may have nested child `items`, thus being an **item list** itself. You can directly iterate over an item to get it's children or you can explicitly use the getter to return a list of its children:
+Depending on the format, an item may have nested child `items`, which is why each item is an **item list** itself. To get the children of an item you can either iterate over it or explicitly use `getChildren()`:
 
 ```php
 use Jkphl\Micrometa\Ports\Item\Item;
@@ -240,7 +257,7 @@ foreach ($item as $child) {
 $children = $item->getItems();
 ```
 
-Item lists feature some convenience methods for quickly finding children of particular types:
+Item lists have some convenience methods for quickly finding children of particular types:
 
 ```php
 use Jkphl\Micrometa\Ports\Item\Item;
@@ -266,7 +283,7 @@ $event = $item->getFirstItem(
 
 #### Item object model
 
-The parser returns an **item object model** which is a special item list featuring a convenience method for link type items (only useful if you enable the [Link Types](https://developer.mozilla.org/en-US/docs/Web/HTML/Link_types) parser):
+The top-level result returned by the parser is an **item object model** which is a special item list featuring a convenience method for link type items (only useful if you enable the [Link Types](https://developer.mozilla.org/en-US/docs/Web/HTML/Link_types) parser):
  
 ```php
  use Jkphl\Micrometa\Ports\Parser;
@@ -296,19 +313,18 @@ $firstAlternateLink = $item->link('alternate', 1);
 
 #### Object export
 
-All **item lists**, including **items** and the **item object model** itself, support being exported to a [POPO](http://www.javaleaks.org/open-source/php/plain-old-php-object.html) that can be JSON encoded. During export,
+All **items**, **item lists** and the **item object model** itself support being exported to a [POPO](http://www.javaleaks.org/open-source/php/plain-old-php-object.html) that can be JSON encoded. During export,
 
-* [IRIs](#iris) will be stringified (loosing separation of profile and name),
+* [IRIs](#iris) will be stringified (loosing the distinction between their profile and their name),
 * property lists will be arrayified (loosing their IRI keys),
-* property string values will be stringified (loosing the language tag), 
-* property alternate values will be arrayified.
+* string values will be stringified (loosing the language tag), 
+* alternate values will be arrayified.
 
-```
-$itemObject = $items->toObject();
-echo json_encode($itemObject, JSON_PRETTY_PRINT);
+```php
+echo json_encode($items->toObject(), JSON_PRETTY_PRINT);
 ```
 
-The JSON output should look something like this:
+will output something like this:
 
 ```json
 {
@@ -466,7 +482,7 @@ The JSON output should look something like this:
 
 #### IRIs
 
-[Internationalized Resource Identifiers](https://tools.ietf.org/html/rfc3987) (IRIs) are used e.g. by RDFa to uniquely identify concepts like types and properties when making up an ontology. The `Iri` objects used by *micrometa* simply serve the purpose to have the short name stored separately from its base IRI ("profile") so that you can e.g. reference properties by their short name only as well. When you stringify an `Iri` object (explicitly with `strval()` or implicitly by `echo`ing or concatenating it), you will get the concatenated identifier:
+[Internationalized Resource Identifiers](https://tools.ietf.org/html/rfc3987) (IRIs) are used e.g. by RDFa to uniquely identify types and properties when making up an ontology. The `Iri` objects in *micrometa* serve the purpose of having their short name stored separately from their base IRI ("profile") so that you can reference them in both short and expanded form. When you stringify an `Iri` (explicitly with `strval()` or implicitly by `echo`ing or concatenating it), you will get the expanded identifier:
 
 ```php
 use \Jkphl\Micrometa\Domain\Item\Iri;
@@ -479,12 +495,18 @@ echo $iri; // --> "http://example.com/name"
 
 #### Profiled names syntax
 
-Several methods of *micrometa* classes support an arbitrary number of input parameters in order to make up a list of **profiled names** (i.e. type or property names associated with a profile; see [IRIs](#iris)). Please read the method documentation of [`ProfiledNamesFactory::createFromArguments()`](../src/Micrometa/Infrastructure/Factory/ProfiledNamesFactory.php#L51) to learn about the syntax.
+The methods
+
+* `Item::isOfType()`,
+* `Item::getFirstProperty()`,
+* `ItemList::getFirstItem()` and
+* `ItemList::getItems()`
+
+support an arbitrary number of input parameters making up a list of **profiled names** (i.e. type or property names each associated with a profile; see [IRIs](#iris)). Please read the method documentation of [`ProfiledNamesFactory::createFromArguments()`](../src/Micrometa/Infrastructure/Factory/ProfiledNamesFactory.php#L51) to learn about the syntax.
 
 ### Logging
 
-*micrometa* makes slight use of logging (basically for debugging purposes) and lets you pass in a custom [PSR-3](http://www.php-fig.org/psr/psr-3/) compatible logger. It comes bundled with [monolog](https://github.com/Seldaek/monolog), so you can e.g. build upon any of its 
-handlers, processors and formatters.
+*micrometa* produces a few status messages (mostly for debugging purposes) and lets you pass in a any [PSR-3](http://www.php-fig.org/psr/psr-3/) compatible logger. It comes bundled with [monolog](https://github.com/Seldaek/monolog), so you could e.g. build upon that:
 
 ```php
 use Jkphl\Micrometa\Ports\Format;
@@ -497,7 +519,7 @@ $logger = new Logger('DEMO', [$logHandler]);
 $micrometa = new Parser(Format::ALL, $logger);
 ```
 
-By default, *micrometa* uses a custom log handler (`ExceptionLogger`) that swallows messages below a certain threshold log level (`ERROR` by default) and throws them as exceptions otherwise. You can override this behaviour:
+*micrometa* comes with its own log handler (`ExceptionLogger`) that swallows all messages below a certain log level (`ERROR` by default) and throws them as exception otherwise. You can use and customize the `ExceptionLogger`:
 
 ```php
 use Jkphl\Micrometa\Ports\Format;
@@ -511,7 +533,7 @@ $micrometa = new Parser(Format::ALL, $exceptionLogHandler);
 
 ### Cache
 
-It turns out that JSON-LD parsing is rather time consuming as the [underlying parser](https://github.com/lanthaler/JsonLD) fetches and processes contexts from the web. For that reason *micrometa* can use a [PSR-6](http://www.php-fig.org/psr/psr-6/) compatible caching backend for storing contexts and vocabularies that have already been fetched. It comes bundled with [Symfony Cache](https://github.com/symfony/cache) so you can easily build upon that:
+It turns out that processing JSON-LD is rather time consuming as the [underlying parser](https://github.com/lanthaler/JsonLD) fetches all referenced contexts from the web. To speed up things a bit you can use any [PSR-6](http://www.php-fig.org/psr/psr-6/) compatible cache implementation for storing the contexts and vocabularies that have already been fetched. *micrometa* comes bundled with [Symfony Cache](https://github.com/symfony/cache), so you can e.g. easily build upon that:
 
 ```php
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
@@ -528,10 +550,10 @@ $cacheAdapter = Cache::getAdapter();
 
 ### Backwards compatibility
 
-Originally I had the intention to keep the second generation of *micrometa* as close to the first version as possible. For several reasons, however, I had to break backwards compatibility almost completely:
+Originally it was my intention to keep the second generation of *micrometa* as close to the former API as possible. For several reasons, however, I had to break backwards compatibility almost completely:
 
-* The first version of *micrometa* was very [Microformats](http://microformats.org/wiki)-centric and supported a couple of features that aren't inherent to other formats. And vice versa, some of the other formats bring in additional features which I had to find a good common ground for. The new generation focuses on a lean unified output and syntax for all of them. If there's enough interest, I'll bring back some of these features (e.g. the [IndieWeb authorship algorithm](http://indiewebcamp.com/authorship)) as plugins / accompanying libraries. Let me know!
-* Several of the supported formats have the concept of contexts / vocabularies that are associated with namespace-like URIs / IRIs, which also comes in handy when combining the formats. To support the distinct storage of profiles and names, most of the old public methods had to be changed significantly, making backwards compatibility close to impossible.
+* The first generation of *micrometa* was very [Microformats](http://microformats.org/wiki)-centric and supported a couple of features that aren't inherent to other formats. And vice versa, some of the other formats bring in additional features that I had to find a good common ground for. The new generation focuses on a lean and unified structure for all of them. If there's enough interest, I'll bring back some of the original features (e.g. the [IndieWeb authorship algorithm](http://indiewebcamp.com/authorship)) as plugins or complementary libraries. Let me know!
+* Some of the supported formats have the concept of contexts / vocabularies that are associated with namespace-like URIs / IRIs, which also comes in handy when combining the formats. To support the distinct storage of profiles and names, most of the old public methods had to be changed significantly, making backwards compatibility close to impossible.
 
 ## Installation
 

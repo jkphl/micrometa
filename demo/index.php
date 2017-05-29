@@ -33,7 +33,15 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-use Jkphl\Micrometa\Application\Value\StringValue;use Jkphl\Micrometa\Ports\Cache;use Jkphl\Micrometa\Ports\Format;use Jkphl\Micrometa\Ports\Item\ItemInterface;use Jkphl\Micrometa\Ports\Parser;use Monolog\Formatter\LineFormatter;use Monolog\Handler\TestHandler;use Monolog\Logger;use Symfony\Component\Cache\Adapter\FilesystemAdapter; use Jkphl\Micrometa\Application\Value\AlternateValues;
+use Jkphl\Micrometa\Application\Value\AlternateValues;
+use Jkphl\Micrometa\Application\Value\StringValue;
+use Jkphl\Micrometa\Ports\Cache;use Jkphl\Micrometa\Ports\Format;
+use Jkphl\Micrometa\Ports\Item\ItemInterface;
+use Jkphl\Micrometa\Ports\Parser;
+use Monolog\Formatter\LineFormatter;
+use Monolog\Handler\TestHandler;
+use Monolog\Logger;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
 require_once dirname(__DIR__).DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'autoload.php';
 
@@ -231,7 +239,7 @@ Cache::setAdapter($cacheAdapter);
                                                                          value="<?= Format::RDFA_LITE; ?>"<?= ($formats & Format::RDFA_LITE) ? ' checked="checked"' : ''; ?>/>
                             RDFa Lite 1.1</label>
                         <label class="legend item-type-link-type"><input type="checkbox" name="parser[link-type]"
-                                                                        value="<?= Format::LINK_TYPE; ?>"
+                                                                         value="<?= Format::LINK_TYPE; ?>"
                                 <?= ($formats & Format::LINK_TYPE) ? ' checked="checked"' : ''; ?>/>
                             LinkRel</label>
                         <label class="legend item-type-json-ld"><input type="checkbox" name="parser[json-ld]"
@@ -267,7 +275,7 @@ Cache::setAdapter($cacheAdapter);
                         try {
                             // Create the parser
                             $micrometa = new Parser($formats, $logger);
-                            $itemObjectModel = $micrometa($url);
+                            $itemObjectModel = $micrometa($url, null, null, ['request' => ['verify' => false]]);
                             $items = $itemObjectModel->getItems();
 
                             if (!count($items)):

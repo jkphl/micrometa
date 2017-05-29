@@ -87,10 +87,11 @@ class Parser
      * @param string $uri URI
      * @param string|null $source Source code
      * @param int $formats Micro information formats to extract
+     * @param array $httpOptions HTTP request options
      * @return ItemObjectModelInterface Item object model
      * @api
      */
-    public function __invoke($uri, $source = null, $formats = null)
+    public function __invoke($uri, $source = null, $formats = null, array $httpOptions = [])
     {
         $items = [];
 
@@ -100,7 +101,7 @@ class Parser
                 Http::createFromString($uri),
                 $this->logger
             );
-            $items = $this->extractItems($this->createDom($uri, $source), $parsers);
+            $items = $this->extractItems($this->createDom($uri, $source, $httpOptions), $parsers);
 
             // In case of exceptions: Log if possible
         } catch (\Exception $e) {
@@ -115,12 +116,13 @@ class Parser
      *
      * @param string $uri URI
      * @param string|null $source Source code
+     * @param array $httpOptions HTTP request options
      * @return \DOMDocument DOM document
      */
-    protected function createDom($uri, $source = null)
+    protected function createDom($uri, $source = null, array $httpOptions = [])
     {
         return (($source !== null) && strlen(trim($source))) ?
-            Dom::createFromString($source) : Dom::createFromUri($uri);
+            Dom::createFromString($source) : Dom::createFromUri($uri, $httpOptions);
     }
 
     /**
