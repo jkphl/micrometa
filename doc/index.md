@@ -4,7 +4,7 @@
 
 > A meta parser for extracting micro information out of web documents, currently supporting Microformats 1+2, HTML Microdata, RDFa Lite 1.1, JSON-LD and Link Types
 
-## About
+# About
 
 *micrometa* is a **meta parser** for extracting micro information out of web documents (HTML, XML, SVG etc.), currently supporting
 
@@ -16,9 +16,17 @@
 
 The parser is vocabulary agnostic and processes a wide range of expressions like Microformats, [schema.org](http://schema.org) and the various RDFa ontologies. Extracted items are returned in a unified / universal format.
 
-### Usage
+## Online demo & bookmarklet
 
-#### Parser creation & invocation
+To quickly test a site for contained micro information you can try the **online demo site** at
+
+* https://micrometa.jkphl.is 
+
+There's also a **bookmarklet** you can save to your browser bookmarks in order to get a one-click analysis via the online demo site. [Please get it here](https://gist.github.com/jkphl/c61c0ae33a216cfc78c3fe4a6788285d).
+
+# Usage
+
+## Parser creation & invocation
 
 In order to extract micro information out of a web document you have to create and invoke a meta parser instance:
 
@@ -76,7 +84,7 @@ $items = $micrometa('http://example.com', null, Format::ALL, $options);
 
 All [items](#items) found are returned as an [item object model](#item-object-model).
 
-#### Items
+## Items
 
 Items are the main entity constructed by the parser. Regardless of their original format they share a common structure (JSON notation):
 
@@ -102,7 +110,7 @@ Support for the different aspects varies depending on the format:
 | JSON-LD        |    ✓     |  ✓   |   ✓    |    –    |    ✓    |      ✓       |    –    |
 | Link Type      |    ✓     |  –   |   –    |    –    |    ✓    |      ✓       |    –    |
 
-##### Format, ID, language and value
+### Format, ID, language and value
 
 ```php
 $format = $item->getFormat();
@@ -113,7 +121,7 @@ $value = $item->getValue();
 
 Unavailable aspects return `null` as their value. 
 
-##### Item types
+### Item types
 
 An item has one more **types**. Item types can be represented as strings, but are in fact [IRI](#iris) objects made up of a name and a profile string (denoting the vocabulary they belong to):
 
@@ -153,7 +161,7 @@ $isAnHEntry = $item->isOfType((object)['profile' => 'http://microformats.org/pro
 
 You can also pass multiple types to `isOfType()` using the [profiled names syntax](#profiled-names-syntax) described below. The method will return `true` as soon as one of the given types matches. This way you can easily determine if an item is e.g. a Microformats `h-card` or a schema.org `Person` (which are roughly equivalent). 
 
-##### Item properties
+### Item properties
 
 Each item has a **property list** with zero or more multi-valued **properties** (i.e. they can each have zero or more values). The property list behaves much like an array but is in fact an array-like object that uses [IRIs](#iris) as property keys, so you can do things like this with it:
  
@@ -237,7 +245,7 @@ $nameProperty = $item->getFirstProperty(
 );
 ```
 
-#### Item lists
+## Item lists
 
 Depending on the format, an item may have nested child `items`, which is why each item is an **item list** itself. To get the children of an item you can either iterate over it or explicitly use `getChildren()`:
 
@@ -281,7 +289,7 @@ $event = $item->getFirstItem(
 );
 ````
 
-#### Item object model
+## Item object model
 
 The top-level result returned by the parser is an **item object model** which is a special item list featuring a convenience method for link type items (only useful if you enable the [Link Types](https://developer.mozilla.org/en-US/docs/Web/HTML/Link_types) parser):
  
@@ -311,7 +319,7 @@ $alternateLinks = $items->link('alternate');
 $firstAlternateLink = $item->link('alternate', 1);
 ```
 
-#### Object export
+## Object export
 
 All **items**, **item lists** and the **item object model** itself support being exported to a [POPO](http://www.javaleaks.org/open-source/php/plain-old-php-object.html) that can be JSON encoded. During export,
 
@@ -480,7 +488,7 @@ will output something like this:
 }
 ```
 
-#### IRIs
+## IRIs
 
 [Internationalized Resource Identifiers](https://tools.ietf.org/html/rfc3987) (IRIs) are used e.g. by RDFa to uniquely identify types and properties when making up an ontology. The `Iri` objects in *micrometa* serve the purpose of having their short name stored separately from their base IRI ("profile") so that you can reference them in both short and expanded form. When you stringify an `Iri` (explicitly with `strval()` or implicitly by `echo`ing or concatenating it), you will get the expanded identifier:
 
@@ -493,7 +501,7 @@ echo $iri->name; // --> "name"
 echo $iri; // --> "http://example.com/name"
 ```
 
-#### Profiled names syntax
+## Profiled names syntax
 
 The methods
 
@@ -504,7 +512,7 @@ The methods
 
 support an arbitrary number of input parameters making up a list of **profiled names** (i.e. type or property names each associated with a profile; see [IRIs](#iris)). Please read the method documentation of [`ProfiledNamesFactory::createFromArguments()`](../src/Micrometa/Infrastructure/Factory/ProfiledNamesFactory.php#L51) to learn about the syntax.
 
-### Logging
+## Logging
 
 *micrometa* produces a few status messages (mostly for debugging purposes) and lets you pass in a any [PSR-3](http://www.php-fig.org/psr/psr-3/) compatible logger. It comes bundled with [monolog](https://github.com/Seldaek/monolog), so you could e.g. build upon that:
 
@@ -531,7 +539,7 @@ $exceptionLogHandler = new ExceptionLogger(Logger::INFO); // 0 for all messages 
 $micrometa = new Parser(Format::ALL, $exceptionLogHandler);
 ```
 
-### Cache
+## Cache
 
 It turns out that processing JSON-LD is rather time consuming as the [underlying parser](https://github.com/lanthaler/JsonLD) fetches all referenced contexts from the web. To speed up things a bit you can use any [PSR-6](http://www.php-fig.org/psr/psr-6/) compatible cache implementation for storing the contexts and vocabularies that have already been fetched. *micrometa* comes bundled with [Symfony Cache](https://github.com/symfony/cache), so you can e.g. easily build upon that:
 
@@ -548,14 +556,14 @@ $cacheAdapter = Cache::getAdapter();
 // ...
 ```
 
-### Backwards compatibility
+## Backwards compatibility
 
 Originally it was my intention to keep the second generation of *micrometa* as close to the former API as possible. For several reasons, however, I had to break backwards compatibility almost completely:
 
 * The first generation of *micrometa* was very [Microformats](http://microformats.org/wiki)-centric and supported a couple of features that aren't inherent to other formats. And vice versa, some of the other formats bring in additional features that I had to find a good common ground for. The new generation focuses on a lean and unified structure for all of them. If there's enough interest, I'll bring back some of the original features (e.g. the [IndieWeb authorship algorithm](http://indiewebcamp.com/authorship)) as plugins or complementary libraries. Let me know!
 * Some of the supported formats have the concept of contexts / vocabularies that are associated with namespace-like URIs / IRIs, which also comes in handy when combining the formats. To support the distinct storage of profiles and names, most of the old public methods had to be changed significantly, making backwards compatibility close to impossible.
 
-## Installation
+# Installation
 
 This library requires PHP >=5.6 or later. I recommend using the latest available version of PHP as a matter of principle. It has no userland dependencies. It's installable and autoloadable via [Composer](https://getcomposer.org/) as [jkphl/micrometa](https://packagist.org/packages/jkphl/micrometa).
         

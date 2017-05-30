@@ -54,7 +54,7 @@ Copyright © 2017 [Joschi Kuphal][author-url] / joschi@tollwerk.de. Licensed und
 [scrutinizer-url]: https://scrutinizer-ci.com/g/jkphl/micrometa/?branch=master
 [codeclimate-image]: https://lima.codeclimate.com/github/jkphl/micrometa/badges/gpa.svg
 [codeclimate-url]: https://lima.codeclimate.com/github/jkphl/micrometa
-[readthedocs-image]: https://readthedocs.org/projects/jkphl-micrometa/badge/?version=latest
+[readthedocs-image]: http://readthedocs.org/projects/jkphl-micrometa/badge/?version=latest
 [readthedocs-url]: http://jkphl-micrometa.readthedocs.io/en/latest/?badge=latest
 [clear-architecture-image]: https://img.shields.io/badge/Clear%20Architecture-%E2%9C%94-brightgreen.svg
 [clear-architecture-url]: https://github.com/jkphl/clear-architecture
