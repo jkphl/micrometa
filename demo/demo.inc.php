@@ -60,7 +60,7 @@ function renderItems(array $items)
 function renderItem(ItemInterface $item)
 {
     $types = array_map(
-        function($type) {
+        function ($type) {
             return '<abbr title="'.htmlspecialchars($type->profile.$type->name).'">'.
                 htmlspecialchars($type->name).'</abbr>';
         },

@@ -4,7 +4,7 @@ All Notable changes to *jkphl/micrometa* will be documented in this file.
 
 Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## [2.0.0] - Next generation release 2017-05-29
+## [2.0.0] - Next generation release 2017-05-30
 
 ## Changed
 
