@@ -36,8 +36,8 @@
 
 namespace Jkphl\Micrometa\Tests\Infrastructure;
 
-use Jkphl\Micrometa\Ports\Item\Item;
 use Jkphl\Micrometa\Infrastructure\Factory\ItemFactory;
+use Jkphl\Micrometa\Ports\Item\Item;
 use Jkphl\Micrometa\Tests\AbstractTestBase;
 use Jkphl\Micrometa\Tests\MicroformatsFeedTrait;
 
@@ -57,7 +57,8 @@ class ItemFactoryTest extends AbstractTestBase
     /**
      * Test the item factory
      */
-    public function testItemFactory() {
+    public function testItemFactory()
+    {
         $feedItem = $this->getApplicationFeedItem();
         $items = ItemFactory::createFromApplicationItems([$feedItem]);
         $this->assertTrue(is_array($items));

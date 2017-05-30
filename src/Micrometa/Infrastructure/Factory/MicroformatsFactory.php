@@ -116,7 +116,7 @@ class MicroformatsFactory
     protected static function createTypes(array $types)
     {
         return array_map(
-            function ($type) {
+            function($type) {
                 return (object)['profile' => self::MF2_PROFILE_URI, 'name' => $type];
             },
             $types
@@ -179,7 +179,7 @@ class MicroformatsFactory
     {
         $lang = null;
         $values = self::createLanguage($values, $lang);
-        return $lang ? array_map(function ($value) use ($lang) {
+        return $lang ? array_map(function($value) use ($lang) {
             return (object)['value' => $value, 'lang' => $lang];
         }, $values) : $values;
     }
@@ -193,7 +193,7 @@ class MicroformatsFactory
     protected static function createProperty(array $propertyValues)
     {
         return array_map(
-            function ($propertyValue) {
+            function($propertyValue) {
                 if (is_array($propertyValue)) {
                     return isset($propertyValue['type']) ?
                         self::createItem($propertyValue) : self::tagLanguage($propertyValue);

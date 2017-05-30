@@ -52,7 +52,8 @@ class PropertyListFactory implements PropertyListFactoryInterface
      *
      * @return PropertyListInterface Property list
      */
-    public function create() {
+    public function create()
+    {
         return new PropertyList();
     }
 }

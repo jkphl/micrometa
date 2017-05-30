@@ -96,7 +96,8 @@ class ItemObjectModelTest extends AbstractTestBase
      *
      * @param ItemObjectModel $itemObjectModel Item object model
      */
-    protected function runStylesheetTests(ItemObjectModel $itemObjectModel) {
+    protected function runStylesheetTests(ItemObjectModel $itemObjectModel)
+    {
         // Test all stylesheet LinkType items
         $stylesheetLinks = $itemObjectModel->link('stylesheet');
         $this->assertInstanceOf(ItemList::class, $stylesheetLinks);

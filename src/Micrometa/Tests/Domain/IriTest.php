@@ -73,7 +73,8 @@ class IriTest extends \PHPUnit_Framework_TestCase
      * @expectedException \Jkphl\Micrometa\Domain\Exceptions\ErrorException
      * @expectedExceptionCode 1495895278
      */
-    public function testIriImmutability() {
+    public function testIriImmutability()
+    {
         $iri = new Iri('', '');
         $iri->profile = 'abc';
     }

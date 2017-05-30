@@ -152,11 +152,11 @@ Cache::setAdapter($cacheAdapter);
 
                             if (!count($items)) :
                                 ?>The document doesn't seem to have embedded micro information.<?php
-                            elseif ($output == 'json'):
+                            elseif ($output == 'json') :
                                 ?><pre><?=
                                 htmlspecialchars(json_encode($itemObjectModel->toObject(), JSON_PRETTY_PRINT));
                                 ?></pre><?php
-                            else:
+                            else :
                                 $micro = $link = [];
                                 /** @var ItemInterface $item */
                                 foreach ($items as $item) {
