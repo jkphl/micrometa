@@ -33,8 +33,6 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-use Jkphl\Micrometa\Application\Value\AlternateValues;
-use Jkphl\Micrometa\Application\Value\StringValue;
 use Jkphl\Micrometa\Ports\Cache;
 use Jkphl\Micrometa\Ports\Format;
 use Jkphl\Micrometa\Ports\Item\ItemInterface;
@@ -45,6 +43,7 @@ use Monolog\Logger;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
 require_once dirname(__DIR__).DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'autoload.php';
+require_once __DIR__.DIRECTORY_SEPARATOR.'demo.inc.php';
 
 $parserSuffices = [
     Format::MICROFORMATS => 'mf2',
@@ -53,155 +52,6 @@ $parserSuffices = [
     Format::JSON_LD => 'json-ld',
     Format::LINK_TYPE => 'link-type',
 ];
-
-/**
- * Render a list of items
- *
- * @param ItemInterface[] $items Items
- * @return string Rendered list of items
- */
-function renderItems(array $items)
-{
-    $html = '<ol>';
-    $html .= implode('', array_map('renderItem', $items));
-    $html .= '</ol>';
-    return $html;
-}
-
-/**
- * Recursively render an item
- *
- * @param ItemInterface $item Item
- * @return string Rendered item
- */
-function renderItem(ItemInterface $item)
-{
-    $types = array_map(
-        function ($type) {
-            return '<abbr title="'.htmlspecialchars($type->profile.$type->name).'">'.
-                htmlspecialchars($type->name).'</abbr>';
-
-        },
-        $item->getType()
-    );
-
-    $html = '<li><details>';
-    $html .= '<summary class="item-type-'.$GLOBALS['parserSuffices'][$item->getFormat()].'">';
-    $html .= '<h3><span class="item-type">'.implode('</span> + <span class="item-type">', $types).'</span>';
-    $html .= '<span class="item-id">[ ID = '.htmlspecialchars($item->getId() ?: 'NULL');
-    if ($item->getLanguage()) {
-        $html .= ' | LANG = '.htmlspecialchars(strtoupper($item->getLanguage()) ?: 'NULL');
-    }
-    $html .= ' ]</span></h3>';
-    $html .= '</summary>';
-
-
-    // Item value
-    $value = $item->getValue();
-    if (strlen($value)) {
-        $html .= '<div class="item-value">'.htmlspecialchars($value).'</div>';
-    }
-
-    // Item properties
-    $properties = $item->getProperties();
-    if (count($properties)) {
-        $html .= '<dl class="item-properties">';
-        foreach ($properties as $property => $values) {
-            $html .= '<dt><abbr title="'.htmlspecialchars($property).'">';
-            $html .= htmlspecialchars($property->name).'</abbr></dt>';
-            $html .= '<dd>'.renderPropertyValues($values).'</dd>';
-        }
-        $html .= '</dl>';
-    }
-
-    // Nested children
-    $children = $item->getItems();
-    if (count($children)) {
-        $html .= '<dl class="item-children">';
-        $html .= '<dt title="children">children</dt>';
-        $html .= '<dd>'.renderItems($children).'</dd>';
-        $html .= '</dl>';
-    }
-
-    $html .= '</details></li>';
-    return $html;
-}
-
-/**
- * Render a list of property values
- *
- * @param array $values Property values
- * @return string Rendered property values
- */
-function renderPropertyValues(array $values)
-{
-    $html = '<ol>';
-    $html .= implode('', array_map('renderPropertyValue', $values));
-    $html .= '</ol>';
-    return $html;
-}
-
-/**
- * Render a single property value
- *
- * @param string $value Property value
- * @return string Rendered property value
- */
-function renderPropertyValue($value)
-{
-    // If the value is a nested item
-    if ($value instanceof ItemInterface) {
-        return renderItem($value);
-
-        // Else: If the value is a string
-    } elseif ($value instanceof StringValue) {
-        return renderStringValue($value);
-
-        // Else: If the value is alternating
-    } elseif ($value instanceof AlternateValues) {
-        return renderAltValues($value);
-    }
-
-    // Else: Empty value
-    return '';
-}
-
-/**
- * Render a string value
- *
- * @param StringValue $value String Value
- * @return string Rendered string value
- */
-function renderStringValue(StringValue $value) {
-    $language = strtoupper($value->getLanguage());
-    $language = $language ?
-        '<span class="item-id">[ LANG = '.htmlspecialchars($language ?: 'NULL').' ]</span> ' : '';
-    if ((strpos($value, '://') !== false) && filter_var($value, FILTER_VALIDATE_URL)) {
-        return '<li>'.$language.'<a href="'.htmlspecialchars($value)
-            .'" target="_blank">'.htmlspecialchars($value).'</a></li>';
-    }
-
-    return '<li>'.$language.htmlspecialchars($value).'</li>';
-}
-
-/**
- * Render alternate values
- *
- * @param AlternateValues $value Alternate values
- * @return string Rendered alternate values
- */
-function renderAltValues(AlternateValues $value) {
-    $html = '<li><dt>';
-    foreach ($value as $key => $alternateValue) {
-        $language = strtoupper($alternateValue->getLanguage());
-        $language = $language ?
-            '<span class="item-id">[ LANG = '.htmlspecialchars($language ?: 'NULL').' ]</span> ' : '';
-        $html .= '<dt>'.htmlspecialchars($key).'</dt>';
-        $html .= '<dd>'.$language.htmlspecialchars($alternateValue).'</dd>';
-    }
-    $html .= '</dt></ul>';
-    return $html;
-}
 
 $params = array_merge($_GET, $_POST);
 $url = empty($params['url']) ? '' : $params['url'];
@@ -255,19 +105,22 @@ Cache::setAdapter($cacheAdapter);
                         <span>Parsers</span>
                         <label class="legend item-type-mf2">
                             <input type="checkbox" name="parser[mf2]" value="<?= Format::MICROFORMATS ?>"
-                                <?= ($formats & Format::MICROFORMATS) ? ' checked="checked"' : ''; ?>/> Microformats 1+2</label>
+                                <?= ($formats & Format::MICROFORMATS) ? ' checked="checked"' : ''; ?>/>
+                            Microformats 1+2</label>
                         <label class="legend item-type-microdata">
-                            <input type="checkbox" name="parser[microdata]"
-                                   value="<?= Format::MICRODATA; ?>"<?= ($formats & Format::MICRODATA) ? ' checked="checked"' : ''; ?>/>HTML Microdata</label>
+                            <input type="checkbox" name="parser[microdata]" value="<?= Format::MICRODATA; ?>"
+                                <?= ($formats & Format::MICRODATA) ? ' checked="checked"' : ''; ?>/>
+                            HTML Microdata</label>
                         <label class="legend item-type-rdfa-lite">
-                            <input type="checkbox" name="parser[rdfalite]"
-                                   value="<?= Format::RDFA_LITE; ?>"<?= ($formats & Format::RDFA_LITE) ? ' checked="checked"' : ''; ?>/>RDFa Lite 1.1</label>
+                            <input type="checkbox" name="parser[rdfalite]" value="<?= Format::RDFA_LITE; ?>"
+                                <?= ($formats & Format::RDFA_LITE) ? ' checked="checked"' : ''; ?>/>
+                            RDFa Lite 1.1</label>
                         <label class="legend item-type-link-type">
                             <input type="checkbox" name="parser[link-type]" value="<?= Format::LINK_TYPE; ?>"
                                 <?= ($formats & Format::LINK_TYPE) ? ' checked="checked"' : ''; ?>/>Link Types</label>
                         <label class="legend item-type-json-ld">
-                            <input type="checkbox" name="parser[json-ld]"
-                                   value="<?= Format::JSON_LD; ?>"<?= ($formats & Format::JSON_LD) ? ' checked="checked"' : ''; ?>/>JSON-LD</label>
+                            <input type="checkbox" name="parser[json-ld]" value="<?= Format::JSON_LD; ?>"
+                                <?= ($formats & Format::JSON_LD) ? ' checked="checked"' : ''; ?>/>JSON-LD</label>
                     </div>
                     <div>
                         <input type="submit" name="microdata" value="Fetch &amp; parse URL" class="parse"/>
@@ -317,12 +170,7 @@ Cache::setAdapter($cacheAdapter);
                                 // Micro information items
                                 if (count($micro)) :
                                     ?><details class="items main" open="open">
-                                    <summary><h2>Items</h2></summary><?php
-
-                                    echo renderItems($micro);
-
-                                    ?></details><?php
-
+                                    <summary><h2>Items</h2></summary><?= renderItems($micro); ?></details><?php
                                 endif;
 
                                 // LinkRel items
@@ -333,11 +181,12 @@ Cache::setAdapter($cacheAdapter);
                                     echo renderItems($link);
 
                                     ?></details><?php
-
                                 endif;
                             endif;
                         } catch (\Exception $e) {
-                            ?><h2 class="error" title="<?= htmlspecialchars(get_class($e).' ('.$e->getCode().')'); ?>"><?= htmlspecialchars($e->getMessage()); ?></h2>
+                            ?><h2 class="error"
+                                  title="<?= htmlspecialchars(get_class($e).' ('.$e->getCode().')'); ?>">
+                            <?= htmlspecialchars($e->getMessage()); ?></h2>
                             <div class="error"><pre class="error"><?= $e->getTraceAsString(); ?></pre></div><?php
                         }
 
@@ -347,20 +196,21 @@ Cache::setAdapter($cacheAdapter);
                     <pre><?= htmlspecialchars($logHandler->getFormatter()
                             ->formatBatch($logHandler->getRecords())); ?></pre>
                     </fieldset><?php
-
                 elseif (!empty($params['clearcache'])) :
                     ?><fieldset>
                     <legend>Cache management</legend>
-                    <p><?= $cacheAdapter->clear() ? 'The JSON-LD vocabulary cache has successfully been cleared.' : 'The JSON-LD vocabulary cache could not be cleared.'; ?></p>
+                    <p><?=
+                        $cacheAdapter->clear() ?
+                            'The JSON-LD vocabulary cache has successfully been cleared.' :
+                            'The JSON-LD vocabulary cache could not be cleared.';
+                        ?></p>
                     </fieldset><?php
-
                 endif;
                 ?></form>
         </article>
         <footer>
-            <p>
-                Copyright © 2017 Joschi Kuphal &lt;<a href="mailto:joschi@kuphal.net">joschi@kuphal.net</a>&gt; / <a
-                    href="https://twitter.com/jkphl" target="_blank">@jkphl</a></p>
+            <p>Copyright © 2017 Joschi Kuphal &lt;<a href="mailto:joschi@kuphal.net">joschi@kuphal.net</a>&gt; /
+                <a href="https://twitter.com/jkphl" target="_blank">@jkphl</a></p>
         </footer>
     </body>
 </html>

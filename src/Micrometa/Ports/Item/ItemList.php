@@ -158,7 +158,7 @@ class ItemList implements ItemListInterface
      *
      * @param int $offset Offset
      * @param ItemInterface $value Item
-     * @SuppressWarnings(PHPMD.FnusedFormalParameter)
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      * @api
      */
     public function offsetSet($offset, $value)
@@ -170,7 +170,7 @@ class ItemList implements ItemListInterface
      * Delete an item at a particular offset
      *
      * @param int $offset Offset
-     * @SuppressWarnings(PHPMD.FnusedFormalParameter)
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function offsetUnset($offset)
     {
@@ -188,7 +188,8 @@ class ItemList implements ItemListInterface
             'items' => array_map(
                 function (ItemInterface $item) {
                     return $item->toObject();
-                }, $this->items
+                },
+                $this->items
             )
         ];
     }
