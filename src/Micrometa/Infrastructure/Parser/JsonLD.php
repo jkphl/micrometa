@@ -165,8 +165,8 @@ class JsonLD extends AbstractParser
                 $item = $this->parseNode($node);
                 break;
             }
-        } catch (JsonLdException $e) {
-            $this->logger->error($e->getMessage(), ['exception' => $e]);
+        } catch (JsonLdException $exception) {
+            $this->logger->error($exception->getMessage(), ['exception' => $exception]);
         }
 
         return $item;

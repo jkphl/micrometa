@@ -36,7 +36,6 @@
 
 namespace Jkphl\Micrometa\Infrastructure\Parser;
 
-
 use Jkphl\Micrometa\Application\Contract\ParsingResultInterface;
 use Jkphl\Micrometa\Application\Factory\ItemFactory;
 use Jkphl\Micrometa\Application\Item\ItemInterface;

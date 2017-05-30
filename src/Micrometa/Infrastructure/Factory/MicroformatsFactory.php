@@ -118,7 +118,8 @@ class MicroformatsFactory
         return array_map(
             function ($type) {
                 return (object)['profile' => self::MF2_PROFILE_URI, 'name' => $type];
-            }, $types
+            },
+            $types
         );
     }
 
@@ -134,18 +135,18 @@ class MicroformatsFactory
         // Extract the language (if present)
         $properties = self::createLanguage($properties, $lang);
 
-        $microformatProperties = [];
+        $mfProperties = [];
         foreach ($properties as $propertyName => $propertyValues) {
             // Process property values
             if (is_array($propertyValues)) {
-                $microformatProperties[] = (object)[
+                $mfProperties[] = (object)[
                     'profile' => self::MF2_PROFILE_URI,
                     'name' => $propertyName,
                     'values' => self::createProperty($propertyValues)
                 ];
             }
         }
-        return $microformatProperties;
+        return $mfProperties;
     }
 
     /**

@@ -158,6 +158,7 @@ class ItemList implements ItemListInterface
      *
      * @param int $offset Offset
      * @param ItemInterface $value Item
+     * @SuppressWarnings(PHPMD.FnusedFormalParameter)
      * @api
      */
     public function offsetSet($offset, $value)
@@ -169,6 +170,7 @@ class ItemList implements ItemListInterface
      * Delete an item at a particular offset
      *
      * @param int $offset Offset
+     * @SuppressWarnings(PHPMD.FnusedFormalParameter)
      */
     public function offsetUnset($offset)
     {

@@ -35,7 +35,8 @@
 
 use Jkphl\Micrometa\Application\Value\AlternateValues;
 use Jkphl\Micrometa\Application\Value\StringValue;
-use Jkphl\Micrometa\Ports\Cache;use Jkphl\Micrometa\Ports\Format;
+use Jkphl\Micrometa\Ports\Cache;
+use Jkphl\Micrometa\Ports\Format;
 use Jkphl\Micrometa\Ports\Item\ItemInterface;
 use Jkphl\Micrometa\Ports\Parser;
 use Monolog\Formatter\LineFormatter;
@@ -80,7 +81,8 @@ function renderItem(ItemInterface $item)
             return '<abbr title="'.htmlspecialchars($type->profile.$type->name).'">'.
                 htmlspecialchars($type->name).'</abbr>';
 
-        }, $item->getType()
+        },
+        $item->getType()
     );
 
     $html = '<li><details>';
@@ -105,7 +107,8 @@ function renderItem(ItemInterface $item)
     if (count($properties)) {
         $html .= '<dl class="item-properties">';
         foreach ($properties as $property => $values) {
-            $html .= '<dt><abbr title="'.htmlspecialchars($property).'">'.htmlspecialchars($property->name).'</abbr></dt>';
+            $html .= '<dt><abbr title="'.htmlspecialchars($property).'">';
+            $html .= htmlspecialchars($property->name).'</abbr></dt>';
             $html .= '<dd>'.renderPropertyValues($values).'</dd>';
         }
         $html .= '</dl>';
@@ -152,30 +155,52 @@ function renderPropertyValue($value)
 
         // Else: If the value is a string
     } elseif ($value instanceof StringValue) {
-        $language = $value->getLanguage() ?
-            '<span class="item-id">[ LANG = '.htmlspecialchars(strtoupper($value->getLanguage()) ?: 'NULL').' ]</span> ' : '';
-        if ((strpos($value, '://') !== false) && filter_var($value, FILTER_VALIDATE_URL)) {
-            return '<li>'.$language.'<a href="'.htmlspecialchars($value).'" target="_blank">'.htmlspecialchars($value).'</a></li>';
-        }
-
-        return '<li>'.$language.htmlspecialchars($value).'</li>';
+        return renderStringValue($value);
 
         // Else: If the value is alternating
     } elseif ($value instanceof AlternateValues) {
-        $html = '<li><dt>';
-        foreach ($value as $key => $alternateValue) {
-            $language = $alternateValue->getLanguage() ?
-                '<span class="item-id">[ LANG = '.htmlspecialchars(strtoupper($alternateValue->getLanguage()) ?: 'NULL').' ]</span> ' : '';
-            $html .= '<dt>'.htmlspecialchars($key).'</dt>';
-            $html .= '<dd>'.$language.htmlspecialchars($alternateValue).'</dd>';
-        }
-        $html .= '</dt></ul>';
-        return $html;
-
-        // Else: Empty value
-    } else {
-        return '';
+        return renderAltValues($value);
     }
+
+    // Else: Empty value
+    return '';
+}
+
+/**
+ * Render a string value
+ *
+ * @param StringValue $value String Value
+ * @return string Rendered string value
+ */
+function renderStringValue(StringValue $value) {
+    $language = strtoupper($value->getLanguage());
+    $language = $language ?
+        '<span class="item-id">[ LANG = '.htmlspecialchars($language ?: 'NULL').' ]</span> ' : '';
+    if ((strpos($value, '://') !== false) && filter_var($value, FILTER_VALIDATE_URL)) {
+        return '<li>'.$language.'<a href="'.htmlspecialchars($value)
+            .'" target="_blank">'.htmlspecialchars($value).'</a></li>';
+    }
+
+    return '<li>'.$language.htmlspecialchars($value).'</li>';
+}
+
+/**
+ * Render alternate values
+ *
+ * @param AlternateValues $value Alternate values
+ * @return string Rendered alternate values
+ */
+function renderAltValues(AlternateValues $value) {
+    $html = '<li><dt>';
+    foreach ($value as $key => $alternateValue) {
+        $language = strtoupper($alternateValue->getLanguage());
+        $language = $language ?
+            '<span class="item-id">[ LANG = '.htmlspecialchars($language ?: 'NULL').' ]</span> ' : '';
+        $html .= '<dt>'.htmlspecialchars($key).'</dt>';
+        $html .= '<dd>'.$language.htmlspecialchars($alternateValue).'</dd>';
+    }
+    $html .= '</dt></ul>';
+    return $html;
 }
 
 $params = array_merge($_GET, $_POST);
@@ -228,39 +253,33 @@ Cache::setAdapter($cacheAdapter);
                     </div>
                     <div>
                         <span>Parsers</span>
-                        <label class="legend item-type-mf2"><input type="checkbox" name="parser[mf2]"
-                                                                   value="<?= Format::MICROFORMATS ?>"
+                        <label class="legend item-type-mf2">
+                            <input type="checkbox" name="parser[mf2]" value="<?= Format::MICROFORMATS ?>"
                                 <?= ($formats & Format::MICROFORMATS) ? ' checked="checked"' : ''; ?>/> Microformats 1+2</label>
-                        <label class="legend item-type-microdata"><input type="checkbox" name="parser[microdata]"
-                                                                         value="<?= Format::MICRODATA; ?>"<?= ($formats & Format::MICRODATA) ? ' checked="checked"' : ''; ?>/>
-                            HTML
-                            Microdata</label>
-                        <label class="legend item-type-rdfa-lite"><input type="checkbox" name="parser[rdfalite]"
-                                                                         value="<?= Format::RDFA_LITE; ?>"<?= ($formats & Format::RDFA_LITE) ? ' checked="checked"' : ''; ?>/>
-                            RDFa Lite 1.1</label>
-                        <label class="legend item-type-link-type"><input type="checkbox" name="parser[link-type]"
-                                                                         value="<?= Format::LINK_TYPE; ?>"
-                                <?= ($formats & Format::LINK_TYPE) ? ' checked="checked"' : ''; ?>/>
-                            LinkRel</label>
-                        <label class="legend item-type-json-ld"><input type="checkbox" name="parser[json-ld]"
-                                                                       value="<?= Format::JSON_LD; ?>"
-                                <?= ($formats & Format::JSON_LD) ? ' checked="checked"' : ''; ?>/>
-                            JSON-LD</label>
+                        <label class="legend item-type-microdata">
+                            <input type="checkbox" name="parser[microdata]"
+                                   value="<?= Format::MICRODATA; ?>"<?= ($formats & Format::MICRODATA) ? ' checked="checked"' : ''; ?>/>HTML Microdata</label>
+                        <label class="legend item-type-rdfa-lite">
+                            <input type="checkbox" name="parser[rdfalite]"
+                                   value="<?= Format::RDFA_LITE; ?>"<?= ($formats & Format::RDFA_LITE) ? ' checked="checked"' : ''; ?>/>RDFa Lite 1.1</label>
+                        <label class="legend item-type-link-type">
+                            <input type="checkbox" name="parser[link-type]" value="<?= Format::LINK_TYPE; ?>"
+                                <?= ($formats & Format::LINK_TYPE) ? ' checked="checked"' : ''; ?>/>Link Types</label>
+                        <label class="legend item-type-json-ld">
+                            <input type="checkbox" name="parser[json-ld]"
+                                   value="<?= Format::JSON_LD; ?>"<?= ($formats & Format::JSON_LD) ? ' checked="checked"' : ''; ?>/>JSON-LD</label>
                     </div>
                     <div>
                         <input type="submit" name="microdata" value="Fetch &amp; parse URL" class="parse"/>
                         <input type="submit" name="clearcache" value="Clear JSON-LD vocabulary cache"/>
                     </div>
                 </fieldset><?php
-
-                if (!empty($params['microdata']) && strlen($url)):
-
-                    ?>
-                    <fieldset>
+                if (!empty($params['microdata']) && strlen($url)) :
+                    ?><fieldset>
                         <legend>Micro information embedded into <a href="<?= htmlspecialchars($url); ?>"
                                                                    target="_blank"><?= htmlspecialchars($url); ?></a>
                         </legend><?php
-                        if (version_compare(PHP_VERSION, '5.4', '<')):
+                        if (version_compare(PHP_VERSION, '5.4', '<')) :
                             ?><p class="hint">Unfortunately JSON pretty-printing is only available with PHP
                             5.4+.</p><?php
                         endif;
@@ -278,15 +297,13 @@ Cache::setAdapter($cacheAdapter);
                             $itemObjectModel = $micrometa($url, null, null, ['request' => ['verify' => false]]);
                             $items = $itemObjectModel->getItems();
 
-                            if (!count($items)):
+                            if (!count($items)) :
                                 ?>The document doesn't seem to have embedded micro information.<?php
                             elseif ($output == 'json'):
-                                ?>
-                                <pre><?= htmlspecialchars(
-                                json_encode($itemObjectModel->toObject(), JSON_PRETTY_PRINT)
-                            ); ?></pre><?php
+                                ?><pre><?=
+                                htmlspecialchars(json_encode($itemObjectModel->toObject(), JSON_PRETTY_PRINT));
+                                ?></pre><?php
                             else:
-
                                 $micro = $link = [];
                                 /** @var ItemInterface $item */
                                 foreach ($items as $item) {
@@ -298,10 +315,8 @@ Cache::setAdapter($cacheAdapter);
                                 }
 
                                 // Micro information items
-                                if (count($micro)):
-
-                                    ?>
-                                    <details class="items main" open="open">
+                                if (count($micro)) :
+                                    ?><details class="items main" open="open">
                                     <summary><h2>Items</h2></summary><?php
 
                                     echo renderItems($micro);
@@ -311,10 +326,8 @@ Cache::setAdapter($cacheAdapter);
                                 endif;
 
                                 // LinkRel items
-                                if (count($link)):
-
-                                    ?>
-                                    <details class="items main" open="open">
+                                if (count($link)) :
+                                    ?><details class="items main" open="open">
                                     <summary><h2>LinkRel</h2></summary><?php
 
                                     echo renderItems($link);
@@ -322,13 +335,10 @@ Cache::setAdapter($cacheAdapter);
                                     ?></details><?php
 
                                 endif;
-
                             endif;
                         } catch (\Exception $e) {
-                            ?><h2 class="error"
-                                  title="<?= htmlspecialchars(get_class($e).' ('.$e->getCode().')'); ?>"><?= htmlspecialchars($e->getMessage()); ?></h2>
-                            <div class="error">
-                            <pre class="error"><?= $e->getTraceAsString(); ?></pre></div><?php
+                            ?><h2 class="error" title="<?= htmlspecialchars(get_class($e).' ('.$e->getCode().')'); ?>"><?= htmlspecialchars($e->getMessage()); ?></h2>
+                            <div class="error"><pre class="error"><?= $e->getTraceAsString(); ?></pre></div><?php
                         }
 
                         ?></fieldset>
@@ -338,10 +348,8 @@ Cache::setAdapter($cacheAdapter);
                             ->formatBatch($logHandler->getRecords())); ?></pre>
                     </fieldset><?php
 
-                elseif (!empty($params['clearcache'])):
-
-                    ?>
-                    <fieldset>
+                elseif (!empty($params['clearcache'])) :
+                    ?><fieldset>
                     <legend>Cache management</legend>
                     <p><?= $cacheAdapter->clear() ? 'The JSON-LD vocabulary cache has successfully been cleared.' : 'The JSON-LD vocabulary cache could not be cleared.'; ?></p>
                     </fieldset><?php

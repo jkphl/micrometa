@@ -102,8 +102,8 @@ class Item extends ItemList implements ItemInterface
     {
         try {
             $propertyValues = $this->item->getProperty($name, $profile);
-        } catch (DomainOutOfBoundsException $e) {
-            throw new OutOfBoundsException($e->getMessage(), $e->getCode());
+        } catch (DomainOutOfBoundsException $exception) {
+            throw new OutOfBoundsException($exception->getMessage(), $exception->getCode());
         }
 
         // Return the value(s)
@@ -221,7 +221,7 @@ class Item extends ItemList implements ItemInterface
         $properties = ProfiledNamesFactory::createFromArguments(func_get_args());
 
         // Prepare a default exception
-        $e = new OutOfBoundsException(
+        $exception = new OutOfBoundsException(
             OutOfBoundsException::NO_MATCHING_PROPERTIES_STR,
             OutOfBoundsException::NO_MATCHING_PROPERTIES
         );
@@ -230,12 +230,12 @@ class Item extends ItemList implements ItemInterface
         foreach ($properties as $property) {
             try {
                 return (array)$this->getProperty($property->name, $property->profile);
-            } catch (OutOfBoundsException $e) {
+            } catch (OutOfBoundsException $exception) {
                 continue;
             }
         }
 
-        throw $e;
+        throw $exception;
     }
 
     /**

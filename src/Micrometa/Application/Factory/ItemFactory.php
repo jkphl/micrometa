@@ -168,8 +168,16 @@ class ItemFactory
         $value = $this->normalizeEmptyValue($item, 'value');
         $children = isset($item->children) ? array_map([$this, __METHOD__], $item->children) : [];
         $properties = $this->getProperties($item);
-        return new Item($this->format, $this->propertyListFactory, $type, $properties, $children, $itemId,
-            $itemLanguage, $value);
+        return new Item(
+            $this->format,
+            $this->propertyListFactory,
+            $type,
+            $properties,
+            $children,
+            $itemId,
+            $itemLanguage,
+            $value
+        );
     }
 
     /**
@@ -217,7 +225,7 @@ class ItemFactory
                     $properties[] = $property;
                 }
             }
-        } catch (InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $exception) {
             // Skip this property
         }
     }

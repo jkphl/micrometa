@@ -177,7 +177,7 @@ class PropertyList implements PropertyListInterface
             ($iri->profile !== '') ?
                 $this->getProfiledPropertyCursor($iri) : $this->getPropertyCursor($iri->name);
             return true;
-        } catch (OutOfBoundsException $e) {
+        } catch (OutOfBoundsException $exception) {
             return false;
         }
     }

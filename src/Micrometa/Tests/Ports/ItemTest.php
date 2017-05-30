@@ -267,7 +267,8 @@ class ItemTest extends AbstractTestBase
         }
         $this->assertInstanceOf(ItemInterface::class, $feedItem->getFirstItem('h-entry'));
         $this->assertInstanceOf(
-            ItemInterface::class, $feedItem->getFirstItem('h-entry', MicroformatsFactory::MF2_PROFILE_URI)
+            ItemInterface::class,
+            $feedItem->getFirstItem('h-entry', MicroformatsFactory::MF2_PROFILE_URI)
         );
 
         // Test the second entry item

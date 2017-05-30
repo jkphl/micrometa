@@ -108,7 +108,8 @@ class PropertyList extends \Jkphl\Micrometa\Domain\Item\PropertyList implements 
             $propertyList[$profiledName] = array_map(
                 function (ExportableInterface $value) {
                     return $value->export();
-                }, $this->values[$cursor]
+                },
+                $this->values[$cursor]
             );
         }
         return $propertyList;

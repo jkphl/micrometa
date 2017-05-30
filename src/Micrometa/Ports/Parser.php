@@ -104,8 +104,8 @@ class Parser
             $items = $this->extractItems($this->createDom($uri, $source, $httpOptions), $parsers);
 
             // In case of exceptions: Log if possible
-        } catch (\Exception $e) {
-            $this->logger->critical($e->getMessage(), ['exception' => $e]);
+        } catch (\Exception $exception) {
+            $this->logger->critical($exception->getMessage(), ['exception' => $exception]);
         }
 
         return new ItemObjectModel($items);

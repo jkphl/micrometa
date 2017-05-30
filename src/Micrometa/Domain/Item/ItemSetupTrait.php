@@ -101,8 +101,8 @@ trait ItemSetupTrait
         $itemLanguage
     ) {
         $this->propertyListFactory = $propertyListFactory;
-        $this->type = $this->validateTypes($type);
-        $this->properties = $this->validateProperties($properties);
+        $this->type = $this->valTypes($type);
+        $this->properties = $this->valProperties($properties);
         $this->itemId = $itemId ?: null;
         $this->itemLanguage = $itemLanguage ?: null;
     }
@@ -114,9 +114,9 @@ trait ItemSetupTrait
      * @return array Validated item types
      * @throws InvalidArgumentException If there are no valid types
      */
-    protected function validateTypes(array $types)
+    protected function valTypes(array $types)
     {
-        $nonEmptyTypes = array_filter(array_map([$this, 'validateType'], $types));
+        $nonEmptyTypes = array_filter(array_map([$this, 'valType'], $types));
 
         // If there are no valid types
         if (!count($nonEmptyTypes)) {
@@ -136,12 +136,12 @@ trait ItemSetupTrait
      * @return PropertyListInterface Validated item properties
      * @throws InvalidArgumentException If the property name is empty
      */
-    protected function validateProperties(array $properties)
+    protected function valProperties(array $properties)
     {
         $validatedProperties = $this->propertyListFactory->create();
 
         // Run through all validated properties
-        foreach (array_filter(array_map([$this, 'validateProperty'], $properties)) as $property) {
+        foreach (array_filter(array_map([$this, 'valProp'], $properties)) as $property) {
             $validatedProperties->add($property);
         }
 
@@ -154,18 +154,18 @@ trait ItemSetupTrait
      * @param \stdClass $property Property
      * @return \stdClass Validated property
      */
-    protected function validateProperty($property)
+    protected function valProp($property)
     {
         // Validate the property structure
-        $this->validatePropertyStructure($property);
+        $this->valPropStructure($property);
 
         // If the property has values
         if (count($property->values)) {
             // Validate the property name
-            $property->name = $this->validatePropertyName($property);
+            $property->name = $this->valPropName($property);
 
             // Validate the property values
-            $property->values = $this->validatePropertyValues($property->values);
+            $property->values = $this->valPropValues($property->values);
 
             // If the property has significant values
             if (count($property->values)) {
@@ -182,10 +182,10 @@ trait ItemSetupTrait
      * @param \stdClass $property Property object
      * @throws InvalidArgumentException If the property object is invalid
      */
-    protected function validatePropertyStructure($property)
+    protected function valPropStructure($property)
     {
         // If the property object is invalid
-        if (!is_object($property) || !$this->validatePropertyProperties($property)) {
+        if (!is_object($property) || !$this->valPropProperties($property)) {
             throw new InvalidArgumentException(
                 InvalidArgumentException::INVALID_PROPERTY_STR,
                 InvalidArgumentException::INVALID_PROPERTY
@@ -199,7 +199,7 @@ trait ItemSetupTrait
      * @param \stdClass $property Property
      * @return bool Property properties are valid
      */
-    protected function validatePropertyProperties($property)
+    protected function valPropProperties($property)
     {
         return isset($property->profile)
             && isset($property->name)
@@ -213,7 +213,7 @@ trait ItemSetupTrait
      * @param \stdClass $property Property
      * @return string Property name
      */
-    protected function validatePropertyName($property)
+    protected function valPropName($property)
     {
         $propertyName = trim($property->name);
 
@@ -235,26 +235,26 @@ trait ItemSetupTrait
      * @return array Validated property values
      * @throws InvalidArgumentException If the value is not a nested item
      */
-    protected function validatePropertyValues(array $values)
+    protected function valPropValues(array $values)
     {
-        $nonEmptyPropertyValues = [];
+        $validPropertyValues = [];
 
         // Run through all property values
         /** @var ValueInterface $value */
         foreach ($values as $value) {
-            $this->processPropertyValue($value, $nonEmptyPropertyValues);
+            $this->procPropValue($value, $validPropertyValues);
         }
 
-        return $nonEmptyPropertyValues;
+        return $validPropertyValues;
     }
 
     /**
      * Process a (non-empty) property value
      *
      * @param ValueInterface $value Property value
-     * @param array $nonEmptyPropertyValues Non-empty property values
+     * @param array $validPropertyValues Non-empty property values
      */
-    protected function processPropertyValue($value, array &$nonEmptyPropertyValues)
+    protected function procPropValue($value, array &$validPropertyValues)
     {
         // If the value is not a nested item
         if (!($value instanceof ValueInterface)) {
@@ -266,7 +266,7 @@ trait ItemSetupTrait
 
         // If the value isn't empty
         if (!$value->isEmpty()) {
-            $nonEmptyPropertyValues[] = $value;
+            $validPropertyValues[] = $value;
         }
     }
 
@@ -277,7 +277,7 @@ trait ItemSetupTrait
      * @return Iri|null Validated item type
      * @throws InvalidArgumentException If the item type object is invalid
      */
-    protected function validateType($type)
+    protected function valType($type)
     {
         $type = IriFactory::create($type);
         return strlen($type->name) ? $type : null;

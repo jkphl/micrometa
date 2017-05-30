@@ -104,46 +104,46 @@ class ItemTest extends \PHPUnit_Framework_TestCase
     public function creationArgumentProvider()
     {
         $item = new Item('test');
-        $testT = $this->t('test');
-        $nvP = $this->p('name1', 'value1');
+        $testT = $this->typ('test');
+        $nvP = $this->prp('name1', 'value1');
         return [
             ['test', [], null, null, [$testT], [], null],
-            [$this->t('test', 'a'), [], null, null, [$this->t('test', 'a')], [], null],
+            [$this->typ('test', 'a'), [], null, null, [$this->typ('test', 'a')], [], null],
             [['test'], [], null, null, [$testT], [], null],
-            [['test', 'lorem'], [], null, null, [$testT, $this->t('lorem')], [], null],
-            [['test', '', 'lorem'], [], null, null, [$testT, $this->t('lorem')], [], null],
-            ['test', [$nvP], null, null, [$testT], ['name1' => [$this->s('value1')]], null],
-            ['test', [$this->p('name1', '')], null, null, [$testT], [], null],
-            ['test', [$this->p('name1', [])], null, null, [$testT], [], null],
+            [['test', 'lorem'], [], null, null, [$testT, $this->typ('lorem')], [], null],
+            [['test', '', 'lorem'], [], null, null, [$testT, $this->typ('lorem')], [], null],
+            ['test', [$nvP], null, null, [$testT], ['name1' => [$this->str('value1')]], null],
+            ['test', [$this->prp('name1', '')], null, null, [$testT], [], null],
+            ['test', [$this->prp('name1', [])], null, null, [$testT], [], null],
             [
                 'test',
-                [$this->p('name1', 'value1', 'profile1/')],
+                [$this->prp('name1', 'value1', 'profile1/')],
                 null,
                 null,
                 [$testT],
-                ['profile1/name1' => [$this->s('value1')]],
+                ['profile1/name1' => [$this->str('value1')]],
                 null
             ],
-            ['test', [$nvP], null, null, [$testT], ['name1' => [$this->s('value1')]], null],
+            ['test', [$nvP], null, null, [$testT], ['name1' => [$this->str('value1')]], null],
             [
                 'test',
-                [$nvP, $this->p('name1', 'value2')],
+                [$nvP, $this->prp('name1', 'value2')],
                 null,
                 null,
                 [$testT],
-                ['name1' => [$this->s('value1'), $this->s('value2')]],
+                ['name1' => [$this->str('value1'), $this->str('value2')]],
                 null
             ],
             [
                 'test',
-                [$nvP, $this->p('name2', 'value2')],
+                [$nvP, $this->prp('name2', 'value2')],
                 null,
                 null,
                 [$testT],
-                ['name1' => [$this->s('value1')], 'name2' => [$this->s('value2')]],
+                ['name1' => [$this->str('value1')], 'name2' => [$this->str('value2')]],
                 null
             ],
-            ['test', [$this->p('name', [$item])], null, null, [$testT], ['name' => [$item]], null],
+            ['test', [$this->prp('name', [$item])], null, null, [$testT], ['name' => [$item]], null],
             ['test', [], 'id', null, [$testT], [], 'id'],
             ['test', [], null, 'en', [$testT], [], null, 'en'],
         ];
@@ -152,38 +152,38 @@ class ItemTest extends \PHPUnit_Framework_TestCase
     /**
      * Create a type object
      *
-     * @param string $n Type name
-     * @param string $p Type profile
+     * @param string $name Type name
+     * @param string $profile Type profile
      * @return object Type object
      */
-    protected function t($n, $p = '')
+    protected function typ($name, $profile = '')
     {
-        return new Iri($p, $n);
+        return new Iri($profile, $name);
     }
 
     /**
      * Create a property object
      *
-     * @param string $n Property name
-     * @param mixed $s Property value(s)
-     * @param string $p Property profile
+     * @param string $name Property name
+     * @param mixed $str Property value(s)
+     * @param string $profile Property profile
      * @return \stdClass Property object
      */
-    protected function p($n, $s, $p = '')
+    protected function prp($name, $str, $profile = '')
     {
-        $values = array_map([$this, 's'], (array)$s);
-        return (object)['profile' => $p, 'name' => $n, 'values' => $values];
+        $values = array_map([$this, 'str'], (array)$str);
+        return (object)['profile' => $profile, 'name' => $name, 'values' => $values];
     }
 
     /**
      * Create a string value
      *
-     * @param string $s Value
+     * @param string $str Value
      * @return ValueInterface String value
      */
-    protected function s($s)
+    protected function str($str)
     {
-        return ($s instanceof ValueInterface) ? $s : new StringValue($s);
+        return ($str instanceof ValueInterface) ? $str : new StringValue($str);
     }
 
     /**
@@ -216,7 +216,7 @@ class ItemTest extends \PHPUnit_Framework_TestCase
      */
     public function testEmptyPropertyName()
     {
-        new Item('type', [$this->p('', 'value')]);
+        new Item('type', [$this->prp('', 'value')]);
     }
 
     /**
@@ -258,7 +258,7 @@ class ItemTest extends \PHPUnit_Framework_TestCase
      */
     public function testItemUnprofiledProperty()
     {
-        $item = new Item('type', [$this->p('name', 123)]);
+        $item = new Item('type', [$this->prp('name', 123)]);
         $this->assertEquals([new StringValue('123')], $item->getProperty('name'));
     }
 
@@ -267,7 +267,7 @@ class ItemTest extends \PHPUnit_Framework_TestCase
      */
     public function testItemProfiledProperty()
     {
-        $item = new Item('type', [$this->p('name', 123, 'profile')]);
+        $item = new Item('type', [$this->prp('name', 123, 'profile')]);
         $value = [new StringValue('123')];
         $this->assertEquals($value, $item->getProperty('name'));
         $this->assertEquals($value, $item->getProperty('name', 'profile'));
