@@ -127,18 +127,6 @@ class ExtractorTest extends AbstractTestBase
     }
 
     /**
-     * Test the Microformats extraction
-     */
-    public function testNestedMicroformatsExtraction()
-    {
-        $microformatsItems = $this->getAndTestMicroformatsExtractionBase(
-            dirname(__DIR__).DIRECTORY_SEPARATOR.'Fixture'.DIRECTORY_SEPARATOR.
-            'microformats'.DIRECTORY_SEPARATOR.'nested-events.html'
-        );
-        $this->assertEquals(2, count($microformatsItems->getItems()[0]->getChildren()));
-    }
-
-    /**
      * Run a microformats base test on a file and return the items
      *
      * @param string $file File name
@@ -165,5 +153,17 @@ class ExtractorTest extends AbstractTestBase
         $this->assertEquals(Microformats::FORMAT, $microformatsItems->getItems()[0]->getFormat());
 
         return $microformatsItems;
+    }
+
+    /**
+     * Test the Microformats extraction
+     */
+    public function testNestedMicroformatsExtraction()
+    {
+        $microformatsItems = $this->getAndTestMicroformatsExtractionBase(
+            dirname(__DIR__).DIRECTORY_SEPARATOR.'Fixture'.DIRECTORY_SEPARATOR.
+            'microformats'.DIRECTORY_SEPARATOR.'nested-events.html'
+        );
+        $this->assertEquals(2, count($microformatsItems->getItems()[0]->getChildren()));
     }
 }

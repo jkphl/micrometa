@@ -167,6 +167,30 @@ class ProfiledNamesFactory
     }
 
     /**
+     * Create a profiled name from string arguments
+     *
+     * @param string $name Name
+     * @param string|boolean|null $profile Profile
+     * @return \stdClass Profiled name
+     * @throws InvalidArgumentException If the name is invalid
+     */
+    protected static function createProfiledNameFromString($name, $profile)
+    {
+        // If the name is invalid
+        if (!strlen(trim($name))) {
+            throw new InvalidArgumentException(
+                InvalidArgumentException::INVALID_TYPE_PROPERTY_NAME_STR,
+                InvalidArgumentException::INVALID_TYPE_PROPERTY_NAME
+            );
+        }
+
+        return (object)[
+            'name' => trim($name),
+            'profile' => trim($profile) ?: null,
+        ];
+    }
+
+    /**
      * Create a profiled name from an array argument
      *
      * @param array $arg Array argument
@@ -192,29 +216,5 @@ class ProfiledNamesFactory
             InvalidArgumentException::INVALID_TYPE_PROPERTY_ARRAY_STR,
             InvalidArgumentException::INVALID_TYPE_PROPERTY_ARRAY
         );
-    }
-
-    /**
-     * Create a profiled name from string arguments
-     *
-     * @param string $name Name
-     * @param string|boolean|null $profile Profile
-     * @return \stdClass Profiled name
-     * @throws InvalidArgumentException If the name is invalid
-     */
-    protected static function createProfiledNameFromString($name, $profile)
-    {
-        // If the name is invalid
-        if (!strlen(trim($name))) {
-            throw new InvalidArgumentException(
-                InvalidArgumentException::INVALID_TYPE_PROPERTY_NAME_STR,
-                InvalidArgumentException::INVALID_TYPE_PROPERTY_NAME
-            );
-        }
-
-        return (object)[
-            'name' => trim($name),
-            'profile' => trim($profile) ?: null,
-        ];
     }
 }

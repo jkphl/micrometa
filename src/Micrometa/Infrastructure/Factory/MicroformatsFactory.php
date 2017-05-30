@@ -68,6 +68,22 @@ class MicroformatsFactory
     }
 
     /**
+     * Refine the item types
+     *
+     * @param array $types Types
+     * @return array Refined types
+     */
+    protected static function createTypes(array $types)
+    {
+        return array_map(
+            function ($type) {
+                return (object)['profile' => self::MF2_PROFILE_URI, 'name' => $type];
+            },
+            $types
+        );
+    }
+
+    /**
      * Process the item properties
      *
      * @param array $item Item
@@ -79,48 +95,6 @@ class MicroformatsFactory
         if (isset($item['properties']) && is_array($item['properties'])) {
             $microformatItem['properties'] = self::createProperties($item['properties'], $microformatItem['lang']);
         }
-    }
-
-    /**
-     * Process the item value
-     *
-     * @param array $item Item
-     * @param array $microformatItem Refined Microformats item
-     */
-    protected static function processValue(array $item, array &$microformatItem)
-    {
-        if (isset($item['value'])) {
-            $microformatItem['value'] = self::createValue($item['value']);
-        }
-    }
-
-    /**
-     * Process the nested item children
-     *
-     * @param array $item Item
-     * @param array $microformatItem Refined Microformats item
-     */
-    protected static function processChildren(array $item, array &$microformatItem)
-    {
-        if (isset($item['children']) && is_array($item['children'])) {
-            $microformatItem['children'] = self::createFromParserResult($item['children']);
-        }
-    }
-
-    /**
-     * Refine the item types
-     *
-     * @param array $types Types
-     * @return array Refined types
-     */
-    protected static function createTypes(array $types)
-    {
-        return array_map(
-            function($type) {
-                return (object)['profile' => self::MF2_PROFILE_URI, 'name' => $type];
-            },
-            $types
-        );
     }
 
     /**
@@ -170,21 +144,6 @@ class MicroformatsFactory
     }
 
     /**
-     * Tag values with a language (if possible)
-     *
-     * @param array $values Values
-     * @return array Language tagged values
-     */
-    protected static function tagLanguage(array $values)
-    {
-        $lang = null;
-        $values = self::createLanguage($values, $lang);
-        return $lang ? array_map(function($value) use ($lang) {
-            return (object)['value' => $value, 'lang' => $lang];
-        }, $values) : $values;
-    }
-
-    /**
      * Refine the item property values
      *
      * @param array $propertyValues Property values
@@ -193,7 +152,7 @@ class MicroformatsFactory
     protected static function createProperty(array $propertyValues)
     {
         return array_map(
-            function($propertyValue) {
+            function ($propertyValue) {
                 if (is_array($propertyValue)) {
                     return isset($propertyValue['type']) ?
                         self::createItem($propertyValue) : self::tagLanguage($propertyValue);
@@ -205,6 +164,34 @@ class MicroformatsFactory
     }
 
     /**
+     * Tag values with a language (if possible)
+     *
+     * @param array $values Values
+     * @return array Language tagged values
+     */
+    protected static function tagLanguage(array $values)
+    {
+        $lang = null;
+        $values = self::createLanguage($values, $lang);
+        return $lang ? array_map(function ($value) use ($lang) {
+            return (object)['value' => $value, 'lang' => $lang];
+        }, $values) : $values;
+    }
+
+    /**
+     * Process the item value
+     *
+     * @param array $item Item
+     * @param array $microformatItem Refined Microformats item
+     */
+    protected static function processValue(array $item, array &$microformatItem)
+    {
+        if (isset($item['value'])) {
+            $microformatItem['value'] = self::createValue($item['value']);
+        }
+    }
+
+    /**
      * Refine the item value
      *
      * @param string $value Value
@@ -213,6 +200,19 @@ class MicroformatsFactory
     protected static function createValue($value)
     {
         return $value;
+    }
+
+    /**
+     * Process the nested item children
+     *
+     * @param array $item Item
+     * @param array $microformatItem Refined Microformats item
+     */
+    protected static function processChildren(array $item, array &$microformatItem)
+    {
+        if (isset($item['children']) && is_array($item['children'])) {
+            $microformatItem['children'] = self::createFromParserResult($item['children']);
+        }
     }
 
     /**

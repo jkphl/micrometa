@@ -92,35 +92,6 @@ class ItemObjectModelTest extends AbstractTestBase
     }
 
     /**
-     * Test the stylesheet items
-     *
-     * @param ItemObjectModel $itemObjectModel Item object model
-     */
-    protected function runStylesheetTests(ItemObjectModel $itemObjectModel)
-    {
-        // Test all stylesheet LinkType items
-        $stylesheetLinks = $itemObjectModel->link('stylesheet');
-        $this->assertInstanceOf(ItemList::class, $stylesheetLinks);
-        $this->assertEquals(1, count($stylesheetLinks));
-        $this->assertInstanceOf(Item::class, $stylesheetLinks[0]);
-        $this->assertEquals(
-            [new Iri(LinkType::HTML_PROFILE_URI, 'stylesheet')],
-            $stylesheetLinks[0]->getType()
-        );
-
-        // Test the first stylesheet LinkType item
-        $firstStylesheetLink = $itemObjectModel->link('stylesheet', 0);
-        $this->assertInstanceOf(Item::class, $firstStylesheetLink);
-        $this->assertEquals(
-            [new Iri(LinkType::HTML_PROFILE_URI, 'stylesheet')],
-            $firstStylesheetLink->getType()
-        );
-
-        // Test an invalid item index
-        $itemObjectModel->link('stylesheet', 1);
-    }
-
-    /**
      * Return a list of 3 items
      *
      * @return Item[] Items
@@ -198,5 +169,34 @@ class ItemObjectModelTest extends AbstractTestBase
         $items[] = $this->getFeedItem();
 
         return $items;
+    }
+
+    /**
+     * Test the stylesheet items
+     *
+     * @param ItemObjectModel $itemObjectModel Item object model
+     */
+    protected function runStylesheetTests(ItemObjectModel $itemObjectModel)
+    {
+        // Test all stylesheet LinkType items
+        $stylesheetLinks = $itemObjectModel->link('stylesheet');
+        $this->assertInstanceOf(ItemList::class, $stylesheetLinks);
+        $this->assertEquals(1, count($stylesheetLinks));
+        $this->assertInstanceOf(Item::class, $stylesheetLinks[0]);
+        $this->assertEquals(
+            [new Iri(LinkType::HTML_PROFILE_URI, 'stylesheet')],
+            $stylesheetLinks[0]->getType()
+        );
+
+        // Test the first stylesheet LinkType item
+        $firstStylesheetLink = $itemObjectModel->link('stylesheet', 0);
+        $this->assertInstanceOf(Item::class, $firstStylesheetLink);
+        $this->assertEquals(
+            [new Iri(LinkType::HTML_PROFILE_URI, 'stylesheet')],
+            $firstStylesheetLink->getType()
+        );
+
+        // Test an invalid item index
+        $itemObjectModel->link('stylesheet', 1);
     }
 }

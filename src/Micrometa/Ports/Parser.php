@@ -112,20 +112,6 @@ class Parser
     }
 
     /**
-     * Create the DOM document to parse
-     *
-     * @param string $uri URI
-     * @param string|null $source Source code
-     * @param array $httpOptions HTTP request options
-     * @return \DOMDocument DOM document
-     */
-    protected function createDom($uri, $source = null, array $httpOptions = [])
-    {
-        return (($source !== null) && strlen(trim($source))) ?
-            Dom::createFromString($source) : Dom::createFromUri($uri, $httpOptions);
-    }
-
-    /**
      * Extract all items from a DOM using particular parsers
      *
      * @param \DOMDocument $dom DOM document
@@ -141,5 +127,19 @@ class Parser
             $items = array_merge($items, ItemFactory::createFromApplicationItems($results->getItems()));
         }
         return $items;
+    }
+
+    /**
+     * Create the DOM document to parse
+     *
+     * @param string $uri URI
+     * @param string|null $source Source code
+     * @param array $httpOptions HTTP request options
+     * @return \DOMDocument DOM document
+     */
+    protected function createDom($uri, $source = null, array $httpOptions = [])
+    {
+        return (($source !== null) && strlen(trim($source))) ?
+            Dom::createFromString($source) : Dom::createFromUri($uri, $httpOptions);
     }
 }

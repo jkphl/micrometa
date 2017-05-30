@@ -53,6 +53,16 @@ use Jkphl\Micrometa\Ports\Item\Item;
 trait MicroformatsFeedTrait
 {
     /**
+     * Create and return an h-feed Microformats item
+     *
+     * @return Item h-feed item
+     */
+    protected function getFeedItem()
+    {
+        return new Item($this->getApplicationFeedItem());
+    }
+
+    /**
      * Create and return an h-feed Microformats applocation item
      *
      * @return ApplicationItem h-feed application item
@@ -80,22 +90,6 @@ trait MicroformatsFeedTrait
     }
 
     /**
-     * Return a property object
-     *
-     * @param string $name Name
-     * @param ValueInterface $value Value
-     * @return object Property object
-     */
-    protected function getPropertyObject($name, ValueInterface $value)
-    {
-        return (object)[
-            'profile' => MicroformatsFactory::MF2_PROFILE_URI,
-            'name' => $name,
-            'values' => [$value]
-        ];
-    }
-
-    /**
      * Return an author application item
      *
      * @return ApplicationItem Author application item
@@ -111,6 +105,22 @@ trait MicroformatsFeedTrait
                 $this->getPropertyObject('email', new StringValue('john@example.com')),
             ]
         );
+    }
+
+    /**
+     * Return a property object
+     *
+     * @param string $name Name
+     * @param ValueInterface $value Value
+     * @return object Property object
+     */
+    protected function getPropertyObject($name, ValueInterface $value)
+    {
+        return (object)[
+            'profile' => MicroformatsFactory::MF2_PROFILE_URI,
+            'name' => $name,
+            'values' => [$value]
+        ];
     }
 
     /**
@@ -130,15 +140,5 @@ trait MicroformatsFeedTrait
                 $this->getPropertyObject('author', $authorItem),
             ]
         );
-    }
-
-    /**
-     * Create and return an h-feed Microformats item
-     *
-     * @return Item h-feed item
-     */
-    protected function getFeedItem()
-    {
-        return new Item($this->getApplicationFeedItem());
     }
 }

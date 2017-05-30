@@ -95,16 +95,6 @@ class Item extends \Jkphl\Micrometa\Domain\Item\Item implements ItemInterface
     }
 
     /**
-     * Return the item value
-     *
-     * @return string Item value
-     */
-    public function getValue()
-    {
-        return $this->value;
-    }
-
-    /**
      * Export the object
      *
      * @return mixed
@@ -140,6 +130,16 @@ class Item extends \Jkphl\Micrometa\Domain\Item\Item implements ItemInterface
     public function getFormat()
     {
         return $this->format;
+    }
+
+    /**
+     * Return the item value
+     *
+     * @return string Item value
+     */
+    public function getValue()
+    {
+        return $this->value;
     }
 
     /**

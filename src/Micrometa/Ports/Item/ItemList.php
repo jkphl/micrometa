@@ -186,7 +186,7 @@ class ItemList implements ItemListInterface
     {
         return (object)[
             'items' => array_map(
-                function(ItemInterface $item) {
+                function (ItemInterface $item) {
                     return $item->toObject();
                 },
                 $this->items
@@ -230,7 +230,7 @@ class ItemList implements ItemListInterface
         if (count($types)) {
             return array_filter(
                 $this->items,
-                function(ItemInterface $item) use ($types) {
+                function (ItemInterface $item) use ($types) {
                     return $item->isOfType(...$types);
                 }
             );

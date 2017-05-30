@@ -48,6 +48,18 @@ use ML\JsonLD\RemoteDocument;
 class VocabularyCache
 {
     /**
+     * Document cache slot
+     *
+     * @var string
+     */
+    const SLOT_DOC = 'jsonld.doc';
+    /**
+     * Vocabulary cache slot
+     *
+     * @var string
+     */
+    const SLOT_VOCABS = 'jsonld.vocabs';
+    /**
      * Documents
      *
      * @var RemoteDocument[]
@@ -65,18 +77,6 @@ class VocabularyCache
      * @var array
      */
     protected $prefices = [];
-    /**
-     * Document cache slot
-     *
-     * @var string
-     */
-    const SLOT_DOC = 'jsonld.doc';
-    /**
-     * Vocabulary cache slot
-     *
-     * @var string
-     */
-    const SLOT_VOCABS = 'jsonld.vocabs';
 
     /**
      * Return a cached document
@@ -94,6 +94,18 @@ class VocabularyCache
         }
 
         return null;
+    }
+
+    /**
+     * Create a cache hash
+     *
+     * @param string $str String
+     * @param string $slot Slot
+     * @return string URL hash
+     */
+    protected function getCacheHash($str, $slot)
+    {
+        return $slot.'.'.md5($str);
     }
 
     /**
@@ -192,17 +204,6 @@ class VocabularyCache
     }
 
     /**
-     * Test whether this is a term definition
-     *
-     * @param string|\stdClass $definition Definition
-     * @return bool Is a term definition
-     */
-    protected function isTerm($definition)
-    {
-        return is_object($definition) && isset($definition->{'@id'});
-    }
-
-    /**
      * Process a vocabulary prefix
      *
      * @param string $name Prefix name
@@ -218,6 +219,17 @@ class VocabularyCache
         if (!isset($vocabularies[$definition])) {
             $vocabularies[$definition] = [];
         }
+    }
+
+    /**
+     * Test whether this is a term definition
+     *
+     * @param string|\stdClass $definition Definition
+     * @return bool Is a term definition
+     */
+    protected function isTerm($definition)
+    {
+        return is_object($definition) && isset($definition->{'@id'});
     }
 
     /**
@@ -276,17 +288,5 @@ class VocabularyCache
                 return;
             }
         }
-    }
-
-    /**
-     * Create a cache hash
-     *
-     * @param string $str String
-     * @param string $slot Slot
-     * @return string URL hash
-     */
-    protected function getCacheHash($str, $slot)
-    {
-        return $slot.'.'.md5($str);
     }
 }

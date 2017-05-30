@@ -60,18 +60,6 @@ use Psr\Log\LoggerInterface;
 class JsonLD extends AbstractParser
 {
     /**
-     * Vocabulary cache
-     *
-     * @var VocabularyCache
-     */
-    protected $vocabularyCache;
-    /**
-     * Context loader
-     *
-     * @var CachingContextLoader
-     */
-    protected $contextLoader;
-    /**
      * Format
      *
      * @var int
@@ -83,6 +71,18 @@ class JsonLD extends AbstractParser
      * @var string
      */
     const JSON_COMMENT_PATTERN = '#(/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+/)|([\s\t]//.*)|(^//.*)#';
+    /**
+     * Vocabulary cache
+     *
+     * @var VocabularyCache
+     */
+    protected $vocabularyCache;
+    /**
+     * Context loader
+     *
+     * @var CachingContextLoader
+     */
+    protected $contextLoader;
 
     /**
      * JSON-LD parser constructor
@@ -170,33 +170,6 @@ class JsonLD extends AbstractParser
         }
 
         return $item;
-    }
-
-    /**
-     * Parse a JSON-LD fragment
-     *
-     * @param NodeInterface|LanguageTaggedString|TypedValue|array $jsonLD JSON-LD fragment
-     * @return \stdClass|string|array Parsed fragment
-     */
-    protected function parse($jsonLD)
-    {
-        // If it's a node object
-        if ($jsonLD instanceof NodeInterface) {
-            return $this->parseNode($jsonLD);
-
-            // Else if it's a language tagged string
-        } elseif ($jsonLD instanceof LanguageTaggedString) {
-            return $this->parseLanguageTaggedString($jsonLD);
-
-            // Else if it's a typed value
-        } elseif ($jsonLD instanceof TypedValue) {
-            return $this->parseTypedValue($jsonLD);
-        }
-
-        // Else if it's a list of items
-        //elseif (is_array($jsonLD)) {
-        return array_map([$this, 'parse'], $jsonLD);
-//      }
     }
 
     /**
@@ -306,6 +279,33 @@ class JsonLD extends AbstractParser
         } elseif (!empty($value->id)) {
             $properties[$name]->values[] = $value->id;
         }
+    }
+
+    /**
+     * Parse a JSON-LD fragment
+     *
+     * @param NodeInterface|LanguageTaggedString|TypedValue|array $jsonLD JSON-LD fragment
+     * @return \stdClass|string|array Parsed fragment
+     */
+    protected function parse($jsonLD)
+    {
+        // If it's a node object
+        if ($jsonLD instanceof NodeInterface) {
+            return $this->parseNode($jsonLD);
+
+            // Else if it's a language tagged string
+        } elseif ($jsonLD instanceof LanguageTaggedString) {
+            return $this->parseLanguageTaggedString($jsonLD);
+
+            // Else if it's a typed value
+        } elseif ($jsonLD instanceof TypedValue) {
+            return $this->parseTypedValue($jsonLD);
+        }
+
+        // Else if it's a list of items
+        //elseif (is_array($jsonLD)) {
+        return array_map([$this, 'parse'], $jsonLD);
+//      }
     }
 
     /**

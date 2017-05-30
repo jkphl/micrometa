@@ -77,6 +77,20 @@ class ItemObjectModel extends ItemList implements ItemObjectModelInterface
     }
 
     /**
+     * One-time caching of LinkType items
+     */
+    protected function cacheLinkTypeItems()
+    {
+        $links = [];
+        foreach ($this->items as $item) {
+            if ($item->getFormat() == LinkType::FORMAT) {
+                $links[] = $item;
+            }
+        }
+        $this->links = new ItemList($links);
+    }
+
+    /**
      * Return a particular link item by index
      *
      * @param ItemInterface[] $links Link items
@@ -96,19 +110,5 @@ class ItemObjectModel extends ItemList implements ItemObjectModelInterface
         }
 
         return $links[$index];
-    }
-
-    /**
-     * One-time caching of LinkType items
-     */
-    protected function cacheLinkTypeItems()
-    {
-        $links = [];
-        foreach ($this->items as $item) {
-            if ($item->getFormat() == LinkType::FORMAT) {
-                $links[] = $item;
-            }
-        }
-        $this->links = new ItemList($links);
     }
 }

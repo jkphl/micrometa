@@ -98,17 +98,6 @@ class Iri
     }
 
     /**
-     * Check the existence of a property
-     *
-     * @param string $name Property name
-     * @return bool Property exists
-     */
-    public function __isset($name)
-    {
-        return ($name == 'profile') || ($name == 'name');
-    }
-
-    /**
      * Property setter
      *
      * @param string $name Property name
@@ -118,6 +107,17 @@ class Iri
     public function __set($name, $value)
     {
         throw new ErrorException(ErrorException::IMMUTABLE_IRI_STR, ErrorException::IMMUTABLE_IRI);
+    }
+
+    /**
+     * Check the existence of a property
+     *
+     * @param string $name Property name
+     * @return bool Property exists
+     */
+    public function __isset($name)
+    {
+        return ($name == 'profile') || ($name == 'name');
     }
 
     /**

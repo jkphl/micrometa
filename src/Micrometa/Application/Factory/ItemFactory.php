@@ -98,31 +98,6 @@ class ItemFactory
     }
 
     /**
-     * Process a language tagged property value
-     *
-     * @param string|\stdClass $propertyValue Property value
-     * @return array Language and property value
-     * @throws RuntimeException If this is an invalid language tagged value
-     */
-    protected function processLanguageTaggedPropertyValue($propertyValue)
-    {
-        $language = null;
-        if (is_object($propertyValue)) {
-            // If this is an invalid language tagged object
-            if (!isset($propertyValue->lang) || !isset($propertyValue->value)) {
-                throw new RuntimeException(
-                    RuntimeException::INVALID_LANGUAGE_TAGGED_VALUE_STR,
-                    RuntimeException::INVALID_LANGUAGE_TAGGED_VALUE
-                );
-            }
-
-            $language = $propertyValue->lang;
-            $propertyValue = $propertyValue->value;
-        }
-        return [$propertyValue, $language];
-    }
-
-    /**
      * Create an item instance
      *
      * The item object is expected to be layed out like this:
@@ -209,7 +184,6 @@ class ItemFactory
         return $properties;
     }
 
-
     /**
      * Process a property
      *
@@ -259,5 +233,30 @@ class ItemFactory
         }
 
         return array_map([$this, 'processPropertyValue'], $propertyValues);
+    }
+
+    /**
+     * Process a language tagged property value
+     *
+     * @param string|\stdClass $propertyValue Property value
+     * @return array Language and property value
+     * @throws RuntimeException If this is an invalid language tagged value
+     */
+    protected function processLanguageTaggedPropertyValue($propertyValue)
+    {
+        $language = null;
+        if (is_object($propertyValue)) {
+            // If this is an invalid language tagged object
+            if (!isset($propertyValue->lang) || !isset($propertyValue->value)) {
+                throw new RuntimeException(
+                    RuntimeException::INVALID_LANGUAGE_TAGGED_VALUE_STR,
+                    RuntimeException::INVALID_LANGUAGE_TAGGED_VALUE
+                );
+            }
+
+            $language = $propertyValue->lang;
+            $propertyValue = $propertyValue->value;
+        }
+        return [$propertyValue, $language];
     }
 }

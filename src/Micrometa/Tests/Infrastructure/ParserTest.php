@@ -78,6 +78,7 @@ class ParserTest extends AbstractTestBase
             $this->assertEquals($language, $propertyValues[$index]->getLanguage());
         }
     }
+
     /**
      * Test the JSON-LD parser with multiple documents and file cache
      */
