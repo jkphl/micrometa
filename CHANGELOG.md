@@ -4,6 +4,12 @@ All Notable changes to *jkphl/micrometa* will be documented in this file.
 
 Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [2.0.2] - Bugfix release (unreleased)
+
+### Fixed
+
+* Fixed problem with multi-valued JSON-LD properties
+
 ## [2.0.1] - Maintenance release 2017-06-14
 
 ### Changed

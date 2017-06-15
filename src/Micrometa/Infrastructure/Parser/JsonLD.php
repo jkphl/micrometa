@@ -118,6 +118,7 @@ class JsonLD extends AbstractParser
             $jsonLDDocSource = preg_replace(self::JSON_COMMENT_PATTERN, '', $jsonLDDoc->textContent);
             $i = $this->parseDocument($jsonLDDocSource);
             $items = array_merge($items, $i);
+            break;
         }
 
         return new ParsingResult(self::FORMAT, $items);
@@ -255,7 +256,9 @@ class JsonLD extends AbstractParser
 
             // Else: If this is a value list
         } elseif (is_array($value)) {
-            $properties[$name]->values = array_merge($properties[$name]->values, $value);
+            foreach ($value as $listValue) {
+                $this->processNodeProperty($name, $listValue, $properties);
+            }
 
             // Else: If the value is not empty
         } elseif ($value) {
