@@ -118,7 +118,6 @@ class JsonLD extends AbstractParser
             $jsonLDDocSource = preg_replace(self::JSON_COMMENT_PATTERN, '', $jsonLDDoc->textContent);
             $i = $this->parseDocument($jsonLDDocSource);
             $items = array_merge($items, $i);
-            break;
         }
 
         return new ParsingResult(self::FORMAT, $items);
