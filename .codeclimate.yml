@@ -1,0 +1,21 @@
+engines:
+  fixme:
+    enabled: true
+  phpmd:
+    enabled: true
+    config:
+      file_extensions: "php"
+      rulesets: "controversial,naming,unusedcode,phpmd.xml"
+    checks:
+      CleanCode/StaticAccess:
+        enabled: false
+  phpcodesniffer:
+    enabled: true
+    config:
+      file_extensions: "php"
+      standard: "PSR1,PSR2"
+ratings:
+  paths:
+  - "**.php"
+exclude_paths:
+- .git/**/*

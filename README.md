@@ -2,7 +2,7 @@
 
 [![Build Status][travis-image]][travis-url] [![Coverage Status][coveralls-image]][coveralls-url] [![Scrutinizer Code Quality][scrutinizer-image]][scrutinizer-url] [![Code Climate][codeclimate-image]][codeclimate-url] [![Documentation Status][readthedocs-image]][readthedocs-url] [![Clear architecture][clear-architecture-image]][clear-architecture-url]
 
-> A meta parser for extracting micro information out of web documents, currently supporting Microformats 1+2, HTML Microdata, RDFa Lite 1.1 and JSON-LD
+> A meta parser for extracting micro information out of web documents, currently supporting Microformats 1+2, HTML Microdata, RDFa Lite 1.1, JSON-LD and Link Types
 
 ## Documentation
 
@@ -10,7 +10,13 @@ Please find the [project documentation](doc/index.md) in the `doc` directory. We
 
 ## Installation
 
-This library requires PHP >=5.5 or later. I recommend using the latest available version of PHP as a matter of principle. It has no userland dependencies.
+This library requires PHP >=5.6 or later. I recommend using the latest available version of PHP as a matter of principle. It has no userland dependencies. It's installable and autoloadable via [Composer](https://getcomposer.org/) as [jkphl/micrometa](https://packagist.org/packages/jkphl/micrometa).
+        
+```bash
+composer require jkphl/micrometa
+```
+
+Alternatively, [download a release](https://github.com/jkphl/micrometa/releases) or clone this repository, then require or include its [`autoload.php`](autoload.php) file.
 
 ## Dependencies
 
@@ -46,9 +52,9 @@ Copyright © 2017 [Joschi Kuphal][author-url] / joschi@tollwerk.de. Licensed und
 [coveralls-url]: https://coveralls.io/github/jkphl/micrometa?branch=master
 [scrutinizer-image]: https://scrutinizer-ci.com/g/jkphl/micrometa/badges/quality-score.png?b=master
 [scrutinizer-url]: https://scrutinizer-ci.com/g/jkphl/micrometa/?branch=master
-[codeclimate-image]: https://scrutinizer-ci.com/g/jkphl/micrometa/badges/quality-score.png?b=master
-[codeclimate-url]: https://scrutinizer-ci.com/g/jkphl/micrometa/?branch=master
-[readthedocs-image]: https://readthedocs.org/projects/jkphl-micrometa/badge/?version=latest
+[codeclimate-image]: https://lima.codeclimate.com/github/jkphl/micrometa/badges/gpa.svg
+[codeclimate-url]: https://lima.codeclimate.com/github/jkphl/micrometa
+[readthedocs-image]: http://readthedocs.org/projects/jkphl-micrometa/badge/?version=latest
 [readthedocs-url]: http://jkphl-micrometa.readthedocs.io/en/latest/?badge=latest
 [clear-architecture-image]: https://img.shields.io/badge/Clear%20Architecture-%E2%9C%94-brightgreen.svg
 [clear-architecture-url]: https://github.com/jkphl/clear-architecture
