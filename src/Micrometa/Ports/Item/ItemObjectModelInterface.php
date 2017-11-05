@@ -53,4 +53,11 @@ interface ItemObjectModelInterface extends ItemListInterface
      * @api
      */
     public function link($type = null, $index = null);
+
+    /**
+     * Return the original DOM document
+     *
+     * @return \DOMDocument DOM document
+     */
+    public function getDom();
 }

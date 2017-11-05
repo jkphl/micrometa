@@ -4,21 +4,21 @@ All Notable changes to *jkphl/micrometa* will be documented in this file.
 
 Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## [2.0.2] - Bugfix release (unreleased)
+## [2.1.0] - Feature release 2017-11-05
 
-### Fixed
+## Added
 
-* Fixed problem with multi-valued JSON-LD properties
+* Accessor for the internal DOM document
 
 ## [2.0.1] - Maintenance release 2017-06-14
 
-### Changed
+## Fixed
 
 * Updated faulty dom-document dependency
 
-## [2.0.0] - Next generation release 2017-05-30
+## [2.0.0] - Next generation release 2017-05-29
 
-### Changed
+## Changed
 
 * Complete rewrite using the [Clear Architecture](https://github.com/jkphl/clear-architecture)
 * Improved JSON-LD parsing (#10)

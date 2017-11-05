@@ -48,11 +48,29 @@ use Jkphl\Micrometa\Ports\Exceptions\OutOfBoundsException;
 class ItemObjectModel extends ItemList implements ItemObjectModelInterface
 {
     /**
+     * DOM document
+     *
+     * @var \DOMDocument
+     */
+    protected $dom;
+    /**
      * LinkType item cache
      *
      * @var ItemListInterface
      */
     protected $links = null;
+
+    /**
+     * Constructor
+     *
+     * @param \DOMDocument $dom DOM document
+     * @param array $items Items
+     */
+    public function __construct(\DOMDocument $dom, $items = [])
+    {
+        $this->dom = $dom;
+        parent::__construct($items);
+    }
 
     /**
      * Return all link declarations of a particular type
@@ -110,5 +128,15 @@ class ItemObjectModel extends ItemList implements ItemObjectModelInterface
         }
 
         return $links[$index];
+    }
+
+    /**
+     * Return the original DOM document
+     *
+     * @return \DOMDocument DOM document
+     */
+    public function getDom()
+    {
+        return $this->dom;
     }
 }

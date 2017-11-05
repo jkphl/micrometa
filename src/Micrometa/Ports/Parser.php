@@ -93,6 +93,7 @@ class Parser
      */
     public function __invoke($uri, $source = null, $formats = null, array $httpOptions = [])
     {
+        $dom = new \DOMDocument();
         $items = [];
 
         try {
@@ -101,14 +102,15 @@ class Parser
                 Http::createFromString($uri),
                 $this->logger
             );
-            $items = $this->extractItems($this->createDom($uri, $source, $httpOptions), $parsers);
+            $dom = $this->createDom($uri, $source, $httpOptions);
+            $items = $this->extractItems($dom, $parsers);
 
             // In case of exceptions: Log if possible
         } catch (\Exception $exception) {
             $this->logger->critical($exception->getMessage(), ['exception' => $exception]);
         }
 
-        return new ItemObjectModel($items);
+        return new ItemObjectModel($dom, $items);
     }
 
     /**
