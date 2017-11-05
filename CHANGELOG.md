@@ -10,6 +10,12 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 * Accessor for the internal DOM document
 
+## [2.0.1] - Maintenance release 2017-06-14
+
+## Fixed
+
+* Updated faulty dom-document dependency
+
 ## [2.0.0] - Next generation release 2017-05-29
 
 ## Changed
