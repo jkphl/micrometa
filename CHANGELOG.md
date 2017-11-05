@@ -6,19 +6,19 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## [2.1.0] - Feature release 2017-11-05
 
-## Added
+### Added
 
 * Accessor for the internal DOM document
 
-## [2.0.1] - Maintenance release 2017-06-14
+### [2.0.1] - Maintenance release 2017-06-14
 
-## Fixed
+### Fixed
 
 * Updated faulty dom-document dependency
 
 ## [2.0.0] - Next generation release 2017-05-29
 
-## Changed
+### Changed
 
 * Complete rewrite using the [Clear Architecture](https://github.com/jkphl/clear-architecture)
 * Improved JSON-LD parsing (#10)
