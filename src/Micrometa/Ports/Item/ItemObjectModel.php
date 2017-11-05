@@ -48,11 +48,29 @@ use Jkphl\Micrometa\Ports\Exceptions\OutOfBoundsException;
 class ItemObjectModel extends ItemList implements ItemObjectModelInterface
 {
     /**
+     * DOM document
+     *
+     * @var \DOMDocument
+     */
+    protected $dom;
+    /**
      * LinkType item cache
      *
      * @var ItemListInterface
      */
     protected $links = null;
+
+    /**
+     * Constructor
+     *
+     * @param \DOMDocument $dom DOM document
+     * @param array $items Items
+     */
+    public function __construct(\DOMDocument $dom, $items = [])
+    {
+        $this->dom = $dom;
+        parent::__construct($items);
+    }
 
     /**
      * Return all link declarations of a particular type
@@ -74,6 +92,20 @@ class ItemObjectModel extends ItemList implements ItemObjectModelInterface
 
         // Return link item(s)
         return ($index === null) ? new ItemList($links) : $this->getLinkIndex($links, $type, $index);
+    }
+
+    /**
+     * One-time caching of LinkType items
+     */
+    protected function cacheLinkTypeItems()
+    {
+        $links = [];
+        foreach ($this->items as $item) {
+            if ($item->getFormat() == LinkType::FORMAT) {
+                $links[] = $item;
+            }
+        }
+        $this->links = new ItemList($links);
     }
 
     /**
@@ -99,16 +131,12 @@ class ItemObjectModel extends ItemList implements ItemObjectModelInterface
     }
 
     /**
-     * One-time caching of LinkType items
+     * Return the original DOM document
+     *
+     * @return \DOMDocument DOM document
      */
-    protected function cacheLinkTypeItems()
+    public function getDom()
     {
-        $links = [];
-        foreach ($this->items as $item) {
-            if ($item->getFormat() == LinkType::FORMAT) {
-                $links[] = $item;
-            }
-        }
-        $this->links = new ItemList($links);
+        return $this->dom;
     }
 }

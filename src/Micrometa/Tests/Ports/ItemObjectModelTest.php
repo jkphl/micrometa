@@ -70,8 +70,15 @@ class ItemObjectModelTest extends AbstractTestBase
      */
     public function testItemObjectModel()
     {
-        $itemObjectModel = new ItemObjectModel($this->getItems());
+        $xml = '<html/>';
+        $dom = new \DOMDocument();
+        $dom->loadXML($xml);
+        $itemObjectModel = new ItemObjectModel($dom, $this->getItems());
         $this->assertInstanceOf(ItemObjectModel::class, $itemObjectModel);
+
+        $itemObjectModelDom = $itemObjectModel->getDom();
+        $this->assertInstanceOf(\DOMDocument::class, $itemObjectModelDom);
+        $this->assertEquals($xml, $itemObjectModelDom->saveXML($itemObjectModelDom->documentElement));
 
         // Test all LinkType items
         $links = $itemObjectModel->link();
