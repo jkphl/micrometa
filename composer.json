@@ -29,7 +29,7 @@
         "php": ">=5.5",
         "jkphl/dom-factory": "^0.1.2",
         "jkphl/rdfa-lite-microdata": "^0.4.3",
-        "league/uri": "4.2.3",
+        "league/uri": "^5.1",
         "mf2/mf2": "^0.3.1",
         "ml/json-ld": "^1.0",
         "monolog/monolog": "^1.22",
