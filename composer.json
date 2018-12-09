@@ -37,7 +37,7 @@
         "monolog/monolog": "^1.22",
         "psr/cache": "^1.0",
         "psr/log": "^1.0",
-        "symfony/cache": "^3.2"
+        "symfony/cache": "^3.2 || ^4.2"
     },
     "autoload": {
         "psr-4": {
