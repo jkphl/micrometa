@@ -88,7 +88,7 @@ class ParserTest extends AbstractTestBase
         $parser = new JsonLD($uri, new ExceptionLogger(0));
         $items = $parser->parseDom($dom)->getItems();
         $this->assertTrue(is_array($items));
-        $this->assertEquals(4, count($items));
+        $this->assertEquals(5, count($items));
         $this->assertInstanceOf(Item::class, $items[0]);
         $this->assertEquals(JsonLD::FORMAT, $items[0]->getFormat());
         $this->assertEquals('https://jsonld-examples.com/#header_website', $items[0]->getId());
