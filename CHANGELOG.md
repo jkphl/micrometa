@@ -4,6 +4,12 @@ All Notable changes to *jkphl/micrometa* will be documented in this file.
 
 Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+### [2.1.1] - Bugfix release 2018-12-15
+
+### Fixed
+
+* Add support for multiple JSON-LD documents ([#25](https://github.com/jkphl/micrometa/pull/25), [#28](https://github.com/jkphl/micrometa/issues/28))
+
 ## [2.1.0] - Feature release 2017-11-05
 
 ### Added
