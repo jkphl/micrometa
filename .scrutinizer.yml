@@ -9,7 +9,11 @@ tools:
     php_analyzer: true
     php_cpd: true
     php_cs_fixer:
-      config: { level: psr2 }
+        config: { level: psr2 }
     php_code_sniffer:
-      config:
-        standard: "PSR2"
+        config:
+            standard: "PSR2"
+checks:
+    php:
+        excluded_dependencies:
+            - phpunit/phpunit
