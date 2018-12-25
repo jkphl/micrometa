@@ -3,18 +3,18 @@
 /**
  * micrometa
  *
- * @category Jkphl
- * @package Jkphl\Micrometa
+ * @category   Jkphl
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Infrastructure
- * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @license http://opensource.org/licenses/MIT The MIT License (MIT)
+ * @author     Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ *  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -44,7 +44,7 @@ use Jkphl\Micrometa\Ports\Item\ItemList;
 /**
  * Profiled name factory
  *
- * @package Jkphl\Micrometa
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Infrastructure
  */
 class ProfiledNamesFactory
@@ -78,6 +78,7 @@ class ProfiledNamesFactory
      *      createFromArguments(array($name1, $profile1), $name2, $name3 ...)
      *
      * @param array $args Arguments
+     *
      * @return ProfiledNamesList Profiled names
      * @see Item::isOfType()
      * @see Item::getFirstProperty()
@@ -87,7 +88,7 @@ class ProfiledNamesFactory
     public static function createFromArguments(array $args)
     {
         $profiledNames = [];
-        $profile = false;
+        $profile       = false;
 
         // Consume and register all given names and profiles
         while (count($args)) {
@@ -100,13 +101,14 @@ class ProfiledNamesFactory
     /**
      * Create a single profiled name by argument consumption
      *
-     * @param array $args Arguments
+     * @param array $args                  Arguments
      * @param string|boolean|null $profile Profile
+     *
      * @return \stdClass Profiled name
      */
     protected static function consumeProfiledName(&$args, &$profile)
     {
-        $profiledName = new \stdClass();
+        $profiledName          = new \stdClass();
         $profiledName->profile = $profile;
 
         // Get the first argument
@@ -120,14 +122,16 @@ class ProfiledNamesFactory
         if (($profile === false) && is_string(current($args))) {
             $profile = array_shift($args);
         }
+
         return self::createProfiledNameFromString(strval($arg), $profile);
     }
 
     /**
      * Create a profiled name by consuming a non-scalar argument
      *
-     * @param \stdClass|array $arg Argument
+     * @param \stdClass|array $arg         Argument
      * @param string|boolean|null $profile Profile
+     *
      * @return \stdClass Profiled name
      */
     protected static function consumeNonScalarProfiledName($arg, &$profile)
@@ -144,8 +148,9 @@ class ProfiledNamesFactory
     /**
      * Create a profiled name from an object argument
      *
-     * @param \stdClass $arg Object argument
+     * @param \stdClass $arg               Object argument
      * @param string|boolean|null $profile Profile
+     *
      * @return \stdClass Profiled name
      * @throws InvalidArgumentException If the name is missing
      */
@@ -169,8 +174,9 @@ class ProfiledNamesFactory
     /**
      * Create a profiled name from string arguments
      *
-     * @param string $name Name
+     * @param string $name                 Name
      * @param string|boolean|null $profile Profile
+     *
      * @return \stdClass Profiled name
      * @throws InvalidArgumentException If the name is invalid
      */
@@ -185,7 +191,7 @@ class ProfiledNamesFactory
         }
 
         return (object)[
-            'name' => trim($name),
+            'name'    => trim($name),
             'profile' => trim($profile) ?: null,
         ];
     }
@@ -193,8 +199,9 @@ class ProfiledNamesFactory
     /**
      * Create a profiled name from an array argument
      *
-     * @param array $arg Array argument
+     * @param array $arg                   Array argument
      * @param string|boolean|null $profile Profile
+     *
      * @return \stdClass Profiled name
      * @throws InvalidArgumentException If the array definition is invalid
      */
@@ -207,8 +214,9 @@ class ProfiledNamesFactory
 
         // If the argument has two items at least
         if (count($arg) > 1) {
-            $name = array_shift($arg);
+            $name    = array_shift($arg);
             $profile = trim(array_shift($arg)) ?: null;
+
             return self::createProfiledNameFromString($name, $profile);
         }
 

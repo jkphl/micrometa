@@ -3,18 +3,18 @@
 /**
  * micrometa
  *
- * @category Jkphl
- * @package Jkphl\Micrometa
+ * @category   Jkphl
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Domain\Item
- * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @license http://opensource.org/licenses/MIT The MIT License (MIT)
+ * @author     Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ *  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -43,7 +43,7 @@ use Jkphl\Micrometa\Domain\Factory\IriFactory;
 /**
  * Property list
  *
- * @package Jkphl\Micrometa
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\RdfaLiteMicrodata\Domain
  */
 class PropertyList implements PropertyListInterface
@@ -77,6 +77,7 @@ class PropertyList implements PropertyListInterface
      * Unset a property
      *
      * @param \stdClass|string $iri IRI
+     *
      * @throws ErrorException
      */
     public function offsetUnset($iri)
@@ -151,12 +152,13 @@ class PropertyList implements PropertyListInterface
      */
     public function add($property)
     {
-        $iri = IriFactory::create($property);
+        $iri    = IriFactory::create($property);
         $values = (is_object($property) && isset($property->values)) ? (array)$property->values : [];
 
         // Create the property values list if necessary
         if (!$this->offsetExists($iri)) {
             $this->offsetSet($iri, $values);
+
             return;
         }
 
@@ -168,6 +170,7 @@ class PropertyList implements PropertyListInterface
      * Return whether a property exists
      *
      * @param \stdClass|Iri|string $iri IRI
+     *
      * @return boolean Property exists
      */
     public function offsetExists($iri)
@@ -176,6 +179,7 @@ class PropertyList implements PropertyListInterface
         try {
             ($iri->profile !== '') ?
                 $this->getProfiledPropertyCursor($iri) : $this->getPropertyCursor($iri->name);
+
             return true;
         } catch (OutOfBoundsException $exception) {
             return false;
@@ -186,6 +190,7 @@ class PropertyList implements PropertyListInterface
      * Get a particular property cursor by its profiled name
      *
      * @param Iri $iri IRI
+     *
      * @return int Property cursor
      * @throws OutOfBoundsException If the property name is unknown
      */
@@ -205,6 +210,7 @@ class PropertyList implements PropertyListInterface
      * Handle an unknown property name
      *
      * @param string $name Property name
+     *
      * @throws OutOfBoundsException If the property name is unknown
      */
     protected function handleUnknownName($name)
@@ -219,6 +225,7 @@ class PropertyList implements PropertyListInterface
      * Get a particular property cursor by its name
      *
      * @param string $name Property name
+     *
      * @return int Property cursor
      */
     protected function getPropertyCursor($name)
@@ -237,15 +244,15 @@ class PropertyList implements PropertyListInterface
      * Set a particular property
      *
      * @param \stdClass|Iri|string $iri IRI
-     * @param array $value Property values
+     * @param array $value              Property values
      */
     public function offsetSet($iri, $value)
     {
-        $iri = IriFactory::create($iri);
-        $iriStr = strval($iri);
-        $cursor = array_key_exists($iriStr, $this->nameToCursor) ?
+        $iri                   = IriFactory::create($iri);
+        $iriStr                = strval($iri);
+        $cursor                = array_key_exists($iriStr, $this->nameToCursor) ?
             $this->nameToCursor[$iriStr] : ($this->nameToCursor[$iriStr] = count($this->nameToCursor));
-        $this->names[$cursor] = $iri;
+        $this->names[$cursor]  = $iri;
         $this->values[$cursor] = $value;
     }
 
@@ -253,14 +260,16 @@ class PropertyList implements PropertyListInterface
      * Get a particular property
      *
      * @param \stdClass|Iri|string $iri IRI
+     *
      * @return array Property values
      * @throws OutOfBoundsException If the property name is unknown
      */
     public function &offsetGet($iri)
     {
-        $iri = IriFactory::create($iri);
+        $iri    = IriFactory::create($iri);
         $cursor = ($iri->profile !== '') ?
             $this->getProfiledPropertyCursor($iri) : $this->getPropertyCursor($iri->name);
+
         return $this->values[$cursor];
     }
 }

@@ -3,18 +3,18 @@
 /**
  * micrometa
  *
- * @category Jkphl
- * @package Jkphl\Micrometa
+ * @category   Jkphl
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Application\Item
- * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @license http://opensource.org/licenses/MIT The MIT License (MIT)
+ * @author     Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ *  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -41,7 +41,7 @@ use Jkphl\Micrometa\Application\Factory\PropertyListFactoryInterface;
 /**
  * Item
  *
- * @package Jkphl\Micrometa
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Application
  * @method PropertyListInterface getProperties() Item properties list
  */
@@ -69,14 +69,14 @@ class Item extends \Jkphl\Micrometa\Domain\Item\Item implements ItemInterface
     /**
      * Item constructor
      *
-     * @param int $format Parser format
+     * @param int $format                                       Parser format
      * @param PropertyListFactoryInterface $propertyListFactory Property list factory
-     * @param string|\stdClass|\stdClass[] $type Item type(s)
-     * @param \stdClass[] $properties Item properties
-     * @param ItemInterface[] $children Nested items
-     * @param string|null $itemId Item id
-     * @param string|null $itemLanguage Item language
-     * @param string|null $value Item value
+     * @param string|\stdClass|\stdClass[] $type                Item type(s)
+     * @param \stdClass[] $properties                           Item properties
+     * @param ItemInterface[] $children                         Nested items
+     * @param string|null $itemId                               Item id
+     * @param string|null $itemLanguage                         Item language
+     * @param string|null $value                                Item value
      */
     public function __construct(
         $format,
@@ -91,7 +91,7 @@ class Item extends \Jkphl\Micrometa\Domain\Item\Item implements ItemInterface
         $this->format = $format;
         parent::__construct($type, $properties, $itemId, $itemLanguage, $propertyListFactory);
         $this->children = $children;
-        $this->value = $value;
+        $this->value    = $value;
     }
 
     /**
@@ -102,18 +102,18 @@ class Item extends \Jkphl\Micrometa\Domain\Item\Item implements ItemInterface
     public function export()
     {
         return (object)[
-            'format' => $this->getFormat(),
-            'id' => $this->getId(),
-            'language' => $this->getLanguage(),
-            'value' => $this->getValue(),
-            'types' => array_map(
+            'format'     => $this->getFormat(),
+            'id'         => $this->getId(),
+            'language'   => $this->getLanguage(),
+            'value'      => $this->getValue(),
+            'types'      => array_map(
                 function ($type) {
                     return $type->profile.$type->name;
                 },
                 $this->getType()
             ),
             'properties' => $this->getProperties()->export(),
-            'items' => array_map(
+            'items'      => array_map(
                 function (ItemInterface $item) {
                     return $item->export();
                 },

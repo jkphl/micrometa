@@ -3,18 +3,18 @@
 /**
  * micrometa
  *
- * @category Jkphl
- * @package Jkphl\Micrometa
+ * @category   Jkphl
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Domain\Item
- * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @license http://opensource.org/licenses/MIT The MIT License (MIT)
+ * @author     Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ *  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -39,7 +39,7 @@ namespace Jkphl\Micrometa\Domain\Item;
 /**
  * Property list interface
  *
- * @package Jkphl\Micrometa
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Domain
  */
 interface PropertyListInterface extends \ArrayAccess, \Iterator, \Countable
@@ -48,6 +48,7 @@ interface PropertyListInterface extends \ArrayAccess, \Iterator, \Countable
      * Return whether a property exists
      *
      * @param \stdClass|string $iri IRI
+     *
      * @return boolean Property exists
      */
     public function offsetExists($iri);
@@ -56,6 +57,7 @@ interface PropertyListInterface extends \ArrayAccess, \Iterator, \Countable
      * Get a particular property
      *
      * @param \stdClass|string $iri IRI
+     *
      * @return array Property values
      */
     public function &offsetGet($iri);
@@ -64,7 +66,7 @@ interface PropertyListInterface extends \ArrayAccess, \Iterator, \Countable
      * Set a particular property
      *
      * @param \stdClass|string $iri IRI
-     * @param array $value Property values
+     * @param array $value          Property values
      */
     public function offsetSet($iri, $value);
 

@@ -3,18 +3,18 @@
 /**
  * micrometa
  *
- * @category Jkphl
- * @package Jkphl\Micrometa
+ * @category   Jkphl
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Infrastructure\Parser
- * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @license http://opensource.org/licenses/MIT The MIT License (MIT)
+ * @author     Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ *  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -43,7 +43,7 @@ use Psr\Log\LoggerInterface;
 /**
  * Abstract parser base class
  *
- * @package Jkphl\Micrometa
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Infrastructure
  */
 abstract class AbstractParser implements ParserInterface
@@ -76,12 +76,12 @@ abstract class AbstractParser implements ParserInterface
     /**
      * Parser constructor
      *
-     * @param UriInterface $uri Base URI
+     * @param UriInterface $uri       Base URI
      * @param LoggerInterface $logger Logger
      */
     public function __construct(UriInterface $uri, LoggerInterface $logger)
     {
-        $this->uri = $uri;
+        $this->uri    = $uri;
         $this->logger = $logger;
     }
 

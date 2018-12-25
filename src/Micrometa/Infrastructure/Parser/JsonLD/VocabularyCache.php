@@ -3,18 +3,18 @@
 /**
  * micrometa
  *
- * @category Jkphl
- * @package Jkphl\Rdfalite
+ * @category   Jkphl
+ * @package    Jkphl\Rdfalite
  * @subpackage Jkphl\Micrometa\Infrastructure
- * @author Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @copyright Copyright © 2017 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @license http://opensource.org/licenses/MIT The MIT License (MIT)
+ * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @copyright  Copyright © 2018 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ *  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -42,7 +42,7 @@ use ML\JsonLD\RemoteDocument;
 /**
  * Vocabulary cache
  *
- * @package Jkphl\Rdfalite
+ * @package    Jkphl\Rdfalite
  * @subpackage Jkphl\Micrometa\Infrastructure
  */
 class VocabularyCache
@@ -82,6 +82,7 @@ class VocabularyCache
      * Return a cached document
      *
      * @param string $url URL
+     *
      * @return RemoteDocument|null Cached document
      */
     public function getDocument($url)
@@ -99,8 +100,9 @@ class VocabularyCache
     /**
      * Create a cache hash
      *
-     * @param string $str String
+     * @param string $str  String
      * @param string $slot Slot
+     *
      * @return string URL hash
      */
     protected function getCacheHash($str, $slot)
@@ -111,8 +113,9 @@ class VocabularyCache
     /**
      * Cache a document
      *
-     * @param string $url URL
+     * @param string $url              URL
      * @param RemoteDocument $document Document
+     *
      * @return RemoteDocument Document
      */
     public function setDocument($url, RemoteDocument $document)
@@ -123,7 +126,7 @@ class VocabularyCache
         }
 
         // Save the document to the cache
-        $docUrlHash = $this->getCacheHash($url, self::SLOT_DOC);
+        $docUrlHash     = $this->getCacheHash($url, self::SLOT_DOC);
         $cachedDocument = Cache::getAdapter()->getItem($docUrlHash);
         $cachedDocument->set($document);
         Cache::getAdapter()->save($cachedDocument);
@@ -139,9 +142,9 @@ class VocabularyCache
      */
     protected function processContext(array $context)
     {
-        $prefices = [];
+        $prefices        = [];
         $vocabularyCache = Cache::getAdapter()->getItem(self::SLOT_VOCABS);
-        $vocabularies = $vocabularyCache->isHit() ? $vocabularyCache->get() : [];
+        $vocabularies    = $vocabularyCache->isHit() ? $vocabularyCache->get() : [];
 
         // Run through all vocabulary terms
         foreach ($context as $name => $definition) {
@@ -161,8 +164,9 @@ class VocabularyCache
     /**
      * Test if a vocabulary name or definition is a reserved term
      *
-     * @param string $name Name
+     * @param string $name       Name
      * @param string $definition Definition
+     *
      * @return boolean Is reserved term
      */
     protected function isReservedTokens($name, $definition)
@@ -173,10 +177,10 @@ class VocabularyCache
     /**
      * Process a prefix / vocabulary term
      *
-     * @param string $name Prefix name
+     * @param string $name                 Prefix name
      * @param string|\stdClass $definition Definition
-     * @param array $prefices Prefix register
-     * @param array $vocabularies Vocabulary register
+     * @param array $prefices              Prefix register
+     * @param array $vocabularies          Vocabulary register
      */
     protected function processPrefixVocabularyTerm($name, $definition, array &$prefices, array &$vocabularies)
     {
@@ -193,9 +197,10 @@ class VocabularyCache
     /**
      * Test whether this is a prefix and vocabulary definition
      *
-     * @param string $name Prefix name
+     * @param string $name                 Prefix name
      * @param string|\stdClass $definition Definition
-     * @param array $prefices Prefix register
+     * @param array $prefices              Prefix register
+     *
      * @return bool Is a prefix and vocabulary definition
      */
     protected function isPrefix($name, $definition, array &$prefices)
@@ -206,9 +211,9 @@ class VocabularyCache
     /**
      * Process a vocabulary prefix
      *
-     * @param string $name Prefix name
-     * @param string $definition Prefix definition
-     * @param array $prefices Prefix register
+     * @param string $name        Prefix name
+     * @param string $definition  Prefix definition
+     * @param array $prefices     Prefix register
      * @param array $vocabularies Vocabulary register
      */
     protected function processPrefix($name, $definition, array &$prefices, array &$vocabularies)
@@ -225,6 +230,7 @@ class VocabularyCache
      * Test whether this is a term definition
      *
      * @param string|\stdClass $definition Definition
+     *
      * @return bool Is a term definition
      */
     protected function isTerm($definition)
@@ -236,8 +242,8 @@ class VocabularyCache
      * Process a vocabulary term
      *
      * @param \stdClass $definition Term definition
-     * @param array $prefices Prefix register
-     * @param array $vocabularies Vocabulary register
+     * @param array $prefices       Prefix register
+     * @param array $vocabularies   Vocabulary register
      */
     protected function processVocabularyTerm($definition, array &$prefices, array &$vocabularies)
     {
@@ -253,11 +259,12 @@ class VocabularyCache
      * Create an IRI from a name considering the known vocabularies
      *
      * @param string $name Name
+     *
      * @return \stdClass IRI
      */
     public function expandIRI($name)
     {
-        $iri = (object)['name' => $name, 'profile' => ''];
+        $iri          = (object)['name' => $name, 'profile' => ''];
         $vocabularies = Cache::getAdapter()->getItem(self::SLOT_VOCABS);
 
         // Run through all vocabularies
@@ -271,9 +278,9 @@ class VocabularyCache
     /**
      * Match a name with the known vocabularies
      *
-     * @param string $name Name
+     * @param string $name        Name
      * @param array $vocabularies Vocabularies
-     * @param \stdClass $iri IRI
+     * @param \stdClass $iri      IRI
      */
     protected function matchVocabularies($name, array $vocabularies, &$iri)
     {
@@ -284,7 +291,8 @@ class VocabularyCache
             // If the name matches the profile and the remaining string is a registered term
             if (!strncasecmp($profile, $name, $profileLength) && !empty($terms[substr($name, $profileLength)])) {
                 $iri->profile = $profile;
-                $iri->name = substr($name, $profileLength);
+                $iri->name    = substr($name, $profileLength);
+
                 return;
             }
         }

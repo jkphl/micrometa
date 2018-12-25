@@ -3,18 +3,18 @@
 /**
  * micrometa
  *
- * @category Jkphl
- * @package Jkphl\Micrometa
+ * @category   Jkphl
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Tests
- * @author Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @copyright Copyright © 2017 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @license http://opensource.org/licenses/MIT The MIT License (MIT)
+ * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @copyright  Copyright © 2018 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ *  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -38,16 +38,17 @@ namespace Jkphl\Micrometa\Tests;
 
 use Jkphl\Domfactory\Ports\Dom;
 use Jkphl\Micrometa\Infrastructure\Logger\ExceptionLogger;
-use League\Uri\Schemes\Http;
+use League\Uri\Http;
+use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 /**
  * Abstract test base
  *
- * @package Jkphl\Micrometa
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Tests
  */
-abstract class AbstractTestBase extends \PHPUnit_Framework_TestCase
+abstract class AbstractTestBase extends TestCase
 {
     /**
      * Fixture base path
@@ -68,13 +69,14 @@ abstract class AbstractTestBase extends \PHPUnit_Framework_TestCase
     public static function setUpBeforeClass()
     {
         self::$fixture = __DIR__.DIRECTORY_SEPARATOR.'Fixture'.DIRECTORY_SEPARATOR;
-        self::$logger = new ExceptionLogger();
+        self::$logger  = new ExceptionLogger();
     }
 
     /**
      * Read and return a particular fixture file
      *
      * @param string $file File name
+     *
      * @return array URI and DOM document
      */
     protected function getUriFixture($file)
@@ -89,6 +91,7 @@ abstract class AbstractTestBase extends \PHPUnit_Framework_TestCase
      * Return the contents of a fixture file
      *
      * @param string $file File name relative to fixtures directory
+     *
      * @return string Fixture content
      */
     protected function getFixture($file)
@@ -97,6 +100,7 @@ abstract class AbstractTestBase extends \PHPUnit_Framework_TestCase
         if (!file_exists($file)) {
             $file = self::$fixture.$file;
         }
+
         return strval(file_get_contents($file));
     }
 }

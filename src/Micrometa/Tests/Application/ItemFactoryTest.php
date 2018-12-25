@@ -3,18 +3,18 @@
 /**
  * micrometa
  *
- * @category Jkphl
- * @package Jkphl\Micrometa
+ * @category   Jkphl
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Tests
- * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @license http://opensource.org/licenses/MIT The MIT License (MIT)
+ * @author     Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ *  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -41,14 +41,15 @@ use Jkphl\Micrometa\Application\Item\Item;
 use Jkphl\Micrometa\Application\Value\StringValue;
 use Jkphl\Micrometa\Domain\Item\Iri;
 use Jkphl\Micrometa\Infrastructure\Factory\MicroformatsFactory;
+use Jkphl\Micrometa\Tests\AbstractTestBase;
 
 /**
  * Item factory tests
  *
- * @package Jkphl\Micrometa
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Tests
  */
-class ItemFactoryTest extends \PHPUnit_Framework_TestCase
+class ItemFactoryTest extends AbstractTestBase
 {
     /**
      * Test the item factory
@@ -56,8 +57,8 @@ class ItemFactoryTest extends \PHPUnit_Framework_TestCase
     public function testItemFactory()
     {
         $itemFactory = new ItemFactory(0);
-        $rawItem = (object)['type' => ['test']];
-        $item = $itemFactory($rawItem);
+        $rawItem     = (object)['type' => ['test']];
+        $item        = $itemFactory($rawItem);
         $this->assertInstanceOf(Item::class, $item);
         $this->assertEquals([new Iri('', 'test')], $item->getType());
         $this->assertNull($item->getValue());
@@ -69,22 +70,22 @@ class ItemFactoryTest extends \PHPUnit_Framework_TestCase
     public function testAliasedItemProperty()
     {
         $itemFactory = new ItemFactory(0);
-        $rawItem = (object)[
-            'type' => ['test'],
+        $rawItem     = (object)[
+            'type'       => ['test'],
             'properties' => [
                 (object)[
-                    'name' => 'alias-property',
+                    'name'    => 'alias-property',
                     'profile' => MicroformatsFactory::MF2_PROFILE_URI,
-                    'values' => ['value']
+                    'values'  => ['value']
                 ]
             ],
-            'children' => [
+            'children'   => [
                 (object)[
                     'type' => ['test']
                 ]
             ]
         ];
-        $item = $itemFactory($rawItem);
+        $item        = $itemFactory($rawItem);
         $this->assertInstanceOf(Item::class, $item);
         $this->assertEquals(
             [MicroformatsFactory::MF2_PROFILE_URI.'alias-property' => [new StringValue('value')]],
@@ -115,25 +116,25 @@ class ItemFactoryTest extends \PHPUnit_Framework_TestCase
         );
         $this->assertEquals(
             (object)[
-                'format' => 0,
-                'id' => null,
-                'language' => null,
-                'types' => ['test'],
+                'format'     => 0,
+                'id'         => null,
+                'language'   => null,
+                'types'      => ['test'],
                 'properties' => [
                     MicroformatsFactory::MF2_PROFILE_URI.'alias-property' => ['value']
                 ],
-                'items' => [
+                'items'      => [
                     (object)[
-                        'format' => 0,
-                        'id' => null,
-                        'language' => null,
-                        'types' => ['test'],
+                        'format'     => 0,
+                        'id'         => null,
+                        'language'   => null,
+                        'types'      => ['test'],
                         'properties' => [],
-                        'items' => [],
-                        'value' => null
+                        'items'      => [],
+                        'value'      => null
                     ]
                 ],
-                'value' => null
+                'value'      => null
             ],
             $item->export()
         );
@@ -145,8 +146,8 @@ class ItemFactoryTest extends \PHPUnit_Framework_TestCase
     public function testInvalidItemPropertyList()
     {
         $itemFactory = new ItemFactory(0);
-        $rawItem = (object)['type' => ['test'], 'properties' => ['test' => false]];
-        $item = $itemFactory($rawItem);
+        $rawItem     = (object)['type' => ['test'], 'properties' => ['test' => false]];
+        $item        = $itemFactory($rawItem);
         $this->assertInstanceOf(Item::class, $item);
         $this->assertEquals([], $item->getProperties()->export());
     }
@@ -157,17 +158,17 @@ class ItemFactoryTest extends \PHPUnit_Framework_TestCase
     public function testInvalidItemPropertyValueList()
     {
         $itemFactory = new ItemFactory(0);
-        $rawItem = (object)[
-            'type' => ['test'],
+        $rawItem     = (object)[
+            'type'       => ['test'],
             'properties' => [
                 'test' => (object)[
                     'profile' => MicroformatsFactory::MF2_PROFILE_URI,
-                    'name' => 'name',
-                    'values' => false
+                    'name'    => 'name',
+                    'values'  => false
                 ]
             ]
         ];
-        $item = $itemFactory($rawItem);
+        $item        = $itemFactory($rawItem);
         $this->assertInstanceOf(Item::class, $item);
         $this->assertEquals([], $item->getProperties()->export());
     }
@@ -181,13 +182,13 @@ class ItemFactoryTest extends \PHPUnit_Framework_TestCase
     public function testInvalidLanguageTaggedPropertyValue()
     {
         $itemFactory = new ItemFactory(0);
-        $rawItem = (object)[
-            'type' => ['test'],
+        $rawItem     = (object)[
+            'type'       => ['test'],
             'properties' => [
                 'test' => (object)[
                     'profile' => MicroformatsFactory::MF2_PROFILE_URI,
-                    'name' => 'name',
-                    'values' => [(object)['invalid' => true]]
+                    'name'    => 'name',
+                    'values'  => [(object)['invalid' => true]]
                 ]
             ]
         ];

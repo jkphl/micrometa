@@ -3,18 +3,18 @@
 /**
  * micrometa
  *
- * @category Jkphl
- * @package Jkphl\Micrometa
+ * @category   Jkphl
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Tests
- * @author Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @copyright Copyright © 2017 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @license http://opensource.org/licenses/MIT The MIT License (MIT)
+ * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @copyright  Copyright © 2018 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ *  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -37,14 +37,15 @@
 namespace Jkphl\Micrometa\Tests\Domain;
 
 use Jkphl\Micrometa\Domain\Item\Iri;
+use Jkphl\Micrometa\Tests\AbstractTestBase;
 
 /**
  * IRI tests
  *
- * @package Jkphl\Micrometa
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Tests
  */
-class IriTest extends \PHPUnit_Framework_TestCase
+class IriTest extends AbstractTestBase
 {
     /**
      * Test IRIs
@@ -55,8 +56,8 @@ class IriTest extends \PHPUnit_Framework_TestCase
     public function testIri()
     {
         $profile = md5(rand());
-        $name = md5(rand());
-        $iri = new Iri($profile, $name);
+        $name    = md5(rand());
+        $iri     = new Iri($profile, $name);
         $this->assertInstanceOf(Iri::class, $iri);
         $this->assertTrue(isset($iri->profile));
         $this->assertTrue(isset($iri->name));
@@ -75,7 +76,7 @@ class IriTest extends \PHPUnit_Framework_TestCase
      */
     public function testIriImmutability()
     {
-        $iri = new Iri('', '');
+        $iri          = new Iri('', '');
         $iri->profile = 'abc';
     }
 }

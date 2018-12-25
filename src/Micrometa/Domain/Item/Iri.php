@@ -3,18 +3,18 @@
 /**
  * micrometa
  *
- * @category Jkphl
- * @package Jkphl\Micrometa
+ * @category   Jkphl
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Domain
- * @author Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @copyright Copyright © 2017 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @license http://opensource.org/licenses/MIT The MIT License (MIT)
+ * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @copyright  Copyright © 2018 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ *  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -42,11 +42,11 @@ use Jkphl\Micrometa\Domain\Exceptions\OutOfBoundsException;
 /**
  * IRI
  *
- * @package Jkphl\Micrometa
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Domain
- * @see https://tools.ietf.org/html/rfc3987
+ * @see        https://tools.ietf.org/html/rfc3987
  * @property string $profile Profile
- * @property string $name Name
+ * @property string $name    Name
  */
 class Iri
 {
@@ -67,18 +67,19 @@ class Iri
      * Constructor
      *
      * @param string $profile Profile
-     * @param string $name Name
+     * @param string $name    Name
      */
     public function __construct($profile, $name)
     {
         $this->immutableProfile = strval($profile);
-        $this->immutableName = strval($name);
+        $this->immutableName    = strval($name);
     }
 
     /**
      * Property getter
      *
      * @param string $name Property name
+     *
      * @return string Property value
      * @throws OutOfBoundsException If the requested IRI property is unknown
      */
@@ -102,6 +103,7 @@ class Iri
      *
      * @param string $name Property name
      * @param mixed $value Property value
+     *
      * @throws ErrorException If a property should be set
      */
     public function __set($name, $value)
@@ -113,6 +115,7 @@ class Iri
      * Check the existence of a property
      *
      * @param string $name Property name
+     *
      * @return bool Property exists
      */
     public function __isset($name)

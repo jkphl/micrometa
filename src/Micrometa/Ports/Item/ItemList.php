@@ -3,18 +3,18 @@
 /**
  * micrometa
  *
- * @category Jkphl
- * @package Jkphl\Micrometa
+ * @category   Jkphl
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Ports\Item
- * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @license http://opensource.org/licenses/MIT The MIT License (MIT)
+ * @author     Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ *  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -43,7 +43,7 @@ use Jkphl\Micrometa\Ports\Exceptions\RuntimeException;
 /**
  * Abstract item list
  *
- * @package Jkphl\Micrometa
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Ports
  */
 class ItemList implements ItemListInterface
@@ -66,11 +66,12 @@ class ItemList implements ItemListInterface
      * ItemList constructor
      *
      * @param ItemInterface[] $items Items
+     *
      * @api
      */
     public function __construct(array $items = [])
     {
-        $this->items = array_values($items);
+        $this->items   = array_values($items);
         $this->pointer = 0;
     }
 
@@ -133,6 +134,7 @@ class ItemList implements ItemListInterface
      * Test if an offset exists
      *
      * @param int $offset Offset
+     *
      * @return boolean Offset exists
      * @api
      */
@@ -145,6 +147,7 @@ class ItemList implements ItemListInterface
      * Return the item at a particular offset
      *
      * @param int $offset Offset
+     *
      * @return ItemInterface Item
      * @api
      */
@@ -156,9 +159,10 @@ class ItemList implements ItemListInterface
     /**
      * Set an item at a particular offset
      *
-     * @param int $offset Offset
+     * @param int $offset          Offset
      * @param ItemInterface $value Item
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     *
      * @api
      */
     public function offsetSet($offset, $value)
@@ -198,6 +202,7 @@ class ItemList implements ItemListInterface
      * Return the first item, optionally of particular types
      *
      * @param array ...$types Item types
+     *
      * @return ItemInterface Item
      * @throws OutOfBoundsException If there are no matching items
      * @api
@@ -221,6 +226,7 @@ class ItemList implements ItemListInterface
      * Return all items as an array, optionally filtered by item type(s)
      *
      * @param array ...$types Item types
+     *
      * @return ItemInterface[] Items matching the requested types
      * @api
      */
@@ -253,8 +259,9 @@ class ItemList implements ItemListInterface
     /**
      * Generic item getter
      *
-     * @param string $type Item type
+     * @param string $type     Item type
      * @param array $arguments Arguments
+     *
      * @return ItemInterface Item
      * @throws InvalidArgumentException If the item index is invalid
      * @api
@@ -282,7 +289,8 @@ class ItemList implements ItemListInterface
      * Return an item by type and index
      *
      * @param string $type Item type
-     * @param int $index Item index
+     * @param int $index   Item index
+     *
      * @return ItemInterface Item
      * @throws OutOfBoundsException If the item index is out of bounds
      */

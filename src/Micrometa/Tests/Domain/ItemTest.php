@@ -3,18 +3,18 @@
 /**
  * micrometa
  *
- * @category Jkphl
- * @package Jkphl\Micrometa
+ * @category   Jkphl
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Tests
- * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @license http://opensource.org/licenses/MIT The MIT License (MIT)
+ * @author     Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ *  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -41,26 +41,28 @@ use Jkphl\Micrometa\Domain\Item\Iri;
 use Jkphl\Micrometa\Domain\Item\Item;
 use Jkphl\Micrometa\Domain\Item\PropertyListInterface;
 use Jkphl\Micrometa\Domain\Value\ValueInterface;
+use Jkphl\Micrometa\Tests\AbstractTestBase;
 
 /**
  * Item tests
  *
- * @package Jkphl\Micrometa
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Tests
  */
-class ItemTest extends \PHPUnit_Framework_TestCase
+class ItemTest extends AbstractTestBase
 {
     /**
      * Public function test the item creation
      *
      * @param string|\stdClass|\stdClass[] $type Item type(s)
-     * @param array $properties Item properties
-     * @param $itemId Item id
-     * @param $itemLanguage Item language
-     * @param array $expectedTypes Expected item types
-     * @param array $expectedProperties Expected item properties
-     * @param string $expectedId Expected item id
-     * @param string $expectedLanguage Expected language
+     * @param array $properties                  Item properties
+     * @param $itemId                            Item id
+     * @param $itemLanguage                      Item language
+     * @param array $expectedTypes               Expected item types
+     * @param array $expectedProperties          Expected item properties
+     * @param string $expectedId                 Expected item id
+     * @param string $expectedLanguage           Expected language
+     *
      * @dataProvider creationArgumentProvider
      */
     public function testItemCreation(
@@ -85,6 +87,7 @@ class ItemTest extends \PHPUnit_Framework_TestCase
      * Convert a property list to a plain array
      *
      * @param PropertyListInterface $propertyList Property list
+     *
      * @return array Property list array
      */
     protected function convertPropertyListToArray(PropertyListInterface $propertyList)
@@ -93,6 +96,7 @@ class ItemTest extends \PHPUnit_Framework_TestCase
         foreach ($propertyList as $iri => $values) {
             $propertyListValues[$iri->profile.$iri->name] = $values;
         }
+
         return $propertyListValues;
     }
 
@@ -103,9 +107,10 @@ class ItemTest extends \PHPUnit_Framework_TestCase
      */
     public function creationArgumentProvider()
     {
-        $item = new Item('test');
+        $item  = new Item('test');
         $testT = $this->typ('test');
-        $nvP = $this->prp('name1', 'value1');
+        $nvP   = $this->prp('name1', 'value1');
+
         return [
             ['test', [], null, null, [$testT], [], null],
             [$this->typ('test', 'a'), [], null, null, [$this->typ('test', 'a')], [], null],
@@ -152,8 +157,9 @@ class ItemTest extends \PHPUnit_Framework_TestCase
     /**
      * Create a type object
      *
-     * @param string $name Type name
+     * @param string $name    Type name
      * @param string $profile Type profile
+     *
      * @return object Type object
      */
     protected function typ($name, $profile = '')
@@ -164,14 +170,16 @@ class ItemTest extends \PHPUnit_Framework_TestCase
     /**
      * Create a property object
      *
-     * @param string $name Property name
-     * @param mixed $str Property value(s)
+     * @param string $name    Property name
+     * @param mixed $str      Property value(s)
      * @param string $profile Property profile
+     *
      * @return \stdClass Property object
      */
     protected function prp($name, $str, $profile = '')
     {
         $values = array_map([$this, 'str'], (array)$str);
+
         return (object)['profile' => $profile, 'name' => $name, 'values' => $values];
     }
 
@@ -179,6 +187,7 @@ class ItemTest extends \PHPUnit_Framework_TestCase
      * Create a string value
      *
      * @param string $str Value
+     *
      * @return ValueInterface String value
      */
     protected function str($str)
@@ -267,7 +276,7 @@ class ItemTest extends \PHPUnit_Framework_TestCase
      */
     public function testItemProfiledProperty()
     {
-        $item = new Item('type', [$this->prp('name', 123, 'profile')]);
+        $item  = new Item('type', [$this->prp('name', 123, 'profile')]);
         $value = [new StringValue('123')];
         $this->assertEquals($value, $item->getProperty('name'));
         $this->assertEquals($value, $item->getProperty('name', 'profile'));

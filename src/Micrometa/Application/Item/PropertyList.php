@@ -3,18 +3,18 @@
 /**
  * micrometa
  *
- * @category Jkphl
- * @package Jkphl\Micrometa
+ * @category   Jkphl
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Application\Item
- * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @license http://opensource.org/licenses/MIT The MIT License (MIT)
+ * @author     Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ *  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -43,7 +43,7 @@ use Jkphl\Micrometa\Domain\Factory\IriFactory;
 /**
  * Property list
  *
- * @package Jkphl\Micrometa
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Application
  */
 class PropertyList extends \Jkphl\Micrometa\Domain\Item\PropertyList implements PropertyListInterface
@@ -75,22 +75,23 @@ class PropertyList extends \Jkphl\Micrometa\Domain\Item\PropertyList implements 
      * Set a particular property
      *
      * @param \stdClass|string $iri IRI
-     * @param array $value Property values
+     * @param array $value          Property values
      */
     public function offsetSet($iri, $value)
     {
-        $iri = IriFactory::create($iri);
-        $iriStr = strval($iri);
-        $cursor = array_key_exists($iriStr, $this->nameToCursor) ? $this->nameToCursor[$iriStr] : count($this->values);
+        $iri                    = IriFactory::create($iri);
+        $iriStr                 = strval($iri);
+        $cursor                 = array_key_exists($iriStr,
+            $this->nameToCursor) ? $this->nameToCursor[$iriStr] : count($this->values);
         $this->aliases[$iriStr] = [];
 
         // Run through all name aliases
         foreach ($this->aliasFactory->createAliases($iri->name) as $alias) {
-            $this->aliases[$iriStr][] = $alias;
+            $this->aliases[$iriStr][]                 = $alias;
             $this->nameToCursor[$iri->profile.$alias] = $cursor;
         }
 
-        $this->names[$cursor] = $iri;
+        $this->names[$cursor]  = $iri;
         $this->values[$cursor] = $value;
     }
 
@@ -103,8 +104,8 @@ class PropertyList extends \Jkphl\Micrometa\Domain\Item\PropertyList implements 
     {
         $propertyList = [];
         foreach ($this->names as $iri) {
-            $profiledName = strval($iri);
-            $cursor = $this->nameToCursor[$profiledName];
+            $profiledName                = strval($iri);
+            $cursor                      = $this->nameToCursor[$profiledName];
             $propertyList[$profiledName] = array_map(
                 function (ExportableInterface $value) {
                     return $value->export();
@@ -112,6 +113,7 @@ class PropertyList extends \Jkphl\Micrometa\Domain\Item\PropertyList implements 
                 $this->values[$cursor]
             );
         }
+
         return $propertyList;
     }
 
@@ -119,6 +121,7 @@ class PropertyList extends \Jkphl\Micrometa\Domain\Item\PropertyList implements 
      * Get a particular property cursor by its name
      *
      * @param string $name Property name
+     *
      * @return int Property cursor
      */
     protected function getPropertyCursor($name)

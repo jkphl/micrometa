@@ -3,18 +3,18 @@
 /**
  * micrometa
  *
- * @category Jkphl
- * @package Jkphl\Micrometa
+ * @category   Jkphl
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Ports
- * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @license http://opensource.org/licenses/MIT The MIT License (MIT)
+ * @author     Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ *  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -42,7 +42,7 @@ use Jkphl\Micrometa\Application\Item\PropertyListInterface;
 /**
  * Item interface
  *
- * @package Jkphl\Micrometa
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Ports
  */
 interface ItemInterface extends ItemListInterface
@@ -51,6 +51,7 @@ interface ItemInterface extends ItemListInterface
      * Return whether the item is of a particular type (or contained in a list of types)
      *
      * @param array ...$types Item types
+     *
      * @return bool Item type is contained in the list of types
      * @api
      */
@@ -60,6 +61,7 @@ interface ItemInterface extends ItemListInterface
      * Get the first value of an item property
      *
      * @param string $name Item property name
+     *
      * @return ValueInterface|ValueInterface[]|array|ItemInterface First value of an item property
      * @api
      */
@@ -68,9 +70,10 @@ interface ItemInterface extends ItemListInterface
     /**
      * Get a single property (value)
      *
-     * @param string $name Property name
+     * @param string $name    Property name
      * @param string $profile Property profile
      * @param int|null $index Property value index
+     *
      * @return ValueInterface|ValueInterface[]|array|ItemInterface Property value(s)
      * @api
      */
@@ -80,6 +83,7 @@ interface ItemInterface extends ItemListInterface
      * Get all values of the first available property in a stack
      *
      * @param array $properties Properties
+     *
      * @return ValueInterface[]|array Property values
      * @api
      */

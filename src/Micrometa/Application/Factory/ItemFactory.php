@@ -3,18 +3,18 @@
 /**
  * micrometa
  *
- * @category Jkphl
- * @package Jkphl\Micrometa
+ * @category   Jkphl
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Application
- * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @license http://opensource.org/licenses/MIT The MIT License (MIT)
+ * @author     Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ *  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -47,7 +47,7 @@ use Jkphl\Micrometa\Ports\Exceptions\RuntimeException;
 /**
  * Item factory
  *
- * @package Jkphl\Micrometa
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Application
  */
 class ItemFactory
@@ -72,7 +72,7 @@ class ItemFactory
      */
     public function __construct($format)
     {
-        $this->format = $format;
+        $this->format              = $format;
         $this->propertyListFactory = new PropertyListFactory();
     }
 
@@ -80,6 +80,7 @@ class ItemFactory
      * Prepare a single property value
      *
      * @param mixed $propertyValue Property Value
+     *
      * @return ValueInterface Value
      */
     protected function processPropertyValue($propertyValue)
@@ -94,6 +95,7 @@ class ItemFactory
         }
 
         list($propertyValue, $language) = $this->processLanguageTaggedPropertyValue($propertyValue);
+
         return new StringValue($propertyValue, $language);
     }
 
@@ -133,16 +135,18 @@ class ItemFactory
      * }
      *
      * @param \stdClass $item Raw item
+     *
      * @return ItemInterface Item instance
      */
     public function __invoke(\stdClass $item)
     {
-        $type = $this->normalizeEmptyValue($item, 'type');
-        $itemId = $this->normalizeEmptyValue($item, 'id');
+        $type         = $this->normalizeEmptyValue($item, 'type');
+        $itemId       = $this->normalizeEmptyValue($item, 'id');
         $itemLanguage = $this->normalizeEmptyValue($item, 'lang');
-        $value = $this->normalizeEmptyValue($item, 'value');
-        $children = isset($item->children) ? array_map([$this, __METHOD__], $item->children) : [];
-        $properties = $this->getProperties($item);
+        $value        = $this->normalizeEmptyValue($item, 'value');
+        $children     = isset($item->children) ? array_map([$this, __METHOD__], $item->children) : [];
+        $properties   = $this->getProperties($item);
+
         return new Item(
             $this->format,
             $this->propertyListFactory,
@@ -158,8 +162,9 @@ class ItemFactory
     /**
      * Normalize an empty item value
      *
-     * @param \stdClass $item Item
+     * @param \stdClass $item  Item
      * @param string $property Property name
+     *
      * @return string|null Normalized property value
      */
     protected function normalizeEmptyValue(\stdClass $item, $property)
@@ -171,6 +176,7 @@ class ItemFactory
      * Prepare item properties
      *
      * @param \stdClass $item Item
+     *
      * @return array Properties
      */
     protected function getProperties(\stdClass $item)
@@ -181,13 +187,14 @@ class ItemFactory
                 $this->processProperty($properties, $property);
             }
         }
+
         return $properties;
     }
 
     /**
      * Process a property
      *
-     * @param array $properties Properties
+     * @param array $properties   Properties
      * @param \stdClass $property Property
      */
     protected function processProperty(array &$properties, $property)
@@ -208,6 +215,7 @@ class ItemFactory
      * Validate if an object is a valid property
      *
      * @param \stdClass $property Property
+     *
      * @return bool Is a valid property
      */
     protected function validatePropertyStructure($property)
@@ -219,6 +227,7 @@ class ItemFactory
      * Prepare item property values
      *
      * @param array $propertyValues Property values
+     *
      * @return array Expanded property values
      * @throws InvalidArgumentException If it's not a list of property values
      */
@@ -239,6 +248,7 @@ class ItemFactory
      * Process a language tagged property value
      *
      * @param string|\stdClass $propertyValue Property value
+     *
      * @return array Language and property value
      * @throws RuntimeException If this is an invalid language tagged value
      */
@@ -254,9 +264,10 @@ class ItemFactory
                 );
             }
 
-            $language = $propertyValue->lang;
+            $language      = $propertyValue->lang;
             $propertyValue = $propertyValue->value;
         }
+
         return [$propertyValue, $language];
     }
 }

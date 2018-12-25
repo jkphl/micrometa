@@ -3,18 +3,18 @@
 /**
  * micrometa
  *
- * @category Jkphl
- * @package Jkphl\Rdfalite
+ * @category   Jkphl
+ * @package    Jkphl\Rdfalite
  * @subpackage Jkphl\Micrometa\Infrastructure
- * @author Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @copyright Copyright © 2017 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @license http://opensource.org/licenses/MIT The MIT License (MIT)
+ * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @copyright  Copyright © 2018 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ *  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -42,7 +42,7 @@ use ML\JsonLD\RemoteDocument;
 /**
  * Cached loader for JSON-LD context
  *
- * @package Jkphl\Rdfalite
+ * @package    Jkphl\Rdfalite
  * @subpackage Jkphl\Micrometa\Infrastructure\Parser\JsonLD
  */
 class CachingContextLoader extends FileGetContentsLoader
@@ -68,6 +68,7 @@ class CachingContextLoader extends FileGetContentsLoader
      * Load (and cache) a context document
      *
      * @param string $url Context URL
+     *
      * @return \ML\JsonLD\RemoteDocument Remote document
      */
     public function loadDocument($url)

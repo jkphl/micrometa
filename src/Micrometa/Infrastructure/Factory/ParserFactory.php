@@ -3,18 +3,18 @@
 /**
  * micrometa
  *
- * @category Jkphl
- * @package Jkphl\Micrometa
+ * @category   Jkphl
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Infrastructure\Factory
- * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @license http://opensource.org/licenses/MIT The MIT License (MIT)
+ * @author     Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ *  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -47,7 +47,7 @@ use Psr\Log\LoggerInterface;
 /**
  * Parser factory
  *
- * @package Jkphl\Micrometa
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Infrastructure
  */
 class ParserFactory
@@ -59,18 +59,19 @@ class ParserFactory
      */
     public static $parsers = [
         Microformats::FORMAT => Microformats::class,
-        Microdata::FORMAT => Microdata::class,
-        JsonLD::FORMAT => JsonLD::class,
-        RdfaLite::FORMAT => RdfaLite::class,
-        LinkType::FORMAT => LinkType::class,
+        Microdata::FORMAT    => Microdata::class,
+        JsonLD::FORMAT       => JsonLD::class,
+        RdfaLite::FORMAT     => RdfaLite::class,
+        LinkType::FORMAT     => LinkType::class,
     ];
 
     /**
      * Create a list of parsers from a formats bitmask
      *
-     * @param int $formats Parser format bitmask
-     * @param UriInterface $uri Base Uri
+     * @param int $formats            Parser format bitmask
+     * @param UriInterface $uri       Base Uri
      * @param LoggerInterface $logger Logger
+     *
      * @return \Generator Parser generator
      */
     public static function createParsersFromFormats($formats, UriInterface $uri, LoggerInterface $logger)

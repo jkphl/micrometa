@@ -3,18 +3,18 @@
 /**
  * micrometa
  *
- * @category Jkphl
- * @package Jkphl\Micrometa
+ * @category   Jkphl
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Tests
- * @author Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @copyright Copyright © 2017 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @license http://opensource.org/licenses/MIT The MIT License (MIT)
+ * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @copyright  Copyright © 2018 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ *  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -47,7 +47,7 @@ use Jkphl\Micrometa\Ports\Item\Item;
 /**
  * Trait MicroformatsFeedTrait
  *
- * @package Jkphl\Micrometa
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Tests
  */
 trait MicroformatsFeedTrait
@@ -70,8 +70,8 @@ trait MicroformatsFeedTrait
     protected function getApplicationFeedItem()
     {
         $authorItem = $this->getAuthorApplicationItem();
-        $entryItem = $this->getEntryApplicationItem($authorItem);
-        $feedItem = new ApplicationItem(
+        $entryItem  = $this->getEntryApplicationItem($authorItem);
+        $feedItem   = new ApplicationItem(
             Microformats::FORMAT,
             new PropertyListFactory(),
             (object)['profile' => MicroformatsFactory::MF2_PROFILE_URI, 'name' => 'h-feed'],
@@ -110,16 +110,17 @@ trait MicroformatsFeedTrait
     /**
      * Return a property object
      *
-     * @param string $name Name
+     * @param string $name          Name
      * @param ValueInterface $value Value
+     *
      * @return object Property object
      */
     protected function getPropertyObject($name, ValueInterface $value)
     {
         return (object)[
             'profile' => MicroformatsFactory::MF2_PROFILE_URI,
-            'name' => $name,
-            'values' => [$value]
+            'name'    => $name,
+            'values'  => [$value]
         ];
     }
 
@@ -127,6 +128,7 @@ trait MicroformatsFeedTrait
      * Return an entry application item
      *
      * @param ApplicationItem $authorItem Author application item
+     *
      * @return ApplicationItem Entry application item
      */
     protected function getEntryApplicationItem(ApplicationItem $authorItem)

@@ -3,18 +3,18 @@
 /**
  * micrometa
  *
- * @category Jkphl
- * @package Jkphl\Micrometa
+ * @category   Jkphl
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Ports
- * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @license http://opensource.org/licenses/MIT The MIT License (MIT)
+ * @author     Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ *  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -52,7 +52,7 @@ use Jkphl\Micrometa\Ports\Exceptions\OutOfBoundsException;
 /**
  * Micro information item
  *
- * @package Jkphl\Micrometa
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Ports
  */
 class Item extends ItemList implements ItemInterface
@@ -79,6 +79,7 @@ class Item extends ItemList implements ItemInterface
      * Get the first value of an item property
      *
      * @param string $name Item property name
+     *
      * @return ValueInterface|ValueInterface[]|array|ItemInterface First value of an item property
      * @api
      */
@@ -91,8 +92,9 @@ class Item extends ItemList implements ItemInterface
      * Get a single property (value)
      *
      * @param string|\stdClass|Iri $name Property name
-     * @param string $profile Property profile
-     * @param int|null $index Property value index
+     * @param string $profile            Property profile
+     * @param int|null $index            Property value index
+     *
      * @return ValueInterface|ValueInterface[]|array|ItemInterface Property value(s)
      * @throws OutOfBoundsException If the property name is unknown
      * @throws OutOfBoundsException If the property value index is out of bounds
@@ -115,7 +117,8 @@ class Item extends ItemList implements ItemInterface
      * Return a particular property index
      *
      * @param ValueInterface[] $propertyValues Property values
-     * @param int $index Property value index
+     * @param int $index                       Property value index
+     *
      * @return ValueInterface|ItemInterface
      */
     protected function getPropertyIndex(array $propertyValues, $index)
@@ -135,6 +138,7 @@ class Item extends ItemList implements ItemInterface
      * Prepare a property value for returning it
      *
      * @param ValueInterface $value Property value
+     *
      * @return ValueInterface|ItemInterface Returnable property value
      */
     protected function getPropertyValue(ValueInterface $value)
@@ -149,6 +153,7 @@ class Item extends ItemList implements ItemInterface
      * The item type(s) can be specified in a variety of ways, @see ProfiledNamesFactory::createFromArguments()
      *
      * @param array ...$types Item types
+     *
      * @return boolean Item type is contained in the list of types
      * @api
      */
@@ -156,7 +161,7 @@ class Item extends ItemList implements ItemInterface
     {
         /** @var ProfiledNamesList $profiledTypes */
         $profiledTypes = ProfiledNamesFactory::createFromArguments($types);
-        $aliasFactory = new AliasFactory();
+        $aliasFactory  = new AliasFactory();
 
         // Run through all item types
         /** @var \stdClass $itemType */
@@ -173,9 +178,10 @@ class Item extends ItemList implements ItemInterface
     /**
      * Return whether an aliased item type is contained in a set of query types
      *
-     * @param string $profile Type profile
-     * @param array $names Aliased type names
+     * @param string $profile          Type profile
+     * @param array $names             Aliased type names
      * @param ProfiledNamesList $types Query types
+     *
      * @return bool Item type is contained in the set of query types
      */
     protected function isOfProfiledTypes($profile, array $names, ProfiledNamesList $types)
@@ -187,6 +193,7 @@ class Item extends ItemList implements ItemInterface
                 return true;
             }
         }
+
         return false;
     }
 
@@ -195,13 +202,14 @@ class Item extends ItemList implements ItemInterface
      *
      * @param \stdClass $type Type
      * @param string $profile Type profile
-     * @param array $names Aliased type names
+     * @param array $names    Aliased type names
+     *
      * @return bool Type is contained in names list
      */
     protected function isTypeInNames($type, $profile, array $names)
     {
         return in_array($type->name, $names) &&
-            (($type->profile === null) ? true : ($type->profile == $profile));
+               (($type->profile === null) ? true : ($type->profile == $profile));
     }
 
     /**
@@ -210,6 +218,7 @@ class Item extends ItemList implements ItemInterface
      * The property stack can be specified in a variety of ways, @see ProfiledNamesFactory::createFromArguments()
      *
      * @param array $properties Properties
+     *
      * @return ValueInterface[]|array Property values
      * @throws InvalidArgumentException If no property name was given
      * @throws OutOfBoundsException If none of the requested properties is known
@@ -250,6 +259,7 @@ class Item extends ItemList implements ItemInterface
         foreach ($this->item->getProperties() as $propertyName => $propertyValues) {
             $propertyList[$propertyName] = array_map([$this, 'getPropertyValue'], $propertyValues);
         }
+
         return $propertyList;
     }
 

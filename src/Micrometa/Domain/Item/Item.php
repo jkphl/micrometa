@@ -3,18 +3,18 @@
 /**
  * micrometa
  *
- * @category Jkphl
- * @package Jkphl\Micrometa
+ * @category   Jkphl
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Domain\Miom
- * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @license http://opensource.org/licenses/MIT The MIT License (MIT)
+ * @author     Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ *  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -43,7 +43,7 @@ use Jkphl\Micrometa\Domain\Factory\PropertyListFactoryInterface;
 /**
  * Micro information item
  *
- * @package Jkphl\Micrometa
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Domain
  */
 class Item implements ItemInterface
@@ -56,10 +56,10 @@ class Item implements ItemInterface
     /**
      * Item constructor
      *
-     * @param string|\stdClass|\stdClass[] $type Item type(s)
-     * @param \stdClass[] $properties Item properties
-     * @param string|null $itemId Item id
-     * @param string|null $itemLanguage Item language
+     * @param string|\stdClass|\stdClass[] $type                     Item type(s)
+     * @param \stdClass[] $properties                                Item properties
+     * @param string|null $itemId                                    Item id
+     * @param string|null $itemLanguage                              Item language
      * @param PropertyListFactoryInterface|null $propertyListFactory Property list factory
      */
     public function __construct(
@@ -122,7 +122,8 @@ class Item implements ItemInterface
      * Return the values of a particular property
      *
      * @param string|\stdClass|Iri $name Property name
-     * @param string|null $profile Property profile
+     * @param string|null $profile       Property profile
+     *
      * @return array Item property values
      */
     public function getProperty($name, $profile = null)
@@ -132,9 +133,10 @@ class Item implements ItemInterface
                 $name :
                 (object)[
                     'profile' => $profile,
-                    'name' => $name
+                    'name'    => $name
                 ]
         );
+
         return $this->properties->offsetGet($iri);
     }
 

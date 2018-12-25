@@ -3,18 +3,18 @@
 /**
  * micrometa
  *
- * @category Jkphl
- * @package Jkphl\Rdfalite
+ * @category   Jkphl
+ * @package    Jkphl\Rdfalite
  * @subpackage Jkphl\Micrometa\Tests\Infrastructure
- * @author Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @copyright Copyright © 2017 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @license http://opensource.org/licenses/MIT The MIT License (MIT)
+ * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @copyright  Copyright © 2018 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ *  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -44,7 +44,7 @@ use Jkphl\Micrometa\Tests\MicroformatsFeedTrait;
 /**
  * Item factory test
  *
- * @package Jkphl\Micrometa
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Tests
  */
 class ItemFactoryTest extends AbstractTestBase
@@ -60,7 +60,7 @@ class ItemFactoryTest extends AbstractTestBase
     public function testItemFactory()
     {
         $feedItem = $this->getApplicationFeedItem();
-        $items = ItemFactory::createFromApplicationItems([$feedItem]);
+        $items    = ItemFactory::createFromApplicationItems([$feedItem]);
         $this->assertTrue(is_array($items));
         $this->assertEquals(1, count($items));
         $this->assertInstanceOf(Item::class, $items[0]);

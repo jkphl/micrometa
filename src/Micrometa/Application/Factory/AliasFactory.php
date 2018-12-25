@@ -3,18 +3,18 @@
 /**
  * micrometa
  *
- * @category Jkphl
- * @package Jkphl\Micrometa
+ * @category   Jkphl
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Infrastructure
- * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @license http://opensource.org/licenses/MIT The MIT License (MIT)
+ * @author     Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ *  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -39,7 +39,7 @@ namespace Jkphl\Micrometa\Application\Factory;
 /**
  * Alias factory
  *
- * @package Jkphl\Micrometa
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Application
  */
 class AliasFactory implements AliasFactoryInterface
@@ -48,6 +48,7 @@ class AliasFactory implements AliasFactoryInterface
      * Create aliases for a particular name
      *
      * @param string $name Name
+     *
      * @return string[] Name aliases (including the name itself as first item)
      */
     public function createAliases($name)
@@ -56,7 +57,7 @@ class AliasFactory implements AliasFactoryInterface
 
         // Sanitize the name if it isn't usable as PHP function name
         if (!preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $name)) {
-            $name = preg_replace('/^[^a-zA-Z_\x7f-\xff]+(.*)?/', '$1', $name);
+            $name      = preg_replace('/^[^a-zA-Z_\x7f-\xff]+(.*)?/', '$1', $name);
             $aliases[] = lcfirst(
                 implode(
                     '',

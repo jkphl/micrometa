@@ -3,18 +3,18 @@
 /**
  * micrometa
  *
- * @category Jkphl
- * @package Jkphl\Micrometa
+ * @category   Jkphl
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Tests\Domain
- * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @license http://opensource.org/licenses/MIT The MIT License (MIT)
+ * @author     Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ *  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -39,20 +39,22 @@ namespace Jkphl\Micrometa\Tests\Infrastructure;
 use Jkphl\Micrometa\Infrastructure\Factory\MicroformatsFactory;
 use Jkphl\Micrometa\Infrastructure\Factory\ProfiledNamesFactory;
 use Jkphl\Micrometa\Infrastructure\Parser\ProfiledNamesList;
+use Jkphl\Micrometa\Tests\AbstractTestBase;
 
 /**
  * Profiled name factory tests
  *
- * @package Jkphl\Micrometa
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Tests
  */
-class ProfiledNamesFactoryTest extends \PHPUnit_Framework_TestCase
+class ProfiledNamesFactoryTest extends AbstractTestBase
 {
     /**
      * Test the profiled name factory
      *
-     * @param array $args Arguments
+     * @param array $args     Arguments
      * @param array $expected Expected profiled names
+     *
      * @dataProvider getProfiledNames
      */
     public function testProfiledNamesFactory(array $args, array $expected)
@@ -71,8 +73,9 @@ class ProfiledNamesFactoryTest extends \PHPUnit_Framework_TestCase
     public function getProfiledNames()
     {
         $schemaOrgProfile = 'http://schema.org/';
-        $feedObject = (object)['name' => 'h-feed', 'profile' => MicroformatsFactory::MF2_PROFILE_URI];
-        $eventObject = (object)['name' => 'Event', 'profile' => $schemaOrgProfile];
+        $feedObject       = (object)['name' => 'h-feed', 'profile' => MicroformatsFactory::MF2_PROFILE_URI];
+        $eventObject      = (object)['name' => 'Event', 'profile' => $schemaOrgProfile];
+
         return [
             [
                 ['h-feed'],

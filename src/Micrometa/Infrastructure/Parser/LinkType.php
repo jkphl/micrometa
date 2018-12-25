@@ -3,18 +3,18 @@
 /**
  * micrometa
  *
- * @category Jkphl
- * @package Jkphl\Micrometa
+ * @category   Jkphl
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Infrastructure\Parser
- * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @license http://opensource.org/licenses/MIT The MIT License (MIT)
+ * @author     Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ *  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -42,7 +42,7 @@ use Jkphl\Micrometa\Ports\Format;
 /**
  * Link rel parser
  *
- * @package Jkphl\Micrometa
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Infrastructure
  */
 class LinkType extends AbstractParser
@@ -58,6 +58,7 @@ class LinkType extends AbstractParser
      * Parse a DOM document
      *
      * @param \DOMDocument $dom DOM Document
+     *
      * @return ParsingResultInterface Micro information items
      */
     public function parseDom(\DOMDocument $dom)
@@ -71,9 +72,9 @@ class LinkType extends AbstractParser
         // Run through all <link> elements with a `rel` attribute
         /** @var \DOMElement $linkType */
         foreach ($xpath->query('//*[local-name(.) = "link" or local-name(.) = "a"][@rel]') as $linkType) {
-            $item = [
-                'type' => $this->parseLinkType($linkType->getAttribute('rel')),
-                'id' => $linkType->getAttribute('id') ?: null,
+            $item    = [
+                'type'       => $this->parseLinkType($linkType->getAttribute('rel')),
+                'id'         => $linkType->getAttribute('id') ?: null,
                 'properties' => $this->parseProperties($linkType),
             ];
             $items[] = (object)$item;
@@ -86,6 +87,7 @@ class LinkType extends AbstractParser
      * Process the item types
      *
      * @param string $relAttr rel attribute value
+     *
      * @return array Item types
      */
     protected function parseLinkType($relAttr)
@@ -94,6 +96,7 @@ class LinkType extends AbstractParser
         foreach (preg_split('/\040+/', $relAttr) as $rel) {
             $type[] = (object)['name' => $rel, 'profile' => self::HTML_PROFILE_URI];
         }
+
         return $type;
     }
 
@@ -101,6 +104,7 @@ class LinkType extends AbstractParser
      * Parse the LinkType attributes
      *
      * @param \DOMElement $linkType LinkType element
+     *
      * @return array Properties
      */
     protected function parseProperties(\DOMElement $linkType)
@@ -108,28 +112,30 @@ class LinkType extends AbstractParser
         $properties = [];
         /**
          * @var string $attributeName Attribute name
-         * @var \DOMAttr $attribute Attribute
+         * @var \DOMAttr $attribute   Attribute
          */
         foreach ($linkType->attributes as $attributeName => $attribute) {
             if (!in_array($attributeName, ['rel', 'id'])) {
-                $profile = $attribute->lookupNamespaceUri($attribute->prefix ?: null);
-                $property = (object)[
-                    'name' => $attributeName,
+                $profile      = $attribute->lookupNamespaceUri($attribute->prefix ?: null);
+                $property     = (object)[
+                    'name'    => $attributeName,
                     'profile' => $profile,
-                    'values' => $this->parseAttributeValue($profile, $attributeName, $attribute->value),
+                    'values'  => $this->parseAttributeValue($profile, $attributeName, $attribute->value),
                 ];
                 $properties[] = $property;
             }
         }
+
         return $properties;
     }
 
     /**
      * Parse an attribute value
      *
-     * @param string $profile Profile
+     * @param string $profile   Profile
      * @param string $attribute Attribute name
-     * @param string $value Attribute value
+     * @param string $value     Attribute value
+     *
      * @return array Attribute values
      */
     protected function parseAttributeValue($profile, $attribute, $value)

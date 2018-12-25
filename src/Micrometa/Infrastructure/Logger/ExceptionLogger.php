@@ -3,18 +3,18 @@
 /**
  * micrometa
  *
- * @category Jkphl
- * @package Jkphl\Micrometa
+ * @category   Jkphl
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Infrastructure
- * @author Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @copyright Copyright © 2017 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @license http://opensource.org/licenses/MIT The MIT License (MIT)
+ * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @copyright  Copyright © 2018 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ *  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -43,7 +43,7 @@ use Monolog\Logger;
 /**
  * Exception logger
  *
- * @package Jkphl\Micrometa
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Infrastructure
  */
 class ExceptionLogger extends Logger
@@ -67,9 +67,10 @@ class ExceptionLogger extends Logger
     /**
      * Throws an exception for all messages with error level or higher
      *
-     * @param  mixed $level The log level
+     * @param  mixed $level    The log level
      * @param  string $message The log message
-     * @param  array $context The log context
+     * @param  array $context  The log context
+     *
      * @return Boolean Whether the record has been processed
      * @throws \Exception Exception that occured
      * @throws \RuntimeException Log message as exception
@@ -87,6 +88,7 @@ class ExceptionLogger extends Logger
      * Return whether an exception should be triggered
      *
      * @param int $level Log level
+     *
      * @return bool Exception should be triggered
      */
     protected function isTriggered($level)
@@ -98,6 +100,7 @@ class ExceptionLogger extends Logger
      * Return the context exception (if any)
      *
      * @param array $context Context
+     *
      * @return \Exception|null Context exception
      */
     protected function getContextException(array $context)

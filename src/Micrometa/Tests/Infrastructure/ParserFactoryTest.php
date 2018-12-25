@@ -3,18 +3,18 @@
 /**
  * micrometa
  *
- * @category Jkphl
- * @package Jkphl\Micrometa
+ * @category   Jkphl
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Tests\Domain
- * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @license http://opensource.org/licenses/MIT The MIT License (MIT)
+ * @author     Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ *  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -44,12 +44,12 @@ use Jkphl\Micrometa\Infrastructure\Parser\Microdata;
 use Jkphl\Micrometa\Infrastructure\Parser\Microformats;
 use Jkphl\Micrometa\Infrastructure\Parser\RdfaLite;
 use Jkphl\Micrometa\Tests\AbstractTestBase;
-use League\Uri\Schemes\Http;
+use League\Uri\Http;
 
 /**
  * Parser factory tests
  *
- * @package Jkphl\Micrometa
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Tests
  */
 class ParserFactoryTest extends AbstractTestBase
@@ -60,7 +60,7 @@ class ParserFactoryTest extends AbstractTestBase
     public function testParserFactory()
     {
         $formats = Microformats::FORMAT | Microdata::FORMAT | JsonLD::FORMAT | RdfaLite::FORMAT | LinkType::FORMAT;
-        $uri = 'http://localhost/example.html';
+        $uri     = 'http://localhost/example.html';
         $parsers = ParserFactory::createParsersFromFormats($formats, Http::createFromString($uri), self::$logger);
 
         /**

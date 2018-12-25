@@ -3,18 +3,18 @@
 /**
  * micrometa
  *
- * @category Jkphl
- * @package Jkphl\Micrometa
+ * @category   Jkphl
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Infrastructure
- * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @license http://opensource.org/licenses/MIT The MIT License (MIT)
+ * @author     Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ *  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -39,7 +39,7 @@ namespace Jkphl\Micrometa\Infrastructure\Factory;
 /**
  * Microformats factory
  *
- * @package Jkphl\Micrometa
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Infrastructure
  */
 class MicroformatsFactory
@@ -56,6 +56,7 @@ class MicroformatsFactory
      * Refine an item
      *
      * @param array $item Item
+     *
      * @return \stdClass Refined Microformats item
      */
     protected static function createItem(array $item)
@@ -64,6 +65,7 @@ class MicroformatsFactory
         self::processProperties($item, $microformatItem);
         self::processValue($item, $microformatItem);
         self::processChildren($item, $microformatItem);
+
         return (object)$microformatItem;
     }
 
@@ -71,6 +73,7 @@ class MicroformatsFactory
      * Refine the item types
      *
      * @param array $types Types
+     *
      * @return array Refined types
      */
     protected static function createTypes(array $types)
@@ -86,7 +89,7 @@ class MicroformatsFactory
     /**
      * Process the item properties
      *
-     * @param array $item Item
+     * @param array $item            Item
      * @param array $microformatItem Refined Microformats item
      */
     protected static function processProperties(array $item, array &$microformatItem)
@@ -101,7 +104,8 @@ class MicroformatsFactory
      * Refine the item properties
      *
      * @param array $properties Properties
-     * @param string $lang Item language
+     * @param string $lang      Item language
+     *
      * @return array Refined properties
      */
     protected static function createProperties(array $properties, &$lang)
@@ -115,11 +119,12 @@ class MicroformatsFactory
             if (is_array($propertyValues)) {
                 $mfProperties[] = (object)[
                     'profile' => self::MF2_PROFILE_URI,
-                    'name' => $propertyName,
-                    'values' => self::createProperty($propertyValues)
+                    'name'    => $propertyName,
+                    'values'  => self::createProperty($propertyValues)
                 ];
             }
         }
+
         return $mfProperties;
     }
 
@@ -127,7 +132,8 @@ class MicroformatsFactory
      * Extract a language value from a value list
      *
      * @param array $values Value list
-     * @param string $lang Language
+     * @param string $lang  Language
+     *
      * @return array Remaining values
      */
     protected static function createLanguage(array $values, &$lang)
@@ -147,6 +153,7 @@ class MicroformatsFactory
      * Refine the item property values
      *
      * @param array $propertyValues Property values
+     *
      * @return array Refined property values
      */
     protected static function createProperty(array $propertyValues)
@@ -157,6 +164,7 @@ class MicroformatsFactory
                     return isset($propertyValue['type']) ?
                         self::createItem($propertyValue) : self::tagLanguage($propertyValue);
                 }
+
                 return $propertyValue;
             },
             $propertyValues
@@ -167,12 +175,14 @@ class MicroformatsFactory
      * Tag values with a language (if possible)
      *
      * @param array $values Values
+     *
      * @return array Language tagged values
      */
     protected static function tagLanguage(array $values)
     {
-        $lang = null;
+        $lang   = null;
         $values = self::createLanguage($values, $lang);
+
         return $lang ? array_map(function ($value) use ($lang) {
             return (object)['value' => $value, 'lang' => $lang];
         }, $values) : $values;
@@ -181,7 +191,7 @@ class MicroformatsFactory
     /**
      * Process the item value
      *
-     * @param array $item Item
+     * @param array $item            Item
      * @param array $microformatItem Refined Microformats item
      */
     protected static function processValue(array $item, array &$microformatItem)
@@ -195,6 +205,7 @@ class MicroformatsFactory
      * Refine the item value
      *
      * @param string $value Value
+     *
      * @return string Refined value
      */
     protected static function createValue($value)
@@ -205,7 +216,7 @@ class MicroformatsFactory
     /**
      * Process the nested item children
      *
-     * @param array $item Item
+     * @param array $item            Item
      * @param array $microformatItem Refined Microformats item
      */
     protected static function processChildren(array $item, array &$microformatItem)
@@ -219,6 +230,7 @@ class MicroformatsFactory
      * Refine and convert the Microformats parser result
      *
      * @param array $items Items
+     *
      * @return array Refined items
      */
     public static function createFromParserResult(array $items)

@@ -3,18 +3,18 @@
 /**
  * micrometa
  *
- * @category Jkphl
- * @package Jkphl\Micrometa
+ * @category   Jkphl
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Tests
- * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @license http://opensource.org/licenses/MIT The MIT License (MIT)
+ * @author     Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ *  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -40,14 +40,15 @@ use Jkphl\Micrometa\Application\Value\StringValue;
 use Jkphl\Micrometa\Domain\Item\Iri;
 use Jkphl\Micrometa\Domain\Item\PropertyList;
 use Jkphl\Micrometa\Infrastructure\Factory\MicroformatsFactory;
+use Jkphl\Micrometa\Tests\AbstractTestBase;
 
 /**
  * Property list tests
  *
- * @package Jkphl\Micrometa
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Tests
  */
-class PropertyListTest extends \PHPUnit_Framework_TestCase
+class PropertyListTest extends AbstractTestBase
 {
     /**
      * Test the property list
@@ -75,9 +76,9 @@ class PropertyListTest extends \PHPUnit_Framework_TestCase
     {
         // Test adding a property
         $property = (object)[
-            'name' => 'name',
+            'name'    => 'name',
             'profile' => MicroformatsFactory::MF2_PROFILE_URI,
-            'values' => [new StringValue('John Doe')],
+            'values'  => [new StringValue('John Doe')],
         ];
         $propertyList->add($property);
         $propertyList->add($property);

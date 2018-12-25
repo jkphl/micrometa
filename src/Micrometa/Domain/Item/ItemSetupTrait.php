@@ -3,18 +3,18 @@
 /**
  * micrometa
  *
- * @category Jkphl
- * @package Jkphl\Micrometa
+ * @category   Jkphl
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Domain
- * @author Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @copyright Copyright © 2017 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @license http://opensource.org/licenses/MIT The MIT License (MIT)
+ * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @copyright  Copyright © 2018 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ *  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -44,7 +44,7 @@ use Jkphl\Micrometa\Domain\Value\ValueInterface;
 /**
  * Item setup methods
  *
- * @package Jkphl\Micrometa
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Domain
  */
 trait ItemSetupTrait
@@ -88,10 +88,10 @@ trait ItemSetupTrait
      * Setup the item
      *
      * @param PropertyListFactoryInterface $propertyListFactory Property list factory
-     * @param string[]|\stdClass[] $type Item type(s)
-     * @param \stdClass[] $properties Item properties
-     * @param string $itemId Item ID
-     * @param string $itemLanguage Item language
+     * @param string[]|\stdClass[] $type                        Item type(s)
+     * @param \stdClass[] $properties                           Item properties
+     * @param string $itemId                                    Item ID
+     * @param string $itemLanguage                              Item language
      */
     protected function setup(
         PropertyListFactoryInterface $propertyListFactory,
@@ -101,16 +101,17 @@ trait ItemSetupTrait
         $itemLanguage
     ) {
         $this->propertyListFactory = $propertyListFactory;
-        $this->type = $this->valTypes($type);
-        $this->properties = $this->valProperties($properties);
-        $this->itemId = $itemId ?: null;
-        $this->itemLanguage = $itemLanguage ?: null;
+        $this->type                = $this->valTypes($type);
+        $this->properties          = $this->valProperties($properties);
+        $this->itemId              = $itemId ?: null;
+        $this->itemLanguage        = $itemLanguage ?: null;
     }
 
     /**
      * Validate and sanitize the item types
      *
      * @param string[]|\stdClass[] $types Item types
+     *
      * @return array Validated item types
      * @throws InvalidArgumentException If there are no valid types
      */
@@ -133,6 +134,7 @@ trait ItemSetupTrait
      * Validate the item properties
      *
      * @param array $properties Item properties
+     *
      * @return PropertyListInterface Validated item properties
      * @throws InvalidArgumentException If the property name is empty
      */
@@ -152,6 +154,7 @@ trait ItemSetupTrait
      * Validate a single property
      *
      * @param \stdClass $property Property
+     *
      * @return \stdClass Validated property
      */
     protected function valProp($property)
@@ -180,6 +183,7 @@ trait ItemSetupTrait
      * Validate the structure of a property object
      *
      * @param \stdClass $property Property object
+     *
      * @throws InvalidArgumentException If the property object is invalid
      */
     protected function valPropStructure($property)
@@ -197,20 +201,22 @@ trait ItemSetupTrait
      * Validate the properties of a property
      *
      * @param \stdClass $property Property
+     *
      * @return bool Property properties are valid
      */
     protected function valPropProperties($property)
     {
         return isset($property->profile)
-            && isset($property->name)
-            && isset($property->values)
-            && is_array($property->values);
+               && isset($property->name)
+               && isset($property->values)
+               && is_array($property->values);
     }
 
     /**
      * Validate a property name
      *
      * @param \stdClass $property Property
+     *
      * @return string Property name
      */
     protected function valPropName($property)
@@ -232,6 +238,7 @@ trait ItemSetupTrait
      * Validate a list of property values
      *
      * @param array $values Property values
+     *
      * @return array Validated property values
      * @throws InvalidArgumentException If the value is not a nested item
      */
@@ -251,7 +258,7 @@ trait ItemSetupTrait
     /**
      * Process a (non-empty) property value
      *
-     * @param ValueInterface $value Property value
+     * @param ValueInterface $value      Property value
      * @param array $validPropertyValues Non-empty property values
      */
     protected function procPropValue($value, array &$validPropertyValues)
@@ -274,12 +281,14 @@ trait ItemSetupTrait
      * Validate a single item type
      *
      * @param \stdClass|Iri|string $type Item type
+     *
      * @return Iri|null Validated item type
      * @throws InvalidArgumentException If the item type object is invalid
      */
     protected function valType($type)
     {
         $type = IriFactory::create($type);
+
         return strlen($type->name) ? $type : null;
     }
 }

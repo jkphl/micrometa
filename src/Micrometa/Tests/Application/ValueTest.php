@@ -3,18 +3,18 @@
 /**
  * micrometa
  *
- * @category Jkphl
- * @package Jkphl\Micrometa
+ * @category   Jkphl
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Tests
- * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @license http://opensource.org/licenses/MIT The MIT License (MIT)
+ * @author     Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ *  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -38,21 +38,22 @@ namespace Jkphl\Micrometa\Tests\Application;
 
 use Jkphl\Micrometa\Application\Value\AlternateValues;
 use Jkphl\Micrometa\Application\Value\StringValue;
+use Jkphl\Micrometa\Tests\AbstractTestBase;
 
 /**
  * Value tests
  *
- * @package Jkphl\Micrometa
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Tests
  */
-class ValueTest extends \PHPUnit_Framework_TestCase
+class ValueTest extends AbstractTestBase
 {
     /**
      * Test the string value
      */
     public function testStringValue()
     {
-        $string = md5(rand());
+        $string      = md5(rand());
         $stringValue = new StringValue($string, 'en');
         $this->assertInstanceOf(StringValue::class, $stringValue);
         $this->assertFalse($stringValue->isEmpty());
@@ -66,10 +67,10 @@ class ValueTest extends \PHPUnit_Framework_TestCase
      */
     public function testAlternateValue()
     {
-        $alternate1 = md5(rand());
-        $alternate2 = md5(rand());
-        $alternates = ['one' => $alternate1, 'two' => $alternate2];
-        $keys = ['one', 'two'];
+        $alternate1     = md5(rand());
+        $alternate2     = md5(rand());
+        $alternates     = ['one' => $alternate1, 'two' => $alternate2];
+        $keys           = ['one', 'two'];
         $alternateValue = new AlternateValues($alternates);
         $this->assertInstanceOf(AlternateValues::class, $alternateValue);
         $this->assertFalse($alternateValue->isEmpty());

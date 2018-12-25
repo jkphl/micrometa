@@ -3,18 +3,18 @@
 /**
  * micrometa
  *
- * @category Jkphl
- * @package Jkphl\Micrometa
+ * @category   Jkphl
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Domain
- * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @license http://opensource.org/licenses/MIT The MIT License (MIT)
+ * @author     Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ *  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -42,7 +42,7 @@ use Jkphl\Micrometa\Domain\Item\Iri;
 /**
  * IRI factory
  *
- * @package Jkphl\Micrometa
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Domain
  */
 class IriFactory
@@ -51,6 +51,7 @@ class IriFactory
      * Validate and sanitize an IRI
      *
      * @param Iri|\stdClass|string $iri IRI
+     *
      * @return Iri Sanitized IRI
      * @throws InvalidArgumentException If the IRI is invalid
      */
@@ -76,6 +77,7 @@ class IriFactory
      * Test if an object has a valid IRI structure
      *
      * @param \stdClass $iri IRI
+     *
      * @return bool Is a valid IRI
      */
     protected static function validateIriStructure($iri)

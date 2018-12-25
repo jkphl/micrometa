@@ -3,18 +3,18 @@
 /**
  * micrometa
  *
- * @category Jkphl
- * @package Jkphl\Micrometa
+ * @category   Jkphl
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Ports\Item
- * @author Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @license http://opensource.org/licenses/MIT The MIT License (MIT)
+ * @author     Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2017 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ *  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -42,7 +42,7 @@ use Jkphl\Micrometa\Ports\Exceptions\OutOfBoundsException;
 /**
  * Item object model
  *
- * @package Jkphl\Micrometa
+ * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Ports
  */
 class ItemObjectModel extends ItemList implements ItemObjectModelInterface
@@ -64,7 +64,7 @@ class ItemObjectModel extends ItemList implements ItemObjectModelInterface
      * Constructor
      *
      * @param \DOMDocument $dom DOM document
-     * @param array $items Items
+     * @param array $items      Items
      */
     public function __construct(\DOMDocument $dom, $items = [])
     {
@@ -76,7 +76,8 @@ class ItemObjectModel extends ItemList implements ItemObjectModelInterface
      * Return all link declarations of a particular type
      *
      * @param string|null $type Link type
-     * @param int|null $index Optional: particular index
+     * @param int|null $index   Optional: particular index
+     *
      * @return ItemInterface|ItemListInterface Single LinkType item or list of LinkType items
      * @api
      */
@@ -112,8 +113,9 @@ class ItemObjectModel extends ItemList implements ItemObjectModelInterface
      * Return a particular link item by index
      *
      * @param ItemInterface[] $links Link items
-     * @param string|null $type Link type
-     * @param int $index Link item index
+     * @param string|null $type      Link type
+     * @param int $index             Link item index
+     *
      * @return ItemInterface Link item
      * @throws OutOfBoundsException If the link index is out of bounds
      */
