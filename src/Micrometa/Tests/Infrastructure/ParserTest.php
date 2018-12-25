@@ -118,7 +118,6 @@ class ParserTest extends AbstractTestBase
         $this->assertEquals(1, count($items));
         $this->assertInstanceOf(Item::class, $items[0]);
         $this->assertEquals(Microformats::FORMAT, $items[0]->getFormat());
-        $this->assertNull($items[0]->getLanguage());
     }
 
     /**

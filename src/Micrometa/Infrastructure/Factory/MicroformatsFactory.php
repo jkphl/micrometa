@@ -139,11 +139,11 @@ class MicroformatsFactory
     protected static function createLanguage(array $values, &$lang)
     {
         // If this is an alternate values list
-        if (isset($values['html-lang'])) {
-            if (is_string($values['html-lang'])) {
-                $lang = trim($values['html-lang']) ?: null;
+        if (isset($values['lang'])) {
+            if (is_string($values['lang'])) {
+                $lang = trim($values['lang']) ?: null;
             }
-            unset($values['html-lang']);
+            unset($values['lang']);
         }
 
         return $values;

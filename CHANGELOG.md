@@ -4,12 +4,16 @@ All Notable changes to *jkphl/micrometa* will be documented in this file.
 
 Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## [3.0.0] - Dendency update release 2018-12-15
+## [3.0.0] - Dendency update release 2018-12-25
 
 ### Changed
 
 * Updated dependency versions ([#30](https://github.com/jkphl/micrometa/pull/30), [#31](https://github.com/jkphl/micrometa/pull/31))
 * Bumped PHP version requirement to 7.1
+
+### Fixed
+
+* Microformats language parsing in accordance with [microformats/php-mf2#96](https://github.com/microformats/php-mf2/issues/96)
 
 ### [2.1.1] - Bugfix release 2018-12-15
 
