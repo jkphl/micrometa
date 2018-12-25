@@ -1,44 +1,46 @@
 language: php
 php:
-  - 5.6
-  - 7
+  - 7.0
+  - 7.1
+  - 7.2
   - hhvm
 env:
-  - APP_ENV=development
+    - APP_ENV=development CC_TEST_REPORTER_ID=efd18a36922628f0536f2f08cf7ceca763f5f2feb6f3638037381487ca3312ae
 matrix:
-  allow_failures:
-    - php: hhvm
+    allow_failures:
+        - php: hhvm
 before_script:
-  - travis_retry composer self-update
-  - travis_retry composer install --no-interaction --prefer-source
-  - touch .env
-  - >-
-    if [ "$TRAVIS_PHP_VERSION" == "hhvm" ]; then echo 'date.timezone =
-    Europe/Berlin' >> /etc/hhvm/php.ini; fi;
-  - >-
-    if [ "$TRAVIS_PHP_VERSION" != "hhvm" ]; then echo 'date.timezone =
-    Europe/Berlin' >> ~/.phpenv/versions/$(phpenv
-    version-name)/etc/conf.d/travis.ini; fi;
+    - travis_retry composer self-update
+    - travis_retry composer install --no-interaction --prefer-source
+    - touch .env
+    - >-
+        if [ "$TRAVIS_PHP_VERSION" == "hhvm" ]; then echo 'date.timezone =
+        Europe/Berlin' >> /etc/hhvm/php.ini; fi;
+    - >-
+        if [ "$TRAVIS_PHP_VERSION" != "hhvm" ]; then echo 'date.timezone =
+        Europe/Berlin' >> ~/.phpenv/versions/$(phpenv
+        version-name)/etc/conf.d/travis.ini; fi;
+    - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+    - chmod +x ./cc-test-reporter
+    - ./cc-test-reporter before-build
 script:
-  - >-
-    bash -c 'if [ "$TRAVIS_PHP_VERSION" == "hhvm" ]; then vendor/bin/phpunit;
-    fi;'
-  - >-
-    bash -c 'if [ "$TRAVIS_PHP_VERSION" != "hhvm" ]; then vendor/bin/phpunit
-    --coverage-clover build/logs/clover.xml; fi;'
+    - >-
+        bash -c 'if [ "$TRAVIS_PHP_VERSION" == "hhvm" ]; then vendor/bin/phpunit;
+        fi;'
+    - >-
+        bash -c 'if [ "$TRAVIS_PHP_VERSION" != "hhvm" ]; then vendor/bin/phpunit
+        --coverage-clover build/logs/clover.xml; fi;'
 after_script:
-  - >-
-    bash -c 'if [ "$TRAVIS_PHP_VERSION" != "hhvm" ]; then wget
-    https://scrutinizer-ci.com/ocular.phar; fi;'
-  - >-
-    bash -c 'if [ "$TRAVIS_PHP_VERSION" != "hhvm" ]; then php ocular.phar
-    code-coverage:upload --format=php-clover build/logs/clover.xml; fi;'
-  - >-
-    bash -c 'if [ "$TRAVIS_PHP_VERSION" != "hhvm" ]; then php
-    vendor/bin/coveralls -v; fi;'
-  - >-
-    bash -c 'if [ "$TRAVIS_PHP_VERSION" != "hhvm" ]; then
-    vendor/bin/test-reporter; fi;'
-addons:
-  code_climate:
-    repo_token: efd18a36922628f0536f2f08cf7ceca763f5f2feb6f3638037381487ca3312ae
+    - >-
+        bash -c 'if [ "$TRAVIS_PHP_VERSION" != "hhvm" ]; then wget
+        https://scrutinizer-ci.com/ocular.phar; fi;'
+    - >-
+        bash -c 'if [ "$TRAVIS_PHP_VERSION" != "hhvm" ]; then php ocular.phar
+        code-coverage:upload --format=php-clover build/logs/clover.xml; fi;'
+    - >-
+        bash -c 'if [ "$TRAVIS_PHP_VERSION" != "hhvm" ]; then php
+        vendor/bin/php-coveralls -v; fi;'
+    - >-
+        bash -c 'if [ "$TRAVIS_PHP_VERSION" != "hhvm" ]; then
+        vendor/bin/test-reporter; fi;'
+    - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
