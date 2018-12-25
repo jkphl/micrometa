@@ -313,9 +313,7 @@ class JsonLD extends AbstractParser
         }
 
         // Else if it's a list of items
-        //elseif (is_array($jsonLD)) {
         return array_map([$this, 'parse'], $jsonLD);
-//      }
     }
 
     /**
