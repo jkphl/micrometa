@@ -287,7 +287,7 @@ $event = $item->getFirstItem(
     new Iri('http://microformats.org/profile/', 'h-event'),
     new Iri('http://schema.org/', 'Event')
 );
-````
+```
 
 ## Item object model
 
