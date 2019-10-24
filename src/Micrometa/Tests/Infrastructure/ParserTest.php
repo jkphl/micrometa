@@ -61,7 +61,7 @@ class ParserTest extends AbstractTestBase
     public function testLanguageJsonLDParser()
     {
         list($uri, $dom) = $this->getUriFixture('json-ld/jsonld-languages.html');
-        $parser = new JsonLD($uri, self::$logger);
+        $parser = new JsonLD($uri, self::getLogger());
         $items  = $parser->parseDom($dom)->getItems();
         $this->assertTrue(is_array($items));
         $this->assertEquals(1, count($items));
@@ -112,7 +112,7 @@ class ParserTest extends AbstractTestBase
     public function testMicroformatsParser()
     {
         list($uri, $dom) = $this->getUriFixture('microformats/entry.html');
-        $parser = new Microformats($uri, self::$logger);
+        $parser = new Microformats($uri, self::getLogger());
         $items  = $parser->parseDom($dom)->getItems();
         $this->assertTrue(is_array($items));
         $this->assertEquals(1, count($items));
@@ -126,7 +126,7 @@ class ParserTest extends AbstractTestBase
     public function testNestedMicroformatsParser()
     {
         list($uri, $dom) = $this->getUriFixture('microformats/nested-events.html');
-        $parser = new Microformats($uri, self::$logger);
+        $parser = new Microformats($uri, self::getLogger());
         $items  = $parser->parseDom($dom)->getItems();
         $this->assertTrue(is_array($items));
         $this->assertEquals(1, count($items));
@@ -141,7 +141,7 @@ class ParserTest extends AbstractTestBase
     public function testMicrodataParser()
     {
         list($uri, $dom) = $this->getUriFixture('html-microdata/article-microdata.html');
-        $parser = new Microdata($uri, self::$logger);
+        $parser = new Microdata($uri, self::getLogger());
         $items  = $parser->parseDom($dom)->getItems();
         $this->assertTrue(is_array($items));
         $this->assertEquals(1, count($items));
@@ -156,7 +156,7 @@ class ParserTest extends AbstractTestBase
     public function testRdfaLiteParser()
     {
         list($uri, $dom) = $this->getUriFixture('rdfa-lite/article-rdfa-lite.html');
-        $parser = new RdfaLite($uri, self::$logger);
+        $parser = new RdfaLite($uri, self::getLogger());
         $items  = $parser->parseDom($dom)->getItems();
         $this->assertTrue(is_array($items));
         $this->assertEquals(1, count($items));
@@ -171,7 +171,7 @@ class ParserTest extends AbstractTestBase
     public function testLinkTypeParser()
     {
         list($uri, $dom) = $this->getUriFixture('link-type/valid-test.html');
-        $parser = new LinkType($uri, self::$logger);
+        $parser = new LinkType($uri, self::getLogger());
         $items  = $parser->parseDom($dom)->getItems();
         $this->assertTrue(is_array($items));
         $this->assertEquals(4, count($items));
