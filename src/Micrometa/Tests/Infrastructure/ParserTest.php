@@ -143,11 +143,10 @@ class ParserTest extends AbstractTestBase
         list($uri, $dom) = $this->getUriFixture('html-microdata/article-microdata.html');
         $parser = new Microdata($uri, self::getLogger());
         $items  = $parser->parseDom($dom)->getItems();
-        $this->assertTrue(is_array($items));
-        $this->assertEquals(1, count($items));
-        $this->assertInstanceOf(Item::class, $items[0]);
-        $this->assertEquals(Microdata::FORMAT, $items[0]->getFormat());
-        $this->assertEquals([new Iri('http://schema.org/', 'NewsArticle')], $items[0]->getType());
+
+        $expectedItemFormat = Microdata::FORMAT;
+        $expectedItemIri = new Iri('http://schema.org/', 'NewsArticle');
+        $this->assertItemParsedAs($items, $expectedItemFormat, $expectedItemIri);
     }
 
     /**
@@ -158,11 +157,10 @@ class ParserTest extends AbstractTestBase
         list($uri, $dom) = $this->getUriFixture('rdfa-lite/article-rdfa-lite.html');
         $parser = new RdfaLite($uri, self::getLogger());
         $items  = $parser->parseDom($dom)->getItems();
-        $this->assertTrue(is_array($items));
-        $this->assertEquals(1, count($items));
-        $this->assertInstanceOf(Item::class, $items[0]);
-        $this->assertEquals(RdfaLite::FORMAT, $items[0]->getFormat());
-        $this->assertEquals([new Iri('http://schema.org/', 'NewsArticle')], $items[0]->getType());
+
+        $expectedItemFormat = RdfaLite::FORMAT;
+        $expectedItemIri = new Iri('http://schema.org/', 'NewsArticle');
+        $this->assertItemParsedAs($items, $expectedItemFormat, $expectedItemIri);
     }
 
     /**
@@ -178,5 +176,14 @@ class ParserTest extends AbstractTestBase
         $this->assertInstanceOf(Item::class, $items[0]);
         $this->assertEquals(LinkType::FORMAT, $items[0]->getFormat());
         $this->assertEquals([new Iri(LinkType::HTML_PROFILE_URI, 'icon')], $items[0]->getType());
+    }
+
+    private function assertItemParsedAs(array $items, int $expectedItemFormat, Iri $expectedItemIri)
+    {
+        $this->assertIsArray($items);
+        $this->assertCount(1, $items);
+        $this->assertInstanceOf(Item::class, $items[0]);
+        $this->assertEquals($expectedItemFormat, $items[0]->getFormat());
+        $this->assertEquals([$expectedItemIri], $items[0]->getType());
     }
 }
