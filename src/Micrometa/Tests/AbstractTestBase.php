@@ -64,9 +64,9 @@ abstract class AbstractTestBase extends TestCase
      */
     private static $logger;
 
-    protected static function getLogger() : LoggerInterface
+    protected static function getLogger(int $threshold = 400) : LoggerInterface
     {
-        return self::$logger ?? self::$logger = new ExceptionLogger();
+        return self::$logger[$threshold] ?? self::$logger[$threshold] = new ExceptionLogger($threshold);
     }
 
     /**
