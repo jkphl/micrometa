@@ -34,14 +34,14 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Tests\Application;
+namespace Jkphl\Micrometa\Application;
 
 use Jkphl\Micrometa\Application\Factory\ItemFactory;
 use Jkphl\Micrometa\Application\Item\Item;
 use Jkphl\Micrometa\Application\Value\StringValue;
 use Jkphl\Micrometa\Domain\Item\Iri;
 use Jkphl\Micrometa\Infrastructure\Factory\MicroformatsFactory;
-use Jkphl\Micrometa\Tests\AbstractTestBase;
+use Jkphl\Micrometa\AbstractTestBase;
 
 /**
  * Item factory tests

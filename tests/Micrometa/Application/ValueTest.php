@@ -5,7 +5,7 @@
  *
  * @category   Jkphl
  * @package    Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Tests\Domain
+ * @subpackage Jkphl\Micrometa\Tests
  * @author     Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @copyright  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -34,43 +34,52 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Tests\Ports;
+namespace Jkphl\Micrometa\Application;
 
-use Jkphl\Micrometa\Ports\Format;
-use Jkphl\Micrometa\Ports\Item\ItemObjectModelInterface;
-use Jkphl\Micrometa\Ports\Parser;
-use Jkphl\Micrometa\Tests\AbstractTestBase;
+use Jkphl\Micrometa\Application\Value\AlternateValues;
+use Jkphl\Micrometa\Application\Value\StringValue;
+use Jkphl\Micrometa\AbstractTestBase;
 
 /**
- * Parser tests
+ * Value tests
  *
  * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Tests
  */
-class ParserTest extends AbstractTestBase
+class ValueTest extends AbstractTestBase
 {
     /**
-     * Test the LinkType parser
+     * Test the string value
      */
-    public function testLinkTypeParser()
+    public function testStringValue()
     {
-        $parser          = new Parser(Format::LINK_TYPE);
-        $itemObjectModel = $parser('http://localhost:1349/link-type/valid-test.html');
-        $this->assertInstanceOf(ItemObjectModelInterface::class, $itemObjectModel);
-        $this->assertEquals(4, count($itemObjectModel->getItems()));
+        $string      = md5(rand());
+        $stringValue = new StringValue($string, 'en');
+        $this->assertInstanceOf(StringValue::class, $stringValue);
+        $this->assertFalse($stringValue->isEmpty());
+        $this->assertEquals($string, strval($stringValue));
+        $this->assertEquals($string, $stringValue->export());
+        $this->assertEquals('en', $stringValue->getLanguage());
     }
 
     /**
-     * Test the JSON-LD parser with an invalid JSON-LD document
-     *
-     * @expectedException \Jkphl\Micrometa\Ports\Exceptions\RuntimeException
-     * @expectedExceptionCode 400
+     * Test the alternate value
      */
-    public function testJsonLDParser()
+    public function testAlternateValue()
     {
-        $parser          = new Parser(Format::JSON_LD);
-        $itemObjectModel = $parser('http://localhost:1349/json-ld/jsonld-invalid.html');
-        $this->assertInstanceOf(ItemObjectModelInterface::class, $itemObjectModel);
-        $this->assertEquals(1, count($itemObjectModel->getItems()));
+        $alternate1     = md5(rand());
+        $alternate2     = md5(rand());
+        $alternates     = ['one' => $alternate1, 'two' => $alternate2];
+        $keys           = ['one', 'two'];
+        $alternateValue = new AlternateValues($alternates);
+        $this->assertInstanceOf(AlternateValues::class, $alternateValue);
+        $this->assertFalse($alternateValue->isEmpty());
+        foreach ($alternateValue as $index => $value) {
+            $this->assertEquals($index, array_shift($keys));
+            $this->assertEquals($alternates[$index], $value);
+        }
+        $this->assertEquals($alternates, $alternateValue->export());
+        $this->assertEquals($alternate1, $alternates['one']);
+        $this->assertEquals($alternate2, $alternates['two']);
     }
 }

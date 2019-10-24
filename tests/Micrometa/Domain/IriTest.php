@@ -6,8 +6,8 @@
  * @category   Jkphl
  * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Tests
- * @author     Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @copyright  Copyright © 2018 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
@@ -34,52 +34,49 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Tests\Application;
+namespace Jkphl\Micrometa\Domain;
 
-use Jkphl\Micrometa\Application\Value\AlternateValues;
-use Jkphl\Micrometa\Application\Value\StringValue;
-use Jkphl\Micrometa\Tests\AbstractTestBase;
+use Jkphl\Micrometa\Domain\Item\Iri;
+use Jkphl\Micrometa\AbstractTestBase;
 
 /**
- * Value tests
+ * IRI tests
  *
  * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Tests
  */
-class ValueTest extends AbstractTestBase
+class IriTest extends AbstractTestBase
 {
     /**
-     * Test the string value
+     * Test IRIs
+     *
+     * @expectedException \Jkphl\Micrometa\Domain\Exceptions\OutOfBoundsException
+     * @expectedExceptionCode 1495895152
      */
-    public function testStringValue()
+    public function testIri()
     {
-        $string      = md5(rand());
-        $stringValue = new StringValue($string, 'en');
-        $this->assertInstanceOf(StringValue::class, $stringValue);
-        $this->assertFalse($stringValue->isEmpty());
-        $this->assertEquals($string, strval($stringValue));
-        $this->assertEquals($string, $stringValue->export());
-        $this->assertEquals('en', $stringValue->getLanguage());
+        $profile = md5(rand());
+        $name    = md5(rand());
+        $iri     = new Iri($profile, $name);
+        $this->assertInstanceOf(Iri::class, $iri);
+        $this->assertTrue(isset($iri->profile));
+        $this->assertTrue(isset($iri->name));
+        $this->assertFalse(isset($iri->invalid));
+        $this->assertEquals($profile, $iri->profile);
+        $this->assertEquals($name, $iri->name);
+        $this->assertEquals($profile.$name, strval($iri));
+        $iri->invalid;
     }
 
     /**
-     * Test the alternate value
+     * Test IRI immutability
+     *
+     * @expectedException \Jkphl\Micrometa\Domain\Exceptions\ErrorException
+     * @expectedExceptionCode 1495895278
      */
-    public function testAlternateValue()
+    public function testIriImmutability()
     {
-        $alternate1     = md5(rand());
-        $alternate2     = md5(rand());
-        $alternates     = ['one' => $alternate1, 'two' => $alternate2];
-        $keys           = ['one', 'two'];
-        $alternateValue = new AlternateValues($alternates);
-        $this->assertInstanceOf(AlternateValues::class, $alternateValue);
-        $this->assertFalse($alternateValue->isEmpty());
-        foreach ($alternateValue as $index => $value) {
-            $this->assertEquals($index, array_shift($keys));
-            $this->assertEquals($alternates[$index], $value);
-        }
-        $this->assertEquals($alternates, $alternateValue->export());
-        $this->assertEquals($alternate1, $alternates['one']);
-        $this->assertEquals($alternate2, $alternates['two']);
+        $iri          = new Iri('', '');
+        $iri->profile = 'abc';
     }
 }

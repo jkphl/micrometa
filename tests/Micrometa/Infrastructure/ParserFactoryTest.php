@@ -4,10 +4,10 @@
  * micrometa
  *
  * @category   Jkphl
- * @package    Jkphl\Rdfalite
- * @subpackage Jkphl\Micrometa\Tests\Infrastructure
- * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @copyright  Copyright © 2018 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @package    Jkphl\Micrometa
+ * @subpackage Jkphl\Micrometa\Tests\Domain
+ * @author     Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
@@ -34,40 +34,45 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Tests\Infrastructure;
+namespace Jkphl\Micrometa\Infrastructure;
 
-use Jkphl\Micrometa\Infrastructure\Factory\ItemFactory;
-use Jkphl\Micrometa\Ports\Item\Item;
-use Jkphl\Micrometa\Tests\AbstractTestBase;
-use Jkphl\Micrometa\Tests\MicroformatsFeedTrait;
+use Jkphl\Micrometa\Infrastructure\Factory\ParserFactory;
+use Jkphl\Micrometa\Infrastructure\Parser\AbstractParser;
+use Jkphl\Micrometa\Infrastructure\Parser\JsonLD;
+use Jkphl\Micrometa\Infrastructure\Parser\LinkType;
+use Jkphl\Micrometa\Infrastructure\Parser\Microdata;
+use Jkphl\Micrometa\Infrastructure\Parser\Microformats;
+use Jkphl\Micrometa\Infrastructure\Parser\RdfaLite;
+use Jkphl\Micrometa\AbstractTestBase;
+use League\Uri\Http;
 
 /**
- * Item factory test
+ * Parser factory tests
  *
  * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Tests
  */
-class ItemFactoryTest extends AbstractTestBase
+class ParserFactoryTest extends AbstractTestBase
 {
     /**
-     * Use the Microformats feed method
+     * Test the parser factory
      */
-    use MicroformatsFeedTrait;
-
-    /**
-     * Test the item factory
-     */
-    public function testItemFactory()
+    public function testParserFactory()
     {
-        $feedItem = $this->getApplicationFeedItem();
-        $items    = ItemFactory::createFromApplicationItems([$feedItem]);
-        $this->assertTrue(is_array($items));
-        $this->assertEquals(1, count($items));
-        $this->assertInstanceOf(Item::class, $items[0]);
-        $this->assertTrue(is_array($items[0]->getItems()));
-        $this->assertEquals(2, count($items[0]->getItems()));
-        foreach ($items[0]->getItems() as $childItem) {
-            $this->assertInstanceOf(Item::class, $childItem);
+        $formats = Microformats::FORMAT | Microdata::FORMAT | JsonLD::FORMAT | RdfaLite::FORMAT | LinkType::FORMAT;
+        $uri     = 'http://localhost/example.html';
+        $parsers = ParserFactory::createParsersFromFormats($formats, Http::createFromString($uri), self::getLogger());
+
+        /**
+         * @var int $parserFormat
+         * @var AbstractParser $parser
+         */
+        foreach ($parsers as $parserFormat => $parser) {
+            $this->assertInstanceOf(ParserFactory::$parsers[$parserFormat], $parser);
+            $this->assertEquals($uri, $parser->getUri());
+            $formats &= ~$parserFormat;
         }
+
+        $this->assertEquals(0, $formats);
     }
 }

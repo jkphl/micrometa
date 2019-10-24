@@ -34,29 +34,70 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Tests\Ports;
+namespace Jkphl\Micrometa;
 
-use Jkphl\Micrometa\Ports\Cache;
-use Jkphl\Micrometa\Tests\AbstractTestBase;
-use Symfony\Component\Cache\Adapter\ArrayAdapter;
-use Symfony\Component\Cache\Adapter\NullAdapter;
+use Jkphl\Domfactory\Ports\Dom;
+use Jkphl\Micrometa\Infrastructure\Logger\ExceptionLogger;
+use League\Uri\Http;
+use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 /**
- * Cache controller test
+ * Abstract test base
  *
  * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Tests
  */
-class CacheTest extends AbstractTestBase
+abstract class AbstractTestBase extends TestCase
 {
     /**
-     * Test the cache controller
+     * Fixture base path
+     *
+     * @var string
      */
-    public function testCache()
+    protected static $fixture =  __DIR__.DIRECTORY_SEPARATOR.'Fixture'.DIRECTORY_SEPARATOR;
+
+    /**
+     * Logger
+     *
+     * @var LoggerInterface
+     */
+    private static $logger;
+
+    protected static function getLogger(int $threshold = 400) : LoggerInterface
     {
-        $this->assertInstanceOf(ArrayAdapter::class, Cache::getAdapter());
-        $cache = new NullAdapter();
-        Cache::setAdapter($cache);
-        $this->assertEquals($cache, Cache::getAdapter());
+        return self::$logger[$threshold] ?? self::$logger[$threshold] = new ExceptionLogger($threshold);
+    }
+
+    /**
+     * Read and return a particular fixture file
+     *
+     * @param string $file File name
+     *
+     * @return array URI and DOM document
+     */
+    protected function getUriFixture($file)
+    {
+        return [
+            Http::createFromString('http://localhost:1349/'.$file),
+            Dom::createFromString($this->getFixture($file))
+        ];
+    }
+
+    /**
+     * Return the contents of a fixture file
+     *
+     * @param string $file File name relative to fixtures directory
+     *
+     * @return string Fixture content
+     */
+    protected function getFixture($file)
+    {
+        $file = strtr($file, ['/' => DIRECTORY_SEPARATOR]);
+        if (!file_exists($file)) {
+            $file = self::$fixture.$file;
+        }
+
+        return strval(file_get_contents($file));
     }
 }

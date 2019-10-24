@@ -34,7 +34,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Tests;
+namespace Jkphl\Micrometa;
 
 use Jkphl\Micrometa\Application\Factory\PropertyListFactory;
 use Jkphl\Micrometa\Application\Item\Item as ApplicationItem;

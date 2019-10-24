@@ -4,8 +4,8 @@
  * micrometa
  *
  * @category   Jkphl
- * @package    Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Tests
+ * @package    Jkphl\Rdfalite
+ * @subpackage Jkphl\Micrometa\Tests\Infrastructure
  * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @copyright  Copyright © 2018 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -34,49 +34,40 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Tests\Domain;
+namespace Jkphl\Micrometa\Infrastructure;
 
-use Jkphl\Micrometa\Domain\Item\Iri;
-use Jkphl\Micrometa\Tests\AbstractTestBase;
+use Jkphl\Micrometa\Infrastructure\Factory\ItemFactory;
+use Jkphl\Micrometa\Ports\Item\Item;
+use Jkphl\Micrometa\AbstractTestBase;
+use Jkphl\Micrometa\MicroformatsFeedTrait;
 
 /**
- * IRI tests
+ * Item factory test
  *
  * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Tests
  */
-class IriTest extends AbstractTestBase
+class ItemFactoryTest extends AbstractTestBase
 {
     /**
-     * Test IRIs
-     *
-     * @expectedException \Jkphl\Micrometa\Domain\Exceptions\OutOfBoundsException
-     * @expectedExceptionCode 1495895152
+     * Use the Microformats feed method
      */
-    public function testIri()
-    {
-        $profile = md5(rand());
-        $name    = md5(rand());
-        $iri     = new Iri($profile, $name);
-        $this->assertInstanceOf(Iri::class, $iri);
-        $this->assertTrue(isset($iri->profile));
-        $this->assertTrue(isset($iri->name));
-        $this->assertFalse(isset($iri->invalid));
-        $this->assertEquals($profile, $iri->profile);
-        $this->assertEquals($name, $iri->name);
-        $this->assertEquals($profile.$name, strval($iri));
-        $iri->invalid;
-    }
+    use MicroformatsFeedTrait;
 
     /**
-     * Test IRI immutability
-     *
-     * @expectedException \Jkphl\Micrometa\Domain\Exceptions\ErrorException
-     * @expectedExceptionCode 1495895278
+     * Test the item factory
      */
-    public function testIriImmutability()
+    public function testItemFactory()
     {
-        $iri          = new Iri('', '');
-        $iri->profile = 'abc';
+        $feedItem = $this->getApplicationFeedItem();
+        $items    = ItemFactory::createFromApplicationItems([$feedItem]);
+        $this->assertTrue(is_array($items));
+        $this->assertEquals(1, count($items));
+        $this->assertInstanceOf(Item::class, $items[0]);
+        $this->assertTrue(is_array($items[0]->getItems()));
+        $this->assertEquals(2, count($items[0]->getItems()));
+        foreach ($items[0]->getItems() as $childItem) {
+            $this->assertInstanceOf(Item::class, $childItem);
+        }
     }
 }

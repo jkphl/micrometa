@@ -34,7 +34,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Tests\Infrastructure;
+namespace Jkphl\Micrometa\Infrastructure;
 
 use Jkphl\Micrometa\Application\Item\Item;
 use Jkphl\Micrometa\Application\Value\StringValue;
@@ -45,7 +45,7 @@ use Jkphl\Micrometa\Infrastructure\Parser\LinkType;
 use Jkphl\Micrometa\Infrastructure\Parser\Microdata;
 use Jkphl\Micrometa\Infrastructure\Parser\Microformats;
 use Jkphl\Micrometa\Infrastructure\Parser\RdfaLite;
-use Jkphl\Micrometa\Tests\AbstractTestBase;
+use Jkphl\Micrometa\AbstractTestBase;
 
 /**
  * Parser tests

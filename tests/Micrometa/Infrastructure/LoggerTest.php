@@ -34,70 +34,52 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Tests;
+namespace Jkphl\Micrometa\Infrastructure;
 
-use Jkphl\Domfactory\Ports\Dom;
 use Jkphl\Micrometa\Infrastructure\Logger\ExceptionLogger;
-use League\Uri\Http;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
+use Jkphl\Micrometa\AbstractTestBase;
 
 /**
- * Abstract test base
+ * Logger tests
  *
  * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Tests
  */
-abstract class AbstractTestBase extends TestCase
+class LoggerTest extends AbstractTestBase
 {
     /**
-     * Fixture base path
-     *
-     * @var string
+     * Test the exception logger
      */
-    protected static $fixture =  __DIR__.DIRECTORY_SEPARATOR.'Fixture'.DIRECTORY_SEPARATOR;
-
-    /**
-     * Logger
-     *
-     * @var LoggerInterface
-     */
-    private static $logger;
-
-    protected static function getLogger(int $threshold = 400) : LoggerInterface
+    public function testExceptionLogger()
     {
-        return self::$logger[$threshold] ?? self::$logger[$threshold] = new ExceptionLogger($threshold);
+        $logger = new ExceptionLogger();
+        $this->assertTrue($logger->debug('DEBUG'));
     }
 
     /**
-     * Read and return a particular fixture file
+     * Test the exception logger
      *
-     * @param string $file File name
-     *
-     * @return array URI and DOM document
+     * @expectedException \Jkphl\Micrometa\Ports\Exceptions\RuntimeException
+     * @expectedExceptionMessage CRITICAL
+     * @expectedExceptionCode    500
      */
-    protected function getUriFixture($file)
+    public function testNoContextExceptionLogger()
     {
-        return [
-            Http::createFromString('http://localhost:1349/'.$file),
-            Dom::createFromString($this->getFixture($file))
-        ];
+        $logger = new ExceptionLogger();
+        $logger->critical('CRITICAL');
     }
 
     /**
-     * Return the contents of a fixture file
+     * Test the exception logger with a context
      *
-     * @param string $file File name relative to fixtures directory
-     *
-     * @return string Fixture content
+     * @expectedException \ErrorException
+     * @expectedExceptionMessage ERROR
+     * @expectedExceptionCode    1234
      */
-    protected function getFixture($file)
+    public function testContextExceptionLogger()
     {
-        $file = strtr($file, ['/' => DIRECTORY_SEPARATOR]);
-        if (!file_exists($file)) {
-            $file = self::$fixture.$file;
-        }
-
-        return strval(file_get_contents($file));
+        $exception = new \ErrorException('ERROR', 1234);
+        $logger    = new ExceptionLogger();
+        $logger->critical('CRITICAL', ['exception' => $exception]);
     }
 }

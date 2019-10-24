@@ -34,14 +34,14 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Tests\Domain;
+namespace Jkphl\Micrometa\Domain;
 
 use Jkphl\Micrometa\Application\Value\StringValue;
 use Jkphl\Micrometa\Domain\Item\Iri;
 use Jkphl\Micrometa\Domain\Item\Item;
 use Jkphl\Micrometa\Domain\Item\PropertyListInterface;
 use Jkphl\Micrometa\Domain\Value\ValueInterface;
-use Jkphl\Micrometa\Tests\AbstractTestBase;
+use Jkphl\Micrometa\AbstractTestBase;
 
 /**
  * Item tests

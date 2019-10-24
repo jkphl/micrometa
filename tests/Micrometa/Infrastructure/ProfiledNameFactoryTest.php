@@ -34,12 +34,12 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Tests\Infrastructure;
+namespace Jkphl\Micrometa\Infrastructure;
 
 use Jkphl\Micrometa\Infrastructure\Factory\MicroformatsFactory;
 use Jkphl\Micrometa\Infrastructure\Factory\ProfiledNamesFactory;
 use Jkphl\Micrometa\Infrastructure\Parser\ProfiledNamesList;
-use Jkphl\Micrometa\Tests\AbstractTestBase;
+use Jkphl\Micrometa\AbstractTestBase;
 
 /**
  * Profiled name factory tests

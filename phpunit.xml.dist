@@ -1,14 +1,14 @@
 <phpunit bootstrap="./phpunit.php">
     <testsuites>
         <testsuite name="Default">
-            <directory>./src/Micrometa/Tests</directory>
+            <directory>./tests/Micrometa</directory>
         </testsuite>
     </testsuites>
 
     <php>
         <const name="WEB_SERVER_HOST" value="localhost" />
         <const name="WEB_SERVER_PORT" value="1349" />
-        <const name="WEB_SERVER_DOCROOT" value="./src/Micrometa/Tests/Fixture" />
+        <const name="WEB_SERVER_DOCROOT" value="./tests/Micrometa/Fixture" />
     </php>
 
     <logging>
@@ -17,9 +17,9 @@
 
     <filter>
         <whitelist addUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">src</directory>
+            <directory suffix=".php">tests</directory>
             <exclude>
-                <directory suffix=".php">src/Micrometa/Tests</directory>
+                <directory suffix=".php">tests/Micrometa</directory>
             </exclude>
         </whitelist>
     </filter>

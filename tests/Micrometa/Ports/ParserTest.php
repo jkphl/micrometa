@@ -5,9 +5,9 @@
  *
  * @category   Jkphl
  * @package    Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Tests
- * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @copyright  Copyright © 2018 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @subpackage Jkphl\Micrometa\Tests\Domain
+ * @author     Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @copyright  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
  * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
@@ -34,52 +34,43 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Tests\Infrastructure;
+namespace Jkphl\Micrometa\Ports;
 
-use Jkphl\Micrometa\Infrastructure\Logger\ExceptionLogger;
-use Jkphl\Micrometa\Tests\AbstractTestBase;
+use Jkphl\Micrometa\Ports\Format;
+use Jkphl\Micrometa\Ports\Item\ItemObjectModelInterface;
+use Jkphl\Micrometa\Ports\Parser;
+use Jkphl\Micrometa\AbstractTestBase;
 
 /**
- * Logger tests
+ * Parser tests
  *
  * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Tests
  */
-class LoggerTest extends AbstractTestBase
+class ParserTest extends AbstractTestBase
 {
     /**
-     * Test the exception logger
+     * Test the LinkType parser
      */
-    public function testExceptionLogger()
+    public function testLinkTypeParser()
     {
-        $logger = new ExceptionLogger();
-        $this->assertTrue($logger->debug('DEBUG'));
+        $parser          = new Parser(Format::LINK_TYPE);
+        $itemObjectModel = $parser('http://localhost:1349/link-type/valid-test.html');
+        $this->assertInstanceOf(ItemObjectModelInterface::class, $itemObjectModel);
+        $this->assertEquals(4, count($itemObjectModel->getItems()));
     }
 
     /**
-     * Test the exception logger
+     * Test the JSON-LD parser with an invalid JSON-LD document
      *
      * @expectedException \Jkphl\Micrometa\Ports\Exceptions\RuntimeException
-     * @expectedExceptionMessage CRITICAL
-     * @expectedExceptionCode    500
+     * @expectedExceptionCode 400
      */
-    public function testNoContextExceptionLogger()
+    public function testJsonLDParser()
     {
-        $logger = new ExceptionLogger();
-        $logger->critical('CRITICAL');
-    }
-
-    /**
-     * Test the exception logger with a context
-     *
-     * @expectedException \ErrorException
-     * @expectedExceptionMessage ERROR
-     * @expectedExceptionCode    1234
-     */
-    public function testContextExceptionLogger()
-    {
-        $exception = new \ErrorException('ERROR', 1234);
-        $logger    = new ExceptionLogger();
-        $logger->critical('CRITICAL', ['exception' => $exception]);
+        $parser          = new Parser(Format::JSON_LD);
+        $itemObjectModel = $parser('http://localhost:1349/json-ld/jsonld-invalid.html');
+        $this->assertInstanceOf(ItemObjectModelInterface::class, $itemObjectModel);
+        $this->assertEquals(1, count($itemObjectModel->getItems()));
     }
 }

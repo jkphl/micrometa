@@ -34,7 +34,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Tests\Ports;
+namespace Jkphl\Micrometa\Ports;
 
 use Jkphl\Micrometa\Application\Item\PropertyList;
 use Jkphl\Micrometa\Application\Value\StringValue;
@@ -42,8 +42,8 @@ use Jkphl\Micrometa\Infrastructure\Factory\MicroformatsFactory;
 use Jkphl\Micrometa\Ports\Item\Item;
 use Jkphl\Micrometa\Ports\Item\ItemInterface;
 use Jkphl\Micrometa\Ports\Item\ItemList;
-use Jkphl\Micrometa\Tests\AbstractTestBase;
-use Jkphl\Micrometa\Tests\MicroformatsFeedTrait;
+use Jkphl\Micrometa\AbstractTestBase;
+use Jkphl\Micrometa\MicroformatsFeedTrait;
 
 /**
  * Parser factory tests

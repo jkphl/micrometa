@@ -34,7 +34,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Tests\Application;
+namespace Jkphl\Micrometa\Application;
 
 use Jkphl\Domfactory\Ports\Dom;
 use Jkphl\Micrometa\Application\Contract\ParsingResultInterface;
@@ -44,7 +44,7 @@ use Jkphl\Micrometa\Infrastructure\Logger\ExceptionLogger;
 use Jkphl\Micrometa\Infrastructure\Parser\Microdata;
 use Jkphl\Micrometa\Infrastructure\Parser\Microformats;
 use Jkphl\Micrometa\Infrastructure\Parser\RdfaLite;
-use Jkphl\Micrometa\Tests\AbstractTestBase;
+use Jkphl\Micrometa\AbstractTestBase;
 use League\Uri\Http;
 
 /**

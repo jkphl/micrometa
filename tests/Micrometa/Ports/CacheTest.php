@@ -5,9 +5,9 @@
  *
  * @category   Jkphl
  * @package    Jkphl\Micrometa
- * @subpackage Jkphl\Micrometa\Tests\Domain
- * @author     Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright  Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @subpackage Jkphl\Micrometa\Tests
+ * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @copyright  Copyright © 2018 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
@@ -34,45 +34,29 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Jkphl\Micrometa\Tests\Infrastructure;
+namespace Jkphl\Micrometa\Ports;
 
-use Jkphl\Micrometa\Infrastructure\Factory\ParserFactory;
-use Jkphl\Micrometa\Infrastructure\Parser\AbstractParser;
-use Jkphl\Micrometa\Infrastructure\Parser\JsonLD;
-use Jkphl\Micrometa\Infrastructure\Parser\LinkType;
-use Jkphl\Micrometa\Infrastructure\Parser\Microdata;
-use Jkphl\Micrometa\Infrastructure\Parser\Microformats;
-use Jkphl\Micrometa\Infrastructure\Parser\RdfaLite;
-use Jkphl\Micrometa\Tests\AbstractTestBase;
-use League\Uri\Http;
+use Jkphl\Micrometa\Ports\Cache;
+use Jkphl\Micrometa\AbstractTestBase;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
+use Symfony\Component\Cache\Adapter\NullAdapter;
 
 /**
- * Parser factory tests
+ * Cache controller test
  *
  * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Tests
  */
-class ParserFactoryTest extends AbstractTestBase
+class CacheTest extends AbstractTestBase
 {
     /**
-     * Test the parser factory
+     * Test the cache controller
      */
-    public function testParserFactory()
+    public function testCache()
     {
-        $formats = Microformats::FORMAT | Microdata::FORMAT | JsonLD::FORMAT | RdfaLite::FORMAT | LinkType::FORMAT;
-        $uri     = 'http://localhost/example.html';
-        $parsers = ParserFactory::createParsersFromFormats($formats, Http::createFromString($uri), self::getLogger());
-
-        /**
-         * @var int $parserFormat
-         * @var AbstractParser $parser
-         */
-        foreach ($parsers as $parserFormat => $parser) {
-            $this->assertInstanceOf(ParserFactory::$parsers[$parserFormat], $parser);
-            $this->assertEquals($uri, $parser->getUri());
-            $formats &= ~$parserFormat;
-        }
-
-        $this->assertEquals(0, $formats);
+        $this->assertInstanceOf(ArrayAdapter::class, Cache::getAdapter());
+        $cache = new NullAdapter();
+        Cache::setAdapter($cache);
+        $this->assertEquals($cache, Cache::getAdapter());
     }
 }
