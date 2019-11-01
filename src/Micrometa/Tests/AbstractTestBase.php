@@ -55,18 +55,25 @@ abstract class AbstractTestBase extends TestCase
      *
      * @var string
      */
-    protected static $fixture =  __DIR__.DIRECTORY_SEPARATOR.'Fixture'.DIRECTORY_SEPARATOR;
+    protected static $fixture = __DIR__.DIRECTORY_SEPARATOR.'Fixture'.DIRECTORY_SEPARATOR;
 
     /**
      * Logger
      *
      * @var LoggerInterface
      */
-    private static $logger;
+    protected static $logger;
 
-    protected static function getLogger(int $threshold = 400) : LoggerInterface
+    /**
+     * Return a logger instance
+     *
+     * @param int $threshold
+     *
+     * @return LoggerInterface
+     */
+    protected static function getLogger(int $threshold = 400): LoggerInterface
     {
-        return self::$logger[$threshold] ?? self::$logger[$threshold] = new ExceptionLogger($threshold);
+        return static::$logger[$threshold] ?? (static::$logger[$threshold] = new ExceptionLogger($threshold));
     }
 
     /**

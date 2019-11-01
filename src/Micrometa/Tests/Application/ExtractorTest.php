@@ -36,6 +36,8 @@
 
 namespace Jkphl\Micrometa\Tests\Application;
 
+use ComposerLocator;
+use DOMDocument;
 use Jkphl\Domfactory\Ports\Dom;
 use Jkphl\Micrometa\Application\Contract\ParsingResultInterface;
 use Jkphl\Micrometa\Application\Item\Item;
@@ -62,7 +64,7 @@ class ExtractorTest extends AbstractTestBase
     {
         // Create a DOM with RDFa Lite 1.1 markup
         list($rdfaLiteUri, $rdfaLiteDom) = $this->getUriFixture('rdfa-lite/article-rdfa-lite.html');
-        $this->assertInstanceOf(\DOMDocument::class, $rdfaLiteDom);
+        $this->assertInstanceOf(DOMDocument::class, $rdfaLiteDom);
 
         // Create an RDFa Lite 1.1 parser
         $rdfaLiteParser = new RdfaLite($rdfaLiteUri, self::getLogger());
@@ -84,7 +86,7 @@ class ExtractorTest extends AbstractTestBase
     {
         // Create a DOM with HTML Microdata markup
         list($microdataUri, $microdataDom) = $this->getUriFixture('html-microdata/article-microdata.html');
-        $this->assertInstanceOf(\DOMDocument::class, $microdataDom);
+        $this->assertInstanceOf(DOMDocument::class, $microdataDom);
 
         // Create an HTML microdata parser
         $microdataParser = new Microdata($microdataUri, new ExceptionLogger());
@@ -104,8 +106,8 @@ class ExtractorTest extends AbstractTestBase
      */
     public function testMicroformatsExtraction()
     {
-        $microformatsTests = \ComposerLocator::getPath('mf2/tests').DIRECTORY_SEPARATOR.'tests'.
-            DIRECTORY_SEPARATOR.'microformats-v2'.DIRECTORY_SEPARATOR;
+        $microformatsTests = ComposerLocator::getPath('mf2/tests').DIRECTORY_SEPARATOR.'tests'.
+                             DIRECTORY_SEPARATOR.'microformats-v2'.DIRECTORY_SEPARATOR;
 
         $this->getAndTestMicroformatsExtractionBase(
             $microformatsTests.'h-product'.DIRECTORY_SEPARATOR.'aggregate.html'
@@ -124,7 +126,7 @@ class ExtractorTest extends AbstractTestBase
         // Create a DOM with Microformats markup
         $microformats    = file_get_contents($file);
         $microformatsDom = Dom::createFromString($microformats);
-        $this->assertInstanceOf(\DOMDocument::class, $microformatsDom);
+        $this->assertInstanceOf(DOMDocument::class, $microformatsDom);
 
         // Create a Microformats 2 parser
         $microformatsUri    = Http::createFromString('http://localhost:1349/aggregate.html');

@@ -36,10 +36,11 @@
 
 namespace Jkphl\Micrometa\Tests\Infrastructure;
 
+use Jkphl\Micrometa\Application\Contract\ParserInterface;
 use Jkphl\Micrometa\Application\Item\Item;
+use Jkphl\Micrometa\Application\Item\ItemInterface;
 use Jkphl\Micrometa\Application\Value\StringValue;
 use Jkphl\Micrometa\Domain\Item\Iri;
-use Jkphl\Micrometa\Infrastructure\Logger\ExceptionLogger;
 use Jkphl\Micrometa\Infrastructure\Parser\JsonLD;
 use Jkphl\Micrometa\Infrastructure\Parser\LinkType;
 use Jkphl\Micrometa\Infrastructure\Parser\Microdata;
@@ -75,6 +76,24 @@ class ParserTest extends AbstractTestBase
             $this->assertEquals(strval($index + 1), strval($propertyValues[$index]));
             $this->assertEquals($language, $propertyValues[$index]->getLanguage());
         }
+    }
+
+    /**
+     * Parse items from fixture with a particular parser type
+     *
+     * @param string $fixture     Fixture
+     * @param string $parser      Parser class name
+     * @param int $errorThreshold Error threshold
+     *
+     * @return ItemInterface[] Items
+     */
+    protected function parseItems(string $fixture, string $parser, int $errorThreshold = 400)
+    {
+        list($uri, $dom) = $this->getUriFixture($fixture);
+        /** @var ParserInterface $parser */
+        $parser = new $parser($uri, self::getLogger($errorThreshold));
+
+        return $parser->parseDom($dom)->getItems();
     }
 
     /**
@@ -130,10 +149,26 @@ class ParserTest extends AbstractTestBase
      */
     public function testMicrodataParser()
     {
-        $items = $this->parseItems('html-microdata/article-microdata.html', Microdata::class);
+        $items              = $this->parseItems('html-microdata/article-microdata.html', Microdata::class);
         $expectedItemFormat = Microdata::FORMAT;
-        $expectedItemIri = new Iri('http://schema.org/', 'NewsArticle');
+        $expectedItemIri    = new Iri('http://schema.org/', 'NewsArticle');
         $this->assertItemParsedAs($items, $expectedItemFormat, $expectedItemIri);
+    }
+
+    /**
+     * Assert that items are of a particular type
+     *
+     * @param ItemInterface[] $items  Items
+     * @param int $expectedItemFormat Expected item format
+     * @param Iri $expectedItemIri    Expected item IRI
+     */
+    protected function assertItemParsedAs(array $items, int $expectedItemFormat, Iri $expectedItemIri)
+    {
+        $this->assertIsArray($items);
+        $this->assertCount(1, $items);
+        $this->assertInstanceOf(Item::class, $items[0]);
+        $this->assertEquals($expectedItemFormat, $items[0]->getFormat());
+        $this->assertEquals([$expectedItemIri], $items[0]->getType());
     }
 
     /**
@@ -141,9 +176,9 @@ class ParserTest extends AbstractTestBase
      */
     public function testRdfaLiteParser()
     {
-        $items = $this->parseItems('rdfa-lite/article-rdfa-lite.html', RdfaLite::class);
+        $items              = $this->parseItems('rdfa-lite/article-rdfa-lite.html', RdfaLite::class);
         $expectedItemFormat = RdfaLite::FORMAT;
-        $expectedItemIri = new Iri('http://schema.org/', 'NewsArticle');
+        $expectedItemIri    = new Iri('http://schema.org/', 'NewsArticle');
         $this->assertItemParsedAs($items, $expectedItemFormat, $expectedItemIri);
     }
 
@@ -158,21 +193,5 @@ class ParserTest extends AbstractTestBase
         $this->assertInstanceOf(Item::class, $items[0]);
         $this->assertEquals(LinkType::FORMAT, $items[0]->getFormat());
         $this->assertEquals([new Iri(LinkType::HTML_PROFILE_URI, 'icon')], $items[0]->getType());
-    }
-
-    private function assertItemParsedAs(array $items, int $expectedItemFormat, Iri $expectedItemIri)
-    {
-        $this->assertIsArray($items);
-        $this->assertCount(1, $items);
-        $this->assertInstanceOf(Item::class, $items[0]);
-        $this->assertEquals($expectedItemFormat, $items[0]->getFormat());
-        $this->assertEquals([$expectedItemIri], $items[0]->getType());
-    }
-
-    private function parseItems(string $fixture, string $parser, int $errorThreshold = 400)
-    {
-        list($uri, $dom) = $this->getUriFixture($fixture);
-        $parser = new $parser($uri, self::getLogger($errorThreshold));
-        return $parser->parseDom($dom)->getItems();
     }
 }
