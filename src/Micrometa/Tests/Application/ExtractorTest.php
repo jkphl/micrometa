@@ -56,23 +56,6 @@ use League\Uri\Http;
 class ExtractorTest extends AbstractTestBase
 {
     /**
-     * Microformats tests root path
-     *
-     * @var string
-     */
-    protected static $microformatsTests;
-
-    /**
-     * Setup before all tests
-     */
-    public static function setUpBeforeClass()
-    {
-        parent::setUpBeforeClass();
-        self::$microformatsTests = \ComposerLocator::getPath('mf2/tests').DIRECTORY_SEPARATOR.'tests'.
-                                   DIRECTORY_SEPARATOR.'microformats-v2'.DIRECTORY_SEPARATOR;
-    }
-
-    /**
      * Test the RDFa Lite 1.1 extraction
      */
     public function testRdfaLiteExtraction()
@@ -82,7 +65,7 @@ class ExtractorTest extends AbstractTestBase
         $this->assertInstanceOf(\DOMDocument::class, $rdfaLiteDom);
 
         // Create an RDFa Lite 1.1 parser
-        $rdfaLiteParser = new RdfaLite($rdfaLiteUri, self::$logger);
+        $rdfaLiteParser = new RdfaLite($rdfaLiteUri, self::getLogger());
         $this->assertEquals($rdfaLiteUri, $rdfaLiteParser->getUri());
 
         // Create an extractor service
@@ -121,8 +104,11 @@ class ExtractorTest extends AbstractTestBase
      */
     public function testMicroformatsExtraction()
     {
+        $microformatsTests = \ComposerLocator::getPath('mf2/tests').DIRECTORY_SEPARATOR.'tests'.
+            DIRECTORY_SEPARATOR.'microformats-v2'.DIRECTORY_SEPARATOR;
+
         $this->getAndTestMicroformatsExtractionBase(
-            self::$microformatsTests.'h-product'.DIRECTORY_SEPARATOR.'aggregate.html'
+            $microformatsTests.'h-product'.DIRECTORY_SEPARATOR.'aggregate.html'
         );
     }
 
