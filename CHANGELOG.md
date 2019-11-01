@@ -4,6 +4,14 @@ All Notable changes to *jkphl/micrometa* will be documented in this file.
 
 Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [3.0.1] - Bugfix release 2019-11-01
+
+### Fixed
+
+* Sanitize JSON-LD parsing when ending with semicolon ([#41](https://github.com/jkphl/micrometa/pull/41))
+* Fix broken tests ([#38](https://github.com/jkphl/micrometa/pull/38))
+* Fix documentation typo ([#37](https://github.com/jkphl/micrometa/pull/37))  
+
 ## [3.0.0] - Dendency update release 2018-12-25
 
 ### Changed
