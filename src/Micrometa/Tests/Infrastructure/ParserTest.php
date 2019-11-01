@@ -36,10 +36,11 @@
 
 namespace Jkphl\Micrometa\Tests\Infrastructure;
 
+use Jkphl\Micrometa\Application\Contract\ParserInterface;
 use Jkphl\Micrometa\Application\Item\Item;
+use Jkphl\Micrometa\Application\Item\ItemInterface;
 use Jkphl\Micrometa\Application\Value\StringValue;
 use Jkphl\Micrometa\Domain\Item\Iri;
-use Jkphl\Micrometa\Infrastructure\Logger\ExceptionLogger;
 use Jkphl\Micrometa\Infrastructure\Parser\JsonLD;
 use Jkphl\Micrometa\Infrastructure\Parser\LinkType;
 use Jkphl\Micrometa\Infrastructure\Parser\Microdata;
@@ -60,9 +61,7 @@ class ParserTest extends AbstractTestBase
      */
     public function testLanguageJsonLDParser()
     {
-        list($uri, $dom) = $this->getUriFixture('json-ld/jsonld-languages.html');
-        $parser = new JsonLD($uri, self::$logger);
-        $items  = $parser->parseDom($dom)->getItems();
+        $items = $this->parseItems('json-ld/jsonld-languages.html', JsonLD::class);
         $this->assertTrue(is_array($items));
         $this->assertEquals(1, count($items));
         $this->assertInstanceOf(Item::class, $items[0]);
@@ -80,13 +79,29 @@ class ParserTest extends AbstractTestBase
     }
 
     /**
+     * Parse items from fixture with a particular parser type
+     *
+     * @param string $fixture     Fixture
+     * @param string $parser      Parser class name
+     * @param int $errorThreshold Error threshold
+     *
+     * @return ItemInterface[] Items
+     */
+    protected function parseItems(string $fixture, string $parser, int $errorThreshold = 400)
+    {
+        list($uri, $dom) = $this->getUriFixture($fixture);
+        /** @var ParserInterface $parser */
+        $parser = new $parser($uri, self::getLogger($errorThreshold));
+
+        return $parser->parseDom($dom)->getItems();
+    }
+
+    /**
      * Test the JSON-LD parser with multiple documents and file cache
      */
     public function testMultipleJsonLDParser()
     {
-        list($uri, $dom) = $this->getUriFixture('json-ld/jsonld-examples.html');
-        $parser = new JsonLD($uri, new ExceptionLogger(0));
-        $items  = $parser->parseDom($dom)->getItems();
+        $items = $this->parseItems('json-ld/jsonld-examples.html', JsonLD::class, 0);
         $this->assertTrue(is_array($items));
         $this->assertEquals(5, count($items));
         $this->assertInstanceOf(Item::class, $items[0]);
@@ -99,9 +114,7 @@ class ParserTest extends AbstractTestBase
      */
     public function testInvalidJsonLDParser()
     {
-        list($uri, $dom) = $this->getUriFixture('json-ld/jsonld-invalid.html');
-        $parser = new JsonLD($uri, new ExceptionLogger(0));
-        $items  = $parser->parseDom($dom)->getItems();
+        $items = $this->parseItems('json-ld/jsonld-invalid.html', JsonLD::class, 0);
         $this->assertTrue(is_array($items));
         $this->assertEquals(0, count($items));
     }
@@ -111,9 +124,7 @@ class ParserTest extends AbstractTestBase
      */
     public function testMicroformatsParser()
     {
-        list($uri, $dom) = $this->getUriFixture('microformats/entry.html');
-        $parser = new Microformats($uri, self::$logger);
-        $items  = $parser->parseDom($dom)->getItems();
+        $items = $this->parseItems('microformats/entry.html', Microformats::class);
         $this->assertTrue(is_array($items));
         $this->assertEquals(1, count($items));
         $this->assertInstanceOf(Item::class, $items[0]);
@@ -125,9 +136,7 @@ class ParserTest extends AbstractTestBase
      */
     public function testNestedMicroformatsParser()
     {
-        list($uri, $dom) = $this->getUriFixture('microformats/nested-events.html');
-        $parser = new Microformats($uri, self::$logger);
-        $items  = $parser->parseDom($dom)->getItems();
+        $items = $this->parseItems('microformats/nested-events.html', Microformats::class);
         $this->assertTrue(is_array($items));
         $this->assertEquals(1, count($items));
         $this->assertInstanceOf(Item::class, $items[0]);
@@ -140,14 +149,26 @@ class ParserTest extends AbstractTestBase
      */
     public function testMicrodataParser()
     {
-        list($uri, $dom) = $this->getUriFixture('html-microdata/article-microdata.html');
-        $parser = new Microdata($uri, self::$logger);
-        $items  = $parser->parseDom($dom)->getItems();
-        $this->assertTrue(is_array($items));
-        $this->assertEquals(1, count($items));
+        $items              = $this->parseItems('html-microdata/article-microdata.html', Microdata::class);
+        $expectedItemFormat = Microdata::FORMAT;
+        $expectedItemIri    = new Iri('http://schema.org/', 'NewsArticle');
+        $this->assertItemParsedAs($items, $expectedItemFormat, $expectedItemIri);
+    }
+
+    /**
+     * Assert that items are of a particular type
+     *
+     * @param ItemInterface[] $items  Items
+     * @param int $expectedItemFormat Expected item format
+     * @param Iri $expectedItemIri    Expected item IRI
+     */
+    protected function assertItemParsedAs(array $items, int $expectedItemFormat, Iri $expectedItemIri)
+    {
+        $this->assertIsArray($items);
+        $this->assertCount(1, $items);
         $this->assertInstanceOf(Item::class, $items[0]);
-        $this->assertEquals(Microdata::FORMAT, $items[0]->getFormat());
-        $this->assertEquals([new Iri('http://schema.org/', 'NewsArticle')], $items[0]->getType());
+        $this->assertEquals($expectedItemFormat, $items[0]->getFormat());
+        $this->assertEquals([$expectedItemIri], $items[0]->getType());
     }
 
     /**
@@ -155,14 +176,10 @@ class ParserTest extends AbstractTestBase
      */
     public function testRdfaLiteParser()
     {
-        list($uri, $dom) = $this->getUriFixture('rdfa-lite/article-rdfa-lite.html');
-        $parser = new RdfaLite($uri, self::$logger);
-        $items  = $parser->parseDom($dom)->getItems();
-        $this->assertTrue(is_array($items));
-        $this->assertEquals(1, count($items));
-        $this->assertInstanceOf(Item::class, $items[0]);
-        $this->assertEquals(RdfaLite::FORMAT, $items[0]->getFormat());
-        $this->assertEquals([new Iri('http://schema.org/', 'NewsArticle')], $items[0]->getType());
+        $items              = $this->parseItems('rdfa-lite/article-rdfa-lite.html', RdfaLite::class);
+        $expectedItemFormat = RdfaLite::FORMAT;
+        $expectedItemIri    = new Iri('http://schema.org/', 'NewsArticle');
+        $this->assertItemParsedAs($items, $expectedItemFormat, $expectedItemIri);
     }
 
     /**
@@ -170,9 +187,7 @@ class ParserTest extends AbstractTestBase
      */
     public function testLinkTypeParser()
     {
-        list($uri, $dom) = $this->getUriFixture('link-type/valid-test.html');
-        $parser = new LinkType($uri, self::$logger);
-        $items  = $parser->parseDom($dom)->getItems();
+        $items = $this->parseItems('link-type/valid-test.html', LinkType::class);
         $this->assertTrue(is_array($items));
         $this->assertEquals(4, count($items));
         $this->assertInstanceOf(Item::class, $items[0]);

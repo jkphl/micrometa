@@ -36,6 +36,8 @@
 
 namespace Jkphl\Micrometa\Tests\Application;
 
+use ComposerLocator;
+use DOMDocument;
 use Jkphl\Domfactory\Ports\Dom;
 use Jkphl\Micrometa\Application\Contract\ParsingResultInterface;
 use Jkphl\Micrometa\Application\Item\Item;
@@ -56,33 +58,16 @@ use League\Uri\Http;
 class ExtractorTest extends AbstractTestBase
 {
     /**
-     * Microformats tests root path
-     *
-     * @var string
-     */
-    protected static $microformatsTests;
-
-    /**
-     * Setup before all tests
-     */
-    public static function setUpBeforeClass()
-    {
-        parent::setUpBeforeClass();
-        self::$microformatsTests = \ComposerLocator::getPath('mf2/tests').DIRECTORY_SEPARATOR.'tests'.
-                                   DIRECTORY_SEPARATOR.'microformats-v2'.DIRECTORY_SEPARATOR;
-    }
-
-    /**
      * Test the RDFa Lite 1.1 extraction
      */
     public function testRdfaLiteExtraction()
     {
         // Create a DOM with RDFa Lite 1.1 markup
         list($rdfaLiteUri, $rdfaLiteDom) = $this->getUriFixture('rdfa-lite/article-rdfa-lite.html');
-        $this->assertInstanceOf(\DOMDocument::class, $rdfaLiteDom);
+        $this->assertInstanceOf(DOMDocument::class, $rdfaLiteDom);
 
         // Create an RDFa Lite 1.1 parser
-        $rdfaLiteParser = new RdfaLite($rdfaLiteUri, self::$logger);
+        $rdfaLiteParser = new RdfaLite($rdfaLiteUri, self::getLogger());
         $this->assertEquals($rdfaLiteUri, $rdfaLiteParser->getUri());
 
         // Create an extractor service
@@ -101,7 +86,7 @@ class ExtractorTest extends AbstractTestBase
     {
         // Create a DOM with HTML Microdata markup
         list($microdataUri, $microdataDom) = $this->getUriFixture('html-microdata/article-microdata.html');
-        $this->assertInstanceOf(\DOMDocument::class, $microdataDom);
+        $this->assertInstanceOf(DOMDocument::class, $microdataDom);
 
         // Create an HTML microdata parser
         $microdataParser = new Microdata($microdataUri, new ExceptionLogger());
@@ -121,8 +106,11 @@ class ExtractorTest extends AbstractTestBase
      */
     public function testMicroformatsExtraction()
     {
+        $microformatsTests = ComposerLocator::getPath('mf2/tests').DIRECTORY_SEPARATOR.'tests'.
+                             DIRECTORY_SEPARATOR.'microformats-v2'.DIRECTORY_SEPARATOR;
+
         $this->getAndTestMicroformatsExtractionBase(
-            self::$microformatsTests.'h-product'.DIRECTORY_SEPARATOR.'aggregate.html'
+            $microformatsTests.'h-product'.DIRECTORY_SEPARATOR.'aggregate.html'
         );
     }
 
@@ -138,7 +126,7 @@ class ExtractorTest extends AbstractTestBase
         // Create a DOM with Microformats markup
         $microformats    = file_get_contents($file);
         $microformatsDom = Dom::createFromString($microformats);
-        $this->assertInstanceOf(\DOMDocument::class, $microformatsDom);
+        $this->assertInstanceOf(DOMDocument::class, $microformatsDom);
 
         // Create a Microformats 2 parser
         $microformatsUri    = Http::createFromString('http://localhost:1349/aggregate.html');

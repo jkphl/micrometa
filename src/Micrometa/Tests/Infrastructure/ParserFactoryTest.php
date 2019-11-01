@@ -61,7 +61,7 @@ class ParserFactoryTest extends AbstractTestBase
     {
         $formats = Microformats::FORMAT | Microdata::FORMAT | JsonLD::FORMAT | RdfaLite::FORMAT | LinkType::FORMAT;
         $uri     = 'http://localhost/example.html';
-        $parsers = ParserFactory::createParsersFromFormats($formats, Http::createFromString($uri), self::$logger);
+        $parsers = ParserFactory::createParsersFromFormats($formats, Http::createFromString($uri), self::getLogger());
 
         /**
          * @var int $parserFormat
