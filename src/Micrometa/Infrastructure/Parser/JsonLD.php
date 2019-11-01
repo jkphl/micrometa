@@ -134,6 +134,8 @@ class JsonLD extends AbstractParser
      */
     protected function parseDocument($jsonLDDocSource)
     {
+        $jsonLDDocSource = $this->sanitizeJsonSource($jsonLDDocSource);
+
         // Unserialize the JSON-LD document
         $jsonLDDoc = @json_decode($jsonLDDocSource);
 
@@ -338,5 +340,16 @@ class JsonLD extends AbstractParser
     protected function parseTypedValue(TypedValue $value)
     {
         return $value->getValue();
+    }
+
+    private function sanitizeJsonSource($jsonLDDocSource)
+    {
+        $jsonLDDocSource = trim($jsonLDDocSource);
+
+        if (substr($jsonLDDocSource, -1) === ';') {
+            $jsonLDDocSource = substr_replace($jsonLDDocSource, '', -1);
+        }
+
+        return $jsonLDDocSource;
     }
 }

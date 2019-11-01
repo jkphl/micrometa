@@ -120,6 +120,18 @@ class ParserTest extends AbstractTestBase
     }
 
     /**
+     * Test the JSON-LD parser with an invalid document
+     */
+    public function testFixOnSemicolonForJsonLDParser()
+    {
+        list($uri, $dom) = $this->getUriFixture('json-ld/jsonld-ending-semicolon.html');
+        $parser = new JsonLD($uri, new ExceptionLogger(0));
+        $items  = $parser->parseDom($dom)->getItems();
+        $this->assertTrue(is_array($items));
+        $this->assertEquals(1, count($items));
+    }
+
+    /**
      * Test the Microformats parser
      */
     public function testMicroformatsParser()
