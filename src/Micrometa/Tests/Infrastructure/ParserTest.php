@@ -124,9 +124,7 @@ class ParserTest extends AbstractTestBase
      */
     public function testFixOnSemicolonForJsonLDParser()
     {
-        list($uri, $dom) = $this->getUriFixture('json-ld/jsonld-ending-semicolon.html');
-        $parser = new JsonLD($uri, new ExceptionLogger(0));
-        $items  = $parser->parseDom($dom)->getItems();
+        $items = $this->parseItems('json-ld/jsonld-ending-semicolon.html', JsonLD::class, 0);
         $this->assertTrue(is_array($items));
         $this->assertEquals(1, count($items));
     }
