@@ -4,11 +4,22 @@ php:
     - 7.2
     - 7.3
     - 7.4
+    - nightly
+
 env:
     - APP_ENV=development CC_TEST_REPORTER_ID=efd18a36922628f0536f2f08cf7ceca763f5f2feb6f3638037381487ca3312ae
+
 matrix:
+    include:
+      - env: COMPOSER_FLAGS="--prefer-lowest"
     allow_failures:
         - php: 7.1
+        - php: nightly
+
+install:
+    # use "update" instead of "install" since it allows using the "--prefer-lowest" option
+    - composer update $COMPOSER_FLAGS
+
 before_script:
     - travis_retry composer self-update
     - travis_retry composer install --no-interaction --prefer-source
@@ -17,8 +28,10 @@ before_script:
     - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
     - chmod +x ./cc-test-reporter
     - ./cc-test-reporter before-build
+
 script:
     - vendor/bin/phpunit --coverage-clover build/logs/clover.xml
+
 after_script:
     - wget https://scrutinizer-ci.com/ocular.phar
     - php ocular.phar code-coverage:upload --format=php-clover build/logs/clover.xml
