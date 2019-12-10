@@ -203,6 +203,10 @@ class JsonLD extends AbstractParser
      */
     protected function parseNodeType(NodeInterface $node): array
     {
+        if ($node->isBlankNode()) {
+            return [];
+        }
+      
         /** @var NodeInterface|NodeInterface[] $itemTypes */
         $itemTypes = $node->getType();
         $itemTypes = is_array($itemTypes) ? $itemTypes : [$itemTypes];
