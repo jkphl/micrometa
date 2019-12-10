@@ -45,7 +45,7 @@ use Jkphl\Micrometa\Application\Item\PropertyListInterface;
  * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Ports
  */
-interface ItemInterface extends ItemListInterface
+interface ItemInterface
 {
     /**
      * Return whether the item is of a particular type (or contained in a list of types)
