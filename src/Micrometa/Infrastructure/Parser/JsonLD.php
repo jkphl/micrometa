@@ -206,9 +206,22 @@ class JsonLD extends AbstractParser
         if ($node->isBlankNode()) {
             return [];
         }
+      
+        /** @var NodeInterface|NodeInterface[] $itemTypes */
+        $itemTypes = $node->getType();
+        $itemTypes = is_array($itemTypes) ? $itemTypes : [$itemTypes];
+        $itemTypes = array_filter($itemTypes);
 
-        /** @var Node $itemType */
-        return ($itemType = $node->getType()) ? [$this->vocabularyCache->expandIRI($itemType->getId())] : [];
+        if (empty($itemTypes)) {
+            return [];
+        }
+
+        $types = [];
+        foreach ($itemTypes as $itemType) {
+            $types[] = $this->vocabularyCache->expandIRI($itemType->getId());
+        }
+
+        return $types;
     }
 
     /**
