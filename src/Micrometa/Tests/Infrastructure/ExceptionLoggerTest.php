@@ -45,7 +45,7 @@ use Jkphl\Micrometa\Tests\AbstractTestBase;
  * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Tests
  */
-class LoggerTest extends AbstractTestBase
+class ExceptionLoggerTest extends AbstractTestBase
 {
     /**
      * Test the exception logger
