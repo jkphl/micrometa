@@ -49,15 +49,6 @@ class ExceptionLoggerTest extends AbstractTestBase
 {
     /**
      * Test the exception logger
-     */
-    public function testExceptionLogger()
-    {
-        $logger = new ExceptionLogger();
-        $this->assertTrue($logger->debug('DEBUG'));
-    }
-
-    /**
-     * Test the exception logger
      *
      * @expectedException \Jkphl\Micrometa\Ports\Exceptions\RuntimeException
      * @expectedExceptionMessage CRITICAL
