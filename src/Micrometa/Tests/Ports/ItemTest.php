@@ -79,12 +79,11 @@ class ItemTest extends AbstractTestBase
 
     /**
      * Test the item properties
-     *
-     * @expectedException \Jkphl\Micrometa\Ports\Exceptions\OutOfBoundsException
-     * @expectedExceptionCode 1491672553
      */
     public function testItemProperties()
     {
+        $this->expectException('Jkphl\Micrometa\Ports\Exceptions\OutOfBoundsException');
+        $this->expectExceptionCode('1491672553');
         $feedItem = $this->getFeedItem();
         $this->assertInstanceOf(Item::class, $feedItem);
 
@@ -113,12 +112,11 @@ class ItemTest extends AbstractTestBase
 
     /**
      * Test an unprofiled property
-     *
-     * @expectedException \Jkphl\Micrometa\Ports\Exceptions\OutOfBoundsException
-     * @expectedExceptionCode 1488315604
      */
     public function testItemUnprofiledProperty()
     {
+        $this->expectException('Jkphl\Micrometa\Ports\Exceptions\OutOfBoundsException');
+        $this->expectExceptionCode('1488315604');
         $feedItem = $this->getFeedItem();
         $this->assertInstanceOf(Item::class, $feedItem);
 
@@ -140,12 +138,11 @@ class ItemTest extends AbstractTestBase
 
     /**
      * Test a profiled property
-     *
-     * @expectedException \Jkphl\Micrometa\Ports\Exceptions\OutOfBoundsException
-     * @expectedExceptionCode 1488315604
      */
     public function testItemProfiledProperty()
     {
+        $this->expectException('Jkphl\Micrometa\Ports\Exceptions\OutOfBoundsException');
+        $this->expectExceptionCode('1488315604');
         $feedItem = $this->getFeedItem();
         $this->assertInstanceOf(Item::class, $feedItem);
 
@@ -167,12 +164,11 @@ class ItemTest extends AbstractTestBase
 
     /**
      * Test an unprofiled property
-     *
-     * @expectedException \Jkphl\Micrometa\Ports\Exceptions\OutOfBoundsException
-     * @expectedExceptionCode 1488315604
      */
     public function testItemAliasedProperty()
     {
+        $this->expectException('Jkphl\Micrometa\Ports\Exceptions\OutOfBoundsException');
+        $this->expectExceptionCode('1488315604');
         $feedItem = $this->getFeedItem();
         $this->assertInstanceOf(Item::class, $feedItem);
 
@@ -210,12 +206,11 @@ class ItemTest extends AbstractTestBase
 
     /**
      * Test a property stack
-     *
-     * @expectedException \Jkphl\Micrometa\Ports\Exceptions\OutOfBoundsException
-     * @expectedExceptionCode 1488315604
      */
     public function testItemPropertyStack()
     {
+        $this->expectException('Jkphl\Micrometa\Ports\Exceptions\OutOfBoundsException');
+        $this->expectExceptionCode('1488315604');
         $feedItem = $this->getFeedItem();
         $this->assertInstanceOf(Item::class, $feedItem);
 
@@ -249,12 +244,11 @@ class ItemTest extends AbstractTestBase
 
     /**
      * Test nested items
-     *
-     * @expectedException \Jkphl\Micrometa\Ports\Exceptions\InvalidArgumentException
-     * @expectedExceptionCode 1492418709
      */
     public function testItemNestedItems()
     {
+        $this->expectException('Jkphl\Micrometa\Ports\Exceptions\InvalidArgumentException');
+        $this->expectExceptionCode('1492418709');
         $feedItem = $this->getFeedItem();
         $this->assertInstanceOf(Item::class, $feedItem);
 
@@ -295,12 +289,11 @@ class ItemTest extends AbstractTestBase
 
     /**
      * Test non-existent nested item
-     *
-     * @expectedException \Jkphl\Micrometa\Ports\Exceptions\OutOfBoundsException
-     * @expectedExceptionCode 1492418999
      */
     public function testItemNonExistentNestedItems()
     {
+        $this->expectException('Jkphl\Micrometa\Ports\Exceptions\OutOfBoundsException');
+        $this->expectExceptionCode('1492418999');
         $feedItem = $this->getFeedItem();
         /** @noinspection PhpUndefinedMethodInspection */
         $this->assertEquals('John Doe', $feedItem->hEntry()->author->name);
@@ -310,12 +303,11 @@ class ItemTest extends AbstractTestBase
 
     /**
      * Test the item list export
-     *
-     * @expectedException \Jkphl\Micrometa\Ports\Exceptions\OutOfBoundsException
-     * @expectedExceptionCode 1492030227
      */
     public function testItemListExport()
     {
+        $this->expectException('Jkphl\Micrometa\Ports\Exceptions\OutOfBoundsException');
+        $this->expectExceptionCode('1492030227');
         $feedItem = $this->getFeedItem();
         $itemList = new ItemList([$feedItem]);
         $this->assertInstanceOf(ItemList::class, $itemList);
@@ -331,12 +323,11 @@ class ItemTest extends AbstractTestBase
 
     /**
      * Test the item list immutability
-     *
-     * @expectedException \Jkphl\Micrometa\Ports\Exceptions\RuntimeException
-     * @expectedExceptionCode 1495988721
      */
     public function testItemListImmutabilitySet()
     {
+        $this->expectException('Jkphl\Micrometa\Ports\Exceptions\RuntimeException');
+        $this->expectExceptionCode('1495988721');
         $feedItem = $this->getFeedItem();
         $itemList = new ItemList([$feedItem]);
         $this->assertInstanceOf(ItemList::class, $itemList);
@@ -346,12 +337,11 @@ class ItemTest extends AbstractTestBase
 
     /**
      * Test the item list immutability
-     *
-     * @expectedException \Jkphl\Micrometa\Ports\Exceptions\RuntimeException
-     * @expectedExceptionCode 1495988721
      */
     public function testItemListImmutabilityUnset()
     {
+        $this->expectException('Jkphl\Micrometa\Ports\Exceptions\RuntimeException');
+        $this->expectExceptionCode('1495988721');
         $feedItem = $this->getFeedItem();
         $itemList = new ItemList([$feedItem]);
         $this->assertInstanceOf(ItemList::class, $itemList);

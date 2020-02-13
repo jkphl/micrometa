@@ -64,12 +64,11 @@ class ItemObjectModelTest extends AbstractTestBase
 
     /**
      * Test the item object model
-     *
-     * @expectedException \Jkphl\Micrometa\Ports\Exceptions\OutOfBoundsException
-     * @expectedExceptionCode 1489268571
      */
     public function testItemObjectModel()
     {
+        $this->expectException('Jkphl\Micrometa\Ports\Exceptions\OutOfBoundsException');
+        $this->expectExceptionCode('1489268571');
         $xml = '<html/>';
         $dom = new \DOMDocument();
         $dom->loadXML($xml);

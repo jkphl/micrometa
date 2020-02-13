@@ -55,7 +55,7 @@
         "clue/graph-composer": "dev-master",
         "mf2/tests": "@dev",
         "mindplay/composer-locator": "^2.1",
-        "phpunit/phpunit": ">=7.0",
+        "phpunit/phpunit": "^8.5",
         "php-coveralls/php-coveralls": "^2.1",
         "squizlabs/php_codesniffer": "^3.3"
     }

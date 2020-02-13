@@ -175,12 +175,11 @@ class ItemFactoryTest extends AbstractTestBase
 
     /**
      * Test an invalid language tagged property value
-     *
-     * @expectedException \Jkphl\Micrometa\Ports\Exceptions\RuntimeException
-     * @expectedExceptionCode 1495906369
      */
     public function testInvalidLanguageTaggedPropertyValue()
     {
+        $this->expectException('Jkphl\Micrometa\Ports\Exceptions\RuntimeException');
+        $this->expectExceptionCode('1495906369');
         $itemFactory = new ItemFactory(0);
         $rawItem     = (object)[
             'type'       => ['test'],

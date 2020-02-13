@@ -197,67 +197,61 @@ class ItemTest extends AbstractTestBase
 
     /**
      * Test the item creation with an empty types list
-     *
-     * @expectedException \Jkphl\Micrometa\Domain\Exceptions\InvalidArgumentException
-     * @expectedExceptionCode 1490814631
      */
     public function testEmptyTypesList()
     {
+        $this->expectException('Jkphl\Micrometa\Domain\Exceptions\InvalidArgumentException');
+        $this->expectExceptionCode('1490814631');
         new Item(null);
     }
 
     /**
      * Test the item creation with an empty types list
-     *
-     * @expectedException \Jkphl\Micrometa\Domain\Exceptions\InvalidArgumentException
-     * @expectedExceptionCode 1488314667
      */
     public function testEmptyTypeName()
     {
+        $this->expectException('Jkphl\Micrometa\Domain\Exceptions\InvalidArgumentException');
+        $this->expectExceptionCode('1488314667');
         new Item('');
     }
 
     /**
      * Test the item creation with an empty property name
-     *
-     * @expectedException \Jkphl\Micrometa\Domain\Exceptions\InvalidArgumentException
-     * @expectedExceptionCode 1488314921
      */
     public function testEmptyPropertyName()
     {
+        $this->expectException('Jkphl\Micrometa\Domain\Exceptions\InvalidArgumentException');
+        $this->expectExceptionCode('1488314921');
         new Item('type', [$this->prp('', 'value')]);
     }
 
     /**
      * Test empty property value list
-     *
-     * @expectedException \Jkphl\Micrometa\Domain\Exceptions\InvalidArgumentException
-     * @expectedExceptionCode 1490814554
      */
     public function testInvalidPropertyStructure()
     {
+        $this->expectException('Jkphl\Micrometa\Domain\Exceptions\InvalidArgumentException');
+        $this->expectExceptionCode('1490814554');
         new Item('type', [(object)['invalid' => 'structure']]);
     }
 
     /**
      * Test the item creation with an invalid property value
-     *
-     * @expectedException \Jkphl\Micrometa\Domain\Exceptions\InvalidArgumentException
-     * @expectedExceptionCode 1488315339
      */
     public function testInvalidPropertyValue()
     {
+        $this->expectException('Jkphl\Micrometa\Domain\Exceptions\InvalidArgumentException');
+        $this->expectExceptionCode('1488315339');
         new Item('type', [(object)['profile' => '', 'name' => 'test', 'values' => [123]]]);
     }
 
     /**
      * Test the item creation with an invalid property value
-     *
-     * @expectedException \Jkphl\Micrometa\Domain\Exceptions\OutOfBoundsException
-     * @expectedExceptionCode 1488315604
      */
     public function testUnknownPropertyName()
     {
+        $this->expectException('Jkphl\Micrometa\Domain\Exceptions\OutOfBoundsException');
+        $this->expectExceptionCode('1488315604');
         $item = new Item('type');
         $item->getProperty('name');
     }
