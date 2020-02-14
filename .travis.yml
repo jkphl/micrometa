@@ -1,5 +1,6 @@
 language: php
 php:
+    - 7.1
     - 7.2
     - 7.3
     - 7.4
@@ -7,7 +8,7 @@ env:
     - APP_ENV=development CC_TEST_REPORTER_ID=efd18a36922628f0536f2f08cf7ceca763f5f2feb6f3638037381487ca3312ae
 matrix:
     allow_failures:
-        - php: hhvm
+        - php: 7.1
 before_script:
     - travis_retry composer self-update
     - travis_retry composer install --no-interaction --prefer-source
