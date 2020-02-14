@@ -37,7 +37,7 @@
         "monolog/monolog": "^1.24 || ^2",
         "psr/cache": "^1.0",
         "psr/log": "^1.1",
-        "symfony/cache": "^4.0"
+        "symfony/cache": "^4.0|^5.0"
     },
     "autoload": {
         "psr-4": {
@@ -55,7 +55,7 @@
         "clue/graph-composer": "dev-master",
         "mf2/tests": "@dev",
         "mindplay/composer-locator": "^2.1",
-        "phpunit/phpunit": ">=7.0",
+        "phpunit/phpunit": "^7.0 || ^8.5",
         "php-coveralls/php-coveralls": "^2.1",
         "squizlabs/php_codesniffer": "^3.3"
     }

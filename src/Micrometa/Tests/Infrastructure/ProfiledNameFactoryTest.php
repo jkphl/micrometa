@@ -47,7 +47,7 @@ use Jkphl\Micrometa\Tests\AbstractTestBase;
  * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Tests
  */
-class ProfiledNamesFactoryTest extends AbstractTestBase
+class ProfiledNameFactoryTest extends AbstractTestBase
 {
     /**
      * Test the profiled name factory
@@ -122,34 +122,31 @@ class ProfiledNamesFactoryTest extends AbstractTestBase
 
     /**
      * Test an invalid profiled name object
-     *
-     * @expectedException \Jkphl\Micrometa\Ports\Exceptions\InvalidArgumentException
-     * @expectedExceptionCode 1489528854
      */
     public function testInvalidObjectProfiledName()
     {
+        $this->expectException('Jkphl\Micrometa\Ports\Exceptions\InvalidArgumentException');
+        $this->expectExceptionCode('1489528854');
         ProfiledNamesFactory::createFromArguments([(object)['missing' => 'name']]);
     }
 
     /**
      * Test an invalid profiled name array
-     *
-     * @expectedException \Jkphl\Micrometa\Ports\Exceptions\InvalidArgumentException
-     * @expectedExceptionCode 1491063221
      */
     public function testInvalidArrayProfiledName()
     {
+        $this->expectException('Jkphl\Micrometa\Ports\Exceptions\InvalidArgumentException');
+        $this->expectExceptionCode('1491063221');
         ProfiledNamesFactory::createFromArguments([['invalid' => 'array']]);
     }
 
     /**
      * Test an invalid profiled name sting
-     *
-     * @expectedException \Jkphl\Micrometa\Ports\Exceptions\InvalidArgumentException
-     * @expectedExceptionCode 1489528854
      */
     public function testInvalidStringProfiledName()
     {
+        $this->expectException('Jkphl\Micrometa\Ports\Exceptions\InvalidArgumentException');
+        $this->expectExceptionCode('1489528854');
         ProfiledNamesFactory::createFromArguments(['']);
     }
 }

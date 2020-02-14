@@ -62,12 +62,11 @@ class ParserTest extends AbstractTestBase
 
     /**
      * Test the JSON-LD parser with an invalid JSON-LD document
-     *
-     * @expectedException \Jkphl\Micrometa\Ports\Exceptions\RuntimeException
-     * @expectedExceptionCode 400
      */
     public function testJsonLDParser()
     {
+        $this->expectException('Jkphl\Micrometa\Ports\Exceptions\RuntimeException');
+        $this->expectExceptionCode('400');
         $parser          = new Parser(Format::JSON_LD);
         $itemObjectModel = $parser('http://localhost:1349/json-ld/jsonld-invalid.html');
         $this->assertInstanceOf(ItemObjectModelInterface::class, $itemObjectModel);

@@ -52,12 +52,11 @@ class PropertyListTest extends AbstractTestBase
 {
     /**
      * Test the property list
-     *
-     * @expectedException \Jkphl\Micrometa\Domain\Exceptions\ErrorException
-     * @expectedExceptionCode 1489784392
      */
     public function testPropertyList()
     {
+        $this->expectException('Jkphl\Micrometa\Domain\Exceptions\ErrorException');
+        $this->expectExceptionCode('1489784392');
         $propertyList = new PropertyList();
         $this->assertInstanceOf(PropertyList::class, $propertyList);
         $this->assertEquals(0, count($propertyList));
@@ -139,12 +138,11 @@ class PropertyListTest extends AbstractTestBase
 
     /**
      * Test an unprofiled invalid property
-     *
-     * @expectedException \Jkphl\Micrometa\Domain\Exceptions\OutOfBoundsException
-     * @expectedExceptionCode 1488315604
      */
     public function testUnprofiledInvalidProperty()
     {
+        $this->expectException('Jkphl\Micrometa\Domain\Exceptions\OutOfBoundsException');
+        $this->expectExceptionCode('1488315604');
         $propertyList = new PropertyList();
         $this->assertInstanceOf(PropertyList::class, $propertyList);
         $propertyList['invalid'];
@@ -152,12 +150,11 @@ class PropertyListTest extends AbstractTestBase
 
     /**
      * Test an profiled invalid property
-     *
-     * @expectedException \Jkphl\Micrometa\Domain\Exceptions\OutOfBoundsException
-     * @expectedExceptionCode 1488315604
      */
     public function testProfiledInvalidProperty()
     {
+        $this->expectException('Jkphl\Micrometa\Domain\Exceptions\OutOfBoundsException');
+        $this->expectExceptionCode('1488315604');
         $propertyList = new PropertyList();
         $this->assertInstanceOf(PropertyList::class, $propertyList);
         $propertyList->offsetGet((object)['name' => 'invalid', 'profile' => MicroformatsFactory::MF2_PROFILE_URI]);

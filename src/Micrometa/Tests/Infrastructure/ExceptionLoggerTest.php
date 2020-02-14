@@ -49,26 +49,24 @@ class ExceptionLoggerTest extends AbstractTestBase
 {
     /**
      * Test the exception logger
-     *
-     * @expectedException \Jkphl\Micrometa\Ports\Exceptions\RuntimeException
-     * @expectedExceptionMessage CRITICAL
-     * @expectedExceptionCode    500
      */
     public function testNoContextExceptionLogger()
     {
+        $this->expectException('Jkphl\Micrometa\Ports\Exceptions\RuntimeException');
+        $this->expectExceptionCode('500');
+        $this->expectExceptionMessage('CRITICAL');
         $logger = new ExceptionLogger();
         $logger->critical('CRITICAL');
     }
 
     /**
      * Test the exception logger with a context
-     *
-     * @expectedException \ErrorException
-     * @expectedExceptionMessage ERROR
-     * @expectedExceptionCode    1234
      */
     public function testContextExceptionLogger()
     {
+        $this->expectException('ErrorException');
+        $this->expectExceptionCode('1234');
+        $this->expectExceptionMessage('ERROR');
         $exception = new \ErrorException('ERROR', 1234);
         $logger    = new ExceptionLogger();
         $logger->critical('CRITICAL', ['exception' => $exception]);
