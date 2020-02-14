@@ -49,12 +49,11 @@ class IriTest extends AbstractTestBase
 {
     /**
      * Test IRIs
-     *
-     * @expectedException \Jkphl\Micrometa\Domain\Exceptions\OutOfBoundsException
-     * @expectedExceptionCode 1495895152
      */
     public function testIri()
     {
+        $this->expectException('Jkphl\Micrometa\Domain\Exceptions\OutOfBoundsException');
+        $this->expectExceptionCode('1495895152');
         $profile = md5(rand());
         $name    = md5(rand());
         $iri     = new Iri($profile, $name);
@@ -70,12 +69,11 @@ class IriTest extends AbstractTestBase
 
     /**
      * Test IRI immutability
-     *
-     * @expectedException \Jkphl\Micrometa\Domain\Exceptions\ErrorException
-     * @expectedExceptionCode 1495895278
      */
     public function testIriImmutability()
     {
+        $this->expectException('Jkphl\Micrometa\Domain\Exceptions\ErrorException');
+        $this->expectExceptionCode('1495895278');
         $iri          = new Iri('', '');
         $iri->profile = 'abc';
     }
