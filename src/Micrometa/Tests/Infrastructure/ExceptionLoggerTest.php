@@ -45,17 +45,8 @@ use Jkphl\Micrometa\Tests\AbstractTestBase;
  * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Tests
  */
-class LoggerTest extends AbstractTestBase
+class ExceptionLoggerTest extends AbstractTestBase
 {
-    /**
-     * Test the exception logger
-     */
-    public function testExceptionLogger()
-    {
-        $logger = new ExceptionLogger();
-        $this->assertTrue($logger->debug('DEBUG'));
-    }
-
     /**
      * Test the exception logger
      */

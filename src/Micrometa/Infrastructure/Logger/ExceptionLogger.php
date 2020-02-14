@@ -39,6 +39,9 @@ namespace Jkphl\Micrometa\Infrastructure\Logger;
 use Jkphl\Micrometa\Ports\Exceptions\RuntimeException;
 use Monolog\Handler\NullHandler;
 use Monolog\Logger;
+use Monolog\ResettableInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\LoggerTrait;
 
 /**
  * Exception logger
@@ -46,8 +49,10 @@ use Monolog\Logger;
  * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Infrastructure
  */
-class ExceptionLogger extends Logger
+final class ExceptionLogger implements LoggerInterface, ResettableInterface
 {
+    use LoggerTrait;
+
     /**
      * Exception threshold
      *
@@ -55,13 +60,15 @@ class ExceptionLogger extends Logger
      */
     protected $threshold;
 
+    private $decoratedLogger;
+
     /**
      * Constructor
      */
     public function __construct($threshold = Logger::ERROR)
     {
         $this->threshold = $threshold;
-        parent::__construct('exception', [new NullHandler()]);
+        $this->decoratedLogger = new Logger('exception', [new NullHandler()]);
     }
 
     /**
@@ -71,17 +78,18 @@ class ExceptionLogger extends Logger
      * @param  string $message The log message
      * @param  array $context  The log context
      *
-     * @return Boolean Whether the record has been processed
      * @throws \Exception Exception that occured
      * @throws \RuntimeException Log message as exception
      */
-    public function addRecord($level, $message, array $context = [])
+    public function log($level, $message, array $context = [])
     {
+        $level = Logger::toMonologLevel($level);
+
         if ($this->isTriggered($level)) {
             throw $this->getContextException($context) ?: new RuntimeException($message, $level);
         }
 
-        return parent::addRecord($level, $message, $context);
+        $this->decoratedLogger->addRecord($level, $message, $context);
     }
 
     /**
@@ -107,5 +115,10 @@ class ExceptionLogger extends Logger
     {
         return (isset($context['exception']) && ($context['exception'] instanceof \Exception)) ?
             $context['exception'] : null;
+    }
+
+    public function reset()
+    {
+        $this->decoratedLogger->reset();
     }
 }
