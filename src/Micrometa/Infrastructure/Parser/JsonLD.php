@@ -193,11 +193,11 @@ class JsonLD extends AbstractParser
      */
     protected function parseNode(NodeInterface $node)
     {
-        $id = $node->getId() ?: null;
+        $nodeId = $node->getId() ?: null;
 
         // if ID is in the current chain, just return the ID reference
         if (in_array($node, $this->chain, true)) {
-            return $id;
+            return $nodeId;
         }
 
         // add node to chain, parse node tree, remove node from chain
@@ -207,7 +207,7 @@ class JsonLD extends AbstractParser
 
         return (object)[
             'type'       => $this->parseNodeType($node),
-            'id'         => $id,
+            'id'         => $nodeId,
             'properties' => $properties,
         ];
     }
