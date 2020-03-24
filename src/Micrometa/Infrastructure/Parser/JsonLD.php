@@ -83,6 +83,12 @@ class JsonLD extends AbstractParser
      * @var CachingContextLoader
      */
     protected $contextLoader;
+    /**
+     * Array for keeping track of the hierarchy of objects, to prevent recursion
+     *
+     * @var NodeInterface[]
+     */
+    protected $chain = [];
 
     /**
      * JSON-LD parser constructor
@@ -183,14 +189,26 @@ class JsonLD extends AbstractParser
      *
      * @param NodeInterface $node Node
      *
-     * @return \stdClass Item
+     * @return \stdClass|string Item or string ID
      */
     protected function parseNode(NodeInterface $node)
     {
+        $id = $node->getId() ?: null;
+
+        // if ID is in the current chain, just return the ID reference
+        if (in_array($node, $this->chain, true)) {
+            return $id;
+        }
+
+        // add node to chain, parse node tree, remove node from chain
+        $this->chain[] = $node;
+        $properties = $this->parseNodeProperties($node);
+        array_pop($this->chain);
+
         return (object)[
             'type'       => $this->parseNodeType($node),
-            'id'         => $node->getId() ?: null,
-            'properties' => $this->parseNodeProperties($node),
+            'id'         => $id,
+            'properties' => $properties,
         ];
     }
 
@@ -206,7 +224,7 @@ class JsonLD extends AbstractParser
         if ($node->isBlankNode()) {
             return [];
         }
-      
+
         /** @var NodeInterface|NodeInterface[] $itemTypes */
         $itemTypes = $node->getType();
         $itemTypes = is_array($itemTypes) ? $itemTypes : [$itemTypes];
