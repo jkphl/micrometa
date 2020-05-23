@@ -73,6 +73,11 @@ class CachingContextLoader extends FileGetContentsLoader
      */
     public function loadDocument($url)
     {
+        // ML\JsonLD\FileGetContentsLoader is no longer able to fetch schema.org, this is a workaround
+        if (in_array(strtolower(rtrim($url, '/')), ['http://schema.org', 'https://schema.org'])) {
+            $url = 'https://schema.org/docs/jsonldcontext.jsonld';
+        }
+
         // Try to return a cached document
         $document = $this->vocabularyCache->getDocument($url);
         if ($document instanceof RemoteDocument) {
