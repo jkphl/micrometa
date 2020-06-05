@@ -38,6 +38,7 @@ namespace Jkphl\Micrometa\Tests\Infrastructure;
 
 use Jkphl\Micrometa\Infrastructure\Logger\ExceptionLogger;
 use Jkphl\Micrometa\Tests\AbstractTestBase;
+use Monolog\Logger;
 
 /**
  * Logger tests
@@ -53,7 +54,8 @@ class LoggerTest extends AbstractTestBase
     public function testExceptionLogger()
     {
         $logger = new ExceptionLogger();
-        $this->assertTrue($logger->debug('DEBUG'));
+        $logger->debug('DEBUG');
+        $this->assertTrue($logger->isHandling(Logger::DEBUG));
     }
 
     /**

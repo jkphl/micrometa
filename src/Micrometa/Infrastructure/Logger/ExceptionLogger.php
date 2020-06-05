@@ -75,7 +75,7 @@ class ExceptionLogger extends Logger
      * @throws \Exception Exception that occured
      * @throws \RuntimeException Log message as exception
      */
-    public function addRecord($level, $message, array $context = [])
+    public function addRecord(int $level, string $message, array $context = []): bool
     {
         if ($this->isTriggered($level)) {
             throw $this->getContextException($context) ?: new RuntimeException($message, $level);
