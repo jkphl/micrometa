@@ -110,6 +110,20 @@ class ParserTest extends AbstractTestBase
     }
 
     /**
+     * Test the JSON-LD parser with example that was throwing an InvalidArgumentException.
+     * @see https://github.com/jkphl/micrometa/pull/59
+     */
+    public function testFixIncorrectEmptyTypeListInJsonLDParser()
+    {
+        $items = $this->parseItems('json-ld/jsonld-incorrect-empty-type-list.html', JsonLD::class, 0);
+        $this->assertTrue(is_array($items));
+        $this->assertEquals(1, count($items));
+
+        $type = $items[0]->getType();
+        $this->assertEquals('http://schema.org/Product', (string) $type[0]);
+    }
+
+    /**
      * Test the JSON-LD parser with an invalid document
      */
     public function testInvalidJsonLDParser()
