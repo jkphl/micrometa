@@ -18,7 +18,7 @@ matrix:
 
 install:
     # use "update" instead of "install" since it allows using the "--prefer-lowest" option
-    - composer update $COMPOSER_FLAGS
+    - composer update $COMPOSER_FLAGS --prefer-dist
 
 before_script:
     - travis_retry composer self-update
