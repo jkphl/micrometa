@@ -12,17 +12,23 @@ env:
 matrix:
     include:
       - env: COMPOSER_FLAGS="--prefer-lowest"
-    allow_failures:
-        - php: 7.1
-        - php: nightly
 
-install:
-    # use "update" instead of "install" since it allows using the "--prefer-lowest" option
-    - composer update $COMPOSER_FLAGS --prefer-dist
-
+matrix:
+  include:
+    - php: 7.2
+      env: dependencies=lowest
+    - php: 7.3
+      env: dependencies=lowest
+    - php: 7.4
+      env: dependencies=lowest
+  allow_failures:
+    - php: 7.1
+    - php: nightly
+        
 before_script:
     - travis_retry composer self-update
     - travis_retry composer install --no-interaction --prefer-source
+    - if [ "$dependencies" = "lowest" ]; then composer update --prefer-lowest --prefer-stable -n; fi;
     - touch .env
     - echo 'date.timezone = Europe/Berlin' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
     - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
