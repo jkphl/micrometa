@@ -10,10 +10,6 @@ env:
     - APP_ENV=development CC_TEST_REPORTER_ID=efd18a36922628f0536f2f08cf7ceca763f5f2feb6f3638037381487ca3312ae
 
 matrix:
-    include:
-      - env: COMPOSER_FLAGS="--prefer-lowest"
-
-matrix:
   include:
     - php: 7.2
       env: dependencies=lowest
