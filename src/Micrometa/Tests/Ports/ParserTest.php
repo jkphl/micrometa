@@ -56,8 +56,9 @@ class ParserTest extends AbstractTestBase
     {
         $parser          = new Parser(Format::LINK_TYPE);
         $itemObjectModel = $parser('http://localhost:1349/link-type/valid-test.html');
-        $this->assertInstanceOf(ItemObjectModelInterface::class, $itemObjectModel);
-        $this->assertEquals(4, count($itemObjectModel->getItems()));
+
+        self::assertInstanceOf(ItemObjectModelInterface::class, $itemObjectModel);
+        self::assertCount(4, $itemObjectModel->getItems());
     }
 
     /**
@@ -69,7 +70,8 @@ class ParserTest extends AbstractTestBase
         $this->expectExceptionCode('400');
         $parser          = new Parser(Format::JSON_LD);
         $itemObjectModel = $parser('http://localhost:1349/json-ld/jsonld-invalid.html');
-        $this->assertInstanceOf(ItemObjectModelInterface::class, $itemObjectModel);
-        $this->assertEquals(1, count($itemObjectModel->getItems()));
+
+        self::assertInstanceOf(ItemObjectModelInterface::class, $itemObjectModel);
+        self::assertCount(1, $itemObjectModel->getItems());
     }
 }
