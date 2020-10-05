@@ -20,11 +20,11 @@ matrix:
   allow_failures:
     - php: 7.1
     - php: nightly
-        
+
 before_script:
     - travis_retry composer self-update
-    - travis_retry composer install --no-interaction --prefer-source
-    - if [ "$dependencies" = "lowest" ]; then composer update --prefer-lowest --prefer-stable -n; fi;
+    - travis_retry composer install --no-interaction
+    - if [ "$dependencies" = "lowest" ]; then composer update --prefer-lowest --prefer-stable --no-interaction; fi;
     - touch .env
     - echo 'date.timezone = Europe/Berlin' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
     - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter

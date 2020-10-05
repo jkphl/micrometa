@@ -31,7 +31,7 @@
         "php": "^7.1.3",
         "jkphl/dom-factory": "^0.1.2",
         "jkphl/rdfa-lite-microdata": "^0.4.4",
-        "league/uri": "^5.0",
+        "league/uri": ">=5.3",
         "mf2/mf2": "^0.4",
         "ml/json-ld": "^1.1",
         "monolog/monolog": "^1.24 || ^2",
@@ -54,8 +54,8 @@
     "require-dev": {
         "clue/graph-composer": "dev-master",
         "mf2/tests": "@dev",
-        "mindplay/composer-locator": "^2.1",
-        "phpunit/phpunit": "^7.0 || ^8.5",
+        "mindplay/composer-locator": "^2.1.3",
+        "phpunit/phpunit": "^7.5 || ^8.5",
         "php-coveralls/php-coveralls": "^2.1",
         "squizlabs/php_codesniffer": "^3.3"
     }
