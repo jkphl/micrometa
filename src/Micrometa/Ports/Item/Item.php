@@ -55,7 +55,7 @@ use Jkphl\Micrometa\Ports\Exceptions\OutOfBoundsException;
  * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Ports
  */
-class Item extends ItemList implements ItemInterface
+class Item extends Collection implements ItemInterface
 {
     /**
      * Application item
@@ -65,6 +65,11 @@ class Item extends ItemList implements ItemInterface
     protected $item;
 
     /**
+     * @var ItemList
+     */
+    private $itemList;
+
+    /**
      * Item constructor
      *
      * @param ApplicationItemInterface $item Application item
@@ -72,7 +77,7 @@ class Item extends ItemList implements ItemInterface
     public function __construct(ApplicationItemInterface $item)
     {
         $this->item = $item;
-        parent::__construct(ItemFactory::createFromApplicationItems($this->item->getChildren()));
+        $this->itemList = new ItemList(ItemFactory::createFromApplicationItems($this->item->getChildren()));
     }
 
     /**
@@ -327,5 +332,39 @@ class Item extends ItemList implements ItemInterface
     public function getValue()
     {
         return $this->item->getValue();
+    }
+
+    /**
+     * Filter the items by item type(s).
+     *
+     * @param array ...$types Item types
+     *
+     * @return ItemInterface[] Items matching the requested types
+     */
+    public function getItems(...$types)
+    {
+        return $this->itemList->getItems(...$types);
+    }
+
+    /**
+     * Return the first item, optionally of particular types.
+     *
+     * @param array ...$types Item types
+     *
+     * @return ItemInterface Item
+     */
+    public function getFirstItem(...$types)
+    {
+        return $this->itemList->getFirstItem(...$types);
+    }
+
+    /**
+     * Count the elements in the item list.
+     *
+     * @return int
+     */
+    public function count()
+    {
+        return $this->itemList->count();
     }
 }

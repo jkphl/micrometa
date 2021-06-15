@@ -44,6 +44,7 @@ use Jkphl\Micrometa\Ports\Item\ItemInterface;
 use Jkphl\Micrometa\Ports\Item\ItemList;
 use Jkphl\Micrometa\Tests\AbstractTestBase;
 use Jkphl\Micrometa\Tests\MicroformatsFeedTrait;
+use Jkphl\Micrometa\Ports\Exceptions\OutOfBoundsException;
 
 /**
  * Parser factory tests
@@ -247,10 +248,8 @@ class ItemTest extends AbstractTestBase
      */
     public function testItemNestedItems()
     {
-        $this->expectException('Jkphl\Micrometa\Ports\Exceptions\InvalidArgumentException');
-        $this->expectExceptionCode('1492418709');
         $feedItem = $this->getFeedItem();
-        $this->assertInstanceOf(Item::class, $feedItem);
+        self::assertInstanceOf(Item::class, $feedItem);
 
         // Test the number of nested items
         $this->assertEquals(2, count($feedItem));
@@ -266,38 +265,21 @@ class ItemTest extends AbstractTestBase
         );
 
         // Test the second entry item
-        $this->runFeedNestedEntryItemTest($feedItem);
-    }
-
-    /**
-     * Test a nested entry item
-     *
-     * @param ItemInterface $feedItem Feed item
-     */
-    protected function runFeedNestedEntryItemTest(ItemInterface $feedItem)
-    {
         $entryItem = $feedItem->getItems('h-entry')[1];
-        $this->assertInstanceOf(ItemInterface::class, $entryItem);
-
-        // Test the magic item getter / item type aliases
-        /** @noinspection PhpUndefinedMethodInspection */
-        $entryItem = $feedItem->hEntry(0);
-        $this->assertInstanceOf(ItemInterface::class, $entryItem);
-        /** @noinspection PhpUndefinedMethodInspection */
-        $feedItem->hEntry(-1);
+        self::assertInstanceOf(ItemInterface::class, $entryItem);
     }
 
     /**
      * Test non-existent nested item
      */
-    public function testItemNonExistentNestedItems()
+    public function testNonExistentNestedItems()
     {
-        $this->expectException('Jkphl\Micrometa\Ports\Exceptions\OutOfBoundsException');
+        $this->expectException(OutOfBoundsException::class);
         $this->expectExceptionCode('1492418999');
+
         $feedItem = $this->getFeedItem();
-        /** @noinspection PhpUndefinedMethodInspection */
+
         $this->assertEquals('John Doe', $feedItem->hEntry()->author->name);
-        /** @noinspection PhpUndefinedMethodInspection */
         $feedItem->hEntry(2);
     }
 
@@ -306,8 +288,9 @@ class ItemTest extends AbstractTestBase
      */
     public function testItemListExport()
     {
-        $this->expectException('Jkphl\Micrometa\Ports\Exceptions\OutOfBoundsException');
+        $this->expectException(OutOfBoundsException::class);
         $this->expectExceptionCode('1492030227');
+
         $feedItem = $this->getFeedItem();
         $itemList = new ItemList([$feedItem]);
         $this->assertInstanceOf(ItemList::class, $itemList);
