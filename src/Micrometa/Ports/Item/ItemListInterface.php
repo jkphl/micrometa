@@ -39,36 +39,11 @@ namespace Jkphl\Micrometa\Ports\Item;
 /**
  * Item list interface
  *
+ * Prefer type-hinting against CollectionFacade over this interface to narrow-down the number of public methods.
+ *
  * @package    Jkphl\Micrometa
  * @subpackage Jkphl\Micrometa\Ports
  */
-interface ItemListInterface extends \Iterator, \Countable, \ArrayAccess
+interface ItemListInterface extends CollectionFacade, \Iterator, \ArrayAccess
 {
-    /**
-     * Return an object representation of the item list
-     *
-     * @return \stdClass Micro information items
-     * @api
-     */
-    public function toObject();
-
-    /**
-     * Filter the items by item type(s)
-     *
-     * @param array ...$types Item types
-     *
-     * @return ItemInterface[] Items matching the requested types
-     * @api
-     */
-    public function getItems(...$types);
-
-    /**
-     * Return the first item, optionally of particular types
-     *
-     * @param array ...$types Item types
-     *
-     * @return ItemInterface Item
-     * @api
-     */
-    public function getFirstItem(...$types);
 }
