@@ -19,10 +19,7 @@
         "issues": "https://github.com/jkphl/micrometa/issues"
     },
     "config": {
-        "sort-packages": true,
-        "allow-plugins": {
-            "mindplay/composer-locator": false
-        }
+        "sort-packages": true
     },
     "require": {
         "php": ">=7.1.3",
