@@ -11,10 +11,6 @@
         <const name="WEB_SERVER_DOCROOT" value="./src/Micrometa/Tests/Fixture" />
     </php>
 
-    <logging>
-        <log type="coverage-xml" target="build/coverage"/>
-    </logging>
-
     <filter>
         <whitelist addUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">src</directory>
