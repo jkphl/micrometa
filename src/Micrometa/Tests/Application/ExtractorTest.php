@@ -36,7 +36,6 @@
 
 namespace Jkphl\Micrometa\Tests\Application;
 
-use ComposerLocator;
 use DOMDocument;
 use Jkphl\Domfactory\Ports\Dom;
 use Jkphl\Micrometa\Application\Contract\ParsingResultInterface;
@@ -106,7 +105,7 @@ class ExtractorTest extends AbstractTestBase
      */
     public function testMicroformatsExtraction()
     {
-        $microformatsTests = ComposerLocator::getPath('mf2/tests').DIRECTORY_SEPARATOR.'tests'.
+        $microformatsTests = dirname(__DIR__).DIRECTORY_SEPARATOR.'Fixture'.
                              DIRECTORY_SEPARATOR.'microformats-v2'.DIRECTORY_SEPARATOR;
 
         $this->getAndTestMicroformatsExtractionBase(
