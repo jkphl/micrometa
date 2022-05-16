@@ -27,7 +27,7 @@
         "jkphl/dom-factory": "^1",
         "jkphl/rdfa-lite-microdata": "^0.4.4",
         "league/uri": "^5.0|^6.5",
-        "mf2/mf2": "^0.5",
+        "mf2/mf2": "^0.4",
         "ml/json-ld": "^1.2",
         "monolog/monolog": "^1.24 || ^2",
         "psr/cache": "^1.0|^2|^3",
