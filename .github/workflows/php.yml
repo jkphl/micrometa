@@ -1,0 +1,80 @@
+name: Latest Build
+
+on:
+    push:
+        branches: [ master ]
+    pull_request:
+
+env:
+    CC_TEST_REPORTER_ID: efd18a36922628f0536f2f08cf7ceca763f5f2feb6f3638037381487ca3312ae
+    APP_ENV: development
+
+jobs:
+    test:
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                operating-system: [ubuntu-latest]
+                php-versions: [ '7.2', '7.3', '7.4', '8.0', '8.1' ]
+                dependency-stability: [ prefer-stable ]
+        name: PHP ${{ matrix.php-versions }} - ${{ matrix.dependency-stability }} - ${{ matrix.operating-system}}
+        steps:
+            - uses: actions/checkout@v2
+
+            - name: Install PHP versions
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: ${{ matrix.php-versions }}
+
+            - run: composer self-update
+
+            - name: Install Dependencies
+              if: steps.vendor-cache.outputs.cache-hit != 'true'
+              run: composer install --no-interaction --prefer-dist
+
+            - name: Run PHPUnit
+              run: vendor/bin/phpunit --no-coverage
+
+    coverage:
+        needs: [ test ]
+        name: Code Coverage Reporting
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+            - uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '7.4'
+
+            - run: composer self-update
+
+            - name: Install Dependencies
+              if: steps.vendor-cache.outputs.cache-hit != 'true'
+              run: composer install --no-interaction --prefer-dist
+
+            - run: curl -L https://scrutinizer-ci.com/ocular.phar > ./ocular.phar
+            - run: curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            - run: chmod +x ./cc-test-reporter
+            - run: composer global require php-coveralls/php-coveralls
+
+            - name: Start CodeClimate report
+              run: ./cc-test-reporter before-build
+
+            - name: Run Tests with Coverage
+              run: vendor/bin/phpunit --coverage-clover build/logs/clover.xml
+
+            - name: Format coverage for CodeClimate
+              run: ./cc-test-reporter format-coverage -t clover -o build/logs/codeclimate.json build/logs/clover.xml
+
+            - name: Upload coverage results to CodeClimate
+              run: ./cc-test-reporter upload-coverage -i build/logs/codeclimate.json
+
+            - name: End CodeClimate report
+              run: ./cc-test-reporter after-build --exit-code 0
+
+            - name: Upload coverage results to Scrutinizer
+              run: php ocular.phar code-coverage:upload --format=php-clover build/logs/clover.xml
+
+            - name: Upload coverage results to Coveralls
+              env:
+                  COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: php-coveralls --coverage_clover=build/logs/clover.xml -v
