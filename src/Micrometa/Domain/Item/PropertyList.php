@@ -120,9 +120,9 @@ class PropertyList implements PropertyListInterface
     /**
      * Return the current IRI key
      *
-     * @return \stdClass IRI key
+     * @return mixed IRI key
      */
-    public function key(): \stdClass
+    public function key()
     {
         return $this->names[$this->cursor];
     }
