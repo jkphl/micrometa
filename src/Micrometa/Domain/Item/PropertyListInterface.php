@@ -51,7 +51,7 @@ interface PropertyListInterface extends \ArrayAccess, \Iterator, \Countable
      *
      * @return boolean Property exists
      */
-    public function offsetExists($iri);
+    public function offsetExists($iri): bool;
 
     /**
      * Get a particular property
@@ -60,7 +60,7 @@ interface PropertyListInterface extends \ArrayAccess, \Iterator, \Countable
      *
      * @return array Property values
      */
-    public function &offsetGet($iri);
+    public function &offsetGet($iri): array;
 
     /**
      * Set a particular property
@@ -68,14 +68,14 @@ interface PropertyListInterface extends \ArrayAccess, \Iterator, \Countable
      * @param \stdClass|string $iri IRI
      * @param array $value          Property values
      */
-    public function offsetSet($iri, $value);
+    public function offsetSet($iri, $value): void;
 
     /**
      * Unset a property
      *
      * @param \stdClass|string $iri IRI
      */
-    public function offsetUnset($iri);
+    public function offsetUnset($iri): void;
 
     /**
      * Add a property

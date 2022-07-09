@@ -80,7 +80,7 @@ class PropertyList implements PropertyListInterface
      *
      * @throws ErrorException
      */
-    public function offsetUnset($iri)
+    public function offsetUnset($iri): void
     {
         throw new ErrorException(
             sprintf(ErrorException::CANNOT_UNSET_PROPERTY_STR, $iri),
@@ -94,7 +94,7 @@ class PropertyList implements PropertyListInterface
      *
      * @return int Number of properties
      */
-    public function count()
+    public function count(): int
     {
         return count($this->values);
     }
@@ -104,7 +104,7 @@ class PropertyList implements PropertyListInterface
      *
      * @return array Property values
      */
-    public function current()
+    public function current(): array
     {
         return $this->values[$this->cursor];
     }
@@ -112,7 +112,7 @@ class PropertyList implements PropertyListInterface
     /**
      * Move forward to next element
      */
-    public function next()
+    public function next(): void
     {
         ++$this->cursor;
     }
@@ -122,7 +122,7 @@ class PropertyList implements PropertyListInterface
      *
      * @return \stdClass IRI key
      */
-    public function key()
+    public function key(): \stdClass
     {
         return $this->names[$this->cursor];
     }
@@ -132,7 +132,7 @@ class PropertyList implements PropertyListInterface
      *
      * @return boolean The current position is valid
      */
-    public function valid()
+    public function valid(): bool
     {
         return isset($this->values[$this->cursor]);
     }
@@ -140,7 +140,7 @@ class PropertyList implements PropertyListInterface
     /**
      * Rewind the Iterator to the first element
      */
-    public function rewind()
+    public function rewind(): void
     {
         $this->cursor = 0;
     }
@@ -173,7 +173,7 @@ class PropertyList implements PropertyListInterface
      *
      * @return boolean Property exists
      */
-    public function offsetExists($iri)
+    public function offsetExists($iri): bool
     {
         $iri = IriFactory::create($iri);
         try {
@@ -246,7 +246,7 @@ class PropertyList implements PropertyListInterface
      * @param \stdClass|Iri|string $iri IRI
      * @param array $value              Property values
      */
-    public function offsetSet($iri, $value)
+    public function offsetSet($iri, $value): void
     {
         $iri                   = IriFactory::create($iri);
         $iriStr                = strval($iri);
@@ -264,7 +264,7 @@ class PropertyList implements PropertyListInterface
      * @return array Property values
      * @throws OutOfBoundsException If the property name is unknown
      */
-    public function &offsetGet($iri)
+    public function &offsetGet($iri): array
     {
         $iri    = IriFactory::create($iri);
         $cursor = ($iri->profile !== '') ?

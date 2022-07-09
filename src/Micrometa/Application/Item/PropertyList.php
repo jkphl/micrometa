@@ -77,7 +77,7 @@ class PropertyList extends \Jkphl\Micrometa\Domain\Item\PropertyList implements 
      * @param \stdClass|string $iri IRI
      * @param array $value          Property values
      */
-    public function offsetSet($iri, $value)
+    public function offsetSet($iri, $value): void
     {
         $iri                    = IriFactory::create($iri);
         $iriStr                 = strval($iri);
@@ -124,7 +124,7 @@ class PropertyList extends \Jkphl\Micrometa\Domain\Item\PropertyList implements 
      *
      * @return int Property cursor
      */
-    protected function getPropertyCursor($name)
+    protected function getPropertyCursor($name): int
     {
         // Run through all property names
         foreach ($this->names as $cursor => $iri) {
