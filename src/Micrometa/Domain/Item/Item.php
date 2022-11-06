@@ -73,8 +73,8 @@ class Item implements ItemInterface
             $propertyListFactory ?: new PropertyListFactory(),
             is_array($type) ? $type : [$type],
             $properties,
-            trim($itemId),
-            trim($itemLanguage)
+            trim($itemId ?? ''),
+            trim($itemLanguage ?? '')
         );
     }
 
