@@ -117,7 +117,7 @@ final class ExceptionLogger implements LoggerInterface, ResettableInterface
             $context['exception'] : null;
     }
 
-    public function reset()
+    public function reset(): void
     {
         $this->decoratedLogger->reset();
     }
