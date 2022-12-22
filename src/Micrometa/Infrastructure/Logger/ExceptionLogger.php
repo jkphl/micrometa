@@ -38,6 +38,7 @@ namespace Jkphl\Micrometa\Infrastructure\Logger;
 
 use Jkphl\Micrometa\Ports\Exceptions\RuntimeException;
 use Monolog\Handler\NullHandler;
+use Monolog\Level;
 use Monolog\Logger;
 use Monolog\ResettableInterface;
 use Psr\Log\LoggerInterface;
@@ -84,6 +85,9 @@ final class ExceptionLogger implements LoggerInterface, ResettableInterface
     public function log($level, $message, array $context = [])
     {
         $level = Logger::toMonologLevel($level);
+        if ($level instanceof Level) {
+            $level = $level->value;
+        }
 
         if ($this->isTriggered($level)) {
             throw $this->getContextException($context) ?: new RuntimeException($message, $level);
