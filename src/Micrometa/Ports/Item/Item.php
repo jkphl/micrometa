@@ -363,7 +363,7 @@ class Item extends Collection implements ItemInterface
      *
      * @return int
      */
-    public function count()
+    public function count(): int
     {
         return $this->itemList->count();
     }

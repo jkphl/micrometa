@@ -91,7 +91,7 @@ class ItemList extends Collection implements ItemListInterface
      * @return void
      * @api
      */
-    public function next()
+    public function next(): void
     {
         ++$this->pointer;
     }
@@ -102,7 +102,7 @@ class ItemList extends Collection implements ItemListInterface
      * @return int Position of the current element
      * @api
      */
-    public function key()
+    public function key(): int
     {
         return $this->pointer;
     }
@@ -113,7 +113,7 @@ class ItemList extends Collection implements ItemListInterface
      * @return boolean The current position is valid
      * @api
      */
-    public function valid()
+    public function valid(): bool
     {
         return isset($this->items[$this->pointer]);
     }
@@ -124,7 +124,7 @@ class ItemList extends Collection implements ItemListInterface
      * @return void
      * @api
      */
-    public function rewind()
+    public function rewind(): void
     {
         $this->pointer = 0;
     }
@@ -137,7 +137,7 @@ class ItemList extends Collection implements ItemListInterface
      * @return boolean Offset exists
      * @api
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->items[$offset]);
     }
@@ -164,7 +164,7 @@ class ItemList extends Collection implements ItemListInterface
      *
      * @api
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         throw new RuntimeException(RuntimeException::IMMUTABLE_ITEM_LIST_STR, RuntimeException::IMMUTABLE_ITEM_LIST);
     }
@@ -175,7 +175,7 @@ class ItemList extends Collection implements ItemListInterface
      * @param int $offset Offset
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         throw new RuntimeException(RuntimeException::IMMUTABLE_ITEM_LIST_STR, RuntimeException::IMMUTABLE_ITEM_LIST);
     }
@@ -250,7 +250,7 @@ class ItemList extends Collection implements ItemListInterface
      * @return int Number of items
      * @api
      */
-    public function count()
+    public function count(): int
     {
         return count($this->items);
     }
