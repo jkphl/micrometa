@@ -28,7 +28,7 @@
         "league/uri": "^5.0|^6.5",
         "mf2/mf2": "^0.4",
         "ml/json-ld": "^1.2",
-        "monolog/monolog": "^1.24 || ^2",
+        "monolog/monolog": "^1.24 || ^2 || ^3",
         "psr/cache": "^1.0|^2|^3",
         "psr/log": "^1.1|^2|^3",
         "symfony/cache": "^4.0|^5.0|^6.0"

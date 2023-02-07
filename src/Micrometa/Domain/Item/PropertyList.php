@@ -122,6 +122,7 @@ class PropertyList implements PropertyListInterface
      *
      * @return mixed IRI key
      */
+    #[\ReturnTypeWillChange]
     public function key()
     {
         return $this->names[$this->cursor];

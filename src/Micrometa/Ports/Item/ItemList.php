@@ -80,6 +80,7 @@ class ItemList extends Collection implements ItemListInterface
      * @return ItemInterface Item
      * @api
      */
+    #[\ReturnTypeWillChange]
     public function current()
     {
         return $this->items[$this->pointer];
@@ -150,6 +151,7 @@ class ItemList extends Collection implements ItemListInterface
      * @return ItemInterface Item
      * @api
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->items[$offset];
