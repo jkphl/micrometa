@@ -82,7 +82,7 @@ final class ExceptionLogger implements LoggerInterface, ResettableInterface
      * @throws \Exception Exception that occured
      * @throws \RuntimeException Log message as exception
      */
-    public function log($level, $message, array $context = [])
+    public function log($level, $message, array $context = []): void
     {
         $level = Logger::toMonologLevel($level);
         if ($level instanceof Level) {
