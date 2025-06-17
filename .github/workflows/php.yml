@@ -15,11 +15,19 @@ jobs:
         strategy:
             matrix:
                 operating-system: [ubuntu-latest]
-                php-versions: [ '7.2', '7.3', '7.4', '8.0', '8.1' ]
+                php-versions: 
+                  - '7.2'
+                  - '7.3'
+                  - '7.4'
+                  - '8.0'
+                  - '8.1'
+                  - '8.2'
+                  - '8.3'
+                  - '8.4'
                 dependency-stability: [ prefer-stable ]
         name: PHP ${{ matrix.php-versions }} - ${{ matrix.dependency-stability }} - ${{ matrix.operating-system}}
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v3
 
             - name: Install PHP versions
               uses: shivammathur/setup-php@v2
@@ -40,7 +48,7 @@ jobs:
         name: Code Coverage Reporting
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v3
             - uses: shivammathur/setup-php@v2
               with:
                   php-version: '7.4'
