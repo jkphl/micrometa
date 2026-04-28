@@ -25,7 +25,7 @@
         "ext-dom": "*",
         "jkphl/dom-factory": "^1",
         "jkphl/rdfa-lite-microdata": "^0.4.4",
-        "league/uri": "^5.0|^6.5",
+        "league/uri": "^5.0|^6.5|^7.0",
         "mf2/mf2": "^0.4",
         "ml/json-ld": "^1.2",
         "monolog/monolog": "^1.24 || ^2 || ^3",
