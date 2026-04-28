@@ -24,6 +24,7 @@ jobs:
                   - '8.2'
                   - '8.3'
                   - '8.4'
+                  - '8.5'
                 dependency-stability: [ prefer-stable ]
         name: PHP ${{ matrix.php-versions }} - ${{ matrix.dependency-stability }} - ${{ matrix.operating-system}}
         steps:
